@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>L'Œil et le Mot — jeu en ligne gratuit · Les Jardins de Célestine</title>
+<meta name="description" content="Lire le mot, pas la couleur : un exercice de contrôle bien connu. Jeu en ligne gratuit pour senior, sans inscription.">
+<link rel="canonical" href="https://jardinsdecelestine.com/jeu_oeil_et_mot">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="jdc-parcours.js"></script>
+<style>
+:root{--cream:#f7f3ea;--parchment:#eee8d5;--ink:#1c1208;--sepia:#5c3d1e;--gold:#c8922a;--green:#2d6a4f;--shadow:rgba(28,18,8,0.13);}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{background:var(--parchment);background-image:radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.08) 0%,transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(45,106,79,.06) 0%,transparent 55%);min-height:100vh;font-family:'Nunito',sans-serif;color:var(--ink);user-select:none;-webkit-user-select:none;}
+
+header{text-align:center;padding:16px 20px 10px;border-bottom:1px solid rgba(200,146,42,.2);position:relative;}
+header h1{font-family:'Atkinson Hyperlegible',sans-serif;font-size:clamp(1.3rem,3vw,1.9rem);font-weight:700;color:var(--sepia);cursor:default;}
+header h1 em{color:var(--gold);font-style:normal;}
+header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-top:3px;}
+.divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:6px auto 0;}
+#statsBtn{display:none;position:absolute;top:14px;right:16px;background:none;border:1.5px solid rgba(200,146,42,.4);border-radius:6px;padding:4px 10px;font-family:'Nunito',sans-serif;font-size:0.76rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+
+#intro{max-width:560px;margin:32px auto;padding:0 20px;text-align:center;}
+.card{background:var(--cream);border:1.5px solid rgba(200,146,42,.35);border-radius:16px;padding:28px 24px;box-shadow:0 8px 30px var(--shadow);}
+.card h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;color:var(--sepia);margin-bottom:10px;}
+.card p{font-size:1rem;line-height:1.65;color:var(--sepia);margin-bottom:14px;}
+.demo{background:#fff;border:2px dashed rgba(200,146,42,.45);border-radius:12px;padding:16px;margin:16px 0;}
+.demo-mot{font-family:'Atkinson Hyperlegible',sans-serif;font-size:2rem;font-weight:700;}
+.demo-txt{font-size:0.9rem;color:var(--sepia);margin-top:8px;line-height:1.5;}
+.niveaux{display:flex;flex-direction:column;gap:10px;}
+.niv{background:#fff;border:2px solid rgba(200,146,42,.45);border-radius:12px;padding:13px 16px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .18s;text-align:center;}
+.niv:hover{border-color:var(--gold);background:rgba(200,146,42,.08);transform:translateY(-2px);}
+.niv-mid{border-color:var(--gold);background:rgba(200,146,42,.06);}
+.niv-t{display:block;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.05rem;font-weight:700;color:var(--sepia);}
+.niv-d{display:block;font-size:0.84rem;color:var(--sepia);opacity:.7;margin-top:2px;}
+#suggestion{margin-top:14px;font-size:0.86rem;color:var(--sepia);opacity:.8;font-style:italic;}
+
+#game{display:none;max-width:600px;margin:0 auto;padding:14px 18px 40px;}
+#consigne{background:var(--cream);border:2px solid var(--gold);border-radius:14px;padding:13px 18px;text-align:center;margin-bottom:18px;box-shadow:0 4px 16px var(--shadow);}
+#consigneTxt{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.08rem;font-weight:700;color:var(--sepia);}
+#hud{display:flex;justify-content:space-between;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.92rem;font-weight:700;color:var(--sepia);padding:0 4px 14px;}
+#hud .bon{color:var(--green);}
+
+#zoneMot{display:flex;justify-content:center;margin-bottom:24px;}
+.mot-box{background:#fff;border:2px solid rgba(200,146,42,.4);border-radius:16px;padding:28px 40px;box-shadow:0 6px 20px var(--shadow);min-width:230px;text-align:center;}
+#leMot{font-family:'Atkinson Hyperlegible',sans-serif;font-size:clamp(2.2rem,9vw,3.2rem);font-weight:700;letter-spacing:.03em;}
+
+#choix{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+@media (min-width:520px){#choix{grid-template-columns:repeat(4,1fr);}}
+.choix-btn{background:#fff;border:2.5px solid rgba(200,146,42,.4);border-radius:14px;padding:14px 8px;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.choix-btn:hover{border-color:var(--gold);transform:translateY(-2px);}
+.choix-btn.juste{border-color:var(--green);background:#e9f2ec;animation:pop .35s ease;}
+.choix-btn.presque{border-color:var(--gold);background:#fdf6e6;}
+@keyframes pop{0%{transform:scale(.94)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+.pastille{display:block;width:36px;height:36px;border-radius:50%;}
+.choix-lbl{font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.84rem;font-weight:700;color:var(--sepia);}
+
+#fin{display:none;max-width:520px;margin:34px auto;padding:0 20px;text-align:center;}
+.btn-g{background:var(--gold);color:#fff;border:none;border-radius:10px;padding:13px 28px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;margin:5px;}
+.btn-o{background:none;border:1.5px solid rgba(200,146,42,.55);color:var(--sepia);border-radius:10px;padding:13px 28px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;margin:5px;}
+
+#statsPanel{display:none;position:fixed;inset:0;background:rgba(28,18,8,.75);z-index:60;align-items:center;justify-content:center;padding:16px;}
+#statsPanel.show{display:flex;}
+#statsBox{background:var(--cream);border:2px solid var(--gold);border-radius:14px;padding:24px 28px;max-width:420px;width:100%;}
+#statsBox h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.15rem;color:var(--sepia);margin-bottom:12px;}
+.srow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(200,146,42,.15);font-size:0.9rem;color:var(--sepia);}
+.sa{display:flex;gap:10px;margin-top:14px;justify-content:flex-end;}
+.btn-sm{padding:6px 14px;border-radius:6px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;}
+.btn-ol{background:none;border:1.5px solid rgba(200,146,42,.5);color:var(--sepia);}
+.btn-gg{background:var(--gold);color:#fff;border:none;}
+.vide{font-style:italic;opacity:.6;text-align:center;padding:12px 0;font-size:0.9rem;}
+
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);color:#fff;background:var(--green);padding:11px 24px;border-radius:9px;font-size:0.9rem;font-weight:700;opacity:0;transition:all .25s;z-index:300;pointer-events:none;font-family:'Atkinson Hyperlegible',sans-serif;max-width:90vw;text-align:center;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+#toast.doux{background:#8b6b20;}
+.confetti{position:fixed;top:-14px;width:10px;height:14px;z-index:70;pointer-events:none;animation:cfall linear forwards;}
+@keyframes cfall{to{transform:translateY(105vh) rotate(720deg);opacity:.9;}}
+
+/* Sortie de secours : toujours un moyen de revenir au catalogue. */
+.jdc-retour{display:block;text-align:center;padding:8px;font-size:.74rem;
+  color:#5c3d1e;opacity:.55;text-decoration:none;letter-spacing:.1em;
+  text-transform:uppercase;font-family:'Nunito',sans-serif;}
+.jdc-retour:hover{opacity:1;}
+@media print{.jdc-retour{display:none;}}
+
+/* Pied discret : le lien légal doit exister sur chaque page du site. */
+.jdc-legal{text-align:center;padding:16px 14px 22px;font-size:.78rem;line-height:1.6;
+  color:#5c3d1e;opacity:.6;font-family:'Nunito',sans-serif;}
+.jdc-legal a{color:inherit;}
+@media print{.jdc-legal{display:none;}}
+</style>
+<style id="jdc-apropos-style">
+/* Bloc « À propos » : replié par défaut, lu en entier par les moteurs.
+   Couleurs écrites en dur — chaque jeu a ses propres variables CSS. */
+.jdc-apropos{max-width:680px;margin:28px auto 8px;padding:0 16px;
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;color:#5c3d1e;}
+.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;
+  letter-spacing:.02em;opacity:.62;padding:9px 0;text-align:center;
+  border-top:1px solid rgba(92,61,30,.16);}
+.jdc-apropos>summary::-webkit-details-marker{display:none}
+.jdc-apropos>summary::after{content:' \203A';display:inline-block;
+  transform:rotate(90deg);margin-left:5px;opacity:.7}
+.jdc-apropos[open]>summary::after{transform:rotate(-90deg)}
+.jdc-apropos>summary:hover,.jdc-apropos>summary:focus-visible{opacity:.95}
+.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;
+  text-align:left;opacity:.9}
+.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:#5c3d1e;
+  font-weight:700}
+.jdc-apropos p{margin:0 0 10px}
+.jdc-apropos ul{margin:0 0 10px;padding-left:20px}
+.jdc-apropos li{margin-bottom:5px}
+.jdc-apropos a{color:#2d6a4f}
+.hc .jdc-apropos{color:#000}
+.hc .jdc-apropos h2{color:#000}
+.hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
+</style>
+</head>
+<body>
+
+
+<a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
+<header>
+  <h1 id="mainTitle">L'Œil et le <em>Mot</em></h1>
+  <p>Faire confiance à ses yeux</p>
+  <div class="divider"></div>
+  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
+</header>
+
+<div id="intro">
+  <div class="card">
+    <h2>Regardez l'encre, pas le mot</h2>
+    <p>Un mot s'affiche. Ce mot est le nom d'une couleur, mais il est écrit dans une autre. Vous devez indiquer <strong>la couleur de l'encre</strong>, sans tenir compte de ce qui est écrit.</p>
+    <div class="demo">
+      <div class="demo-mot" style="color:#2c6fa8">ROUGE</div>
+      <div class="demo-txt">Ici, le mot dit « rouge »… mais l'encre est <strong>bleue</strong>.<br>La bonne réponse est donc <strong>bleu</strong>.</div>
+    </div>
+    <p style="font-size:0.9rem;opacity:.85">Prenez tout votre temps : rien n'est chronométré.</p>
+    <div class="niveaux">
+      <button class="niv" onclick="commencer(1)">
+        <span class="niv-t">En douceur</span>
+        <span class="niv-d">12 mots · 2 couleurs · beaucoup d'accords</span>
+      </button>
+      <button class="niv niv-mid" onclick="commencer(2)">
+        <span class="niv-t">Concentré</span>
+        <span class="niv-d">16 mots · 3 couleurs</span>
+      </button>
+      <button class="niv" onclick="commencer(3)">
+        <span class="niv-t">Sans se laisser prendre</span>
+        <span class="niv-d">20 mots · 4 couleurs · pièges fréquents</span>
+      </button>
+    </div>
+    <div id="suggestion"></div>
+  </div>
+</div>
+
+<div id="game">
+  <div id="consigne"><span id="consigneTxt">Quelle est la couleur de l'encre ?</span></div>
+  <div id="hud">
+    <span>Mot <span id="numMot">1</span> / <span id="totMot">12</span></span>
+    <span class="bon"><span id="nbBon">0</span> trouvés</span>
+  </div>
+  <div id="zoneMot"><div class="mot-box"><div id="leMot">—</div></div></div>
+  <div id="choix"></div>
+</div>
+
+<div id="fin">
+  <div class="card">
+    <div style="font-size:2.4rem">👁️</div>
+    <h2 id="finTitre">Terminé !</h2>
+    <p id="finTexte"></p>
+    <button class="btn-g" onclick="rejouer()">Rejouer</button>
+    <button class="btn-o" onclick="retourIntro()">Changer de parcours</button>
+  </div>
+</div>
+
+<div id="statsPanel">
+  <div id="statsBox">
+    <h2>📊 Statistiques</h2>
+    <div id="statsContent"></div>
+    <div class="sa">
+      <button class="btn-sm btn-ol" onclick="resetStats()">Réinitialiser</button>
+      <button class="btn-sm btn-gg" onclick="closeStats()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════
+//   COULEURS
+// ═══════════════════════════════
+const COULEURS = [
+  { id:'rouge', nom:'Rouge', mot:'ROUGE', hex:'#c0392b' },
+  { id:'bleu',  nom:'Bleu',  mot:'BLEU',  hex:'#2c6fa8' },
+  { id:'vert',  nom:'Vert',  mot:'VERT',  hex:'#2d6a4f' },
+  { id:'jaune', nom:'Jaune', mot:'JAUNE', hex:'#c99a10' }
+];
+
+// pctConflit : proportion de mots où l'encre contredit le mot
+const NIVEAUX = {
+  1: { total:12, nb:2, pctConflit:0.35 },
+  2: { total:16, nb:3, pctConflit:0.55 },
+  3: { total:20, nb:4, pctConflit:0.75 }
+};
+
+let niveau=2, cfg=null, coulJeu=[], tour=0, bons=0, erreurs=0, conflits=0, bonsConflit=0;
+let cible=null, startTime=null, playing=false;
+
+// ═══════════════════════════════
+//   STATS
+// ═══════════════════════════════
+const STATS_KEY='oeilmot_stats_v1';
+let _tc=0,_tct=null;
+document.getElementById('mainTitle').addEventListener('click',()=>{
+  _tc++;clearTimeout(_tct);_tct=setTimeout(()=>_tc=0,800);
+  if(_tc>=3){_tc=0;document.getElementById('statsBtn').style.display='block';toast('Mode admin activé');}
+});
+function loadStats(){try{return JSON.parse(localStorage.getItem(STATS_KEY))||{};}catch(e){return{};}}
+function saveStats(x){try{localStorage.setItem(STATS_KEY,JSON.stringify(x));}catch(e){}}
+function trackLocal(niv,bons,total,err,sec){
+  const st=loadStats(),k='niv'+niv;
+  if(!st[k])st[k]={parties:0,totalBons:0,totalMots:0,totalErr:0,totalSec:0};
+  const g=st[k];g.parties++;g.totalBons+=bons;g.totalMots+=total;g.totalErr+=err;g.totalSec+=sec;
+  saveStats(st);
+}
+function openStats(){
+  const st=loadStats(),keys=Object.keys(st),c=document.getElementById('statsContent');
+  const lbl={niv1:'En douceur',niv2:'Concentré',niv3:'Sans se laisser prendre'};
+  if(!keys.length){c.innerHTML='<p class="vide">Aucune partie encore jouée.</p>';}
+  else{
+    c.innerHTML=keys.map(k=>{
+      const s=st[k],pct=s.totalMots?Math.round(s.totalBons/s.totalMots*100):0;
+      return '<div class="srow"><span>'+(lbl[k]||k)+'</span><span>'+s.parties+' partie(s) · '+pct+'% de réussite</span></div>';
+    }).join('');
+  }
+  document.getElementById('statsPanel').classList.add('show');
+}
+function closeStats(){document.getElementById('statsPanel').classList.remove('show');}
+function resetStats(){if(confirm('Effacer les statistiques ?')){localStorage.removeItem(STATS_KEY);closeStats();toast('Statistiques effacées');}}
+document.getElementById('statsPanel').addEventListener('click',function(e){if(e.target===this)closeStats();});
+
+function toast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className=type==='doux'?'doux show':'show';
+  clearTimeout(t._t);t._t=setTimeout(()=>t.className='',2400);
+}
+
+function afficherSuggestion(){
+  const el=document.getElementById('suggestion');
+  if(typeof JDC==='undefined'){el.textContent='';return;}
+  const b=JDC.bilanJeu('oeilmot');
+  if(!b.parties){el.textContent='';return;}
+  const c=JDC.niveauConseille('oeilmot');
+  const lbl={1:'En douceur',2:'Concentré',3:'Sans se laisser prendre'}[c];
+  el.textContent=b.parties+' partie(s) jouée(s). Parcours conseillé : '+lbl+'.';
+}
+afficherSuggestion();
+
+// ═══════════════════════════════
+//   JEU
+// ═══════════════════════════════
+function melange(a){
+  const r=a.slice();
+  for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}
+  return r;
+}
+
+function commencer(niv){
+  niveau=niv; cfg=NIVEAUX[niv];
+  coulJeu=melange(COULEURS).slice(0,cfg.nb);
+  tour=0; bons=0; erreurs=0; conflits=0; bonsConflit=0; playing=true;
+  startTime=Date.now();
+  document.getElementById('intro').style.display='none';
+  document.getElementById('fin').style.display='none';
+  document.getElementById('game').style.display='block';
+  document.getElementById('totMot').textContent=cfg.total;
+  motSuivant();
+}
+
+function motSuivant(){
+  if(tour >= cfg.total){ terminer(); return; }
+  tour++;
+  document.getElementById('numMot').textContent = tour;
+
+  // encre au hasard
+  const encre = coulJeu[Math.floor(Math.random()*coulJeu.length)];
+  // le mot : en conflit (autre couleur) ou en accord (même couleur)
+  let motCoul;
+  if(Math.random() < cfg.pctConflit && coulJeu.length > 1){
+    const autres = coulJeu.filter(c=>c.id!==encre.id);
+    motCoul = autres[Math.floor(Math.random()*autres.length)];
+    conflits++;
+  } else {
+    motCoul = encre;
+  }
+  cible = { encre:encre, mot:motCoul, conflit: motCoul.id!==encre.id };
+
+  const el = document.getElementById('leMot');
+  el.textContent = motCoul.mot;
+  el.style.color = encre.hex;
+
+  const zone = document.getElementById('choix');
+  zone.innerHTML = melange(coulJeu).map(c =>
+    '<button class="choix-btn" data-id="'+c.id+'">' +
+      '<span class="pastille" style="background:'+c.hex+'"></span>' +
+      '<span class="choix-lbl">'+c.nom+'</span>' +
+    '</button>'
+  ).join('');
+
+  zone.querySelectorAll('.choix-btn').forEach(b=>{
+    b.addEventListener('click', function(){
+      if(!playing) return;
+      if(this.dataset.id === cible.encre.id){
+        this.classList.add('juste');
+        bons++;
+        if(cible.conflit) bonsConflit++;
+        document.getElementById('nbBon').textContent = bons;
+        zone.querySelectorAll('.choix-btn').forEach(x=>x.style.pointerEvents='none');
+        setTimeout(motSuivant, 600);
+      } else {
+        erreurs++;
+        this.classList.add('presque');
+        this.style.pointerEvents='none';
+        toast(this.dataset.id === cible.mot.id
+          ? 'Attention : c\'est le mot qui dit cela. Regardez l\'encre.'
+          : 'Regardez bien la couleur de l\'encre', 'doux');
+      }
+    });
+  });
+}
+
+function terminer(){
+  playing=false;
+  const sec=Math.floor((Date.now()-startTime)/1000);
+  trackLocal(niveau, bons, cfg.total, erreurs, sec);
+  if(typeof JDC!=='undefined'){
+    JDC.enregistrer('oeilmot', niveau, bons >= Math.ceil(cfg.total*0.7), {duree:sec, erreurs:erreurs});
+  }
+  document.getElementById('game').style.display='none';
+  document.getElementById('fin').style.display='block';
+  document.getElementById('finTitre').textContent =
+    erreurs===0 ? 'Votre œil ne s\'est pas laissé tromper !' : 'C\'est terminé';
+  document.getElementById('finTexte').textContent =
+    bons + ' mots sur ' + cfg.total + '. Parmi eux, ' + conflits + ' cherchaient à vous induire en erreur' +
+    (conflits ? ', et vous en avez déjoué ' + bonsConflit + '.' : '.') +
+    (erreurs===0 ? ' Pas une seule hésitation.' : ' Résister à la lecture automatique demande un vrai effort : c\'est justement ce qui fait travailler l\'esprit.');
+  confetti();
+}
+
+function rejouer(){ commencer(niveau); }
+function retourIntro(){
+  playing=false;
+  document.getElementById('fin').style.display='none';
+  document.getElementById('game').style.display='none';
+  document.getElementById('intro').style.display='block';
+  afficherSuggestion();
+}
+
+window.addEventListener('beforeunload', function(){
+  if(playing && startTime && typeof JDC!=='undefined'){
+    JDC.enregistrer('oeilmot', niveau, false, {duree:Math.floor((Date.now()-startTime)/1000), erreurs:erreurs});
+  }
+});
+
+function confetti(){
+  const colors=['#c8922a','#2d6a4f','#c96f4a','#3a6ea5','#b33a2b'];
+  for(let i=0;i<50;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDuration=(2+Math.random()*2)+'s';
+    c.style.animationDelay=(Math.random()*.8)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),5000);
+  }
+}
+</script>
+
+
+
+
+<details class="jdc-apropos">
+<summary>À propos de ce jeu</summary>
+<div class="corps">
+<p><strong>L'Œil et le Mot</strong> — Le mot « rouge » écrit en vert : il faut dire la couleur, pas le mot. L'œil et la lecture se contredisent, et il faut choisir.</p>
+<h2>Pour qui</h2>
+<p>Aux personnes âgées lisant confortablement et ayant une bonne autonomie. C'est, avec le Sudoku, le jeu le plus exigeant du catalogue. Retenir la lecture automatique met en jeu le contrôle de soi, l'un des domaines touchés tôt dans la dégénérescence frontotemporale.</p>
+<h2>Comment y jouer</h2>
+<ul>
+<li><strong>Seul</strong> : à son rythme.</li>
+<li><strong>À deux, avec un proche ou un aidant</strong> : en disant la réponse à voix haute, ce qui rend l'hésitation visible et souvent drôle.</li>
+</ul>
+<p>Se tromper est ici parfaitement normal : l'exercice est conçu pour que la lecture prenne le dessus. Si l'erreur agace plutôt qu'elle n'amuse, changez de jeu.</p>
+<h2>Ce que ce jeu n'est pas</h2>
+<p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
+<h2>Qui le propose</h2>
+<p>Les Jardins de Célestine, un projet d'habitat partagé pour seniors, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="jeux.html">Voir tous les jeux</a>.</p>
+</div>
+</details>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+</footer>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Les Amis de Célestine</title>
+<meta name="robots" content="noindex, follow">
+<!-- L'association a désormais son propre site : redirection -->
+<meta http-equiv="refresh" content="10;url=https://lesamisdecelestine.fr/">
+<link rel="canonical" href="https://lesamisdecelestine.fr/">
+<link rel="icon" type="image/png" href="favicon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--teal:#1f6b68;--teal-deep:#14403e;--gold:#c9a24b;--t1:#34291f;--t2:#4a3a2c;--t3:#8a7a64;--bd:#e3cdb0;--disp:'Cormorant Garamond',Georgia,serif;--sans:'Mulish','Segoe UI',Arial,sans-serif}
+html,body{height:100%}
+body{font-family:var(--sans);background:linear-gradient(160deg,#e8f1ef 0%,#fbf6ef 70%);color:var(--t1);display:flex;align-items:center;justify-content:center;padding:1.5rem;text-align:center;min-height:100vh}
+.card{max-width:440px;background:#fff;border:1px solid var(--bd);border-radius:18px;padding:2.2rem 1.6rem;box-shadow:0 8px 30px rgba(20,64,62,.10)}
+.emblem{width:78px;height:78px;margin:0 auto 1rem}
+h1{font-family:var(--disp);font-size:26px;font-weight:600;color:var(--teal-deep);line-height:1.15;margin-bottom:.7rem}
+p{font-size:15px;color:var(--t2);line-height:1.65;margin-bottom:1.3rem}
+.btn{display:inline-block;background:var(--gold);color:#3a2a12;text-decoration:none;font-weight:700;font-size:15px;padding:13px 26px;border-radius:30px;transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.15)}
+
+/* Pied discret : le lien légal doit exister sur chaque page du site. */
+.jdc-legal{position:fixed;left:0;right:0;bottom:0;text-align:center;padding:14px;
+  font-size:.82rem;opacity:.7;}
+@media print{.jdc-legal{display:none;}}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="emblem" aria-hidden="true">
+      <svg viewBox="0 0 100 100">
+        <g fill="var(--teal)">
+          <ellipse cx="50" cy="27" rx="11" ry="20"/>
+          <ellipse cx="50" cy="27" rx="11" ry="20" transform="rotate(72 50 50)"/>
+          <ellipse cx="50" cy="27" rx="11" ry="20" transform="rotate(144 50 50)"/>
+          <ellipse cx="50" cy="27" rx="11" ry="20" transform="rotate(216 50 50)"/>
+          <ellipse cx="50" cy="27" rx="11" ry="20" transform="rotate(288 50 50)"/>
+        </g>
+        <circle cx="50" cy="50" r="9" fill="var(--gold)"/>
+      </svg>
+    </div>
+    <h1>Les Amis de Célestine</h1>
+    <p>L'association a désormais son propre site. Vous y serez conduit dans <strong><span id="cd">6</span> secondes</strong>.</p>
+    <a class="btn" href="https://lesamisdecelestine.fr/">Y aller maintenant</a>
+    <p style="margin:1rem 0 0"><a href="index.html" id="stay" style="color:var(--teal);font-size:14px;font-weight:600;text-decoration:underline">← Non merci, rester sur Les Jardins</a></p>
+  </div>
+  <script>
+    var n=6;
+    var t=setInterval(function(){
+      n--;
+      var el=document.getElementById('cd');
+      if(el)el.textContent=n;
+      if(n<=0){clearInterval(t);window.location.href='https://lesamisdecelestine.fr/';}
+    },1000);
+    document.getElementById('stay').addEventListener('click',function(){clearInterval(t);});
+  </script>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+</footer>
+</body>
+</html>

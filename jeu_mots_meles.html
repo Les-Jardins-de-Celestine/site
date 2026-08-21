@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mots Mêlés — jeu en ligne gratuit · Les Jardins de Célestine</title>
+<meta name="description" content="Des mots mêlés en gros caractères, cinq thèmes et plusieurs tailles de grille. Gratuit, en ligne, sans inscription et sans chronomètre.">
+<link rel="canonical" href="https://jardinsdecelestine.com/jeu_mots_meles">
+<!-- Atkinson Hyperlegible: conçue pour les personnes malvoyantes -->
+<!-- Nunito: ronde, sans-serif, très lisible -->
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #f5f0e8;
+  --parchment: #ede5d0;
+  --ink: #1a1208;
+  --sepia: #6b4c2a;
+  --gold: #c9963a;
+  --gold-light: #e8c872;
+  --red: #8b2020;
+  --green: #2a6b45;
+  --shadow: rgba(26,18,8,0.14);
+  --cell: 52px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--parchment);
+  background-image:
+    radial-gradient(ellipse at 10% 10%, rgba(201,150,58,0.09) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 90%, rgba(139,32,32,0.06) 0%, transparent 50%);
+  min-height: 100vh;
+  font-family: 'Nunito', sans-serif;
+  color: #1a1208;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ── HEADER ── */
+header {
+  text-align: center;
+  padding: 20px 20px 14px;
+  border-bottom: 1px solid rgba(201,150,58,.2);
+  position: relative;
+}
+header h1 {
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  color: var(--sepia);
+}
+header h1 em { color: var(--gold); font-style: italic; }
+header p {
+  font-size: .78rem; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--sepia); opacity: .6; margin-top: 3px;
+}
+.divider { width: 80px; height: 1px; background: linear-gradient(90deg,transparent,var(--gold),transparent); margin: 8px auto 0; }
+
+/* ── CONTROLS ── */
+.controls {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  justify-content: center; padding: 14px 16px 8px;
+}
+.cb {
+  background: var(--cream); border: 2px solid rgba(201,150,58,.35);
+  border-radius: 6px; padding: 7px 14px;
+  font-family: 'Atkinson Hyperlegible', sans-serif; font-size: clamp(.7rem,2vw,.85rem);
+  color: var(--sepia); cursor: pointer; transition: all .18s;
+  box-shadow: 0 2px 6px var(--shadow);
+}
+.cb:hover { border-color: var(--gold); background: rgba(201,150,58,.07); }
+.cb.active { background: var(--gold); color: white; border-color: var(--gold); box-shadow: 0 3px 10px rgba(201,150,58,.3); }
+.sep { width: 1px; height: 28px; background: rgba(201,150,58,.3); align-self: center; }
+
+/* ── HUD ── */
+.hud {
+  display: flex; gap: 10px; justify-content: center; margin-bottom: 14px; flex-wrap: wrap;
+  padding: 0 16px;
+}
+.hb { background: var(--cream); border: 1px solid rgba(201,150,58,.4); border-radius: 5px; padding: 5px 16px; text-align: center; box-shadow: 0 2px 6px var(--shadow); min-width: 80px; }
+.hb .l { font-size: .58rem; letter-spacing: .16em; text-transform: uppercase; color: var(--sepia); opacity: .6; display: block; }
+.hb .v { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--gold); line-height: 1.1; }
+
+/* ── GAME LAYOUT ── */
+.game-area {
+  display: flex; gap: 24px; justify-content: center;
+  align-items: flex-start; padding: 0 20px 30px;
+  flex-wrap: nowrap;  /* grid + list side by side, never stacked */
+}
+
+/* ── GRID ── */
+.grid-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+
+#grid {
+  display: grid;
+  background: var(--cream);
+  border: 3px solid rgba(201,150,58,.45);
+  border-radius: 8px;
+  padding: 6px;
+  box-shadow: 0 6px 24px var(--shadow);
+  cursor: crosshair;
+  /* gap set by JS */
+}
+
+.cell {
+  width: var(--cell); height: var(--cell);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  font-weight: 700;
+  color: #1a1208;   /* strong contrast */
+  border-radius: 4px;
+  position: relative;
+  transition: background .1s;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+/* Hover highlight */
+.cell.hover { background: rgba(201,150,58,.18); }
+
+/* Active selection */
+.cell.selecting { background: rgba(201,150,58,.4); color: var(--sepia); }
+
+/* Found word colors (cycled) */
+.cell.found-0 { background: rgba(42,107,69,.22); }
+.cell.found-1 { background: rgba(42,74,122,.22); }
+.cell.found-2 { background: rgba(139,32,32,.18); }
+.cell.found-3 { background: rgba(156,39,176,.18); }
+.cell.found-4 { background: rgba(230,74,25,.18); }
+.cell.found-5 { background: rgba(25,118,210,.18); }
+.cell.found-6 { background: rgba(46,125,50,.22); }
+.cell.found-7 { background: rgba(121,85,72,.22); }
+
+/* Selection line overlay */
+#selectionLine {
+  position: fixed; pointer-events: none; z-index: 10;
+}
+
+/* ── WORD LIST ── */
+.word-panel {
+  width: 200px;
+  background: var(--cream);
+  border: 2px solid rgba(201,150,58,.3);
+  border-radius: 8px; padding: 16px;
+  box-shadow: 0 4px 16px var(--shadow);
+  flex-shrink: 0;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: sticky;
+  top: 20px;
+}
+.word-panel h3 {
+  font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1rem;
+  color: var(--sepia); margin-bottom: 12px;
+  padding-bottom: 8px; border-bottom: 1px solid rgba(201,150,58,.25);
+  text-align: center; letter-spacing: .04em;
+}
+.word-list { display: flex; flex-direction: column; gap: 5px; }
+.word-item {
+  font-family: 'Nunito', sans-serif; font-size: 1.05rem;
+  font-weight: 600;
+  color: #3a2010; padding: 6px 8px; border-radius: 4px;
+  transition: all .3s; letter-spacing: .05em;
+  display: flex; align-items: center; gap: 6px;
+  line-height: 1.4;
+}
+.word-item.found {
+  text-decoration: line-through; opacity: .45;
+  color: var(--green);
+}
+.word-item.found::before { content: '✓'; font-size: .8rem; }
+.word-item:not(.found)::before { content: '•'; font-size: .8rem; opacity: .4; }
+
+/* Progress bar */
+.progress-wrap {
+  background: rgba(201,150,58,.15); border-radius: 10px;
+  height: 6px; margin-top: 14px; overflow: hidden;
+}
+.progress-bar {
+  height: 100%; background: var(--gold); border-radius: 10px;
+  transition: width .5s ease;
+}
+
+/* Theme indicator */
+.theme-badge {
+  text-align: center; font-size: .72rem; color: var(--sepia);
+  opacity: .65; margin-top: 8px; font-style: italic;
+}
+
+/* ── STATS PANEL ── */
+#statsPanel{display:none;position:fixed;inset:0;background:rgba(26,18,8,.72);z-index:60;align-items:center;justify-content:center;}
+#statsPanel.show{display:flex;animation:fadeIn .3s ease;}
+#statsBox{background:var(--cream);border:2px solid var(--gold);border-radius:12px;padding:28px 34px;max-width:480px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.4);animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
+#statsBox h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.4rem;color:var(--sepia);margin-bottom:4px;}
+#statsBox .sub{font-size:.78rem;color:var(--sepia);opacity:.6;margin-bottom:18px;display:block;}
+.srow{display:grid;grid-template-columns:1fr auto auto auto;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(201,150,58,.14);}
+.srow:last-child{border-bottom:none;}
+.srow-name{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.88rem;color:var(--sepia);}
+.srow-val{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;color:var(--gold);text-align:right;}
+.srow-lbl{font-size:.56rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.1em;text-align:right;}
+.sbar-wrap{grid-column:1/-1;height:4px;background:rgba(201,150,58,.15);border-radius:2px;margin-top:-3px;}
+.sbar{height:100%;background:var(--gold);border-radius:2px;transition:width .5s ease;}
+.stats-actions{display:flex;gap:10px;margin-top:18px;justify-content:flex-end;}
+.btn-outline{background:transparent;border:2px solid var(--gold);color:var(--gold);box-shadow:none;}
+.btn-outline:hover{background:rgba(201,150,58,.08);}
+
+/* ── WIN OVERLAY ── */
+#winOv {
+  display: none; position: fixed; inset: 0;
+  background: rgba(26,18,8,.7); z-index: 50;
+  align-items: center; justify-content: center;
+}
+#winOv.show { display: flex; animation: fadeIn .3s ease; }
+#winBox {
+  background: var(--cream); border: 2px solid var(--gold);
+  border-radius: 12px; padding: 36px 44px; text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,.4);
+  animation: popIn .42s cubic-bezier(.34,1.56,.64,1);
+  max-width: 340px; width: 90%;
+}
+#winBox .ico { font-size: 3.5rem; display: block; margin-bottom: 12px; animation: bounce 1s .4s ease both; }
+#winBox h2 { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1.8rem; color: var(--sepia); margin-bottom: 8px; }
+.win-time { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 2.4rem; color: var(--gold); margin: 8px 0; }
+#winBox p { color: var(--sepia); font-size: .95rem; line-height: 1.6; margin-bottom: 20px; }
+.btn { display: inline-block; padding: 12px 28px; background: var(--gold); color: white; border: none; border-radius: 5px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: .95rem; letter-spacing: .07em; cursor: pointer; box-shadow: 0 4px 12px rgba(201,150,58,.3); }
+.btn:hover { background: #b8882e; }
+
+/* ── TOAST ── */
+#toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(10px); background: var(--green); color: white; padding: 10px 20px; border-radius: 8px; font-size: .9rem; opacity: 0; transition: all .28s; z-index: 100; pointer-events: none; font-family: 'Atkinson Hyperlegible', sans-serif; }
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* CONFETTI */
+.cp { position: fixed; top: -10px; width: 9px; height: 9px; border-radius: 2px; z-index: 60; pointer-events: none; animation: fall 2.6s ease-in forwards; }
+
+@keyframes fadeIn  { from{opacity:0} to{opacity:1} }
+@keyframes popIn   { from{opacity:0;transform:scale(.6)} to{opacity:1;transform:scale(1)} }
+@keyframes bounce  { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+@keyframes fall    { to{transform:translateY(110vh) rotate(720deg)} }
+@keyframes foundPulse { 0%{transform:scale(1)} 40%{transform:scale(1.15)} 100%{transform:scale(1)} }
+
+/* ── Bascule accueil / jeu ── */
+
+/* ── Écran d'accueil ── */
+#accueil{padding:0 20px;}
+.acc-card{background:var(--cream);border:1.5px solid rgba(201,150,58,.35);border-radius:16px;
+  padding:26px 24px;max-width:640px;margin:24px auto;box-shadow:0 8px 30px var(--shadow);text-align:center;}
+.acc-card h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;color:var(--sepia);margin:16px 0 8px;}
+.acc-card h2:first-child{margin-top:0;}
+.ligne{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+.btn-start{margin-top:22px;background:var(--gold);color:#fff;border:none;border-radius:10px;
+  padding:14px 34px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.05rem;font-weight:700;
+  cursor:pointer;box-shadow:0 5px 18px rgba(201,150,58,.35);}
+.btn-start:hover{background:#b07820;}
+#conseilMM{margin-top:12px;font-size:0.86rem;font-style:italic;color:var(--sepia);opacity:.8;min-height:1.2em;}
+
+/* ── Barre pendant la partie ── */
+.barre-jeu{align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;padding:10px 18px 4px;}
+.barre-titre{font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.95rem;font-weight:700;color:var(--sepia);}
+.mini-btn{background:#fff;border:1.5px solid rgba(201,150,58,.5);border-radius:8px;padding:7px 15px;
+  font-family:'Nunito',sans-serif;font-size:0.86rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+.mini-btn:hover{border-color:var(--gold);background:rgba(201,150,58,.1);}
+.mini-btn.go{background:var(--gold);color:#fff;border-color:var(--gold);}
+
+/* ── Bascule accueil / jeu (en fin de feuille pour primer) ── */
+.game-area{display:none;}
+.hud{display:none;}
+.barre-jeu{display:none;}
+#accueil{display:block;}
+body.enjeu .game-area{display:flex;}
+body.enjeu .hud{display:flex;}
+body.enjeu .barre-jeu{display:flex;}
+body.enjeu #accueil{display:none;}
+
+/* Sortie de secours : toujours un moyen de revenir au catalogue. */
+.jdc-retour{display:block;text-align:center;padding:8px;font-size:.74rem;
+  color:#5c3d1e;opacity:.55;text-decoration:none;letter-spacing:.1em;
+  text-transform:uppercase;font-family:'Nunito',sans-serif;}
+.jdc-retour:hover{opacity:1;}
+@media print{.jdc-retour{display:none;}}
+
+/* Pied discret : le lien légal doit exister sur chaque page du site. */
+.jdc-legal{text-align:center;padding:16px 14px 22px;font-size:.78rem;line-height:1.6;
+  color:#5c3d1e;opacity:.6;font-family:'Nunito',sans-serif;}
+.jdc-legal a{color:inherit;}
+@media print{.jdc-legal{display:none;}}
+</style>
+<script src="jdc-parcours.js"></script>
+<style id="jdc-apropos-style">
+/* Bloc « À propos » : replié par défaut, lu en entier par les moteurs.
+   Couleurs écrites en dur — chaque jeu a ses propres variables CSS. */
+.jdc-apropos{max-width:680px;margin:28px auto 8px;padding:0 16px;
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;color:#5c3d1e;}
+.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;
+  letter-spacing:.02em;opacity:.62;padding:9px 0;text-align:center;
+  border-top:1px solid rgba(92,61,30,.16);}
+.jdc-apropos>summary::-webkit-details-marker{display:none}
+.jdc-apropos>summary::after{content:' \203A';display:inline-block;
+  transform:rotate(90deg);margin-left:5px;opacity:.7}
+.jdc-apropos[open]>summary::after{transform:rotate(-90deg)}
+.jdc-apropos>summary:hover,.jdc-apropos>summary:focus-visible{opacity:.95}
+.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;
+  text-align:left;opacity:.9}
+.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:#5c3d1e;
+  font-weight:700}
+.jdc-apropos p{margin:0 0 10px}
+.jdc-apropos ul{margin:0 0 10px;padding-left:20px}
+.jdc-apropos li{margin-bottom:5px}
+.jdc-apropos a{color:#2d6a4f}
+.hc .jdc-apropos{color:#000}
+.hc .jdc-apropos h2{color:#000}
+.hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
+</style>
+</head>
+<body>
+
+
+<a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
+<header>
+  <h1 id="mainTitle" onclick="titleClick()">Mots <em>Mêlés</em></h1>
+  <p>Jeu de vocabulaire</p>
+  <div class="divider"></div>
+  <!-- Stats: triple-clic sur le titre -->
+  <button id="statsBtn" onclick="openStats()" style="display:none;position:absolute;top:18px;right:20px;background:none;border:1.5px solid rgba(201,150,58,.4);border-radius:6px;padding:5px 12px;font-family:'Nunito',sans-serif;font-size:.8rem;color:var(--sepia);cursor:pointer;">📊 Stats</button>
+</header>
+
+<!-- ÉCRAN D'ACCUEIL -->
+<div id="accueil">
+  <div class="acc-card">
+    <h2>Choisissez la difficulté</h2>
+    <div class="ligne">
+      <button class="cb active" data-diff="1" onclick="selDiff(this)">Facile</button>
+      <button class="cb" data-diff="2" onclick="selDiff(this)">Moyen</button>
+      <button class="cb" data-diff="3" onclick="selDiff(this)">Difficile</button>
+      <button class="cb" data-diff="4" onclick="selDiff(this)">Expert</button>
+    </div>
+
+    <h2>Taille de la grille</h2>
+    <div class="ligne">
+      <button class="cb active" data-size="10" onclick="selSize(this)">10×10</button>
+      <button class="cb" data-size="15" onclick="selSize(this)">15×15</button>
+      <button class="cb" data-size="20" onclick="selSize(this)">20×20</button>
+    </div>
+
+    <h2>Choisissez un thème</h2>
+    <div class="ligne">
+      <button class="cb active" data-theme="nature" onclick="selTheme(this)">🌿 Nature</button>
+      <button class="cb" data-theme="animaux" onclick="selTheme(this)">🐾 Animaux</button>
+      <button class="cb" data-theme="pays" onclick="selTheme(this)">🌍 Pays</button>
+      <button class="cb" data-theme="quotidien" onclick="selTheme(this)">🏠 Quotidien</button>
+      <button class="cb" data-theme="transport" onclick="selTheme(this)">🚗 Transport</button>
+    </div>
+
+    <button class="btn-start" onclick="lancerPartie()">▶ Commencer</button>
+    <div id="conseilMM"></div>
+  </div>
+</div>
+
+<!-- BARRE DE JEU -->
+<div class="barre-jeu" id="barreJeu">
+  <button class="mini-btn" onclick="retourAccueil()">← Changer de grille</button>
+  <span class="barre-titre" id="barreTitre">—</span>
+  <button class="mini-btn go" onclick="newGame()">▶ Nouvelle grille</button>
+</div>
+
+
+<!-- HUD -->
+<div class="hud">
+  <div class="hb"><span class="l">Temps</span><span class="v" id="hTimer">0:00</span></div>
+  <div class="hb"><span class="l">Trouvés</span><span class="v" id="hFound">0/0</span></div>
+  <div class="hb"><span class="l">Indice</span><span class="v" id="hHint" style="cursor:pointer;font-size:.9rem;" onclick="useHint()" title="Révèle un mot">💡</span></div>
+</div>
+
+<!-- GAME AREA -->
+<div class="game-area">
+  <div class="grid-wrap">
+    <div id="grid"></div>
+  </div>
+  <div class="word-panel">
+    <h3 id="themeTitle">🌿 Nature</h3>
+    <div class="word-list" id="wordList"></div>
+    <div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+    <div class="theme-badge" id="themeBadge"></div>
+  </div>
+</div>
+
+<!-- STATS PANEL -->
+<div id="statsPanel">
+  <div id="statsBox">
+    <h2>📊 Statistiques d'utilisation</h2>
+    <span class="sub">Enregistrées sur cet appareil — visible uniquement par vous</span>
+    <div id="statsContent"></div>
+    <div class="stats-actions">
+      <button class="btn btn-outline" onclick="resetStats()">Réinitialiser</button>
+      <button class="btn" onclick="closeStats()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- WIN -->
+<div id="winOv">
+  <div id="winBox">
+    <span class="ico">🎉</span>
+    <h2>Félicitations !</h2>
+    <p>Vous avez trouvé tous les mots.</p>
+    <div class="win-time" id="winTime"></div>
+    <p id="winMsg"></p>
+    <button class="btn" onclick="newGame()">Nouvelle grille ✦</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+//  WORD BANKS by theme
+// ══════════════════════════════════════════
+const THEMES = {
+  nature: {
+    label: '🌿 Nature',
+    words: ['FORET','RIVIERE','MONTAGNE','PRAIRIE','FLEUR','NUAGE','SOLEIL','PLUIE','NEIGE','OCEAN','DESERT','VOLCAN','GLACIER','TORRENT','VALLEE','FALAISE','COLLINE','ROSEE','BRUME','AURORE','TEMPETE','ORAGE','SAISON','PRINTEMPS','ETE','AUTOMNE','HIVER']
+  },
+  animaux: {
+    label: '🐾 Animaux',
+    words: ['LION','TIGRE','ELEPHANT','GIRAFE','DAUPHIN','BALEINE','AIGLE','RENARD','LOUP','OURS','HIBOU','SERPENT','TORTUE','FLAMANT','JAGUAR','PANTHÈRE','GAZELLE','CROCODILE','PERROQUET','CHOUETTE','HERISSON','ECUREUIL','LIBELLULE','PAPILLON','PINGOUIN','CYGNE','CIGOGNE']
+  },
+  pays: {
+    label: '🌍 Pays',
+    words: ['FRANCE','ESPAGNE','ITALIE','PORTUGAL','ALLEMAGNE','SUISSE','BELGIQUE','MAROC','BRESIL','JAPON','CHINE','INDE','CANADA','MEXIQUE','EGYPTE','KENYA','SENEGAL','VIETNAM','NORVEGE','ISLANDE','GRECE','POLOGNE','DANEMARK','AUTRICHE','HONGRIE','PEROU','CHILI']
+  },
+  quotidien: {
+    label: '🏠 Quotidien',
+    words: ['CUISINE','JARDIN','FENETRE','FAUTEUIL','LAMPE','RIDEAU','MIROIR','TABLEAU','COUSSIN','TAPIS','ARMOIRE','TIROIR','BOUGIE','HORLOGE','ESCALIER','TERRASSE','BALCON','COULOIR','GRENIER','CAVE','SALON','CHAMBRE','SALLE','BUREAU','BIBLIOTHEQUE','BAIGNOIRE','LAVABO']
+  },
+  transport: {
+    label: '🚗 Transport',
+    words: ['VOITURE','AVION','TRAIN','BATEAU','VELO','MOTO','TRAM','METRO','AUTOBUS','CAMION','HELICOPTERE','FUSEE','SOUS-MARIN','FERRY','SCOOTER','KAYAK','PLANEUR','DIRIGEABLE','TAXI','AMBULANCE','TRACTEUR','CARRIOLE','DILIGENCE','VAPEUR','GONDOLE','PIROGUE','BARQUE']
+  }
+};
+
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+let G = {
+  diff: 1,
+  size: 10,
+  theme: 'nature',
+  grid: [],
+  words: [],       // [{word, cells:[{r,c}], found:bool, colorIdx}]
+  timerSec: 0,
+  timerInt: null,
+  selecting: false,
+  selStart: null,
+  selCells: [],
+  foundCount: 0,
+};
+
+// Directions per difficulty
+function getDirs(diff) {
+  const H  = [[0,1]];
+  const HV = [[0,1],[1,0]];
+  const HVD= [[0,1],[1,0],[1,1],[1,-1]];
+  const ALL= [[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]];
+  return [H,HV,HVD,ALL][diff-1];
+}
+
+function afficherConseil(){
+  const el=document.getElementById('conseilMM');
+  if(!el||typeof JDC==='undefined')return;
+  const b=JDC.bilanJeu('motsmeles');
+  if(!b.parties){el.textContent='';return;}
+  const c=JDC.niveauConseille('motsmeles');
+  const lbl={1:'Facile',2:'Moyen',3:'Difficile'}[c];
+  el.textContent=b.parties+' grille(s) jouée(s). Niveau conseillé : '+lbl+'.';
+  const bd=document.querySelector('[data-diff="'+c+'"]');
+  if(bd){document.querySelectorAll('[data-diff]').forEach(x=>x.classList.remove('active'));bd.classList.add('active');G.diff=c;}
+  // thème le moins vu récemment
+  const d=JDC.lire();
+  const vus=(d.vus&&d.vus.motsmeles)?d.vus.motsmeles:[];
+  const themes=[...document.querySelectorAll('[data-theme]')].map(x=>x.dataset.theme);
+  if(themes.length){
+    themes.sort((a,b2)=>vus.indexOf(a)-vus.indexOf(b2));
+    const bt=document.querySelector('[data-theme="'+themes[0]+'"]');
+    if(bt){document.querySelectorAll('[data-theme]').forEach(x=>x.classList.remove('active'));bt.classList.add('active');G.theme=themes[0];}
+  }
+}
+
+function selDiff(btn){ document.querySelectorAll('[data-diff]').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); G.diff=parseInt(btn.dataset.diff); }
+function selSize(btn){ document.querySelectorAll('[data-size]').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); G.size=parseInt(btn.dataset.size); }
+function selTheme(btn){ document.querySelectorAll('[data-theme]').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); G.theme=btn.dataset.theme; }
+
+// ══════════════════════════════════════════
+//  STATS — localStorage, accès discret
+// ══════════════════════════════════════════
+const STATS_KEY = 'motsmeles_stats_v1';
+let _titleClicks = 0, _titleTimer = null;
+
+function titleClick(){
+  _titleClicks++;
+  clearTimeout(_titleTimer);
+  _titleTimer = setTimeout(()=>{ _titleClicks=0; }, 800);
+  if(_titleClicks >= 3){
+    _titleClicks=0;
+    document.getElementById('statsBtn').style.display='block';
+    toast('Mode admin activé');
+  }
+}
+
+function loadStats(){ try{ return JSON.parse(localStorage.getItem(STATS_KEY))||{}; }catch(e){ return {}; } }
+function saveStats(s){ try{ localStorage.setItem(STATS_KEY,JSON.stringify(s)); }catch(e){} }
+
+function trackGame(theme, diff, size, completed, sec){
+  if(typeof JDC!=='undefined'){
+    JDC.enregistrer('motsmeles', Math.min(3,diff), completed, {duree:sec, variante:theme});
+    if(completed) JDC.marquerVu('motsmeles', theme);
+  }
+  const key=theme+'_d'+diff+'_s'+size;
+  const stats=loadStats();
+  if(!stats[key]) stats[key]={theme:THEMES[theme].label,diff:['Facile','Moyen','Difficile','Expert'][diff-1],size:size+'×'+size,plays:0,completions:0,totalSec:0};
+  stats[key].plays++;
+  stats[key].totalSec+=sec;
+  if(completed) stats[key].completions++;
+  saveStats(stats);
+}
+
+function openStats(){
+  const stats=loadStats();
+  const keys=Object.keys(stats);
+  const content=document.getElementById('statsContent');
+  if(!keys.length){ content.innerHTML='<p style="color:var(--sepia);font-style:italic;text-align:center;padding:16px 0;">Aucune partie encore jouée.</p>'; }
+  else {
+    keys.sort((a,b)=>stats[b].totalSec-stats[a].totalSec);
+    const maxSec=stats[keys[0]].totalSec||1;
+    content.innerHTML=keys.map(k=>{
+      const s=stats[k];
+      const m=0|s.totalSec/60, pct=s.plays?Math.round(s.completions/s.plays*100):0;
+      const avg=s.plays?Math.round(s.totalSec/s.plays):0;
+      const bw=Math.round(s.totalSec/maxSec*100);
+      return `<div class="srow">
+        <div class="srow-name">${s.theme} <span style="font-size:.68rem;opacity:.6">${s.diff} · ${s.size}</span></div>
+        <div><div class="srow-lbl">Parties</div><div class="srow-val">${s.plays}</div></div>
+        <div><div class="srow-lbl">Réussies</div><div class="srow-val">${pct}%</div></div>
+        <div><div class="srow-lbl">Temps total</div><div class="srow-val">${m}m${String(s.totalSec%60).padStart(2,'0')}s</div></div>
+        <div class="sbar-wrap"><div class="sbar" style="width:${bw}%"></div></div>
+        <div style="grid-column:1/-1;font-size:.7rem;color:var(--sepia);opacity:.5;">Moy. par partie : ${0|avg/60}m${String(avg%60).padStart(2,'0')}s</div>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('statsPanel').classList.add('show');
+}
+function closeStats(){ document.getElementById('statsPanel').classList.remove('show'); }
+function resetStats(){ if(confirm('Effacer toutes les statistiques ?')){ localStorage.removeItem(STATS_KEY); closeStats(); toast('Stats effacées'); } }
+
+// ══════════════════════════════════════════
+//  GRID GENERATION
+// ══════════════════════════════════════════
+const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+function lancerPartie(){
+  document.body.classList.add('enjeu');
+  newGame();
+  majBarre();
+}
+
+function retourAccueil(){
+  document.body.classList.remove('enjeu');
+  if(typeof G!=='undefined' && G.timerInt) clearInterval(G.timerInt);
+  afficherConseil();
+}
+
+function majBarre(){
+  const t=document.getElementById('barreTitre');
+  if(!t)return;
+  const dif={1:'Facile',2:'Moyen',3:'Difficile',4:'Expert'}[G.diff]||'';
+  const th=document.querySelector('[data-theme="'+G.theme+'"]');
+  t.textContent=(th?th.textContent.trim():'')+' · '+dif+' · '+G.size+'×'+G.size;
+}
+
+function newGame() {
+  // Track previous abandoned session
+  if(G.timerSec>5) trackGame(G.theme, G.diff, G.size, false, G.timerSec);
+  clearInterval(G.timerInt);
+  G.timerSec=0; G.foundCount=0; G.selecting=false; G.selStart=null; G.selCells=[];
+  updateTimer();
+
+  const S = G.size;
+  // How many words based on size
+  const wordCount = S===10 ? 8 : S===15 ? 13 : 18;
+
+  // Pick words for this theme (filtered by length ≤ S-1)
+  const bank = THEMES[G.theme].words.filter(w => w.length <= S-1 && !w.includes('-'));
+  const picked = shuffle([...bank]).slice(0, wordCount);
+
+  // Init empty grid
+  G.grid = Array.from({length:S}, ()=>Array(S).fill(''));
+  G.words = [];
+
+  // Place each word
+  const dirs = getDirs(G.diff);
+  picked.forEach((word, wi) => {
+    const placed = tryPlace(word, dirs, S);
+    if (placed) G.words.push({word, cells: placed, found: false, colorIdx: wi % 8});
+  });
+
+  // Fill blanks
+  for(let r=0;r<S;r++) for(let c=0;c<S;c++) {
+    if(!G.grid[r][c]) G.grid[r][c]=LETTERS[0|Math.random()*26];
+  }
+
+  renderGrid();
+  renderWordList();
+  updateHUD();
+
+  document.getElementById('themeTitle').textContent = THEMES[G.theme].label;
+  document.getElementById('themeBadge').textContent =
+    ['Horizontal uniquement','+ Vertical','+ Diagonales','Toutes directions + inversés'][G.diff-1];
+
+  // Start timer
+  G.timerInt = setInterval(()=>{G.timerSec++;updateTimer();}, 1000);
+  document.getElementById('winOv').classList.remove('show');
+
+  // Cell size responsive
+  const cellPx = S===10 ? 52 : S===15 ? 38 : 28;
+  document.documentElement.style.setProperty('--cell', cellPx+'px');
+  document.getElementById('grid').style.gap = S===10?'3px':S===15?'2px':'1px';
+}
+
+function tryPlace(word, dirs, S) {
+  const tries = 150;
+  for(let t=0;t<tries;t++){
+    const dir = dirs[0|Math.random()*dirs.length];
+    // Random start
+    let r = 0|Math.random()*S, c = 0|Math.random()*S;
+    const cells = [];
+    let ok = true;
+    for(let i=0;i<word.length;i++){
+      const nr=r+dir[0]*i, nc=c+dir[1]*i;
+      if(nr<0||nr>=S||nc<0||nc>=S){ ok=false; break; }
+      const existing=G.grid[nr][nc];
+      if(existing && existing!==word[i]){ ok=false; break; }
+      cells.push({r:nr,c:nc});
+    }
+    if(ok){
+      cells.forEach(({r,c},i)=>G.grid[r][c]=word[i]);
+      return cells;
+    }
+  }
+  return null;
+}
+
+// ══════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════
+function renderGrid() {
+  const S = G.size;
+  const grid = document.getElementById('grid');
+  grid.style.gridTemplateColumns = `repeat(${S}, var(--cell))`;
+  grid.style.gridTemplateRows    = `repeat(${S}, var(--cell))`;
+  grid.innerHTML = '';
+
+  for(let r=0;r<S;r++) for(let c=0;c<S;c++){
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.dataset.r = r; cell.dataset.c = c;
+    cell.textContent = G.grid[r][c];
+
+    // Mouse events
+    cell.addEventListener('mousedown', e=>{ e.preventDefault(); startSelect(r,c); });
+    cell.addEventListener('mouseenter', ()=>{ if(G.selecting) extendSelect(r,c); else cell.classList.add('hover'); });
+    cell.addEventListener('mouseleave', ()=>cell.classList.remove('hover'));
+
+    // Touch events
+    cell.addEventListener('touchstart', e=>{ e.preventDefault(); startSelect(r,c); }, {passive:false});
+    cell.addEventListener('touchmove',  e=>{ e.preventDefault(); const t=e.touches[0]; const el=document.elementFromPoint(t.clientX,t.clientY); if(el&&el.classList.contains('cell')){ extendSelect(+el.dataset.r,+el.dataset.c); } }, {passive:false});
+
+    grid.appendChild(cell);
+  }
+
+  // End selection on mouseup anywhere
+  window.addEventListener('mouseup', endSelect);
+  window.addEventListener('touchend', endSelect);
+
+  // Re-apply found state
+  G.words.forEach(w=>{ if(w.found) markFound(w); });
+}
+
+function renderWordList() {
+  const list = document.getElementById('wordList');
+  list.innerHTML = '';
+  G.words.forEach(w=>{
+    const item = document.createElement('div');
+    item.className = 'word-item' + (w.found?' found':'');
+    item.textContent = w.word;
+    item.dataset.word = w.word;
+    list.appendChild(item);
+  });
+}
+
+function getCell(r,c){ return document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`); }
+
+// ══════════════════════════════════════════
+//  SELECTION
+// ══════════════════════════════════════════
+function startSelect(r,c){
+  G.selecting=true;
+  G.selStart={r,c};
+  G.selCells=[{r,c}];
+  highlightSel();
+}
+
+function extendSelect(r,c){
+  if(!G.selecting||!G.selStart) return;
+  // Compute direction from start to current
+  const dr=r-G.selStart.r, dc=c-G.selStart.c;
+  const len=Math.max(Math.abs(dr),Math.abs(dc));
+  if(len===0){ G.selCells=[G.selStart]; highlightSel(); return; }
+  // Normalize direction
+  const sr=dr===0?0:dr/Math.abs(dr), sc=dc===0?0:dc/Math.abs(dc);
+  // Only allow valid directions for current difficulty
+  const dirs=getDirs(G.diff);
+  const validDir=dirs.some(([dr2,dc2])=>dr2===sr&&dc2===sc);
+  if(!validDir) return;
+  // Build cell list
+  const cells=[];
+  for(let i=0;i<=len;i++){
+    const nr=G.selStart.r+sr*i, nc=G.selStart.c+sc*i;
+    if(nr>=0&&nr<G.size&&nc>=0&&nc<G.size) cells.push({r:nr,c:nc});
+  }
+  G.selCells=cells;
+  highlightSel();
+}
+
+function highlightSel(){
+  // Clear old selecting state
+  document.querySelectorAll('.cell.selecting').forEach(c=>c.classList.remove('selecting'));
+  G.selCells.forEach(({r,c})=>{ const el=getCell(r,c); if(el) el.classList.add('selecting'); });
+}
+
+function endSelect(){
+  if(!G.selecting){ return; }
+  G.selecting=false;
+  document.querySelectorAll('.cell.selecting').forEach(c=>c.classList.remove('selecting'));
+  checkWord();
+  G.selCells=[];
+}
+
+function checkWord(){
+  if(!G.selCells.length) return;
+  const selected = G.selCells.map(({r,c})=>G.grid[r][c]).join('');
+  const reversed = selected.split('').reverse().join('');
+
+  let matched = null;
+  G.words.forEach(w=>{
+    if(!w.found && (w.word===selected || w.word===reversed)){
+      // Verify cells match
+      const cellMatch = w.cells.every(({r,c},i)=>G.selCells[i]&&G.selCells[i].r===r&&G.selCells[i].c===c);
+      const cellMatchRev = w.cells.every(({r,c},i)=>{ const si=G.selCells.length-1-i; return G.selCells[si]&&G.selCells[si].r===r&&G.selCells[si].c===c; });
+      if(cellMatch||cellMatchRev) matched=w;
+    }
+  });
+
+  if(matched){
+    matched.found=true;
+    G.foundCount++;
+    markFound(matched);
+    // Update word list
+    const item=document.querySelector(`.word-item[data-word="${matched.word}"]`);
+    if(item){ item.classList.add('found'); }
+    updateHUD();
+    toast('✓ ' + matched.word);
+    if(G.foundCount===G.words.length) setTimeout(win, 500);
+  }
+}
+
+function markFound(w){
+  w.cells.forEach(({r,c})=>{
+    const el=getCell(r,c);
+    if(el){
+      // Remove any existing found class
+      el.className=el.className.replace(/found-\d+/,'');
+      el.classList.add('found-'+w.colorIdx);
+      el.style.animation='foundPulse .35s ease';
+      setTimeout(()=>el.style.animation='',400);
+    }
+  });
+}
+
+// ══════════════════════════════════════════
+//  HINT
+// ══════════════════════════════════════════
+function useHint(){
+  const remaining=G.words.filter(w=>!w.found);
+  if(!remaining.length) return;
+  const w=remaining[0|Math.random()*remaining.length];
+  // Flash first cell
+  const {r,c}=w.cells[0];
+  const el=getCell(r,c);
+  if(el){
+    let count=0;
+    const flash=setInterval(()=>{
+      el.style.background=count%2===0?'rgba(201,150,58,.6)':'';
+      count++;
+      if(count>5){ clearInterval(flash); el.style.background=''; }
+    },200);
+  }
+  toast('💡 Le mot commence en ligne '+(w.cells[0].r+1)+', colonne '+(w.cells[0].c+1));
+}
+
+// ══════════════════════════════════════════
+//  WIN
+// ══════════════════════════════════════════
+function win(){
+  clearInterval(G.timerInt);
+  trackGame(G.theme, G.diff, G.size, true, G.timerSec);
+  const m=0|G.timerSec/60,s=G.timerSec%60;
+  const time=m+':'+(s<10?'0':'')+s;
+  document.getElementById('winTime').textContent=time;
+  const msg=G.timerSec<120?'Excellent temps !':G.timerSec<300?'Bonne performance !':'Tous les mots trouvés !';
+  document.getElementById('winMsg').textContent=msg;
+  document.getElementById('winOv').classList.add('show');
+  confetti();
+}
+
+// ══════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];}return b;}
+function updateTimer(){const m=0|G.timerSec/60,s=G.timerSec%60;document.getElementById('hTimer').textContent=m+':'+(s<10?'0':'')+s;}
+function updateHUD(){ document.getElementById('hFound').textContent=G.foundCount+'/'+G.words.length; document.getElementById('progressBar').style.width=Math.round(G.foundCount/Math.max(G.words.length,1)*100)+'%'; }
+
+let _tt; function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),2200);}
+
+function confetti(){const cols=['#c9963a','#2a6b45','#8b2020','#2a4a7a','#FDD835','#E91E63'];for(let i=0;i<50;i++){const p=document.createElement('div');p.className='cp';p.style.left=Math.random()*100+'vw';p.style.background=cols[0|Math.random()*cols.length];p.style.animationDelay=Math.random()*1.2+'s';p.style.animationDuration=(2+Math.random()*1.4)+'s';p.style.transform=`rotate(${Math.random()*360}deg)`;document.body.appendChild(p);setTimeout(()=>p.remove(),4000);}}
+
+// ── LAUNCH ──
+// la partie démarre au clic sur Commencer
+afficherConseil();
+</script>
+
+
+
+
+<details class="jdc-apropos">
+<summary>À propos de ce jeu</summary>
+<div class="corps">
+<p><strong>Les Mots Mêlés</strong> — Une grille de lettres, des mots cachés dedans, à repérer et à entourer. Cinq thèmes au choix, plusieurs tailles de grille et plusieurs niveaux.</p>
+<h2>Pour qui</h2>
+<p>Aux personnes âgées qui lisent encore confortablement. Les lettres sont en gros caractères et la grille peut être réduite quand la grande devient fatigante.</p>
+<h2>Comment y jouer</h2>
+<ul>
+<li><strong>Seul</strong> : c'est le jeu du catalogue qui se prête le mieux au temps calme, seul, sans personne autour.</li>
+<li><strong>À deux, avec un proche ou un aidant</strong> : l'un lit la liste des mots à voix haute, l'autre cherche.</li>
+<li><strong>En petit groupe</strong> : la grille projetée, et chacun signale ce qu'il repère.</li>
+</ul>
+<p>Si la grande grille décourage, prenez la petite : c'est le même jeu et la même satisfaction. Une grille terminée vaut mieux qu'une grande grille abandonnée.</p>
+<h2>Ce que ce jeu n'est pas</h2>
+<p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
+<h2>Qui le propose</h2>
+<p>Les Jardins de Célestine, un projet d'habitat partagé pour seniors, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="jeux.html">Voir tous les jeux</a>.</p>
+</div>
+</details>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+</footer>
+</body>
+</html>

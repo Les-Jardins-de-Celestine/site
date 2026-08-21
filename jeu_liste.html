@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-NT825E8XDT');</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La grande liste — jeu en ligne gratuit · Les Jardins de Célestine</title>
+<meta name="description" content="Un thème, douze cases à ouvrir en citant ce qui vient. Jeu de langage à faire en groupe, gratuit, sans inscription, pour animateur ou aidant.">
+<meta name="robots" content="noindex, follow">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="jdc-parcours.js"></script>
+<style>
+:root{--cream:#f7f3ea;--parchment:#eee8d5;--ink:#1c1208;--sepia:#5c3d1e;--gold:#c8922a;--green:#2d6a4f;--shadow:rgba(28,18,8,0.13);}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{background:var(--parchment);background-image:radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.08) 0%,transparent 55%);
+  min-height:100vh;font-family:'Nunito',sans-serif;color:var(--ink);}
+
+.retour{display:block;text-align:center;padding:6px;font-size:.72rem;color:var(--sepia);opacity:.5;
+  text-decoration:none;letter-spacing:.1em;text-transform:uppercase;}
+.retour:hover{opacity:1;}
+
+/* ── ACCUEIL ── */
+#accueil{max-width:680px;margin:10px auto;padding:0 20px 30px;text-align:center;}
+#accueil h1{font-family:'Atkinson Hyperlegible',sans-serif;font-size:clamp(1.5rem,4vw,2.1rem);color:var(--sepia);margin-bottom:4px;}
+#accueil h1 em{color:var(--gold);font-style:normal;}
+#accueil .sous{font-size:.76rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-bottom:14px;}
+.card{background:var(--cream);border:1.5px solid rgba(200,146,42,.35);border-radius:16px;padding:20px 20px 22px;box-shadow:0 8px 30px var(--shadow);}
+.card p{font-size:1rem;line-height:1.6;color:var(--sepia);margin-bottom:16px;text-align:left;}
+.themes{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media (max-width:560px){.themes{grid-template-columns:1fr;}}
+.theme{background:#fff;border:2px solid rgba(200,146,42,.45);border-radius:12px;padding:15px 14px;cursor:pointer;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.05rem;font-weight:700;color:var(--sepia);
+  transition:all .16s;text-align:left;}
+.theme:hover{border-color:var(--gold);background:rgba(200,146,42,.08);transform:translateY(-2px);}
+.theme small{display:block;font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:600;opacity:.65;margin-top:2px;}
+
+/* ── LE JEU : ce que le groupe regarde ── */
+#jeu{display:none;max-width:1000px;margin:0 auto;padding:6px 14px 14px;}
+#titreJeu{font-family:'Atkinson Hyperlegible',sans-serif;font-size:clamp(1.25rem,3.4vw,1.9rem);font-weight:700;
+  color:var(--sepia);text-align:center;margin:2px 0 3px;}
+#compte{text-align:center;font-family:'Atkinson Hyperlegible',sans-serif;font-size:clamp(.95rem,2.2vw,1.15rem);
+  font-weight:700;color:var(--green);margin-bottom:10px;}
+
+.grille{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;}
+@media (max-width:640px){.grille{grid-template-columns:repeat(3,1fr);gap:7px;}}
+.case{background:#fff;border:2.5px solid rgba(200,146,42,.4);border-radius:13px;
+  display:flex;align-items:center;justify-content:center;text-align:center;padding:6px 5px;
+  min-height:74px;font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;
+  color:var(--gold);font-size:clamp(1.3rem,3.6vw,2rem);transition:all .35s;}
+.case.trouve{background:#e9f2ec;border-color:var(--green);color:var(--green);
+  font-size:clamp(.92rem,2.3vw,1.25rem);line-height:1.2;animation:apparait .4s ease;}
+.case.revele{background:var(--parchment);border-color:rgba(200,146,42,.35);color:var(--sepia);opacity:.72;
+  font-size:clamp(.88rem,2.1vw,1.1rem);line-height:1.2;font-weight:600;}
+@keyframes apparait{from{transform:scale(.86);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* ── LE PUPITRE : ce que seule la personne qui anime utilise ── */
+#pupitre{margin-top:14px;border-top:2px dashed rgba(200,146,42,.4);padding-top:10px;}
+.pup-t{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.7rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--sepia);opacity:.55;text-align:center;margin-bottom:7px;}
+.mots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;}
+.mot-b{background:#fff;border:1.5px solid rgba(200,146,42,.4);border-radius:18px;padding:7px 13px;
+  font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:700;color:var(--sepia);cursor:pointer;transition:all .14s;}
+.mot-b:hover{border-color:var(--gold);background:rgba(200,146,42,.1);}
+.mot-b.pris{background:#e9f2ec;border-color:var(--green);color:var(--green);opacity:.5;cursor:default;}
+.pup-actions{display:flex;gap:9px;justify-content:center;margin-top:12px;flex-wrap:wrap;}
+.btn-g{background:var(--gold);color:#fff;border:none;border-radius:10px;padding:11px 22px;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;}
+.btn-o{background:none;border:1.5px solid rgba(200,146,42,.55);color:var(--sepia);border-radius:10px;padding:11px 22px;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;}
+.aide{text-align:center;font-size:.82rem;color:var(--sepia);opacity:.65;margin-top:9px;line-height:1.5;}
+
+#bilan{display:none;text-align:center;margin-top:12px;padding:14px;background:var(--cream);
+  border:2px solid var(--green);border-radius:14px;}
+#bilan p{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.05rem;font-weight:700;color:var(--green);}
+#bilan small{display:block;font-family:'Nunito',sans-serif;font-weight:600;color:var(--sepia);opacity:.75;margin-top:5px;font-size:.88rem;}
+
+.jdc-legal{text-align:center;padding:14px;font-size:.74rem;opacity:.55;color:var(--sepia);}
+.jdc-legal a{color:inherit;}
+</style>
+<style id="jdc-apropos-style">
+/* Bloc « À propos » : replié par défaut, lu en entier par les moteurs.
+   Couleurs écrites en dur — chaque jeu a ses propres variables CSS. */
+.jdc-apropos{max-width:680px;margin:28px auto 8px;padding:0 16px;
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;color:#5c3d1e;}
+.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;
+  letter-spacing:.02em;opacity:.62;padding:9px 0;text-align:center;
+  border-top:1px solid rgba(92,61,30,.16);}
+.jdc-apropos>summary::-webkit-details-marker{display:none}
+.jdc-apropos>summary::after{content:' \203A';display:inline-block;
+  transform:rotate(90deg);margin-left:5px;opacity:.7}
+.jdc-apropos[open]>summary::after{transform:rotate(-90deg)}
+.jdc-apropos>summary:hover,.jdc-apropos>summary:focus-visible{opacity:.95}
+.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;
+  text-align:left;opacity:.9}
+.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:#5c3d1e;
+  font-weight:700}
+.jdc-apropos p{margin:0 0 10px}
+.jdc-apropos ul{margin:0 0 10px;padding-left:20px}
+.jdc-apropos li{margin-bottom:5px}
+.jdc-apropos a{color:#2d6a4f}
+.hc .jdc-apropos{color:#000}
+.hc .jdc-apropos h2{color:#000}
+.hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
+</style>
+</head>
+<body>
+
+<a class="retour" href="jeux.html">← Retour aux jeux</a>
+
+<div id="accueil">
+  <h1>La grande <em>liste</em></h1>
+  <div class="sous">À plusieurs, autour du même écran</div>
+  <div class="card">
+    <p>
+      Une personne tient la tablette et anime. Elle annonce le thème, et le groupe
+      cite tout ce qui lui vient. À chaque fois que quelqu'un trouve, elle touche le mot
+      dans la bande du bas et la case s'ouvre pour tout le monde.<br><br>
+      Il n'y a ni points ni gagnant : on remplit le tableau ensemble, et ce qui n'a pas
+      été trouvé se dévoile à la fin.
+    </p>
+    <div class="themes" id="themes"></div>
+  </div>
+</div>
+
+<div id="jeu">
+  <div id="titreJeu"></div>
+  <div id="compte"></div>
+  <div class="grille" id="grille"></div>
+
+  <div id="bilan"><p id="bilanT"></p><small id="bilanS"></small></div>
+
+  <div id="pupitre">
+    <div class="pup-t">Pour la personne qui anime</div>
+    <div class="mots" id="mots"></div>
+    <div class="pup-actions">
+      <button class="btn-g" onclick="devoiler()" id="btnFin">On s'arrête là et on découvre</button>
+      <button class="btn-o" onclick="retourAccueil()">Changer de thème</button>
+    </div>
+    <p class="aide" id="aide">Touchez le mot que quelqu'un vient de citer.</p>
+  </div>
+</div>
+
+
+
+
+<details class="jdc-apropos">
+<summary>À propos de ce jeu</summary>
+<div class="corps">
+<p><strong>La grande liste</strong> — Un thème, douze cases masquées, et le groupe qui cite ce qui lui vient. Chaque mot trouvé ouvre une case. Ce qui n'a pas été trouvé se dévoile à la fin. Dix thèmes, aucune image : tout est dans les mots.</p>
+<h2>Pour qui</h2>
+<p>Aux petits groupes, en accueil de jour, en EHPAD ou en famille. C'est un jeu d'animation avant d'être un jeu : il fait parler, et personne n'est mis en avant.</p>
+<h2>Comment y jouer</h2>
+<ul>
+<li><strong>En petit groupe</strong> : c'est son usage naturel : l'écran tenu par la personne qui anime, le groupe qui cite à voix haute.</li>
+<li><strong>À deux, avec un proche ou un aidant</strong> : possible aussi, avec un proche, en cherchant à deux.</li>
+</ul>
+<p>La bande de mots n'est lisible que par celui qui tient l'appareil, et l'ordre des cases n'est pas celui de la bande : rien ne se devine par-dessus l'épaule. Celui qui ne dit rien n'est jamais repéré.</p>
+<h2>Ce que ce jeu n'est pas</h2>
+<p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
+<h2>Qui le propose</h2>
+<p>Les Jardins de Célestine, un projet d'habitat partagé pour seniors, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="jeux.html">Voir tous les jeux</a>.</p>
+</div>
+</details>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+</footer>
+
+<script>
+const THEMES=[
+{id:'jardin',nom:"Les fleurs du jardin",mots:["La rose", "La tulipe", "Le muguet", "La marguerite", "Le coquelicot", "La jonquille", "Le lilas", "L'iris", "La pivoine", "Le géranium", "La violette", "Le tournesol"]},
+{id:'potager',nom:"Les légumes du potager",mots:["La carotte", "La pomme de terre", "Le poireau", "La tomate", "La salade", "Le haricot vert", "Le petit pois", "L'oignon", "Le chou", "La courgette", "Le radis", "Le navet"]},
+{id:'cuisine',nom:"Ce qu'on trouve dans une cuisine",mots:["La casserole", "La poêle", "Le couteau", "La cuillère", "L'assiette", "Le verre", "La cafetière", "Le torchon", "La passoire", "Le rouleau à pâtisserie", "La cocotte", "La louche"]},
+{id:'outils',nom:"Les outils du jardinier",mots:["La bêche", "Le râteau", "L'arrosoir", "La brouette", "Le sécateur", "La binette", "La pelle", "La fourche", "Le tuyau d'arrosage", "La serpe", "Le plantoir", "La tondeuse"]},
+{id:'metiers',nom:"Les métiers d'autrefois",mots:["Le boulanger", "Le forgeron", "Le facteur", "La couturière", "Le menuisier", "Le rémouleur", "Le sabotier", "La lavandière", "Le charron", "L'épicier", "Le maréchal-ferrant", "Le cantonnier"]},
+{id:'arbres',nom:"Les arbres",mots:["Le chêne", "Le platane", "Le tilleul", "Le peuplier", "Le saule pleureur", "Le pin", "Le châtaignier", "Le bouleau", "Le marronnier", "Le noyer", "Le cerisier", "Le pommier"]},
+{id:'vacances',nom:"Ce qu'on emporte en vacances",mots:["La valise", "Le maillot de bain", "Le chapeau", "Les lunettes de soleil", "La serviette", "L'appareil photo", "Le parasol", "Les cartes postales", "Le pique-nique", "Le tricot", "Le jeu de cartes", "La carte routière"]},
+{id:'oiseaux',nom:"Les oiseaux du jardin",mots:["Le moineau", "La mésange", "Le merle", "Le rouge-gorge", "L'hirondelle", "La pie", "Le pigeon", "Le pinson", "Le corbeau", "La chouette", "Le pivert", "Le rossignol"]},
+{id:'gouter',nom:"Les desserts d'autrefois",mots:["La tarte aux pommes", "Le flan", "Le riz au lait", "La crème caramel", "Les crêpes", "Le gâteau de Savoie", "La compote", "Les beignets", "Le clafoutis", "L'île flottante", "Le pain perdu", "La confiture"]},
+{id:'chansons',nom:"Les fêtes de l'année",mots:["Noël", "Le jour de l'an", "Les Rois", "La Chandeleur", "Pâques", "Le 1er mai", "La fête des mères", "Le 14 juillet", "La Toussaint", "Mardi gras", "La Saint-Jean", "Les vendanges"]},
+];
+
+
+var theme = null, trouves = [], debut = null, fini = false;
+
+function melange(a){
+  var r = a.slice();
+  for(var i = r.length - 1; i > 0; i--){ var j = Math.floor(Math.random()*(i+1)); var t = r[i]; r[i] = r[j]; r[j] = t; }
+  return r;
+}
+
+function construireAccueil(){
+  document.getElementById('themes').innerHTML = THEMES.map(function(t, i){
+    return '<button class="theme" onclick="commencer(' + i + ')">' + t.nom +
+           '<small>' + t.mots.length + ' réponses à trouver</small></button>';
+  }).join('');
+}
+
+function commencer(i){
+  theme = THEMES[i];
+  trouves = []; fini = false; debut = Date.now();
+  document.getElementById('accueil').style.display = 'none';
+  document.getElementById('jeu').style.display = 'block';
+  document.getElementById('bilan').style.display = 'none';
+  document.getElementById('btnFin').style.display = '';
+  document.getElementById('aide').textContent = 'Touchez le mot que quelqu\'un vient de citer.';
+  document.getElementById('titreJeu').textContent = theme.nom;
+
+  // les cases, dans un ordre qui n'est pas celui du pupitre : rien ne se devine
+  theme.ordre = melange(theme.mots.map(function(_, k){ return k; }));
+  document.getElementById('grille').innerHTML = theme.ordre.map(function(k, pos){
+    return '<div class="case" id="case-' + k + '">' + (pos + 1) + '</div>';
+  }).join('');
+
+  // le pupitre suit l'ordre alphabétique : la personne qui anime retrouve vite
+  var indices = theme.mots.map(function(_, k){ return k; });
+  indices.sort(function(a, b){ return theme.mots[a].localeCompare(theme.mots[b], 'fr'); });
+  document.getElementById('mots').innerHTML = indices.map(function(k){
+    return '<button class="mot-b" id="mot-' + k + '" onclick="ouvrir(' + k + ')">' + theme.mots[k] + '</button>';
+  }).join('');
+
+  majCompte();
+  window.scrollTo(0, 0);
+}
+
+function majCompte(){
+  var n = trouves.length, t = theme.mots.length;
+  document.getElementById('compte').textContent =
+    n === 0 ? 'À vous : citez tout ce qui vous vient.'
+            : 'Vous en avez trouvé ' + n + ' sur ' + t + '.';
+}
+
+function ouvrir(k){
+  if(fini || trouves.indexOf(k) !== -1) return;
+  trouves.push(k);
+  var c = document.getElementById('case-' + k);
+  c.textContent = theme.mots[k];
+  c.className = 'case trouve';
+  document.getElementById('mot-' + k).className = 'mot-b pris';
+  majCompte();
+  if(trouves.length === theme.mots.length) devoiler(true);
+}
+
+function devoiler(complet){
+  if(fini) return;
+  fini = true;
+  theme.mots.forEach(function(m, k){
+    if(trouves.indexOf(k) === -1){
+      var c = document.getElementById('case-' + k);
+      c.textContent = m;
+      c.className = 'case revele';
+    }
+  });
+  document.getElementById('btnFin').style.display = 'none';
+  document.getElementById('aide').textContent = '';
+  var n = trouves.length, t = theme.mots.length;
+  document.getElementById('bilan').style.display = 'block';
+  document.getElementById('bilanT').textContent = complet
+    ? 'Le tableau est complet. Vous les avez tous trouvés.'
+    : 'À vous tous, vous en avez trouvé ' + n + ' sur ' + t + '.';
+  document.getElementById('bilanS').textContent = complet ? ''
+    : 'Les autres réponses sont maintenant affichées, en plus clair.';
+
+  if(typeof JDC !== 'undefined'){
+    JDC.enregistrer('grandeliste', 1, true,
+      { duree: Math.round((Date.now() - debut) / 1000), erreurs: 0, variante: theme.id });
+    JDC.marquerVu('grandeliste', theme.id);
+  }
+}
+
+function retourAccueil(){
+  document.getElementById('jeu').style.display = 'none';
+  document.getElementById('accueil').style.display = 'block';
+}
+
+construireAccueil();
+</script>
+</body>
+</html>

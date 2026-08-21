@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aperçu des repères · Les Jardins de Célestine</title>
+<meta name="description" content="Page de travail interne.">
+<meta name="robots" content="noindex, follow">
+<meta name="keywords" content="jeux stimulation cognitive, jeux mémoire senior, jeux Alzheimer, exercices cognitifs, jeux orthophonie, jeux ergothérapie, Les Jardins de Célestine">
+<meta property="og:title" content="Les jeux de stimulation — Les Jardins de Célestine">
+<meta property="og:description" content="Mémoire, calcul, lecture, repérage : des jeux pensés pour stimuler en douceur. À ouvrir d'un clic.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jardinsdecelestine.com/jeux.html">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-NT825E8XDT');</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:image" content="https://jardinsdecelestine.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://jardinsdecelestine.com/og-image.png">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c1:#8a3d18;--c2:#b5532e;--teal:#1f6b68;--teal-deep:#14403e;--gold:#c9a24b;
+  --bg0:#fbf6ef;--bg1:#fff;--bg2:#f3e7d8;--t1:#34291f;--t2:#4a3a2c;--t3:#8a7a64;
+  --bd:#e3cdb0;--bdl:#efe1cc;
+  --disp:'Cormorant Garamond',Georgia,serif;--sans:'Mulish','Segoe UI',Arial,sans-serif;
+}
+.hc{--c1:#000;--c2:#000;--teal:#000;--teal-deep:#000;--gold:#222;--bg0:#fff;--bg1:#fff;--bg2:#f0f0f0;--t1:#000;--t2:#000;--t3:#222;--bd:#000;--bdl:#444}
+html{background:var(--bg0)}
+body{font-family:var(--sans);background:var(--bg0);color:var(--t1);font-size:16px;line-height:1.6;max-width:680px;margin:0 auto}
+*:focus-visible{outline:3px solid var(--teal-deep);outline-offset:3px;border-radius:4px}
+
+.a11y{display:flex;align-items:center;gap:8px;padding:6px 14px;background:var(--teal);flex-wrap:wrap}
+.a11y-lbl{color:#fff;font-size:12px;opacity:.9}
+.a11y-home{color:#fff;font-size:13px;font-weight:700;text-decoration:none;margin-right:4px}
+.a11y-home:hover{text-decoration:underline}
+.a11y-btn{background:#fbf6ef;color:var(--teal-deep);border:1px solid rgba(201,162,75,.55);padding:5px 12px;border-radius:30px;font-size:14px;font-weight:600;cursor:pointer;min-height:36px}
+.a11y-btn:hover,.a11y-btn.on{background:var(--teal-deep);color:#fff;border-color:var(--teal-deep)}
+.sz{display:flex;gap:5px;margin-left:auto}
+.sz-btn{background:#fbf6ef;color:var(--teal-deep);border:1px solid rgba(201,162,75,.55);width:36px;height:36px;border-radius:30px;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.sz-btn:hover{background:var(--teal-deep);color:#fff;border-color:var(--teal-deep)}
+
+.hero{background:linear-gradient(160deg,#e8f1ef 0%,#fbf6ef 72%);padding:2.4rem 1.5rem 2rem;text-align:center;border-bottom:1px solid var(--bd)}
+.tag{display:inline-block;border:1px solid rgba(201,162,75,.55);background:#fffdf9;color:var(--teal-deep);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border-radius:30px;padding:6px 16px;margin-bottom:1rem}
+.hero h1{font-family:var(--disp);font-size:clamp(28px,6.5vw,38px);font-weight:600;color:var(--teal-deep);margin-bottom:.7rem}
+.hero p{font-size:15px;color:var(--t2);max-width:480px;margin:0 auto;line-height:1.7}
+
+.pg{padding:1.7rem 1.3rem}
+.note{background:#fffdf9;border:1px solid var(--bdl);border-radius:12px;padding:.8rem 1rem;font-size:13px;color:var(--t2);text-align:center;margin-bottom:1.3rem}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}
+.jeu{display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--bg1);border:1px solid var(--bdl);border-radius:16px;padding:1.3rem 1rem;text-decoration:none;color:inherit;box-shadow:0 1px 2px rgba(52,41,31,.04);transition:transform .15s,box-shadow .15s,border-color .15s;position:relative}
+.jeu:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(31,107,104,.13);border-color:var(--teal)}
+.jeu-ico{font-size:38px;line-height:1;margin-bottom:.6rem}
+.jeu-h{font-family:var(--disp);font-size:20px;font-weight:600;color:var(--teal-deep);line-height:1.1;margin-bottom:.25rem}
+.jeu-d{font-size:12.5px;color:var(--t2);line-height:1.45}
+.jeu-badge-new{position:absolute;top:10px;right:10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;background:#e6f2ec;color:#1f5c42;border:1px solid #9fcbb5;border-radius:30px;padding:3px 8px}
+.jeu-badge{position:absolute;top:10px;right:10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;background:#f7ecd8;color:#9a6a2a;border:1px solid #e7cd9b;border-radius:30px;padding:3px 8px}
+.soon{margin-top:1.4rem;text-align:center;font-size:13px;color:var(--t3);line-height:1.6}
+.soon strong{color:var(--c2);font-weight:700}
+
+footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--t3);border-top:1px solid var(--bdl);background:var(--bg1);margin-top:1.5rem}
+@media (prefers-reduced-motion:reduce){.jeu{transition:none}}
+</style>
+<script src="jdc-parcours.js"></script>
+</head>
+<body>
+
+<div class="a11y" role="toolbar" aria-label="Accessibilité">
+  <a class="a11y-home" href="index.html">← Accueil</a>
+  <button class="a11y-btn" id="hcbtn" onclick="toggleHC()" aria-pressed="false">Contraste élevé</button>
+  <div class="sz">
+    <button class="sz-btn" onclick="chgSz(-1)" aria-label="Réduire le texte">A−</button>
+    <button class="sz-btn" onclick="chgSz(1)" aria-label="Agrandir le texte">A+</button>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="tag">Stimulation cognitive</div>
+  <h1>Les jeux</h1>
+   <p>Vingt-deux jeux classés par fonction : mémoire, langage, logique, attention, repérage. Pensés pour stimuler en douceur, sans installation.</p>
+</header>
+
+<main class="pg" id="contenu">
+  <p class="note">Chaque jeu s'ouvre dans un nouvel onglet. Fermez l'onglet pour revenir ici.</p>
+
+  <div style="margin-bottom:.4rem">
+    <h2 style="font-family:var(--disp);font-size:22px;font-weight:600;color:var(--c1);margin:1.1rem 0 .7rem">Travailler la mémoire</h2>
+    <div class="grid">
+      <a class="jeu" href="jeu_memoire_historique.html" data-jeu="memoire" target="_blank" rel="noopener">
+        <span class="jeu-ico" aria-hidden="true">🏛️</span>
+        <span class="jeu-h">Mémoire des Grands</span>
+        <span class="jeu-d">Personnages historiques · 2 étapes</span>
+      </a>
+      <a class="jeu" href="jeu_memory.html" data-jeu="memory" target="_blank" rel="noopener">
+        <span class="jeu-ico" aria-hidden="true">🃏</span>
+        <span class="jeu-h">Memory</span>
+        <span class="jeu-d">Retrouver les paires de cartes retournées</span>
+      </a>
+      <a class="jeu" href="jeu_paires.html" data-jeu="paires" target="_blank" rel="noopener">
+        <span class="jeu-ico" aria-hidden="true">👥</span>
+        <span class="jeu-h">Jeu des Paires</span>
+        <span class="jeu-d">Associer les images qui vont ensemble</span>
+      </a>
+      <a class="jeu" href="jeu_loto.html" data-jeu="loto" target="_blank" rel="noopener">
+        <span class="jeu-ico" aria-hidden="true">🎱</span>
+        <span class="jeu-h">Loto des Images</span>
+        <span class="jeu-d">Reconnaître et remplir sa planche</span>
+      </a>
+      <a class="jeu" href="jeu_association.html" data-jeu="association" target="_blank" rel="noopener">
+        <span class="jeu-badge-new">Nouveau</span>
+        <span class="jeu-ico" aria-hidden="true">🔗</span>
+        <span class="jeu-h">À qui appartient ?</span>
+        <span class="jeu-d">Empreintes et feuilles : retrouver ce qui va ensemble</span>
+      </a>
+    </div>
+  </div>
+
+  <div style="margin-bottom:.4rem">
+    <h2 style="font-family:var(--disp);font-size:22px;font-weight:600;color:var(--c1);margin:1.4rem 0 .7rem">Les mots et le langage</h2>
+    <div class="grid">
+      <a class="jeu" href="jeu_mots_meles.html" data-jeu="motsmeles" target="_blank" rel="noopener">
+        <span class="jeu-ico" aria-hidden="true">🔤</span>
+        <span class="jeu-h">Mots Mêlés</span>
+        <span class="jeu-d">5 thèmes, 4 niveaux, 3 tailles</span>
+      </a>
+      <a class="jeu" href="jeu_associations.html" data-jeu="associations" target="_blank" rel="noopener">
+        <span class="jeu-ico" aria-hidden="true">🔗</span>
+        <span class="jeu-h">Associations</span>
+        <span class="jeu-d">Associer chaque image à son nom</span>
+      </a>
+      <a class="jeu" href="jeu_mots_manquants.html" data-jeu="motsmanquants" target="_blank" rel="noopener">
+        <span class="jeu-ico" aria-hidden="true">📖</span>
+        <span class="jeu-h">Les Mots Manquants</span>
+        <span class="jeu-d">Fables et poèmes à compléter · 10 textes</span>
+      </a>
+    </div>
+  </div>
+
+  <div style="margin-bottom:.4rem">
+    <h2 style="font-family:var(--disp);font-size:22px;font-weight:600;color:var(--c1);margin:1.4rem 0 .7rem">La logique et le calcul</h2>
+    <div class="grid">
+      <a class="jeu" href="jeu_calcul.html" data-jeu="calcul" target="_blank" rel="noopener">
+        <span class="jeu-ico" aria-hidden="true">🔢</span>
+        <span class="jeu-h">Calcul Mental</span>
+        <span class="jeu-d">+, −, ×, ÷ · 3 niveaux</span>
+      </a>
+      <a class="jeu" href="jeu_sudoku.html" data-jeu="sudoku" target="_blank" rel="noopener">
+        <span class="jeu-ico" aria-hidden="true">🧮</span>
+        <span class="jeu-h">Sudoku</span>
+        <span class="jeu-d">Grilles adaptées, du doux au corsé</span>
+      </a>
+      <a class="jeu" href="jeu_dans_lordre.html" data-jeu="danslordre" target="_blank" rel="noopener">
+        <span class="jeu-ico" aria-hidden="true">🔢</span>
+        <span class="jeu-h">Dans l'Ordre</span>
+        <span class="jeu-d">Remettre les étapes d'une histoire dans le bon ordre</span>
+      </a>
+      <a class="jeu" href="jeu_enquete.html" data-jeu="enquete" target="_blank" rel="noopener">
+        <span class="jeu-ico" aria-hidden="true">🔍</span>
+        <span class="jeu-h">L'Enquête</span>
+        <span class="jeu-d">Observer, déduire, résoudre une petite affaire</span>
+      </a>
+    </div>
+  </div>
+
+  <div style="margin-bottom:.4rem">
+    <h2 style="font-family:var(--disp);font-size:22px;font-weight:600;color:var(--c1);margin:1.4rem 0 .7rem">L'attention et l'observation</h2>
+    <div class="grid">
+      <a class="jeu" href="jeu_intrus.html" data-jeu="intrus" target="_blank" rel="noopener">
+        <span class="jeu-ico" aria-hidden="true">🔍</span>
+        <span class="jeu-h">Trouver l'Intrus</span>
+        <span class="jeu-d">Repérer ce qui ne va pas avec les autres</span>
+      </a>
+      <a class="jeu" href="jeu_formes.html" data-jeu="formes" target="_blank" rel="noopener">
+        <span class="jeu-ico" aria-hidden="true">🔷</span>
+        <span class="jeu-h">Jeu des Formes</span>
+        <span class="jeu-d">Reconnaître formes et couleurs</span>
+      </a>
+      <a class="jeu" href="jeu_labyrinthe.html" data-jeu="labyrinthe" target="_blank" rel="noopener">
+        <span class="jeu-ico" aria-hidden="true">🌀</span>
+        <span class="jeu-h">Labyrinthe</span>
+        <span class="jeu-d">Trouver son chemin jusqu'à la sortie</span>
+      </a>
+      <a class="jeu" href="jeu_puzzle.html" data-jeu="puzzle" target="_blank" rel="noopener">
+        <span class="jeu-badge">Tablette &amp; PC</span>
+        <span class="jeu-ico" aria-hidden="true">🧩</span>
+        <span class="jeu-h">Puzzle</span>
+        <span class="jeu-d">8 scènes, 3 difficultés</span>
+      </a>
+      <a class="jeu" href="jeu_cherche_trouve.html" data-jeu="cherchetrouve" target="_blank" rel="noopener">
+        <span class="jeu-ico" aria-hidden="true">🔎</span>
+        <span class="jeu-h">Cherche et Trouve</span>
+        <span class="jeu-d">Retrouver les objets cachés dans la scène</span>
+      </a>
+      <a class="jeu" href="jeu_ou_range.html" data-jeu="range" target="_blank" rel="noopener">
+        <span class="jeu-ico" aria-hidden="true">🏡</span>
+        <span class="jeu-h">Où est-ce rangé ?</span>
+        <span class="jeu-d">Le ménage est fait, retrouvez vos affaires</span>
+      </a>
+      <a class="jeu" href="jeu_change_regle.html" data-jeu="changeregle" target="_blank" rel="noopener">
+        <span class="jeu-badge-new">Nouveau</span>
+        <span class="jeu-ico" aria-hidden="true">🔄</span>
+        <span class="jeu-h">Change de Règle</span>
+        <span class="jeu-d">Suivre la consigne, même quand elle change</span>
+      </a>
+      <a class="jeu" href="jeu_oeil_et_mot.html" data-jeu="oeilmot" target="_blank" rel="noopener">
+        <span class="jeu-badge-new">Nouveau</span>
+        <span class="jeu-ico" aria-hidden="true">👁️</span>
+        <span class="jeu-h">L'Œil et le Mot</span>
+        <span class="jeu-d">Regarder la couleur de l'encre, pas le mot</span>
+      </a>
+    </div>
+  </div>
+
+  <div style="margin-bottom:.4rem">
+    <h2 style="font-family:var(--disp);font-size:22px;font-weight:600;color:var(--c1);margin:1.4rem 0 .7rem">Se repérer dans le temps</h2>
+    <div class="grid">
+      <a class="jeu" href="jeu_heure.html" data-jeu="heure" target="_blank" rel="noopener">
+        <span class="jeu-ico" aria-hidden="true">🕐</span>
+        <span class="jeu-h">Jeu de l'Heure</span>
+        <span class="jeu-d">Cadran analogique et heure numérique</span>
+      </a>
+      <a class="jeu" href="jeu_saisons.html" data-jeu="saisons" target="_blank" rel="noopener">
+        <span class="jeu-badge-new">Nouveau</span>
+        <span class="jeu-ico" aria-hidden="true">🍂</span>
+        <span class="jeu-h">Au fil des Saisons</span>
+        <span class="jeu-d">Classer chaque image dans sa saison</span>
+      </a>
+    </div>
+  </div>
+
+  <p class="soon">Quatre nouveaux jeux viennent de rejoindre cet espace.<br><strong>D'autres arrivent bientôt : nouvelles scènes, nouvelles enquêtes.</strong></p>
+</main>
+
+<footer>© 2025-2026 · Les jeux des Jardins de Célestine  <p style="margin-top:8px;font-size:.86rem;opacity:.75"><a href="mentions-legales.html">Mentions légales</a></p>
+</footer>
+
+<script>
+var curSz=16;
+function chgSz(d){curSz=Math.min(22,Math.max(13,curSz+d));document.body.style.fontSize=curSz+'px';}
+function toggleHC(){var b=document.getElementById('hcbtn');var on=b.getAttribute('aria-pressed')==='true';b.setAttribute('aria-pressed',String(!on));b.classList.toggle('on',!on);document.body.classList.toggle('hc',!on);}
+
+document.querySelectorAll('a[data-jeu]').forEach(function(a){
+  a.addEventListener('click',function(){
+    try{
+      var op=JSON.parse(localStorage.getItem('jdc_game_v3')||'{}');
+      var id=a.getAttribute('data-jeu');
+      if(!op[id])op[id]={opens:0,lastOpen:null};
+      op[id].opens++;op[id].lastOpen=new Date().toISOString();
+      localStorage.setItem('jdc_game_v3',JSON.stringify(op));
+    }catch(e){}
+  });
+});
+</script>
+
+<!-- ══ APERÇU : repère d'exigence, greffé sur les cartes existantes ══
+     Lit JDC.CATALOGUE[data-jeu].exigence. Aucune carte n'est modifiée à la
+     main. Retirer ce bloc suffit à revenir en arrière. -->
+<style>
+.jeu{position:relative}
+.jeu-rep{display:inline-flex;align-items:center;gap:5px;margin-top:7px;
+  font-size:11px;font-weight:700;letter-spacing:.3px;border-radius:30px;padding:2px 9px;}
+.jeu-rep i{width:7px;height:7px;border-radius:50%;display:block;font-style:normal}
+.rep1{background:#e8f2ec;color:#1f5c42;border:1px solid #a9cfbb}
+.rep1 i{background:#2d6a4f}
+.rep2{background:#f8efdc;color:#8a6320;border:1px solid #e5cf9f}
+.rep2 i{background:#c8922a}
+.rep3{background:#f3ece6;color:#6b4a2c;border:1px solid #d6c1ac}
+.rep3 i{background:#8a5a32}
+</style>
+<script>
+(function(){
+  var MOTS = { 1:'Tout en douceur', 2:'Un peu plus', 3:'Pour les jours en forme' };
+  if (typeof JDC === 'undefined') return;
+  var cartes = document.querySelectorAll('.jeu[data-jeu]');
+  for (var i = 0; i < cartes.length; i++) {
+    var info = JDC.CATALOGUE[cartes[i].getAttribute('data-jeu')];
+    if (!info || !info.exigence) continue;
+    var s = document.createElement('span');
+    s.className = 'jeu-rep rep' + info.exigence;
+    s.innerHTML = '<i></i>' + MOTS[info.exigence];
+    cartes[i].appendChild(s);
+  }
+})();
+</script>
+</body>
+</html>

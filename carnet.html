@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carnet de parcours · Les Jardins de Célestine</title>
+<meta name="description" content="Le carnet garde la trace des parties jouées sur cet appareil. Rien n'est envoyé, tout reste dans le navigateur.">
+<meta name="robots" content="noindex, follow">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="jdc-parcours.js"></script>
+<style>
+:root{--cream:#f7f3ea;--parchment:#eee8d5;--ink:#1c1208;--sepia:#5c3d1e;--gold:#c8922a;--green:#2d6a4f;--shadow:rgba(28,18,8,0.13);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--parchment);
+  background-image:radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.08) 0%,transparent 55%);
+  min-height:100vh;font-family:'Nunito',sans-serif;color:var(--ink);}
+
+.retour{display:block;text-align:center;padding:9px;font-size:.74rem;color:var(--sepia);opacity:.55;text-decoration:none;letter-spacing:.1em;text-transform:uppercase;}
+.retour:hover{opacity:1;}
+
+.feuille{max-width:640px;margin:14px auto 40px;background:#fff;border:1px solid rgba(200,146,42,.35);border-radius:14px;padding:34px 38px 40px;box-shadow:0 8px 30px var(--shadow);}
+
+.entete{text-align:center;border-bottom:2px solid var(--gold);padding-bottom:18px;margin-bottom:6px;}
+.marque{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--sepia);opacity:.6;}
+.entete h1{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.75rem;font-weight:700;color:var(--sepia);margin:8px 0 6px;}
+.periode{font-size:.95rem;color:var(--sepia);opacity:.8;}
+.edite{font-size:.76rem;color:var(--sepia);opacity:.55;margin-top:6px;}
+
+.jour{padding:15px 0;border-bottom:1px solid rgba(200,146,42,.22);}
+.jour:last-child{border-bottom:none;}
+.jour-d{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;color:var(--sepia);margin-bottom:7px;}
+.jour-l{list-style:none;}
+.jour-l li{font-size:1rem;line-height:1.75;color:var(--ink);padding-left:16px;position:relative;}
+.jour-l li::before{content:'·';position:absolute;left:3px;color:var(--gold);font-weight:700;}
+.fois{color:var(--sepia);opacity:.65;font-size:.9rem;}
+
+.rien{text-align:center;padding:40px 10px;color:var(--sepia);opacity:.7;font-style:italic;line-height:1.7;}
+
+.pied{margin-top:26px;padding-top:16px;border-top:1px solid rgba(200,146,42,.25);font-size:.78rem;line-height:1.65;color:var(--sepia);opacity:.7;text-align:center;}
+
+.actions{max-width:640px;margin:0 auto 30px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:0 18px;}
+.btn-or{background:var(--gold);color:#fff;border:none;border-radius:11px;padding:13px 26px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.98rem;font-weight:700;cursor:pointer;}
+.btn-or:hover{background:#b07820;}
+.btn-vide{background:none;border:1.5px solid rgba(200,146,42,.55);color:var(--sepia);border-radius:11px;padding:13px 26px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.98rem;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;}
+.btn-vide:hover{background:rgba(200,146,42,.1);}
+.aide{max-width:640px;margin:0 auto 18px;padding:0 18px;font-size:.86rem;color:var(--sepia);opacity:.75;text-align:center;line-height:1.6;}
+
+/* ── IMPRESSION ── */
+@media print{
+  @page{margin:16mm 14mm;}
+  body{background:#fff;background-image:none;}
+  .retour,.actions,.aide{display:none !important;}
+  .feuille{max-width:none;margin:0;border:none;border-radius:0;box-shadow:none;padding:0;}
+  .jour{break-inside:avoid;page-break-inside:avoid;}
+  .entete{border-bottom:2px solid #8a6a20;}
+  .entete h1,.jour-d,.marque{color:#3d2a10;}
+  .jour-l li{color:#000;}
+  .pied{opacity:1;color:#4a3a2c;}
+}
+
+/* Pied discret : le lien légal doit exister sur chaque page du site. */
+.jdc-legal{text-align:center;padding:16px 14px 22px;font-size:.78rem;line-height:1.6;
+  color:#5c3d1e;opacity:.6;font-family:'Nunito',sans-serif;}
+.jdc-legal a{color:inherit;}
+@media print{.jdc-legal{display:none;}}
+</style>
+</head>
+<body>
+
+<a class="retour" href="jeux.html">← Retour aux jeux</a>
+
+<p class="aide">Ce carnet reprend, jour par jour, les jeux qui ont été joués sur cet appareil. Vous pouvez l'imprimer ou l'enregistrer en PDF : dans la fenêtre d'impression, choisissez « Enregistrer au format PDF » comme destination.</p>
+
+<div class="actions">
+  <button class="btn-or" onclick="window.print()">Imprimer ou enregistrer en PDF</button>
+  <a class="btn-vide" href="jeux.html">Retour aux jeux</a>
+</div>
+
+<div class="feuille" id="feuille"></div>
+
+<script>
+var MOIS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+var JOURS = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+
+function enToutesLettres(d){
+  return JOURS[d.getDay()] + ' ' + d.getDate() + ' ' + MOIS[d.getMonth()] + ' ' + d.getFullYear();
+}
+function cle(d){
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+// Jeux encore en prototype, absents du catalogue de jdc-parcours.js.
+// À supprimer d'ici le jour où ils y sont inscrits.
+var EN_ATTENTE = { racontemoi:'Racontez-moi', panier:'Le bon panier' };
+
+function nomDuJeu(id, catalogue){
+  if(catalogue[id] && catalogue[id].nom) return catalogue[id].nom;
+  if(EN_ATTENTE[id]) return EN_ATTENTE[id];
+  return id;
+}
+
+function construire(){
+  var f = document.getElementById('feuille');
+  var noms = (typeof JDC !== 'undefined') ? JDC.CATALOGUE : {};
+  var sessions = (typeof JDC !== 'undefined') ? JDC.lire().sessions : [];
+
+  var entete =
+    '<div class="entete">' +
+      '<div class="marque">Les Jardins de Célestine</div>' +
+      '<h1>Carnet de parcours</h1>' +
+      '<div class="periode" id="periode"></div>' +
+      '<div class="edite">Édité le ' + enToutesLettres(new Date()) + '</div>' +
+    '</div>';
+
+  if(!sessions.length){
+    f.innerHTML = entete +
+      '<p class="rien">Aucune partie n\'a encore été jouée sur cet appareil.<br>Le carnet se remplira au fil des jeux.</p>' +
+      pied();
+    document.getElementById('periode').textContent = '';
+    return;
+  }
+
+  // regroupement par jour, du plus récent au plus ancien
+  var parJour = {};
+  sessions.forEach(function(s){
+    var d = new Date(s.t);
+    var k = cle(d);
+    if(!parJour[k]) parJour[k] = { date: d, jeux: {} };
+    var nom = nomDuJeu(s.j, noms);
+    parJour[k].jeux[nom] = (parJour[k].jeux[nom] || 0) + 1;
+  });
+
+  var cles = Object.keys(parJour).sort().reverse();
+
+  var corps = cles.map(function(k){
+    var j = parJour[k];
+    var lignes = Object.keys(j.jeux).sort().map(function(nom){
+      var n = j.jeux[nom];
+      return '<li>' + nom + (n > 1 ? ' <span class="fois">' + n + ' fois</span>' : '') + '</li>';
+    }).join('');
+    return '<div class="jour"><div class="jour-d">' + enToutesLettres(j.date) + '</div><ul class="jour-l">' + lignes + '</ul></div>';
+  }).join('');
+
+  f.innerHTML = entete + corps + pied();
+
+  var premier = parJour[cles[cles.length-1]].date;
+  var dernier = parJour[cles[0]].date;
+  document.getElementById('periode').textContent =
+    (cles.length === 1)
+      ? 'Une journée de jeu'
+      : 'Du ' + enToutesLettres(premier) + ' au ' + enToutesLettres(dernier);
+}
+
+function pied(){
+  return '<div class="pied">' +
+    'Ce carnet est enregistré uniquement sur cet appareil et n\'est transmis à personne.<br>' +
+    'Il indique les jeux ouverts chaque jour, rien de plus. Il ne mesure rien et ne remplace aucun avis professionnel.' +
+    '</div>';
+}
+
+construire();
+</script>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+</footer>
+</body>
+</html>

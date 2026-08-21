@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Mémoire des Grands — jeu en ligne gratuit · Les Jardins de Célestine</title>
+<meta name="description" content="Reconnaître des personnages historiques, en deux étapes. Jeu de mémoire en ligne gratuit pour personne âgée, sans inscription et sans chronomètre.">
+<link rel="canonical" href="https://jardinsdecelestine.com/jeu_memoire_historique">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #f5f0e8;
+  --parchment: #ede5d0;
+  --ink: #1a1208;
+  --sepia: #6b4c2a;
+  --gold: #c9963a;
+  --red: #8b2020;
+  --green: #2a5c3f;
+  --shadow: rgba(26,18,8,0.15);
+  --flash: 6s;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--parchment);
+  background-image:
+    radial-gradient(ellipse at 20% 20%, rgba(201,150,58,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgba(139,32,32,0.05) 0%, transparent 60%);
+  min-height: 100vh;
+  font-family: 'Nunito', sans-serif;
+  color: var(--ink);
+  display: flex; flex-direction: column; align-items: center;
+  padding: 16px 12px 48px;
+  /* Prevent scroll while dragging on touch */
+  overscroll-behavior: none;
+}
+
+/* ── HEADER ── */
+header { text-align: center; margin-bottom: 16px; }
+header h1 { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: clamp(1.5rem,5vw,2.6rem); color: var(--sepia); }
+header h1 em { color: var(--gold); font-style: italic; }
+header p { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--sepia); opacity: 0.65; margin-top: 3px; }
+.divider { width: 80px; height: 1px; background: linear-gradient(90deg,transparent,var(--gold),transparent); margin: 8px auto; }
+
+/* ── HUD ── */
+.hud { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; justify-content: center; }
+.hud-box { background: var(--cream); border: 1px solid rgba(201,150,58,0.4); border-radius: 6px; padding: 7px 14px; text-align: center; box-shadow: 0 2px 6px var(--shadow); min-width: 68px; }
+.hud-box .lbl { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--sepia); opacity: 0.6; }
+.hud-box .val { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1.4rem; color: var(--gold); line-height: 1.1; }
+.hud-box .val.red { color: var(--red); font-size: 0.95rem; }
+
+/* ── STEP INDICATOR ── */
+.step-indicator { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.step-dot { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.85rem; color: var(--sepia); background: var(--cream); transition: all 0.4s; }
+.step-dot.active { background: var(--gold); color: white; box-shadow: 0 0 0 4px rgba(201,150,58,0.2); }
+.step-dot.done { background: var(--green); border-color: var(--green); color: white; }
+.step-line { width: 32px; height: 1px; background: var(--gold); opacity: 0.35; }
+
+/* ── INSTRUCTION ── */
+.instruction { text-align: center; margin-bottom: 14px; max-width: 560px; padding: 0 8px; }
+.instruction h2 { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: clamp(1rem,4vw,1.2rem); color: var(--sepia); margin-bottom: 4px; }
+.instruction p { font-size: clamp(0.82rem,3vw,0.9rem); color: var(--sepia); opacity: 0.72; font-style: italic; line-height: 1.5; }
+.hint-legend { display: inline-block; margin-top: 8px; font-size: clamp(0.7rem,2.5vw,0.78rem); color: var(--sepia); background: rgba(201,150,58,0.1); border: 1px solid rgba(201,150,58,0.3); border-radius: 4px; padding: 4px 10px; }
+
+/* ══════════════════════════════════════
+   STEP 1 — LAYOUT
+══════════════════════════════════════ */
+#step1 { width: 100%; max-width: 860px; }
+
+/* Pool of cards */
+.cards-pool {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  justify-content: center; margin-bottom: 18px;
+  padding: 12px; background: var(--cream);
+  border: 2px solid rgba(201,150,58,0.25);
+  border-radius: 10px;
+  box-shadow: 0 2px 10px var(--shadow);
+  min-height: 60px;
+}
+
+/* Category zones grid — 2 cols on mobile, 4 on desktop */
+.categories-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+@media (min-width: 640px) {
+  .categories-row { grid-template-columns: repeat(4, 1fr); }
+}
+
+.category-zone {
+  background: var(--cream);
+  border: 2.5px dashed rgba(201,150,58,0.4);
+  border-radius: 10px;
+  min-height: 120px;
+  padding: 10px 8px;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  display: flex; flex-direction: column;
+}
+.category-zone.over {
+  border-color: var(--gold);
+  border-style: solid;
+  background: rgba(201,150,58,0.08);
+  transform: scale(1.02);
+}
+.cat-title {
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-size: clamp(0.78rem,2.8vw,0.9rem);
+  color: var(--sepia);
+  text-align: center;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(201,150,58,0.3);
+  flex-shrink: 0;
+}
+.mini-card.mini-ok{border-color:#2d6a4f !important;background:#e9f2ec !important;}
+.mini-card.mini-ok::after{content:' ✓';color:#2d6a4f;font-weight:800;}
+.mini-card.mini-revoir{border-color:#c8922a !important;background:#fdf6e6 !important;opacity:.75;}
+.person-card.arevoir{border-color:#c8922a;background:#fdf6e6;animation:pulseRevoir 1.6s ease-in-out 2;}
+@keyframes pulseRevoir{0%,100%{box-shadow:0 0 0 0 rgba(200,146,42,.4)}50%{box-shadow:0 0 0 6px rgba(200,146,42,0)}}
+.person-card.revelable{cursor:pointer;position:relative;}
+.person-card.revelable:hover{box-shadow:0 3px 12px rgba(200,146,42,.35);}
+.btn-histoire{position:absolute;top:-7px;right:-7px;width:22px;height:22px;border-radius:50%;background:#c8922a;color:#fff;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.8rem;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.25);}
+.niv-row{display:flex;flex-direction:column;gap:10px;max-width:460px;margin:0 auto;}
+.niv-card{background:#fff;border:2px solid rgba(200,146,42,.45);border-radius:12px;padding:14px 18px;cursor:pointer;font-family:'Nunito',sans-serif;text-align:center;transition:all .18s;}
+.niv-card:hover{border-color:#c8922a;background:rgba(200,146,42,.08);transform:translateY(-2px);}
+.niv-mid{border-color:#c8922a;background:rgba(200,146,42,.06);}
+.niv-t{display:block;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.05rem;font-weight:700;color:#5c3d1e;}
+.niv-d{display:block;font-size:0.82rem;color:#5c3d1e;opacity:.7;margin-top:2px;}
+#niveauScreen{display:block;}
+.cat-dates{display:block;font-size:0.72rem;font-weight:400;opacity:.65;margin-top:1px;}
+.person-card.correct{border-color:#2d6a4f;background:#e9f2ec;}
+.person-card.wrong{border-color:#b5651d;background:#fdf0e4;}
+.correct-lbl{display:block;font-size:0.72rem;color:#2d6a4f;font-weight:700;margin-top:3px;}
+.zone-cards { display: flex; flex-direction: column; gap: 5px; flex: 1; }
+
+/* ── PERSON CARD (pool) ── */
+.person-card {
+  background: white;
+  border: 2px solid rgba(201,150,58,0.35);
+  border-radius: 8px;
+  padding: 10px 14px 8px;
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-size: clamp(0.85rem,3.5vw,0.95rem);
+  color: var(--ink);
+  box-shadow: 0 2px 6px var(--shadow);
+  user-select: none;
+  touch-action: none; /* critical for touch drag */
+  position: relative;
+  cursor: grab;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.2s;
+  min-width: 120px;
+}
+.person-card:active { cursor: grabbing; }
+.person-card.dragging {
+  opacity: 0.4;
+  pointer-events: none;
+}
+/* Ghost clone while dragging on touch */
+.drag-ghost {
+  position: fixed;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.88;
+  transform: scale(1.06);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+  border-radius: 8px;
+  background: white;
+  border: 2px solid var(--gold);
+  padding: 10px 14px 8px;
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.95rem;
+  color: var(--ink);
+  transition: none;
+}
+
+/* ── MINI CARD (inside zone) ── */
+.mini-card {
+  background: white;
+  border: 1.5px solid rgba(201,150,58,0.3);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-size: clamp(0.72rem,2.5vw,0.8rem);
+  color: var(--ink);
+  box-shadow: 0 1px 4px var(--shadow);
+  user-select: none;
+  touch-action: none;
+  cursor: grab;
+  transition: opacity 0.15s;
+}
+.mini-card:active { opacity: 0.7; }
+
+/* ── HINT ── */
+.hint-row { display: flex; align-items: center; gap: 5px; margin-top: 5px; min-height: 22px; }
+.hint-btn {
+  background: none; border: 1px solid rgba(201,150,58,0.55); border-radius: 3px;
+  padding: 2px 8px; font-size: 0.72rem; font-family: 'Nunito', sans-serif;
+  color: var(--gold); cursor: pointer; letter-spacing: 0.04em; flex-shrink: 0;
+  transition: background 0.2s;
+  /* large touch target via pseudo */
+  position: relative;
+}
+.hint-btn::before { content:''; position:absolute; inset:-8px; }
+.hint-btn:active { background: rgba(201,150,58,0.15); }
+.hint-btn.charged { border-color: var(--red); color: var(--red); }
+.hint-btn.gone { display: none; }
+
+.hint-text {
+  font-size: 0.72rem; font-family: 'Nunito', sans-serif; font-style: italic;
+  color: var(--sepia); white-space: nowrap; opacity: 0; max-width: 0; overflow: hidden;
+}
+.hint-text.flashing { opacity: 1; max-width: 200px; animation: fadeAway var(--flash) ease forwards; }
+.hint-text.permanent { opacity: 1; max-width: 200px; animation: none; }
+
+.hint-bar-wrap { height: 3px; background: rgba(201,150,58,0.15); border-radius: 2px; margin-top: 3px; overflow: hidden; display: none; }
+.hint-bar { height: 100%; background: var(--gold); border-radius: 2px; transform-origin: left; }
+.hint-bar.draining { animation: drain var(--flash) linear forwards; }
+
+@keyframes fadeAway { 0%{opacity:1} 75%{opacity:1} 100%{opacity:0} }
+@keyframes drain    { from{transform:scaleX(1)} to{transform:scaleX(0)} }
+
+/* ══════════════════════════════════════
+   STEP 2 — ERA MATCHING
+══════════════════════════════════════ */
+#step2 { width: 100%; max-width: 720px; display: none; }
+.match-container { display: flex; flex-direction: column; gap: 10px; }
+
+.match-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 8px 10px;
+  background: var(--cream);
+  border: 1.5px solid rgba(201,150,58,0.25);
+  border-radius: 10px;
+  padding: 12px 14px;
+  box-shadow: 0 2px 6px var(--shadow);
+  animation: fadeUp 0.4s ease both;
+  transition: border-color 0.3s, background 0.3s;
+}
+.match-row.correct { border-color: var(--green); background: rgba(42,92,63,0.05); }
+.match-row.wrong   { border-color: var(--red);   background: rgba(139,32,32,0.05); }
+.match-name { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: clamp(0.88rem,3.5vw,0.95rem); color: var(--ink); grid-column: 1; grid-row: 1; align-self: center; }
+.correct-lbl { font-size: 0.72rem; color: var(--green); font-style: italic; margin-top: 3px; font-family: 'Nunito', sans-serif; display: block; }
+
+.hint2-wrap { grid-column: 2; grid-row: 1; display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+.hint2-btn { background: none; border: 1px solid rgba(201,150,58,0.55); border-radius: 3px; padding: 3px 9px; font-size: 0.72rem; font-family: 'Nunito', sans-serif; color: var(--gold); cursor: pointer; white-space: nowrap; transition: background 0.2s; position: relative; }
+.hint2-btn::before { content:''; position:absolute; inset:-8px; }
+.hint2-btn:active { background: rgba(201,150,58,0.12); }
+.hint2-btn.charged { border-color: var(--red); color: var(--red); }
+.hint2-btn.gone { display: none; }
+.hint2-text { font-size: 0.72rem; font-family: 'Nunito', sans-serif; font-style: italic; color: var(--sepia); text-align: right; white-space: nowrap; opacity: 0; max-height: 0; overflow: hidden; }
+.hint2-text.flashing { opacity: 1; max-height: 20px; animation: fadeAway var(--flash) ease forwards; }
+.hint2-text.permanent { opacity: 1; max-height: 20px; animation: none; }
+
+.era-choices{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.era-btn{flex:1 1 auto;min-width:120px;background:#fff;border:2px solid rgba(200,146,42,.35);border-radius:10px;padding:8px 10px;cursor:pointer;font-family:'Nunito',sans-serif;text-align:center;transition:all .15s;}
+.era-btn:hover{border-color:#c8922a;background:rgba(200,146,42,.07);}
+.era-btn.sel{border-color:#c8922a;background:rgba(200,146,42,.16);box-shadow:0 2px 8px rgba(200,146,42,.25);}
+.era-btn .era-nom{display:block;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.88rem;font-weight:700;color:#5c3d1e;}
+.era-btn .era-date{display:block;font-size:0.72rem;color:#5c3d1e;opacity:.6;margin-top:1px;}
+.era-choices[data-locked] .era-btn{cursor:default;opacity:.75;}
+.match-select {
+  grid-column: 1 / span 2; grid-row: 2;
+  width: 100%; padding: 10px 14px; border: 1.5px solid rgba(201,150,58,0.4);
+  border-radius: 6px; background: white; font-family: 'Nunito', sans-serif;
+  font-size: clamp(0.88rem,3.5vw,0.95rem); color: var(--ink); cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b4c2a' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+  padding-right: 34px;
+  /* Large touch target */
+  min-height: 44px;
+}
+.match-feedback { font-size: 1.2rem; grid-column: 2; grid-row: 2; text-align: center; align-self: center; }
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-block; padding: 13px 28px; background: var(--gold); color: white;
+  border: none; border-radius: 6px; font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-size: clamp(0.9rem,3.5vw,1rem); letter-spacing: 0.07em; cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  box-shadow: 0 4px 14px rgba(201,150,58,0.32);
+  /* Large touch target */
+  min-height: 48px;
+  touch-action: manipulation;
+}
+.btn:active { background: #b8882e; transform: scale(0.97); }
+.btn:disabled { opacity: 0.38; cursor: not-allowed; transform: none; }
+.btn-center { text-align: center; margin-top: 12px; }
+
+/* ── RESULT ── */
+#result { display: none; text-align: center; max-width: 480px; padding: 0 8px; }
+.trophy-icon { font-size: 3.5rem; margin-bottom: 12px; display: block; animation: bounce 1s 0.4s ease both; }
+#result h2 { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: clamp(1.4rem,5vw,1.8rem); color: var(--sepia); margin-bottom: 8px; }
+.score-display { font-size: clamp(2rem,7vw,2.8rem); font-family: 'Atkinson Hyperlegible', sans-serif; color: var(--gold); margin: 10px 0 4px; }
+.score-bd { font-size: 0.82rem; color: var(--sepia); opacity: 0.68; margin-bottom: 14px; font-style: italic; }
+.result-msg { color: var(--sepia); font-size: clamp(0.9rem,3.5vw,1rem); line-height: 1.6; margin-bottom: 16px; }
+.fact-box { background: var(--cream); border-left: 3px solid var(--gold); padding: 12px 16px; margin: 14px 0; text-align: left; border-radius: 0 6px 6px 0; }
+.fact-lbl { font-size: 0.72rem; color: var(--gold); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 5px; }
+.fact-box p { font-size: clamp(0.82rem,3vw,0.88rem); color: var(--sepia); font-style: italic; line-height: 1.5; }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(10px); background: var(--sepia); color: var(--cream); padding: 11px 20px; border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: clamp(0.85rem,3vw,0.95rem); box-shadow: 0 6px 20px var(--shadow); opacity: 0; transition: all 0.3s; z-index: 200; max-width: 88vw; text-align: center; pointer-events: none; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@keyframes fadeDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:none} }
+@keyframes fadeUp   { from{opacity:0;transform:translateY(12px)}  to{opacity:1;transform:none} }
+@keyframes bounce   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+/* Sortie de secours : toujours un moyen de revenir au catalogue. */
+.jdc-retour{display:block;text-align:center;padding:8px;font-size:.74rem;
+  color:#5c3d1e;opacity:.55;text-decoration:none;letter-spacing:.1em;
+  text-transform:uppercase;font-family:'Nunito',sans-serif;}
+.jdc-retour:hover{opacity:1;}
+@media print{.jdc-retour{display:none;}}
+
+/* Pied discret : le lien légal doit exister sur chaque page du site. */
+.jdc-legal{text-align:center;padding:16px 14px 22px;font-size:.78rem;line-height:1.6;
+  color:#5c3d1e;opacity:.6;font-family:'Nunito',sans-serif;}
+.jdc-legal a{color:inherit;}
+@media print{.jdc-legal{display:none;}}
+</style>
+<script src="jdc-parcours.js"></script>
+<style id="jdc-apropos-style">
+/* Bloc « À propos » : replié par défaut, lu en entier par les moteurs.
+   Couleurs écrites en dur — chaque jeu a ses propres variables CSS. */
+.jdc-apropos{max-width:680px;margin:28px auto 8px;padding:0 16px;
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;color:#5c3d1e;}
+.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;
+  letter-spacing:.02em;opacity:.62;padding:9px 0;text-align:center;
+  border-top:1px solid rgba(92,61,30,.16);}
+.jdc-apropos>summary::-webkit-details-marker{display:none}
+.jdc-apropos>summary::after{content:' \203A';display:inline-block;
+  transform:rotate(90deg);margin-left:5px;opacity:.7}
+.jdc-apropos[open]>summary::after{transform:rotate(-90deg)}
+.jdc-apropos>summary:hover,.jdc-apropos>summary:focus-visible{opacity:.95}
+.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;
+  text-align:left;opacity:.9}
+.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:#5c3d1e;
+  font-weight:700}
+.jdc-apropos p{margin:0 0 10px}
+.jdc-apropos ul{margin:0 0 10px;padding-left:20px}
+.jdc-apropos li{margin-bottom:5px}
+.jdc-apropos a{color:#2d6a4f}
+.hc .jdc-apropos{color:#000}
+.hc .jdc-apropos h2{color:#000}
+.hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
+</style>
+</head>
+<body>
+
+
+<a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
+<header>
+  <h1>Mémoire des <em>Grands</em></h1>
+  <button id="statsBtn" onclick="openStats()" style="display:none;position:absolute;top:14px;right:16px;background:none;border:1.5px solid rgba(200,146,42,.4);border-radius:6px;padding:4px 10px;font-family:inherit;font-size: 0.75rem;font-weight:700;color:var(--sepia);cursor:pointer">📊 Stats</button>
+  <p>Jeu de culture historique</p>
+  <div class="divider"></div>
+</header>
+
+<div class="hud">
+  <div class="hud-box"><div class="lbl">Score</div><div class="val" id="hScore">0</div></div>
+  <div class="hud-box"><div class="lbl">Indices</div><div class="val red" id="hHints">−0 pts</div></div>
+  <div class="hud-box"><div class="lbl">Série</div><div class="val" id="hStreak">0</div></div>
+</div>
+
+<div class="step-indicator">
+  <div class="step-dot active" id="dot1">1</div>
+  <div class="step-line"></div>
+  <div class="step-dot" id="dot2">2</div>
+</div>
+
+<!-- ═══ ÉTAPE 1 ═══ -->
+<div id="niveauScreen">
+  <div class="instruction">
+    <h2>Choisissez votre parcours</h2>
+    <p>Vous pourrez en changer à tout moment.</p>
+  </div>
+  <div class="niv-row">
+    <button class="niv-card" onclick="choisirNiveau(1)">
+      <span class="niv-t">Découverte</span>
+      <span class="niv-d">4 personnes · 2 grandes périodes</span>
+    </button>
+    <button class="niv-card niv-mid" onclick="choisirNiveau(2)">
+      <span class="niv-t">Promenade</span>
+      <span class="niv-d">8 personnes · 3 périodes</span>
+    </button>
+    <button class="niv-card" onclick="choisirNiveau(3)">
+      <span class="niv-t">Grand tour</span>
+      <span class="niv-d">12 personnes · 4 périodes</span>
+    </button>
+  </div>
+  <div id="conseilMem" style="text-align:center;font-size:0.86rem;font-style:italic;opacity:.75;margin-top:14px;min-height:1.2em"></div>
+</div>
+
+<div id="step1">
+  <div class="instruction">
+    <h2>Étape 1 — Classer les personnages</h2>
+    <p>Glissez chaque nom dans la bonne catégorie.</p>
+    <span class="hint-legend">💡 1er appui : indice visible 6 s · 2e appui : permanent (−3 pts)</span>
+  </div>
+  <div id="pool" class="cards-pool"></div>
+  <div class="categories-row" id="zones"></div>
+  <div class="btn-center">
+    <button class="btn" id="btnV1" disabled onclick="validateStep1()">Valider →</button>
+  </div>
+</div>
+
+<!-- ═══ ÉTAPE 2 ═══ -->
+<div id="step2">
+  <div class="instruction">
+    <h2>Étape 2 — Associer à une époque</h2>
+    <p>Glissez chaque personne dans sa grande période.</p>
+    <span class="hint-legend">💡 1er appui : dates visibles 6 s · 2e appui : permanent (−3 pts)</span>
+  </div>
+  <div id="pool2" class="cards-pool"></div>
+  <div class="categories-row" id="zones2"></div>
+  <div class="btn-center" style="margin-top:16px;">
+    <button class="btn" onclick="validateStep2()">Corriger mes réponses →</button>
+  </div>
+</div>
+
+<!-- ═══ RÉSULTAT ═══ -->
+<div id="result">
+  <span class="trophy-icon" id="trophy">🏆</span>
+  <h2 id="rTitle"></h2>
+  <div class="score-display" id="rScore"></div>
+  <div class="score-bd" id="rBreak"></div>
+  <p class="result-msg" id="rMsg"></p>
+  <div class="fact-box">
+    <div class="fact-lbl">Le saviez-vous ?</div>
+    <p id="rFact"></p>
+  </div>
+  <button class="btn" onclick="restart()" style="margin-top:8px;">Rejouer ✦</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════ DATA ═══════════════
+const FIGURES = [
+  {id:'newton',     name:'Isaac Newton',          hint:'Physicien & mathématicien',   cat:'Sciences',    eraIdx:3, lifespan:'1643 – 1727', fact:'Newton développa la gravitation universelle après, dit-on, avoir observé une pomme tomber.'},
+  {id:'curie',      name:'Marie Curie',            hint:'Chimiste & physicienne',      cat:'Sciences',    eraIdx:6, lifespan:'1867 – 1934', fact:'Marie Curie est la seule personne à avoir reçu le Prix Nobel dans deux disciplines différentes.'},
+  {id:'darwin',     name:'Charles Darwin',         hint:'Naturaliste',                 cat:'Sciences',    eraIdx:5, lifespan:'1809 – 1882', fact:'Darwin hésita 20 ans avant de publier "L\'Origine des espèces".'},
+  {id:'einstein',   name:'Albert Einstein',        hint:'Physicien théoricien',        cat:'Sciences',    eraIdx:6, lifespan:'1879 – 1955', fact:'Einstein obtint son Prix Nobel pour l\'effet photoélectrique, pas la relativité.'},
+  {id:'pasteur',    name:'Louis Pasteur',          hint:'Chimiste & microbiologiste',  cat:'Sciences',    eraIdx:5, lifespan:'1822 – 1895', fact:'Pasteur inventa la pasteurisation en étudiant la fermentation du vin.'},
+  {id:'moliere',    name:'Molière',                hint:'Dramaturge',                  cat:'Arts',        eraIdx:3, lifespan:'1622 – 1673', fact:'Molière mourut sur scène dans "Le Malade Imaginaire".'},
+  {id:'vinci',      name:'Léonard de Vinci',       hint:'Artiste & inventeur',         cat:'Arts',        eraIdx:2, lifespan:'1452 – 1519', fact:'De Vinci écrivait en écriture spéculaire, lisible uniquement dans un miroir.'},
+  {id:'beethoven',  name:'Ludwig van Beethoven',   hint:'Compositeur',                 cat:'Arts',        eraIdx:5, lifespan:'1770 – 1827', fact:'Beethoven composa sa 9ème symphonie en étant totalement sourd.'},
+  {id:'monet',      name:'Claude Monet',           hint:'Peintre impressionniste',     cat:'Arts',        eraIdx:5, lifespan:'1840 – 1926', fact:'Monet peignit ses Nymphéas malgré une cataracte avancée.'},
+  {id:'hugo',       name:'Victor Hugo',            hint:'Romancier & poète',           cat:'Arts',        eraIdx:5, lifespan:'1802 – 1885', fact:'Hugo écrivit "Les Misérables" en exil sur l\'île de Guernesey.'},
+  {id:'napoleon',   name:'Napoléon Bonaparte',     hint:'Général & Empereur',          cat:'Politique',   eraIdx:4, lifespan:'1769 – 1821', fact:'Napoléon mesurait 1m69 — sa petite taille est une légende issue de caricatures anglaises.'},
+  {id:'jeanned',    name:'Jeanne d\'Arc',          hint:'Héroïne nationale',           cat:'Politique',   eraIdx:2, lifespan:'1412 – 1431', fact:'Jeanne d\'Arc fut canonisée 489 ans après avoir été brûlée comme hérétique.'},
+  {id:'charlemagne',name:'Charlemagne',            hint:'Roi des Francs & Empereur',   cat:'Politique',   eraIdx:1, lifespan:'742 – 814',   fact:'Charlemagne ne savait pas lire mais dormait avec une tablette pour apprendre à écrire.'},
+  {id:'degaulle',   name:'Charles de Gaulle',      hint:'Général & Président',         cat:'Politique',   eraIdx:6, lifespan:'1890 – 1970', fact:'De Gaulle (1m96) refusa d\'utiliser un micro pour ne pas sembler "diminué".'},
+  {id:'richelieu',  name:'Cardinal de Richelieu',  hint:'Homme d\'État',               cat:'Politique',   eraIdx:3, lifespan:'1585 – 1642', fact:'Richelieu fonda l\'Académie française en 1635.'},
+  {id:'magellan',   name:'Ferdinand Magellan',     hint:'Navigateur',                  cat:'Exploration', eraIdx:2, lifespan:'1480 – 1521', fact:'Magellan fut tué aux Philippines — son équipage finit le tour du monde sans lui.'},
+  {id:'colomb',     name:'Christophe Colomb',      hint:'Navigateur & explorateur',    cat:'Exploration', eraIdx:2, lifespan:'1451 – 1506', fact:'Colomb mourut convaincu d\'avoir atteint l\'Asie.'},
+  {id:'marco',      name:'Marco Polo',             hint:'Voyageur & marchand',         cat:'Exploration', eraIdx:1, lifespan:'1254 – 1324', fact:'Marco Polo dicta son récit depuis sa cellule de prison à Gênes.'},
+  {id:'champlain',  name:'Samuel de Champlain',    hint:'Explorateur & fondateur',     cat:'Exploration', eraIdx:3, lifespan:'1574 – 1635', fact:'Champlain fonda Québec en 1608 et dressa les premières cartes du Canada.'},
+  {id:'condamine',  name:'Charles de La Condamine',hint:'Géographe & explorateur',    cat:'Exploration', eraIdx:4, lifespan:'1701 – 1774', fact:'La Condamine rapporta du caoutchouc naturel d\'Amazonie en Europe.'},
+  {id:'archimede', name:'Archimède', hint:'Mathématicien & inventeur', cat:'Sciences', eraIdx:0, lifespan:'287 – 212 av. J.-C.', fact:'Archimède aurait crié « Eurêka ! » en découvrant sa poussée dans son bain.'},
+  {id:'galilee', name:'Galilée', hint:'Astronome & physicien', cat:'Sciences', eraIdx:2, lifespan:'1564 – 1642', fact:'Galilée perfectionna la lunette astronomique et observa les satellites de Jupiter.'},
+  {id:'lavoisier', name:'Antoine Lavoisier', hint:'Chimiste', cat:'Sciences', eraIdx:4, lifespan:'1743 – 1794', fact:'Lavoisier énonça que rien ne se perd, rien ne se crée, tout se transforme.'},
+  {id:'ampere', name:'André-Marie Ampère', hint:'Physicien', cat:'Sciences', eraIdx:5, lifespan:'1775 – 1836', fact:'L\'unité de courant électrique, l\'ampère, porte son nom.'},
+  {id:'branly', name:'Édouard Branly', hint:'Physicien', cat:'Sciences', eraIdx:6, lifespan:'1844 – 1940', fact:'Branly inventa le cohéreur, une pièce essentielle des premières radios.'},
+  {id:'becquerel', name:'Henri Becquerel', hint:'Physicien', cat:'Sciences', eraIdx:6, lifespan:'1852 – 1908', fact:'Becquerel découvrit la radioactivité naturelle par hasard, avec des sels d\'uranium.'},
+  {id:'ambroise', name:'Ambroise Paré', hint:'Chirurgien', cat:'Sciences', eraIdx:2, lifespan:'1510 – 1590', fact:'Ambroise Paré est considéré comme le père de la chirurgie moderne.'},
+  {id:'laennec', name:'René Laennec', hint:'Médecin', cat:'Sciences', eraIdx:5, lifespan:'1781 – 1826', fact:'Laennec inventa le stéthoscope en roulant un cahier pour ausculter une patiente.'},
+  {id:'mozart', name:'Wolfgang Amadeus Mozart', hint:'Compositeur', cat:'Arts', eraIdx:4, lifespan:'1756 – 1791', fact:'Mozart composa son premier menuet à cinq ans.'},
+  {id:'rodin', name:'Auguste Rodin', hint:'Sculpteur', cat:'Arts', eraIdx:6, lifespan:'1840 – 1917', fact:'Le Penseur de Rodin devait à l\'origine représenter le poète Dante.'},
+  {id:'laFontaine', name:'Jean de La Fontaine', hint:'Fabuliste', cat:'Arts', eraIdx:3, lifespan:'1621 – 1695', fact:'La Fontaine s\'inspira des fables d\'Ésope, écrites plus de deux mille ans avant lui.'},
+  {id:'berlioz', name:'Hector Berlioz', hint:'Compositeur', cat:'Arts', eraIdx:5, lifespan:'1803 – 1869', fact:'Berlioz étudia d\'abord la médecine avant de se consacrer à la musique.'},
+  {id:'cezanne', name:'Paul Cézanne', hint:'Peintre', cat:'Arts', eraIdx:6, lifespan:'1839 – 1906', fact:'Cézanne peignit plus de trente fois la montagne Sainte-Victoire.'},
+  {id:'michelange', name:'Michel-Ange', hint:'Sculpteur & peintre', cat:'Arts', eraIdx:2, lifespan:'1475 – 1564', fact:'Michel-Ange mit quatre ans à peindre le plafond de la chapelle Sixtine.'},
+  {id:'henri4', name:'Henri IV', hint:'Roi de France', cat:'Politique', eraIdx:2, lifespan:'1553 – 1610', fact:'On lui prête le souhait que chaque paysan puisse mettre la poule au pot le dimanche.'},
+  {id:'louis14', name:'Louis XIV', hint:'Roi de France', cat:'Politique', eraIdx:3, lifespan:'1638 – 1715', fact:'Louis XIV régna soixante-douze ans, le plus long règne de l\'histoire de France.'},
+  {id:'clemenceau', name:'Georges Clemenceau', hint:'Homme d\'État', cat:'Politique', eraIdx:6, lifespan:'1841 – 1929', fact:'Clemenceau était surnommé le Tigre pour son caractère combatif.'},
+  {id:'veil', name:'Simone Veil', hint:'Femme d\'État', cat:'Politique', eraIdx:6, lifespan:'1927 – 2017', fact:'Simone Veil fut la première femme présidente du Parlement européen.'},
+  {id:'cartier', name:'Jacques Cartier', hint:'Navigateur', cat:'Exploration', eraIdx:2, lifespan:'1491 – 1557', fact:'Cartier explora le fleuve Saint-Laurent et ouvrit la voie à la Nouvelle-France.'},
+  {id:'cook', name:'James Cook', hint:'Explorateur', cat:'Exploration', eraIdx:4, lifespan:'1728 – 1779', fact:'Cook cartographia les côtes de l\'Australie et de la Nouvelle-Zélande.'},
+  {id:'charcot', name:'Jean-Baptiste Charcot', hint:'Explorateur polaire', cat:'Exploration', eraIdx:6, lifespan:'1867 – 1936', fact:'Charcot explora l\'Antarctique à bord du Pourquoi Pas ?'},
+  {id:'mermoz', name:'Jean Mermoz', hint:'Aviateur', cat:'Exploration', eraIdx:6, lifespan:'1901 – 1936', fact:'Mermoz fut le premier à traverser l\'Atlantique Sud en avion postal.'},
+  {id:'cousteau', name:'Jacques-Yves Cousteau', hint:'Océanographe', cat:'Exploration', eraIdx:6, lifespan:'1910 – 1997', fact:'Cousteau coinventa le scaphandre autonome et fit connaître les océans au monde entier.'},
+  {id:'chatelet', name:'Émilie du Châtelet', hint:'Physicienne & mathématicienne', cat:'Sciences', eraIdx:4, lifespan:'1706 – 1749', fact:'Émilie du Châtelet traduisit et commenta Newton en français ; sa version fait toujours référence.'},
+  {id:'lovelace', name:'Ada Lovelace', hint:'Mathématicienne', cat:'Sciences', eraIdx:5, lifespan:'1815 – 1852', fact:'Ada Lovelace conçut le premier algorithme destiné à une machine, bien avant les ordinateurs.'},
+  {id:'sand', name:'George Sand', hint:'Écrivaine', cat:'Arts', eraIdx:5, lifespan:'1804 – 1876', fact:'George Sand, de son vrai nom Aurore Dupin, prit un nom d\'homme pour se faire publier.'},
+  {id:'morisot', name:'Berthe Morisot', hint:'Peintre', cat:'Arts', eraIdx:5, lifespan:'1841 – 1895', fact:'Berthe Morisot participa à la toute première exposition des impressionnistes, en 1874.'},
+  {id:'colette', name:'Colette', hint:'Écrivaine', cat:'Arts', eraIdx:6, lifespan:'1873 – 1954', fact:'Colette fut la première femme à recevoir des funérailles nationales en France.'},
+  {id:'alienor', name:'Aliénor d\'Aquitaine', hint:'Reine', cat:'Politique', eraIdx:1, lifespan:'1122 – 1204', fact:'Aliénor d\'Aquitaine fut successivement reine de France, puis reine d\'Angleterre.'},
+  {id:'auclert', name:'Hubertine Auclert', hint:'Militante', cat:'Politique', eraIdx:5, lifespan:'1848 – 1914', fact:'Hubertine Auclert consacra sa vie au combat pour le droit de vote des femmes.'},
+  {id:'baret', name:'Jeanne Baret', hint:'Botaniste & voyageuse', cat:'Exploration', eraIdx:4, lifespan:'1740 – 1807', fact:'Jeanne Baret embarqua déguisée en homme et devint la première femme à faire le tour du monde.'},
+  {id:'davidneel', name:'Alexandra David-Néel', hint:'Exploratrice', cat:'Exploration', eraIdx:6, lifespan:'1868 – 1969', fact:'Alexandra David-Néel atteignit Lhassa en 1924, première Occidentale à entrer dans la ville interdite.'},
+];
+
+const CATS  = ['Sciences','Arts','Politique','Exploration'];
+const ICONS = {Sciences:'🔬', Arts:'🎨', Politique:'⚜️', Exploration:'🧭'};
+const ERAS  = [
+  'Antiquité',
+  'Moyen Âge',
+  'Renaissance',
+  'Grand Siècle',
+  'Siècle des Lumières',
+  'XIXe siècle',
+  'XXe siècle',
+];
+// repères de dates, affichés en petit sous le nom
+// Quatre grandes périodes pour le classement de l'étape 2
+const PERIODES = ['Temps anciens','Renaissance','Siècles des rois','Temps modernes'];
+
+// ── NIVEAUX ──
+// 1 Découverte : 4 personnes, 2 catégories, 2 périodes larges
+// 2 Promenade  : 8 personnes, 4 catégories, 3 périodes
+// 3 Grand tour : 12 personnes, 4 catégories, 4 périodes
+const NIVEAUX = {
+  1: { nbParCat:2, cats:2, periodes:['Autrefois','Époque récente'], label:'Découverte' },
+  2: { nbParCat:2, cats:4, periodes:['Temps anciens','Siècles des rois','Temps modernes'], label:'Promenade' },
+  3: { nbParCat:3, cats:4, periodes:['Temps anciens','Renaissance','Siècles des rois','Temps modernes'], label:'Grand tour' }
+};
+let NIVEAU = 2;
+
+// Périodes simplifiées pour le niveau 1
+const PERIODE_DATES_L1 = { 'Autrefois':'avant 1800', 'Époque récente':'après 1800' };
+const PERIODE_ICONS_L1 = { 'Autrefois':'🏛️', 'Époque récente':'🚂' };
+
+function periodesActives(){ return NIVEAUX[NIVEAU].periodes; }
+function datesDe(per){ return PERIODE_DATES[per] || PERIODE_DATES_L1[per] || ''; }
+function iconeDe(per){ return PERIODE_ICONS[per] || PERIODE_ICONS_L1[per] || '•'; }
+
+// période correcte selon le niveau
+function periodeCorrecte(eraIdx){
+  if(NIVEAU===1) return eraIdx<=4 ? 'Autrefois' : 'Époque récente';
+  if(NIVEAU===2){
+    if(eraIdx<=2) return 'Temps anciens';
+    if(eraIdx<=4) return 'Siècles des rois';
+    return 'Temps modernes';
+  }
+  return periodeDe(eraIdx);
+}
+const PERIODE_DATES = {
+  'Temps anciens':'avant 1400',
+  'Renaissance':'1400 – 1600',
+  'Siècles des rois':'1600 – 1800',
+  'Temps modernes':'après 1800',
+};
+const PERIODE_ICONS = {
+  'Temps anciens':'🏛️','Renaissance':'🎭','Siècles des rois':'👑','Temps modernes':'🚂'
+};
+// correspondance eraIdx -> période
+function periodeDe(eraIdx){
+  if(eraIdx<=1) return 'Temps anciens';      // Antiquité, Moyen Âge
+  if(eraIdx===2) return 'Renaissance';
+  if(eraIdx<=4) return 'Siècles des rois';   // Grand Siècle, Lumières
+  return 'Temps modernes';                    // XIXe, XXe
+}
+
+const ERA_DATES = {
+  'Antiquité':'avant 500',
+  'Moyen Âge':'500 – 1400',
+  'Renaissance':'1400 – 1600',
+  'Grand Siècle':'1600 – 1700',
+  'Siècle des Lumières':'1700 – 1800',
+  'XIXe siècle':'1800 – 1900',
+  'XXe siècle':'1900 – 2000',
+};
+
+// ═══════════════ STATE ═══════════════
+const S = {
+  figures:[], placed:{}, hintClicks:{}, penalty:0, score:0, streak:0,
+  // drag state
+  dragging: null,   // { id, fromZone }
+  ghost: null,      // DOM element clone
+};
+
+function shuffle(a){ const b=[...a]; for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];} return b; }
+function pick(){
+  const cfg = NIVEAUX[NIVEAU];
+  let vus=[];
+  if(typeof JDC!=='undefined'){
+    const d=JDC.lire();
+    vus=(d.vus&&d.vus.memoire)?d.vus.memoire:[];
+  }
+  const cats = shuffle(CATS).slice(0, cfg.cats);
+  let o=[];
+  cats.forEach(c=>{
+    const dispo=FIGURES.filter(f=>f.cat===c);
+    const jamais=shuffle(dispo.filter(f=>vus.indexOf(f.id)===-1));
+    const deja=dispo.filter(f=>vus.indexOf(f.id)!==-1).sort((a,b)=>vus.indexOf(a.id)-vus.indexOf(b.id));
+    o=o.concat(jamais.concat(deja).slice(0, cfg.nbParCat));
+  });
+  return shuffle(o);
+}
+
+// ════════════════════════════════════════
+//  HINT ENGINE
+// ════════════════════════════════════════
+function triggerHint(key, txtEl, btnEl, barEl) {
+  const n = (S.hintClicks[key]||0) + 1;
+  S.hintClicks[key] = n;
+  if (n === 1) {
+    txtEl.classList.remove('permanent','flashing');
+    void txtEl.offsetWidth;
+    txtEl.classList.add('flashing');
+    if (barEl) {
+      barEl.style.display = 'block';
+      const bar = barEl.querySelector('.hint-bar');
+      bar.classList.remove('draining'); void bar.offsetWidth; bar.classList.add('draining');
+      setTimeout(()=>{ barEl.style.display='none'; }, 6400);
+    }
+    btnEl.textContent = '💡 Revoir';
+    btnEl.classList.add('charged');
+    toast('Lisez bien — l\'indice disparaît dans 6 secondes');
+  } else {
+    if (n === 2) {
+      S.penalty += 3; S.score = Math.max(0, S.score - 3);
+      updateHUD(); toast('Indice affiché en permanence (−3 pts)');
+    }
+    txtEl.classList.remove('flashing'); void txtEl.offsetWidth; txtEl.classList.add('permanent');
+    if (barEl) barEl.style.display = 'none';
+    btnEl.classList.add('gone');
+  }
+}
+
+// ════════════════════════════════════════
+//  DRAG — unified mouse + touch
+// ════════════════════════════════════════
+let activeGhost = null;
+let dragId = null;
+let dragOriginZone = null; // null = pool
+
+function startDrag(id, fromZone, clientX, clientY, sourceEl) {
+  dragId = id;
+  dragOriginZone = fromZone;
+
+  // Mark source as dragging
+  sourceEl.classList.add('dragging');
+
+  // Create ghost
+  const ghost = document.createElement('div');
+  ghost.className = 'drag-ghost';
+  ghost.textContent = FIGURES.find(f=>f.id===id).name;
+  ghost.style.left = (clientX - 60) + 'px';
+  ghost.style.top  = (clientY - 20) + 'px';
+  document.body.appendChild(ghost);
+  activeGhost = ghost;
+}
+
+function moveDrag(clientX, clientY) {
+  if (!activeGhost) return;
+  activeGhost.style.left = (clientX - 60) + 'px';
+  activeGhost.style.top  = (clientY - 20) + 'px';
+
+  // Highlight zone under finger
+  document.querySelectorAll('.category-zone').forEach(z => z.classList.remove('over'));
+  const el = document.elementFromPoint(clientX, clientY);
+  if (el) {
+    const zone = el.closest('.category-zone');
+    if (zone) zone.classList.add('over');
+  }
+}
+
+function endDrag(clientX, clientY) {
+  if (!activeGhost || dragId === null) return;
+
+  // Find target zone
+  activeGhost.remove(); activeGhost = null;
+  document.querySelectorAll('.category-zone').forEach(z => z.classList.remove('over'));
+
+  // Un-fade source
+  document.querySelectorAll('.dragging').forEach(el => el.classList.remove('dragging'));
+
+  const el = document.elementFromPoint(clientX, clientY);
+  const zone = el && el.closest('.category-zone');
+
+  if (zone) {
+    dropIntoZone(dragId, zone.dataset.cat);
+  } else {
+    // Dropped outside — if it came from a zone, put it back in pool
+    if (dragOriginZone) {
+      returnToPool(dragId, dragOriginZone);
+    }
+  }
+
+  dragId = null;
+  dragOriginZone = null;
+}
+
+function dropIntoZone(id, cat) {
+  // Remove from previous zone if it was already placed
+  if (S.placed[id]) {
+    const mini = document.getElementById('mini-'+id);
+    if (mini) mini.remove();
+  }
+
+  S.placed[id] = cat;
+
+  // Hide pool card
+  const pc = document.getElementById('pc-'+id);
+  if (pc) { pc.style.display = 'none'; pc.classList.remove('arevoir'); }
+
+  // Create mini card in zone
+  const mini = document.createElement('div');
+  mini.className = 'mini-card';
+  mini.id = 'mini-'+id;
+  mini.textContent = FIGURES.find(f=>f.id===id).name;
+  mini.dataset.id = id;
+
+  // Touch drag from mini card back
+  mini.addEventListener('touchstart', onTouchStart, {passive:false});
+  mini.addEventListener('mousedown',  onMouseDown);
+
+  document.getElementById('zc-'+cat).appendChild(mini);
+  checkAll();
+}
+
+function returnToPool(id, fromCat) {
+  delete S.placed[id];
+  const mini = document.getElementById('mini-'+id);
+  if (mini) mini.remove();
+  const pc = document.getElementById('pc-'+id);
+  if (pc) pc.style.display = '';
+  checkAll();
+}
+
+function checkAll() {
+  document.getElementById('btnV1').disabled = !S.figures.every(f => S.placed[f.id]);
+}
+
+// ─── MOUSE handlers ───
+function onMouseDown(e) {
+  if (e.target.classList.contains('hint-btn')) return;
+  const card = e.currentTarget;
+  const id = card.dataset.id;
+  const fromZone = card.classList.contains('mini-card') ? S.placed[id] : null;
+
+  // If mini card, return to pool state first
+  if (fromZone) {
+    delete S.placed[id];
+    card.remove();
+    const pc = document.getElementById('pc-'+id);
+    if (pc) pc.style.display = '';
+    checkAll();
+  }
+
+  startDrag(id, fromZone, e.clientX, e.clientY, document.getElementById('pc-'+id) || card);
+
+  function onMove(e) { moveDrag(e.clientX, e.clientY); }
+  function onUp(e)   { endDrag(e.clientX, e.clientY); window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); }
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onUp);
+}
+
+// ─── TOUCH handlers ───
+function onTouchStart(e) {
+  if (e.target.classList.contains('hint-btn')) return;
+  e.preventDefault();
+  const t = e.touches[0];
+  const card = e.currentTarget;
+  const id = card.dataset.id;
+  const fromZone = card.classList.contains('mini-card') ? S.placed[id] : null;
+
+  if (fromZone) {
+    delete S.placed[id];
+    card.remove();
+    const pc = document.getElementById('pc-'+id);
+    if (pc) pc.style.display = '';
+    checkAll();
+  }
+
+  startDrag(id, fromZone, t.clientX, t.clientY, document.getElementById('pc-'+id) || card);
+
+  function onMove(e) { e.preventDefault(); const t=e.touches[0]; moveDrag(t.clientX,t.clientY); }
+  function onEnd(e)  { const t=e.changedTouches[0]; endDrag(t.clientX,t.clientY); card.removeEventListener('touchmove',onMove); card.removeEventListener('touchend',onEnd); }
+  card.addEventListener('touchmove', onMove, {passive:false});
+  card.addEventListener('touchend',  onEnd);
+}
+
+// ════════════════════════════════════════
+//  STEP 1 INIT
+// ════════════════════════════════════════
+function choisirNiveau(n){
+  NIVEAU = n;
+  hide('niveauScreen');
+  S.figures=pick(); S.placed={}; S.placed2={}; S.hintClicks={}; S.penalty=0; S.score=0; S.correction1=false;
+  setDot('dot1','active','1'); setDot('dot2','','2');
+  initStep1();
+}
+
+function initStep1() {
+  S.figures=pick(); S.placed={}; S.placed2={}; S.hintClicks={}; S.penalty=0; S.score=0; S.streak=0; S.correction1=false;
+  hide('niveauScreen'); show('step1'); hide('step2'); hide('result');
+  updateHUD();
+
+  // Pool
+  const pool = $('pool'); pool.innerHTML = '';
+  S.figures.forEach(f => pool.appendChild(makeCard(f)));
+
+  // Zones
+  const zonesEl = $('zones'); zonesEl.innerHTML = '';
+  const catsJeu = [...new Set(S.figures.map(f=>f.cat))];
+  catsJeu.forEach(cat => {
+    const z = document.createElement('div');
+    z.className = 'category-zone'; z.dataset.cat = cat;
+    z.innerHTML = `<div class="cat-title">${ICONS[cat]} ${cat}</div><div class="zone-cards" id="zc-${cat}"></div>`;
+    // Desktop dragover
+    z.addEventListener('dragover',  e => { e.preventDefault(); z.classList.add('over'); });
+    z.addEventListener('dragleave', () => z.classList.remove('over'));
+    z.addEventListener('drop', e => { e.preventDefault(); z.classList.remove('over'); const id = e.dataTransfer.getData('text/plain'); if(id) dropIntoZone(id, cat); });
+    zonesEl.appendChild(z);
+  });
+
+  $('btnV1').disabled = true;
+}
+
+function makeCard(f) {
+  const card = document.createElement('div');
+  card.className = 'person-card'; card.id = 'pc-'+f.id; card.dataset.id = f.id;
+
+  const nameDiv = document.createElement('div');
+  nameDiv.textContent = f.name;
+
+  // Hint row
+  const hRow = document.createElement('div'); hRow.className = 'hint-row';
+  const hBtn = document.createElement('button'); hBtn.className = 'hint-btn'; hBtn.textContent = '💡 Indice';
+  const hTxt = document.createElement('span');   hTxt.className = 'hint-text'; hTxt.textContent = f.hint;
+  const barWrap = document.createElement('div'); barWrap.className = 'hint-bar-wrap'; barWrap.innerHTML = '<div class="hint-bar"></div>';
+
+  hBtn.addEventListener('click', e => { e.stopPropagation(); triggerHint('s1-'+f.id, hTxt, hBtn, barWrap); });
+  hBtn.addEventListener('touchend', e => { e.stopPropagation(); });
+  hRow.append(hBtn, hTxt);
+  card.append(nameDiv, hRow, barWrap);
+
+  // Native HTML5 drag (desktop)
+  card.draggable = true;
+  card.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', f.id); setTimeout(()=>card.style.opacity='0.35',0); });
+  card.addEventListener('dragend',   () => { card.style.opacity=''; });
+
+  // Mouse drag
+  card.addEventListener('mousedown', onMouseDown);
+  // Touch drag
+  card.addEventListener('touchstart', onTouchStart, {passive:false});
+
+  return card;
+}
+
+// ════════════════════════════════════════
+//  VALIDATE STEP 1
+// ════════════════════════════════════════
+function validateStep1() {
+  let ok = 0;
+  const fautes = [];
+  S.figures.forEach(f => {
+    if(S.placed[f.id]===f.cat) ok++;
+    else fautes.push(f);
+  });
+  const total = S.figures.length;
+
+  // première validation : on marque et on propose de corriger
+  if(fautes.length && !S.correction1){
+    S.correction1 = true;
+    S.okStep1 = ok;
+    // marquer visuellement les mini-cartes déjà placées
+    S.figures.forEach(f => {
+      const mini = document.getElementById('mini-'+f.id);
+      if(!mini) return;
+      if(S.placed[f.id]===f.cat) mini.classList.add('mini-ok');
+      else mini.classList.add('mini-revoir');
+    });
+    $('corrTexte').textContent = ok + ' sur ' + total + ' sont bien classés. '
+      + (fautes.length>1 ? fautes.length+' cartes sont à revoir.' : 'Une carte est à revoir.');
+    $('corrPanel').style.display = 'flex';
+    return;
+  }
+
+  // validation définitive
+  const pts = ok*10; S.score += pts;
+  if(ok===total){ S.streak++; toast('✓ Parfait ! '+ok+'/'+total+' — +'+pts+' pts'); }
+  else { S.streak=0; toast(ok+'/'+total+' correct — +'+pts+' pts'); }
+  updateHUD();
+  setTimeout(()=>{
+    setDot('dot1','done','✓'); setDot('dot2','active','2');
+    hide('step1'); initStep2();
+  }, 1300);
+}
+
+// L'utilisateur choisit de corriger : on renvoie les cartes fausses dans le pool
+function corrigerStep1(){
+  $('corrPanel').style.display = 'none';
+  let n = 0;
+  S.figures.forEach(f => {
+    if(S.placed[f.id]===f.cat) return;      // bien classée : on n'y touche pas
+    const mini = document.getElementById('mini-'+f.id);
+    if(mini) mini.remove();                 // retirer du bac
+    const pc = document.getElementById('pc-'+f.id);
+    if(pc){ pc.style.display = ''; pc.classList.add('arevoir'); }  // remonter dans la réserve
+    delete S.placed[f.id];
+    n++;
+  });
+  checkAll();
+  toast(n>1 ? n+' cartes sont remontées en haut, replacez-les' : 'La carte est remontée en haut, replacez-la');
+}
+
+// L'utilisateur passe à la suite sans corriger
+function passerStep1(){
+  $('corrPanel').style.display = 'none';
+  validateStep1();
+}
+
+// ════════════════════════════════════════
+//  STEP 2
+// ════════════════════════════════════════
+function initStep2() {
+  show('step2');
+  const pool = $('pool2'); pool.innerHTML = '';
+  S.placed2 = {};
+  S.figures.forEach(f => pool.appendChild(makeCard2(f)));
+
+  const zonesEl = $('zones2'); zonesEl.innerHTML = '';
+  periodesActives().forEach(per => {
+    const z = document.createElement('div');
+    z.className = 'category-zone'; z.dataset.per = per;
+    z.innerHTML = '<div class="cat-title">' + iconeDe(per) + ' ' + per +
+                  '<span class="cat-dates">' + datesDe(per) + '</span></div>' +
+                  '<div class="zone-cards" id="zp-' + per.replace(/\s/g,'_') + '"></div>';
+    z.addEventListener('dragover',  e => { e.preventDefault(); z.classList.add('over'); });
+    z.addEventListener('dragleave', () => z.classList.remove('over'));
+    z.addEventListener('drop', e => { e.preventDefault(); z.classList.remove('over');
+      const id = e.dataTransfer.getData('text/plain'); if(id) dropIntoPeriode(id, per); });
+    zonesEl.appendChild(z);
+  });
+}
+
+function makeCard2(f) {
+  const card = document.createElement('div');
+  card.className = 'person-card'; card.id = 'p2-'+f.id; card.dataset.id = f.id;
+
+  const nameDiv = document.createElement('div');
+  nameDiv.textContent = f.name;
+
+  const hRow = document.createElement('div'); hRow.className = 'hint-row';
+  const hBtn = document.createElement('button'); hBtn.className = 'hint-btn'; hBtn.textContent = '💡 Dates';
+  const hTxt = document.createElement('span');   hTxt.className = 'hint-text'; hTxt.textContent = f.lifespan;
+  const barWrap = document.createElement('div'); barWrap.className = 'hint-bar-wrap'; barWrap.innerHTML = '<div class="hint-bar"></div>';
+  hBtn.addEventListener('click', e => { e.stopPropagation(); triggerHint('s2-'+f.id, hTxt, hBtn, barWrap); });
+  hRow.append(hBtn, hTxt);
+  card.append(nameDiv, hRow, barWrap);
+
+  card.draggable = true;
+  card.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', f.id); setTimeout(()=>card.style.opacity='0.35',0); });
+  card.addEventListener('dragend',   () => { card.style.opacity=''; });
+  card.addEventListener('mousedown', onMouseDown2);
+  card.addEventListener('touchstart', onTouchStart2, {passive:false});
+  return card;
+}
+
+function dropIntoPeriode(id, per) {
+  const card = $('p2-'+id); if(!card) return;
+  S.placed2[id] = per;
+  const zone = $('zp-'+per.replace(/\s/g,'_'));
+  if(zone) zone.appendChild(card);
+  card.classList.add('placed');
+}
+
+// glisser tactile / souris pour l'étape 2
+let _drag2=null,_ghost2=null;
+function onMouseDown2(e){ startDrag2(e.currentTarget, e.clientX, e.clientY); e.preventDefault(); }
+function onTouchStart2(e){ const t=e.touches[0]; startDrag2(e.currentTarget, t.clientX, t.clientY); e.preventDefault(); }
+function startDrag2(card, x, y){
+  _drag2 = card.dataset.id;
+  _ghost2 = card.cloneNode(true);
+  _ghost2.style.cssText='position:fixed;pointer-events:none;opacity:.85;z-index:999;width:'+card.offsetWidth+'px;transform:translate(-50%,-50%)';
+  document.body.appendChild(_ghost2);
+  moveGhost2(x,y);
+  document.addEventListener('mousemove', onMove2);
+  document.addEventListener('mouseup', onUp2);
+  document.addEventListener('touchmove', onTouchMove2, {passive:false});
+  document.addEventListener('touchend', onTouchEnd2);
+}
+function moveGhost2(x,y){ if(_ghost2){ _ghost2.style.left=x+'px'; _ghost2.style.top=y+'px'; } }
+function onMove2(e){ moveGhost2(e.clientX,e.clientY); highlight2(e.clientX,e.clientY); }
+function onTouchMove2(e){ const t=e.touches[0]; moveGhost2(t.clientX,t.clientY); highlight2(t.clientX,t.clientY); e.preventDefault(); }
+function highlight2(x,y){
+  document.querySelectorAll('#zones2 .category-zone').forEach(z=>{
+    const r=z.getBoundingClientRect();
+    z.classList.toggle('over', x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom);
+  });
+}
+function onUp2(e){ endDrag2(e.clientX,e.clientY); }
+function onTouchEnd2(e){ const t=e.changedTouches[0]; endDrag2(t.clientX,t.clientY); }
+function endDrag2(x,y){
+  document.removeEventListener('mousemove', onMove2);
+  document.removeEventListener('mouseup', onUp2);
+  document.removeEventListener('touchmove', onTouchMove2);
+  document.removeEventListener('touchend', onTouchEnd2);
+  if(_ghost2){ _ghost2.remove(); _ghost2=null; }
+  let cible=null;
+  document.querySelectorAll('#zones2 .category-zone').forEach(z=>{
+    z.classList.remove('over');
+    const r=z.getBoundingClientRect();
+    if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom) cible=z.dataset.per;
+  });
+  if(cible && _drag2) dropIntoPeriode(_drag2, cible);
+  _drag2=null;
+}
+
+function validateStep2() {
+  const total = S.figures.length;
+  const places = Object.keys(S.placed2||{}).length;
+  if(places === 0){ toast('Placez au moins une personne pour continuer'); return; }
+  if(places < total){ toast('Vous pouvez laisser des cartes de côté, ce n\'est pas grave'); }
+
+  let ok = 0;
+  S.figures.forEach(f => {
+    const card = $('p2-'+f.id);
+    const choix = S.placed2[f.id];
+    if(!choix || !card) return;
+    const bonne = periodeCorrecte(f.eraIdx);
+    if(choix === bonne){ ok++; card.classList.add('correct'); }
+    else {
+      card.classList.add('wrong');
+      const lbl=document.createElement('div');
+      lbl.className='correct-lbl'; lbl.textContent='→ '+bonne;
+      card.appendChild(lbl);
+    }
+    card.draggable = false;
+    // après correction : la carte s'ouvre sur l'histoire de la personne
+    card.classList.add('revelable');
+    const marque=document.createElement('span');
+    marque.className='btn-histoire'; marque.textContent='?';
+    marque.title='En savoir plus';
+    card.appendChild(marque);
+    card.addEventListener('click', ()=>ouvrirHistoire(f.id));
+  });
+
+  const pts = ok*15; S.score += pts;
+  if(ok === total){ S.streak++; toast('✓ Parfait ! '+ok+'/'+total+' — +'+pts+' pts'); }
+  else { toast(ok+'/'+total+' correct — +'+pts+' pts'); }
+  updateHUD();
+  toast('Touchez une carte pour découvrir son histoire');
+  setTimeout(showResult, 2600);
+}
+
+// ════════════════════════════════════════
+//  RESULT
+// ════════════════════════════════════════
+function ouvrirHistoire(id){
+  const f=FIGURES.find(x=>x.id===id);
+  if(!f)return;
+  $('hTitre').textContent=f.name;
+  $('hRole').textContent=f.hint+' · '+f.lifespan;
+  $('hFait').textContent=f.fact;
+  $('histoirePanel').style.display='flex';
+}
+function fermerHistoire(){ $('histoirePanel').style.display='none'; }
+
+function showResult() {
+  hide('step2'); show('result');
+  const max=S.figures.length*25, pct=S.score/max;
+  let trophy,title,msg;
+  if(pct>=0.9){trophy='🏆';title='Excellent !';msg='Vous êtes un véritable érudit de l\'histoire. Votre mémoire est remarquable.';}
+  else if(pct>=0.7){trophy='🥇';title='Très bien !';msg='Belle maîtrise de l\'histoire. Quelques époques ont résisté, mais votre culture est solide.';}
+  else if(pct>=0.5){trophy='🥈';title='Bien joué !';msg='Un bon début ! Avec un peu de révision sur les époques, vous progresserez encore.';}
+  else{trophy='📚';title='À réviser !';msg='L\'histoire recèle encore bien des surprises — rejouez pour progresser !';}
+  $('trophy').textContent=trophy; $('rTitle').textContent=title;
+  $('rScore').textContent=S.score+' pts'; $('rMsg').textContent=msg;
+  const pc=Object.values(S.hintClicks).filter(v=>v>=2).length;
+  $('rBreak').textContent=pc>0?`Score brut ${S.score+S.penalty} pts — ${pc} indice(s) permanent(s) (−${S.penalty} pts)`:'Aucun indice permanent utilisé — félicitations !';
+  trackPartie(S.score, max, S.penalty, 0);
+  if(typeof JDC!=='undefined'){
+    const niv = NIVEAU;
+    JDC.enregistrer('memoire', niv, pct>=0.5, {erreurs:S.penalty});
+    S.figures.forEach(f=>JDC.marquerVu('memoire', f.id));
+  }
+  const fig=S.figures[0|Math.random()*S.figures.length];
+  $('rFact').textContent=fig.name+' : '+fig.fact;
+  setDot('dot2','done','✓'); updateHUD();
+}
+
+// ════════════════════════════════════════
+//  STATISTIQUES (triple-clic sur le titre)
+// ════════════════════════════════════════
+const STATS_KEY='memoire_stats_v1';
+let _tc=0,_tct=null;
+function afficherConseil(){
+  if(typeof JDC==='undefined')return;
+  const b=JDC.bilanJeu('memoire');
+  if(!b.parties)return;
+  const el=document.getElementById('conseilMem');
+  if(el){
+    const st=loadStats();
+    const moy=st.global&&st.global.parties?Math.round(st.global.totalScore/st.global.parties):0;
+    el.textContent=b.parties+' partie(s) jouée(s), score moyen '+moy+' pts.';
+  }
+}
+
+function initStats(){
+  const h=document.querySelector('h1');
+  if(!h)return;
+  h.style.cursor='default';
+  h.addEventListener('click',()=>{
+    _tc++;clearTimeout(_tct);_tct=setTimeout(()=>_tc=0,800);
+    if(_tc>=3){_tc=0;const b=$('statsBtn');if(b)b.style.display='block';toast('Mode admin activé');}
+  });
+}
+function loadStats(){try{return JSON.parse(localStorage.getItem(STATS_KEY))||{};}catch(e){return{};}}
+function saveStats(x){try{localStorage.setItem(STATS_KEY,JSON.stringify(x));}catch(e){}}
+function trackPartie(score,max,penalty,sec){
+  const st=loadStats();
+  if(!st.global)st.global={parties:0,totalScore:0,meilleur:0,totalSec:0,totalPenalty:0};
+  const g=st.global;
+  g.parties++;g.totalScore+=score;g.totalSec+=sec;g.totalPenalty+=penalty;
+  if(score>g.meilleur)g.meilleur=score;
+  saveStats(st);
+}
+function openStats(){
+  const st=loadStats(),c=$('statsContent');
+  if(!st.global||!st.global.parties){c.innerHTML='<p style="font-style:italic;opacity:.6;text-align:center;padding:14px 0">Aucune partie encore jouée.</p>';}
+  else{
+    const g=st.global,moy=Math.round(g.totalScore/g.parties);
+    c.innerHTML='<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(200,146,42,.15)"><span>Parties jouées</span><strong>'+g.parties+'</strong></div>'
+      +'<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(200,146,42,.15)"><span>Score moyen</span><strong>'+moy+' pts</strong></div>'
+      +'<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(200,146,42,.15)"><span>Meilleur score</span><strong>'+g.meilleur+' pts</strong></div>'
+      +'<div style="display:flex;justify-content:space-between;padding:7px 0"><span>Indices utilisés (moy.)</span><strong>'+Math.round(g.totalPenalty/g.parties)+' pts</strong></div>';
+  }
+  $('statsPanel').style.display='flex';
+}
+function closeStats(){ $('statsPanel').style.display='none'; }
+function resetStats(){ if(confirm('Effacer les statistiques ?')){localStorage.removeItem(STATS_KEY);closeStats();toast('Statistiques effacées');} }
+
+// ════════════════════════════════════════
+//  UTILS
+// ════════════════════════════════════════
+function $(id){ return document.getElementById(id); }
+function show(id){ $(id).style.display='block'; }
+function hide(id){ $(id).style.display='none'; }
+function setDot(id,cls,txt){ const d=$(id); d.className='step-dot '+cls; d.textContent=txt; }
+function updateHUD(){ $('hScore').textContent=S.score; $('hHints').textContent='−'+S.penalty+' pts'; $('hStreak').textContent=S.streak>=3?S.streak+'🔥':S.streak; }
+let _tt; function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>t.classList.remove('show'),3400); }
+function restart(){ setDot('dot1','active','1'); setDot('dot2','','2'); hide('result'); initStats();
+show('niveauScreen');
+hide('step1');
+hide('step2');
+hide('result');
+afficherConseil(); }
+
+initStep1();
+</script>
+<div id="statsPanel" style="display:none;position:fixed;inset:0;background:rgba(28,18,8,.75);z-index:200;align-items:center;justify-content:center" onclick="if(event.target===this)closeStats()">
+  <div style="background:var(--cream,#f7f3ea);border:2px solid var(--gold,#c8922a);border-radius:14px;padding:24px 28px;max-width:400px;width:92%">
+    <h2 style="font-size: 1.15rem;margin-bottom:12px;color:var(--sepia,#5c3d1e)">📊 Statistiques</h2>
+    <div id="statsContent"></div>
+    <div style="display:flex;gap:10px;margin-top:14px;justify-content:flex-end">
+      <button onclick="resetStats()" style="padding:6px 14px;border-radius:6px;background:none;border:1.5px solid rgba(200,146,42,.5);font-family:inherit;font-weight:700;font-size: 0.78rem;cursor:pointer">Réinitialiser</button>
+      <button onclick="closeStats()" style="padding:6px 14px;border-radius:6px;background:var(--gold,#c8922a);color:#fff;border:none;font-family:inherit;font-weight:700;font-size: 0.78rem;cursor:pointer">Fermer</button>
+    </div>
+  </div>
+</div>
+<div id="corrPanel" style="display:none;position:fixed;inset:0;background:rgba(28,18,8,.72);z-index:205;align-items:center;justify-content:center;padding:16px">
+  <div style="background:#f7f3ea;border:2px solid #c8922a;border-radius:16px;padding:26px 28px;max-width:430px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4)">
+    <div style="font-size:2.2rem">🔎</div>
+    <h2 style="font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;color:#5c3d1e;margin:8px 0 6px">Presque !</h2>
+    <p id="corrTexte" style="font-size:0.98rem;line-height:1.6;color:#1c1208;margin-bottom:18px"></p>
+    <button onclick="corrigerStep1()" style="background:#c8922a;color:#fff;border:none;border-radius:10px;padding:12px 24px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;margin:4px">Je corrige</button>
+    <button onclick="passerStep1()" style="background:none;border:1.5px solid rgba(200,146,42,.55);color:#5c3d1e;border-radius:10px;padding:12px 24px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;margin:4px">Passer à la suite</button>
+  </div>
+</div>
+
+<div id="histoirePanel" style="display:none;position:fixed;inset:0;background:rgba(28,18,8,.75);z-index:210;align-items:center;justify-content:center;padding:16px" onclick="if(event.target===this)fermerHistoire()">
+  <div style="background:#f7f3ea;border:2px solid #c8922a;border-radius:16px;padding:26px 28px;max-width:460px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.4)">
+    <div style="font-size:2rem;text-align:center">📖</div>
+    <h2 id="hTitre" style="font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.25rem;color:#5c3d1e;text-align:center;margin:6px 0 2px"></h2>
+    <div id="hRole" style="text-align:center;font-size:0.82rem;color:#5c3d1e;opacity:.7;margin-bottom:14px"></div>
+    <p id="hFait" style="font-size:0.98rem;line-height:1.65;color:#1c1208;margin-bottom:18px"></p>
+    <div style="text-align:center">
+      <button onclick="fermerHistoire()" style="background:#c8922a;color:#fff;border:none;border-radius:10px;padding:11px 26px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer">Fermer</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+<details class="jdc-apropos">
+<summary>À propos de ce jeu</summary>
+<div class="corps">
+<p><strong>Mémoire des Grands</strong> — Des personnages qui ont marqué le siècle, à reconnaître puis à situer. Le jeu se fait en deux étapes : d'abord on regarde, ensuite on retrouve.</p>
+<h2>Pour qui</h2>
+<p>Aux personnes âgées. Il s'appuie sur la mémoire ancienne, celle des visages et des noms appris il y a longtemps, qui reste souvent disponible bien après que la mémoire des derniers jours se soit effacée.</p>
+<h2>Comment y jouer</h2>
+<ul>
+<li><strong>Seul</strong> : en s'arrêtant sur chaque visage aussi longtemps qu'on veut.</li>
+<li><strong>À deux, avec un proche ou un aidant</strong> : c'est le jeu qui fait le plus parler : chaque nom appelle un souvenir, et le souvenir vaut mieux que la bonne réponse.</li>
+<li><strong>En petit groupe</strong> : les personnes d'une même génération se complètent, et celui qui ne trouve pas le nom trouve souvent l'époque.</li>
+</ul>
+<p>Si un nom ne vient pas, demandez plutôt de quelle époque il s'agit, ou ce que la personne faisait à ce moment-là. La conversation qui suit est le vrai contenu du jeu.</p>
+<h2>Ce que ce jeu n'est pas</h2>
+<p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
+<h2>Qui le propose</h2>
+<p>Les Jardins de Célestine, un projet d'habitat partagé pour seniors, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="jeux.html">Voir tous les jeux</a>.</p>
+</div>
+</details>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+</footer>
+</body>
+</html>

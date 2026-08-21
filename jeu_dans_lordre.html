@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Dans l'Ordre — jeu en ligne gratuit · Les Jardins de Célestine</title>
+<meta name="description" content="Remettre les images d'une histoire dans le bon ordre. Jeu de logique et de repérage en ligne gratuit, sans inscription, sans mise en échec.">
+<link rel="canonical" href="https://jardinsdecelestine.com/jeu_dans_lordre">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="jdc-parcours.js"></script>
+<style>
+:root {
+  --cream:#f7f3ea; --parchment:#eee8d5; --ink:#1c1208;
+  --sepia:#5c3d1e; --gold:#c8922a; --green:#2d6a4f;
+  --red:#8b2020; --shadow:rgba(28,18,8,0.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{
+  background:var(--parchment);
+  background-image:
+    radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.08) 0%,transparent 55%),
+    radial-gradient(ellipse at 85% 90%,rgba(45,106,79,.06) 0%,transparent 55%);
+  min-height:100vh; font-family:'Nunito',sans-serif;
+  color:var(--ink); user-select:none; -webkit-user-select:none;
+}
+
+header{text-align:center;padding:16px 20px 10px;border-bottom:1px solid rgba(200,146,42,.2);position:relative;}
+header h1{font-family:'Atkinson Hyperlegible',sans-serif;font-size:clamp(1.3rem,3vw,1.9rem);font-weight:700;color:var(--sepia);cursor:default;}
+header h1 em{color:var(--gold);font-style:normal;}
+header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-top:3px;}
+.divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:6px auto 0;}
+#statsBtn{display:none;position:absolute;top:14px;right:16px;background:none;border:1.5px solid rgba(200,146,42,.4);border-radius:6px;padding:4px 10px;font-family:'Nunito',sans-serif;font-size:.75rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+#statsBtn:hover{background:rgba(200,146,42,.1);}
+
+/* ── MENU ── */
+#menu{max-width:600px;margin:34px auto;padding:0 20px;}
+#menu h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.15rem;color:var(--sepia);text-align:center;margin-bottom:8px;}
+#menu .hint{text-align:center;font-size:.92rem;color:var(--sepia);opacity:.75;margin-bottom:20px;}
+.h-card{display:block;width:100%;text-align:left;background:var(--cream);border:1.5px solid rgba(200,146,42,.35);border-radius:14px;padding:18px 22px;margin-bottom:14px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s;}
+.h-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 22px var(--shadow);}
+.h-card .ht{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.08rem;font-weight:700;color:var(--sepia);}
+.h-card .hs{font-size:.82rem;color:var(--sepia);opacity:.65;margin-top:2px;}
+.badge-new{display:inline-block;background:var(--green);color:#fff;font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;}
+.badge-vu{display:inline-block;background:rgba(92,61,30,.12);color:var(--sepia);font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;}
+#suggestion{margin-top:14px;font-size:.86rem;color:var(--sepia);opacity:.8;font-style:italic;text-align:center;}
+
+/* ── JEU ── */
+#game{display:none;max-width:680px;margin:0 auto;padding:14px 18px 40px;}
+#hud{display:flex;justify-content:space-between;align-items:center;padding:4px 2px 12px;font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;color:var(--sepia);font-size:.92rem;}
+#hud .prog{color:var(--green);}
+#backBtn{background:none;border:1.5px solid rgba(200,146,42,.45);border-radius:8px;padding:5px 12px;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+#backBtn:hover{background:rgba(200,146,42,.1);}
+
+.zone-titre{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--sepia);opacity:.6;margin:10px 0 8px;}
+
+#histoire{background:var(--cream);border:1.5px solid rgba(45,106,79,.35);border-radius:14px;padding:14px 16px;min-height:70px;box-shadow:0 6px 20px var(--shadow);}
+#histoire .placed{background:#e9f2ec;border:1.5px solid rgba(45,106,79,.4);border-radius:10px;padding:11px 14px;margin-bottom:9px;font-size:1rem;line-height:1.55;color:var(--ink);animation:pop .3s ease;}
+#histoire .placed:last-child{margin-bottom:0;}
+#histoire .placed .num{display:inline-block;background:var(--green);color:#fff;font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;font-size:.75rem;width:22px;height:22px;border-radius:50%;text-align:center;line-height:22px;margin-right:8px;}
+#histoire .vide{font-size:.9rem;color:var(--sepia);opacity:.5;font-style:italic;text-align:center;padding:10px 0;}
+@keyframes pop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+
+#blocs{margin-top:6px;}
+.bloc{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid rgba(200,146,42,.45);border-radius:10px;padding:12px 15px;margin-bottom:10px;font-family:'Nunito',sans-serif;font-size:1rem;line-height:1.55;color:var(--ink);cursor:pointer;transition:all .18s;}
+.bloc:hover{border-color:var(--gold);background:rgba(200,146,42,.06);}
+.bloc.used{display:none;}
+.bloc.shake{animation:shk .35s;border-color:var(--red);}
+@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+#doneBox{display:none;margin-top:18px;text-align:center;}
+#doneBox .msg{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.1rem;font-weight:700;color:var(--green);margin-bottom:12px;}
+.btn-g2{background:var(--gold);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;margin:0 5px;}
+.btn-g2:hover{background:#b07820;}
+.btn-o2{background:none;border:1.5px solid rgba(200,146,42,.5);color:var(--sepia);border-radius:10px;padding:12px 24px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;margin:0 5px;}
+.btn-o2:hover{background:rgba(200,146,42,.1);}
+
+/* ── STATS ── */
+#statsPanel{display:none;position:fixed;inset:0;background:rgba(28,18,8,.75);z-index:60;align-items:center;justify-content:center;}
+#statsPanel.show{display:flex;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+#statsBox{background:var(--cream);border:2px solid var(--gold);border-radius:14px;padding:26px 30px;max-width:440px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+#statsBox h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;font-weight:700;color:var(--sepia);margin-bottom:4px;}
+.s-sub{font-size:.7rem;color:var(--sepia);opacity:.55;margin-bottom:14px;display:block;}
+.srow{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(200,146,42,.14);}
+.srow:last-child{border-bottom:none;}
+.srow-name{font-size:.82rem;font-weight:700;color:var(--sepia);}
+.scol{text-align:center;}
+.slbl{font-size:.52rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.08em;}
+.sval{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.9rem;font-weight:700;color:var(--gold);}
+.sval.green{color:var(--green);}
+.sa{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;}
+.btn-sm{padding:6px 14px;border-radius:6px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;}
+.btn-ol{background:none;border:1.5px solid rgba(200,146,42,.5);color:var(--sepia);}
+.btn-g{background:var(--gold);color:white;border:none;}
+.no-stats{font-size:.85rem;color:var(--sepia);opacity:.6;font-style:italic;text-align:center;padding:14px 0;}
+
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(10px);color:white;background:#2d6a4f;padding:10px 22px;border-radius:8px;font-size:.86rem;font-weight:700;opacity:0;transition:all .25s;z-index:300;pointer-events:none;font-family:'Atkinson Hyperlegible',sans-serif;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+.confetti{position:fixed;top:-14px;width:10px;height:14px;z-index:70;pointer-events:none;animation:cfall linear forwards;}
+@keyframes cfall{to{transform:translateY(105vh) rotate(720deg);opacity:.9;}}
+
+/* Sortie de secours : toujours un moyen de revenir au catalogue. */
+.jdc-retour{display:block;text-align:center;padding:8px;font-size:.74rem;
+  color:#5c3d1e;opacity:.55;text-decoration:none;letter-spacing:.1em;
+  text-transform:uppercase;font-family:'Nunito',sans-serif;}
+.jdc-retour:hover{opacity:1;}
+@media print{.jdc-retour{display:none;}}
+
+/* Pied discret : le lien légal doit exister sur chaque page du site. */
+.jdc-legal{text-align:center;padding:16px 14px 22px;font-size:.78rem;line-height:1.6;
+  color:#5c3d1e;opacity:.6;font-family:'Nunito',sans-serif;}
+.jdc-legal a{color:inherit;}
+@media print{.jdc-legal{display:none;}}
+</style>
+<style id="jdc-apropos-style">
+/* Bloc « À propos » : replié par défaut, lu en entier par les moteurs.
+   Couleurs écrites en dur — chaque jeu a ses propres variables CSS. */
+.jdc-apropos{max-width:680px;margin:28px auto 8px;padding:0 16px;
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;color:#5c3d1e;}
+.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;
+  letter-spacing:.02em;opacity:.62;padding:9px 0;text-align:center;
+  border-top:1px solid rgba(92,61,30,.16);}
+.jdc-apropos>summary::-webkit-details-marker{display:none}
+.jdc-apropos>summary::after{content:' \203A';display:inline-block;
+  transform:rotate(90deg);margin-left:5px;opacity:.7}
+.jdc-apropos[open]>summary::after{transform:rotate(-90deg)}
+.jdc-apropos>summary:hover,.jdc-apropos>summary:focus-visible{opacity:.95}
+.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;
+  text-align:left;opacity:.9}
+.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:#5c3d1e;
+  font-weight:700}
+.jdc-apropos p{margin:0 0 10px}
+.jdc-apropos ul{margin:0 0 10px;padding-left:20px}
+.jdc-apropos li{margin-bottom:5px}
+.jdc-apropos a{color:#2d6a4f}
+.hc .jdc-apropos{color:#000}
+.hc .jdc-apropos h2{color:#000}
+.hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
+</style>
+</head>
+<body>
+
+
+<a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
+<header>
+  <h1 id="mainTitle">Dans <em>l'Ordre</em></h1>
+  <p>Reconstituez l'histoire, étape par étape</p>
+  <div class="divider"></div>
+  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
+</header>
+
+<div id="menu">
+  <h2>Choisissez votre histoire</h2>
+  <p class="hint">Les étapes sont mélangées. Touchez-les dans le bon ordre pour reconstituer l'histoire, du début à la fin.</p>
+  <div id="histList"></div>
+  <div id="suggestion"></div>
+</div>
+
+<div id="game">
+  <div id="hud">
+    <button id="backBtn" onclick="backMenu()">← Autres histoires</button>
+    <span class="prog"><span id="progNow">0</span> / <span id="progTot">0</span> étapes</span>
+  </div>
+
+  <div class="zone-titre">L'histoire reconstituée</div>
+  <div id="histoire"><p class="vide">Touchez la première étape de l'histoire ci-dessous.</p></div>
+
+  <div class="zone-titre">Les étapes mélangées</div>
+  <div id="blocs"></div>
+
+  <div id="doneBox">
+    <p class="msg" id="doneMsg">Histoire reconstituée, bravo !</p>
+    <button class="btn-g2" onclick="lireHistoire()">🔊 Écouter l'histoire</button>
+    <button class="btn-o2" onclick="backMenu()">Choisir une autre histoire</button>
+  </div>
+</div>
+
+<div id="statsPanel">
+  <div id="statsBox">
+    <h2>📊 Statistiques</h2>
+    <span class="s-sub">Dans l'Ordre — usage local de cet appareil</span>
+    <div id="statsContent"></div>
+    <div class="sa">
+      <button class="btn-sm btn-ol" onclick="resetStats()">Réinitialiser</button>
+      <button class="btn-sm btn-g" onclick="closeStats()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════
+//   HISTOIRES — logique implacable :
+//   chaque étape dépend de la précédente
+// ═══════════════════════════════
+const HISTOIRES = [
+  {
+    id:'tarte',
+    titre:'La tarte aux pommes',
+    sous:'5 étapes · du fournil au goûter',
+    etapes:[
+      "Ce matin, Jeanne décide de faire une tarte aux pommes pour le goûter.",
+      "Elle prépare la pâte, puis l'étale soigneusement dans le moule.",
+      "Elle épluche les pommes et dispose les tranches en rosace sur la pâte.",
+      "Elle enfourne la tarte et surveille la cuisson jusqu'à ce qu'elle soit bien dorée.",
+      "À quatre heures, toute la famille se régale de la tarte encore tiède."
+    ]
+  },
+  {
+    id:'rosier',
+    titre:'Le rosier de Marcel',
+    sous:'5 étapes · du pépiniériste aux premières roses',
+    etapes:[
+      "Au printemps, Marcel achète un beau rosier chez le pépiniériste.",
+      "De retour au jardin, il creuse un trou à l'endroit le plus ensoleillé.",
+      "Il place le rosier dans le trou et le recouvre de terre en tassant bien.",
+      "Il l'arrose généreusement pour aider les racines à prendre.",
+      "Quelques semaines plus tard, les premières roses s'épanouissent."
+    ]
+  },
+  {
+    id:'lettre',
+    titre:'La lettre de Louise',
+    sous:'5 étapes · d\'une amie à l\'autre',
+    etapes:[
+      "Louise s'installe à son bureau pour écrire à son amie d'enfance.",
+      "Elle remplit trois pages de nouvelles et de souvenirs partagés.",
+      "Elle glisse la lettre dans une enveloppe et colle un timbre.",
+      "En allant au marché, elle dépose l'enveloppe dans la boîte jaune.",
+      "Une semaine plus tard, elle trouve la réponse de son amie dans sa boîte aux lettres."
+    ]
+  }
+];
+
+// ═══════════════════════════════
+//   ÉTAT
+// ═══════════════════════════════
+let cur = null, attendu = 0, erreurs = 0;
+let startTime = null, playing = false;
+
+// ═══════════════════════════════
+//   STATS — triple-clic sur titre
+// ═══════════════════════════════
+const STATS_KEY = 'danslordre_stats_v1';
+let _tc = 0, _tct = null;
+document.getElementById('mainTitle').addEventListener('click', () => {
+  _tc++; clearTimeout(_tct);
+  _tct = setTimeout(() => _tc = 0, 800);
+  if(_tc >= 3){ _tc = 0; document.getElementById('statsBtn').style.display = 'block'; toast('Mode admin activé'); }
+});
+function loadStats(){ try{ return JSON.parse(localStorage.getItem(STATS_KEY)) || {}; }catch(e){ return {}; } }
+function saveStats(s){ try{ localStorage.setItem(STATS_KEY, JSON.stringify(s)); }catch(e){} }
+function trackGame(id, titre, completed, sec, err){
+  const st = loadStats();
+  if(!st[id]) st[id] = { titre, plays:0, completions:0, totalSec:0, totalErr:0, bestSec:9999 };
+  st[id].plays++;
+  st[id].totalSec += sec;
+  st[id].totalErr += err;
+  if(completed){
+    st[id].completions++;
+    if(sec < st[id].bestSec) st[id].bestSec = sec;
+  }
+  saveStats(st);
+}
+function openStats(){
+  const st = loadStats();
+  const keys = Object.keys(st);
+  const content = document.getElementById('statsContent');
+  if(!keys.length){
+    content.innerHTML = '<p class="no-stats">Aucune partie encore jouée.</p>';
+  } else {
+    content.innerHTML = keys.map(k => {
+      const s = st[k];
+      const pct = s.plays ? Math.round(s.completions / s.plays * 100) : 0;
+      const avgErr = s.completions ? Math.round(s.totalErr / s.completions) : '-';
+      const bestM = s.bestSec < 9999 ? Math.floor(s.bestSec/60) + 'm' + String(s.bestSec%60).padStart(2,'0') + 's' : '-';
+      return '<div class="srow">' +
+        '<div class="srow-name">' + s.titre + '</div>' +
+        '<div class="scol"><div class="slbl">Parties</div><div class="sval">' + s.plays + '</div></div>' +
+        '<div class="scol"><div class="slbl">Réussite</div><div class="sval green">' + pct + '%</div></div>' +
+        '<div class="scol"><div class="slbl">Meilleur</div><div class="sval">' + bestM + '</div></div>' +
+        '<div style="grid-column:1/-1;font-size:.68rem;color:var(--sepia);opacity:.5;">Erreurs (moy.) : ' + avgErr + ' par histoire réussie</div>' +
+        '</div>';
+    }).join('');
+  }
+  document.getElementById('statsPanel').classList.add('show');
+}
+function closeStats(){ document.getElementById('statsPanel').classList.remove('show'); }
+function resetStats(){
+  if(confirm('Effacer toutes les statistiques ?')){
+    localStorage.removeItem(STATS_KEY);
+    closeStats();
+    toast('Statistiques effacées');
+  }
+}
+document.getElementById('statsPanel').addEventListener('click', function(e){ if(e.target === this) closeStats(); });
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ═══════════════════════════════
+//   MENU
+// ═══════════════════════════════
+function buildMenu(){
+  let ordre = HISTOIRES.map(h => h.id);
+  let vus = [];
+  if(typeof JDC !== 'undefined'){
+    const d = JDC.lire();
+    vus = (d.vus && d.vus.danslordre) ? d.vus.danslordre : [];
+    ordre.sort((a, b) => vus.indexOf(a) - vus.indexOf(b));
+  }
+  document.getElementById('histList').innerHTML = ordre.map(id => {
+    const i = HISTOIRES.findIndex(h => h.id === id);
+    const h = HISTOIRES[i];
+    const jamais = vus.indexOf(id) === -1;
+    return '<button class="h-card" onclick="startHist(' + i + ')">' +
+      '<span class="ht">' + h.titre +
+      (jamais ? '<span class="badge-new">nouvelle</span>' : '<span class="badge-vu">d\u00e9j\u00e0 faite</span>') +
+      '</span><br>' +
+      '<span class="hs">' + h.sous + '</span>' +
+      '</button>';
+  }).join('');
+}
+
+function afficherSuggestion(){
+  const el = document.getElementById('suggestion');
+  if(!el || typeof JDC === 'undefined') return;
+  const b = JDC.bilanJeu('danslordre');
+  if(!b.parties){ el.textContent = ''; return; }
+  el.textContent = b.parties + ' histoire' + (b.parties > 1 ? 's' : '') +
+    ' d\u00e9j\u00e0 reconstitu\u00e9e' + (b.parties > 1 ? 's' : '') + '.';
+}
+
+buildMenu();
+afficherSuggestion();
+
+function backMenu(){
+  if(playing && startTime){
+    const sec = Math.floor((Date.now() - startTime) / 1000);
+    trackGame(cur.id, cur.titre, false, sec, erreurs);
+    if(typeof JDC !== 'undefined'){
+      JDC.enregistrer('danslordre', 1, false, {duree: sec, erreurs: erreurs, variante: cur.id});
+    }
+  }
+  playing = false;
+  document.getElementById('game').style.display = 'none';
+  document.getElementById('menu').style.display = 'block';
+  buildMenu();
+  afficherSuggestion();
+  window.speechSynthesis && window.speechSynthesis.cancel();
+}
+
+// ═══════════════════════════════
+//   JEU
+// ═══════════════════════════════
+function melange(a){
+  const r = a.map((t,i) => ({t, i}));
+  let identique = true;
+  do {
+    for(let i = r.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [r[i], r[j]] = [r[j], r[i]];
+    }
+    identique = r.every((x,k) => x.i === k);
+  } while(identique);
+  return r;
+}
+
+function startHist(i){
+  cur = HISTOIRES[i];
+  attendu = 0; erreurs = 0; playing = true;
+  startTime = Date.now();
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('game').style.display = 'block';
+  document.getElementById('doneBox').style.display = 'none';
+  document.getElementById('histoire').innerHTML = '<p class="vide">Touchez la première étape de l\'histoire ci-dessous.</p>';
+  document.getElementById('progNow').textContent = '0';
+  document.getElementById('progTot').textContent = cur.etapes.length;
+
+  document.getElementById('blocs').innerHTML = melange(cur.etapes).map(b =>
+    '<button class="bloc" data-i="' + b.i + '" onclick="tryBloc(this)">' + b.t + '</button>'
+  ).join('');
+}
+
+function tryBloc(btn){
+  if(!playing) return;
+  const i = parseInt(btn.dataset.i, 10);
+  if(i === attendu){
+    btn.classList.add('used');
+    const h = document.getElementById('histoire');
+    if(attendu === 0) h.innerHTML = '';
+    const p = document.createElement('div');
+    p.className = 'placed';
+    p.innerHTML = '<span class="num">' + (attendu + 1) + '</span>' + cur.etapes[i];
+    h.appendChild(p);
+    attendu++;
+    document.getElementById('progNow').textContent = attendu;
+    if(attendu === cur.etapes.length) win();
+  } else {
+    erreurs++;
+    btn.classList.add('shake');
+    setTimeout(() => btn.classList.remove('shake'), 400);
+    if(i < attendu){ toast('Cette étape est déjà passée…'); }
+    else { toast('Pas encore… que se passe-t-il avant ?'); }
+  }
+}
+
+function win(){
+  playing = false;
+  const sec = Math.floor((Date.now() - startTime) / 1000);
+  trackGame(cur.id, cur.titre, true, sec, erreurs);
+  if(typeof JDC !== 'undefined'){
+    JDC.enregistrer('danslordre', 1, true, {duree: sec, erreurs: erreurs, variante: cur.id});
+    JDC.marquerVu('danslordre', cur.id);
+  }
+  document.getElementById('doneMsg').textContent =
+    'Histoire reconstituée en ' + Math.floor(sec/60) + 'm' + String(sec%60).padStart(2,'0') + 's — bravo !';
+  document.getElementById('doneBox').style.display = 'block';
+  confetti();
+}
+
+function lireHistoire(){
+  if(!('speechSynthesis' in window)){ toast('Lecture audio non disponible'); return; }
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(cur.titre + '. ' + cur.etapes.join(' '));
+  u.lang = 'fr-FR'; u.rate = 0.92;
+  window.speechSynthesis.speak(u);
+}
+
+window.addEventListener('beforeunload', function(){
+  if(playing && startTime){
+    const sec = Math.floor((Date.now() - startTime) / 1000);
+    trackGame(cur.id, cur.titre, false, sec, erreurs);
+    if(typeof JDC !== 'undefined'){
+      JDC.enregistrer('danslordre', 1, false, {duree: sec, erreurs: erreurs, variante: cur.id});
+    }
+  }
+});
+
+// ═══════════════════════════════
+//   CONFETTI
+// ═══════════════════════════════
+function confetti(){
+  const colors = ['#c8922a','#2d6a4f','#c96f4a','#3a6ea5','#b33a2b'];
+  for(let i = 0; i < 60; i++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDuration = (2 + Math.random() * 2) + 's';
+    c.style.animationDelay = (Math.random() * .8) + 's';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 5000);
+  }
+}
+</script>
+
+
+
+
+<details class="jdc-apropos">
+<summary>À propos de ce jeu</summary>
+<div class="corps">
+<p><strong>Dans l'Ordre</strong> — Les images d'une petite histoire, mélangées, à remettre dans l'ordre où les choses se sont passées : on sème avant de récolter, on casse l'œuf avant de battre l'omelette.</p>
+<h2>Pour qui</h2>
+<p>Aux personnes vivant avec des troubles du repérage dans le temps, fréquents dans la maladie d'Alzheimer comme dans la démence vasculaire. Il s'appuie sur la logique du quotidien, pas sur des dates.</p>
+<h2>Comment y jouer</h2>
+<ul>
+<li><strong>Seul</strong> : en déplaçant les images une à une.</li>
+<li><strong>À deux, avec un proche ou un aidant</strong> : en racontant l'histoire à voix haute pendant qu'on la remet en ordre.</li>
+<li><strong>En petit groupe</strong> : le groupe se met d'accord sur l'ordre avant de valider.</li>
+</ul>
+<p>Demandez « et après, qu'est-ce qui se passe ? » plutôt que « c'est dans quel ordre ? ». La question racontée est plus facile que la question abstraite.</p>
+<h2>Ce que ce jeu n'est pas</h2>
+<p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
+<h2>Qui le propose</h2>
+<p>Les Jardins de Célestine, un projet d'habitat partagé pour seniors, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="jeux.html">Voir tous les jeux</a>.</p>
+</div>
+</details>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+</footer>
+</body>
+</html>

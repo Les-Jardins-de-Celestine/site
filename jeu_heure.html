@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jeu de l'Heure — jeu en ligne gratuit · Les Jardins de Célestine</title>
+<meta name="description" content="Lire l'heure sur un cadran à aiguilles et la retrouver en chiffres. Jeu de repérage dans le temps en ligne gratuit, sans inscription.">
+<link rel="canonical" href="https://jardinsdecelestine.com/jeu_heure">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:#f7f3ea; --parchment:#eee8d5; --ink:#1c1208;
+  --sepia:#5c3d1e; --gold:#c8922a; --green:#2d6a4f;
+  --red:#8b2020; --blue:#1a3d6e; --shadow:rgba(28,18,8,0.13);
+  --hour-color:#1a3d6e; --min-color:#8b2020;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:var(--parchment);
+  background-image:radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.08) 0%,transparent 55%),
+    radial-gradient(ellipse at 85% 90%,rgba(45,106,79,.06) 0%,transparent 55%);
+  min-height:100vh;font-family:'Nunito',sans-serif;color:var(--ink);
+  user-select:none;-webkit-user-select:none;
+}
+
+/* HEADER */
+header{text-align:center;padding:18px 20px 12px;border-bottom:1px solid rgba(200,146,42,.2);position:relative;}
+header h1{font-family:'Atkinson Hyperlegible',sans-serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:700;color:var(--sepia);cursor:default;}
+header h1 em{color:var(--gold);font-style:normal;}
+header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-top:3px;}
+.divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:7px auto 0;}
+#statsBtn{display:none;position:absolute;top:16px;right:18px;background:none;border:1.5px solid rgba(200,146,42,.4);border-radius:6px;padding:4px 10px;font-family:'Nunito',sans-serif;font-size:.75rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+
+/* ── START SCREEN ── */
+#startScreen{display:flex;flex-direction:column;align-items:center;gap:22px;padding:36px 20px;}
+#startScreen h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.3rem;font-weight:700;color:var(--sepia);text-align:center;}
+
+.option-group{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;max-width:480px;}
+.option-group label{font-size:.85rem;font-weight:700;color:var(--sepia);letter-spacing:.05em;text-transform:uppercase;opacity:.7;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+
+.ob{
+  background:var(--cream);border:2.5px solid rgba(200,146,42,.35);
+  border-radius:8px;padding:10px 18px;cursor:pointer;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;
+  color:var(--sepia);transition:all .2s;box-shadow:0 2px 8px var(--shadow);
+  min-width:90px;text-align:center;
+}
+.ob:hover{border-color:var(--gold);}
+.ob.active{background:var(--gold);color:white;border-color:var(--gold);box-shadow:0 4px 14px rgba(200,146,42,.4);}
+
+.mode-card{
+  display:flex;align-items:center;gap:14px;
+  background:var(--cream);border:2.5px solid rgba(200,146,42,.3);
+  border-radius:12px;padding:14px 20px;cursor:pointer;
+  transition:all .2s;box-shadow:0 2px 8px var(--shadow);
+  width:100%;max-width:360px;
+}
+.mode-card:hover{border-color:var(--gold);}
+.mode-card.active{border-color:var(--gold);background:rgba(200,146,42,.07);box-shadow:0 4px 16px rgba(200,146,42,.2);}
+.mode-card .ico{font-size:2.2rem;flex-shrink:0;}
+.mode-card .txt h3{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;color:var(--sepia);}
+.mode-card .txt p{font-size:.8rem;color:var(--sepia);opacity:.65;margin-top:3px;line-height:1.4;}
+
+.btn-start{padding:14px 42px;background:var(--gold);color:white;border:none;border-radius:8px;cursor:pointer;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:.05em;box-shadow:0 5px 18px rgba(200,146,42,.4);transition:background .2s,transform .15s;}
+.btn-start:hover{background:#b07820;transform:translateY(-2px);}
+
+/* ── GAME SCREEN ── */
+#gameScreen{display:none;padding:14px 16px 40px;}
+
+/* HUD */
+.hud{display:flex;gap:10px;justify-content:center;margin-bottom:12px;flex-wrap:wrap;}
+.hb{background:var(--cream);border:1px solid rgba(200,146,42,.4);border-radius:6px;padding:5px 16px;text-align:center;box-shadow:0 2px 6px var(--shadow);min-width:78px;}
+.hb .l{font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;color:var(--sepia);opacity:.6;display:block;}
+.hb .v{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;font-weight:700;color:var(--gold);line-height:1.1;}
+.hb.c{cursor:pointer;} .hb.c:hover{border-color:var(--gold);}
+
+/* SCORE BAR */
+.score-row{display:flex;gap:8px;justify-content:center;margin-bottom:16px;}
+.score-pip{width:22px;height:22px;border-radius:50%;border:2px solid rgba(200,146,42,.35);background:var(--cream);transition:all .3s;}
+.score-pip.correct{background:var(--green);border-color:var(--green);}
+.score-pip.wrong{background:var(--red);border-color:var(--red);}
+
+/* QUESTION AREA */
+.question-area{
+  display:flex;gap:28px;align-items:center;justify-content:center;
+  flex-wrap:wrap;margin-bottom:22px;
+}
+
+/* DIGITAL DISPLAY */
+.digital-display{
+  background:#1a1a2e;border-radius:12px;padding:20px 32px;
+  box-shadow:0 6px 24px rgba(0,0,0,.35),inset 0 0 30px rgba(0,0,80,.2);
+  border:2px solid #2a2a4e;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.digital-time{
+  font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:clamp(2.8rem,7vw,4.5rem);font-weight:700;
+  color:#00e5ff;letter-spacing:.1em;
+  text-shadow:0 0 20px rgba(0,229,255,.6),0 0 40px rgba(0,229,255,.3);
+}
+.digital-label{font-size:.72rem;color:rgba(0,229,255,.5);letter-spacing:.2em;text-transform:uppercase;}
+
+/* SEPARATOR */
+.vs-arrow{font-size:2rem;color:var(--gold);opacity:.5;flex-shrink:0;}
+
+/* CLOCK CANVAS WRAPPER */
+.clock-wrap{
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+}
+.clock-instruction{
+  font-size:.82rem;font-weight:700;color:var(--sepia);
+  background:rgba(200,146,42,.1);border:1px solid rgba(200,146,42,.22);
+  border-radius:6px;padding:5px 12px;text-align:center;max-width:280px;
+}
+#clockCanvas{
+  cursor:pointer;
+  border-radius:50%;
+  box-shadow:0 6px 24px var(--shadow);
+  display:block;
+  touch-action:none;
+}
+
+/* LEGEND */
+.legend{display:flex;gap:16px;justify-content:center;font-size:.78rem;font-weight:700;}
+.leg-item{display:flex;align-items:center;gap:6px;}
+.leg-dot{width:14px;height:6px;border-radius:3px;}
+
+/* VALIDATE BUTTON */
+.validate-wrap{text-align:center;margin-top:8px;}
+.btn-validate{
+  padding:13px 36px;background:var(--gold);color:white;border:none;
+  border-radius:8px;cursor:pointer;font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:1rem;font-weight:700;letter-spacing:.05em;
+  box-shadow:0 4px 14px rgba(200,146,42,.35);transition:background .2s,transform .15s;
+}
+.btn-validate:hover{background:#b07820;transform:translateY(-1px);}
+.btn-validate:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+/* FEEDBACK */
+.feedback{
+  text-align:center;margin-top:12px;
+  font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:1.1rem;font-weight:700;
+  padding:10px 20px;border-radius:8px;
+  opacity:0;transition:opacity .3s;
+  min-height:46px;
+}
+.feedback.show{opacity:1;}
+.feedback.ok{background:rgba(45,106,79,.15);color:var(--green);border:1.5px solid rgba(45,106,79,.3);}
+.feedback.err{background:rgba(139,32,32,.12);color:var(--red);border:1.5px solid rgba(139,32,32,.25);}
+
+/* ── MODE ANALOGIQUE : QCM heure ── */
+.qcm-wrap{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  max-width:380px;margin:0 auto;
+}
+.qcm-btn{
+  background:var(--cream);border:2.5px solid rgba(200,146,42,.3);
+  border-radius:10px;padding:16px;cursor:pointer;
+  font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:1.6rem;font-weight:700;color:var(--sepia);
+  text-align:center;letter-spacing:.08em;
+  transition:all .2s;box-shadow:0 2px 8px var(--shadow);
+  box-shadow:0 3px 10px var(--shadow);
+}
+.qcm-btn:hover{border-color:var(--gold);transform:scale(1.03);}
+.qcm-btn.correct-ans{background:var(--green);color:white;border-color:var(--green);}
+.qcm-btn.wrong-ans{background:var(--red);color:white;border-color:var(--red);}
+
+/* WIN / RESULT */
+#resultOv{display:none;position:fixed;inset:0;background:rgba(28,18,8,.75);z-index:50;align-items:center;justify-content:center;}
+#resultOv.show{display:flex;animation:fadeIn .3s ease;}
+#resultBox{background:var(--cream);border:2px solid var(--gold);border-radius:16px;padding:36px 44px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);animation:popIn .44s cubic-bezier(.34,1.56,.64,1);max-width:340px;width:90%;}
+#resultBox .ico{font-size:3.5rem;display:block;margin-bottom:12px;}
+#resultBox h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.8rem;font-weight:700;color:var(--sepia);margin-bottom:8px;}
+.result-score{font-family:'Atkinson Hyperlegible',sans-serif;font-size:2.4rem;font-weight:700;color:var(--gold);margin:8px 0;}
+#resultBox p{color:var(--sepia);font-size:.92rem;line-height:1.6;margin-bottom:20px;}
+.btn{display:inline-block;padding:12px 28px;background:var(--gold);color:white;border:none;border-radius:8px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(200,146,42,.35);}
+.btn:hover{background:#b07820;}
+.btn-sm{padding:7px 16px;font-size:.8rem;}
+.btn-ol{background:transparent;border:2px solid var(--gold);color:var(--gold);box-shadow:none;}
+.btn-ol:hover{background:rgba(200,146,42,.08);}
+
+/* STATS */
+#statsPanel{display:none;position:fixed;inset:0;background:rgba(28,18,8,.75);z-index:60;align-items:center;justify-content:center;}
+#statsPanel.show{display:flex;animation:fadeIn .3s ease;}
+#statsBox{background:var(--cream);border:2px solid var(--gold);border-radius:14px;padding:28px 34px;max-width:440px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.4);animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
+#statsBox h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.3rem;font-weight:700;color:var(--sepia);margin-bottom:4px;}
+.sub{font-size:.73rem;color:var(--sepia);opacity:.58;margin-bottom:16px;display:block;}
+.srow{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(200,146,42,.14);}
+.srow:last-child{border-bottom:none;}
+.sval{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.88rem;font-weight:700;color:var(--gold);text-align:right;}
+.slbl{font-size:.52rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.1em;text-align:right;}
+.sbar-w{grid-column:1/-1;height:4px;background:rgba(200,146,42,.15);border-radius:2px;}
+.sbar{height:100%;background:var(--gold);border-radius:2px;transition:width .5s ease;}
+.sa{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;}
+
+/* TOAST */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(10px);color:white;padding:10px 22px;border-radius:8px;font-size:.86rem;font-weight:700;opacity:0;transition:all .25s;z-index:300;pointer-events:none;font-family:'Atkinson Hyperlegible',sans-serif;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+.cp{position:fixed;top:-10px;width:9px;height:9px;border-radius:2px;z-index:60;pointer-events:none;animation:fall 2.6s ease-in forwards;}
+
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+@keyframes popPip{0%{transform:scale(1)}50%{transform:scale(1.4)}100%{transform:scale(1)}}
+
+/* Sortie de secours : toujours un moyen de revenir au catalogue. */
+.jdc-retour{display:block;text-align:center;padding:8px;font-size:.74rem;
+  color:#5c3d1e;opacity:.55;text-decoration:none;letter-spacing:.1em;
+  text-transform:uppercase;font-family:'Nunito',sans-serif;}
+.jdc-retour:hover{opacity:1;}
+@media print{.jdc-retour{display:none;}}
+
+/* Pied discret : le lien légal doit exister sur chaque page du site. */
+.jdc-legal{text-align:center;padding:16px 14px 22px;font-size:.78rem;line-height:1.6;
+  color:#5c3d1e;opacity:.6;font-family:'Nunito',sans-serif;}
+.jdc-legal a{color:inherit;}
+@media print{.jdc-legal{display:none;}}
+</style>
+<script src="jdc-parcours.js"></script>
+<style id="jdc-apropos-style">
+/* Bloc « À propos » : replié par défaut, lu en entier par les moteurs.
+   Couleurs écrites en dur — chaque jeu a ses propres variables CSS. */
+.jdc-apropos{max-width:680px;margin:28px auto 8px;padding:0 16px;
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;color:#5c3d1e;}
+.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;
+  letter-spacing:.02em;opacity:.62;padding:9px 0;text-align:center;
+  border-top:1px solid rgba(92,61,30,.16);}
+.jdc-apropos>summary::-webkit-details-marker{display:none}
+.jdc-apropos>summary::after{content:' \203A';display:inline-block;
+  transform:rotate(90deg);margin-left:5px;opacity:.7}
+.jdc-apropos[open]>summary::after{transform:rotate(-90deg)}
+.jdc-apropos>summary:hover,.jdc-apropos>summary:focus-visible{opacity:.95}
+.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;
+  text-align:left;opacity:.9}
+.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:#5c3d1e;
+  font-weight:700}
+.jdc-apropos p{margin:0 0 10px}
+.jdc-apropos ul{margin:0 0 10px;padding-left:20px}
+.jdc-apropos li{margin-bottom:5px}
+.jdc-apropos a{color:#2d6a4f}
+.hc .jdc-apropos{color:#000}
+.hc .jdc-apropos h2{color:#000}
+.hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
+</style>
+</head>
+<body>
+
+
+<a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
+<header>
+  <h1 id="mainTitle">Jeu de l'<em>Heure</em></h1>
+  <p>Lecture de l'heure</p>
+  <div class="divider"></div>
+  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
+</header>
+
+<!-- START SCREEN -->
+<div id="startScreen">
+  <h2>Choisissez votre mode de jeu</h2>
+
+  <div class="option-group">
+    <label>Mode</label>
+    <div class="btn-row" style="flex-direction:column;align-items:center;gap:10px;">
+      <div class="mode-card active" data-mode="digital" onclick="selMode(this)">
+        <span class="ico">🔢</span>
+        <div class="txt">
+          <h3>Numérique → Cadran</h3>
+          <p>Une heure s'affiche en chiffres. Placez les aiguilles au bon endroit.</p>
+        </div>
+      </div>
+      <div class="mode-card" data-mode="analog" onclick="selMode(this)">
+        <span class="ico">🕐</span>
+        <div class="txt">
+          <h3>Cadran → Numérique</h3>
+          <p>Les aiguilles sont placées. Choisissez la bonne heure parmi 4 propositions.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option-group">
+    <label>Difficulté</label>
+    <div class="btn-row">
+      <button class="ob active" data-diff="1" onclick="selDiff(this)">Facile<br><small style="font-weight:400;font-size:.72rem;">Heures pleines</small></button>
+      <button class="ob" data-diff="2" onclick="selDiff(this)">Moyen<br><small style="font-weight:400;font-size:.72rem;">Heures et demies</small></button>
+      <button class="ob" data-diff="3" onclick="selDiff(this)">Difficile<br><small style="font-weight:400;font-size:.72rem;">Quarts d'heure</small></button>
+      <button class="ob" data-diff="4" onclick="selDiff(this)">Expert<br><small style="font-weight:400;font-size:.72rem;">Toutes les 5 min</small></button>
+    </div>
+  </div>
+
+  <div class="option-group">
+    <label>Nombre de questions</label>
+    <div class="btn-row">
+      <button class="ob" data-q="5" onclick="selQ(this)">5</button>
+      <button class="ob active" data-q="10" onclick="selQ(this)">10</button>
+      <button class="ob" data-q="15" onclick="selQ(this)">15</button>
+    </div>
+  </div>
+
+  <button class="btn-start" onclick="startGame()">▶ Commencer</button>
+</div>
+
+<!-- GAME SCREEN -->
+<div id="gameScreen">
+  <div class="hud">
+    <div class="hb"><span class="l">Question</span><span class="v" id="hQ">1/10</span></div>
+    <div class="hb"><span class="l">Score</span><span class="v" id="hScore">0</span></div>
+    <div class="hb"><span class="l">Temps</span><span class="v" id="hTimer">0:00</span></div>
+    <div class="hb c" onclick="backToStart()"><span class="l">Menu</span><span class="v" style="font-size:.9rem;">↩</span></div>
+  </div>
+
+  <div class="score-row" id="scoreRow"></div>
+
+  <!-- MODE DIGITAL: show time, move hands -->
+  <div id="modeDigital" style="display:none;">
+    <div class="question-area">
+      <div>
+        <div class="digital-display">
+          <div class="digital-label">Il est</div>
+          <div class="digital-time" id="digitalTime">08:00</div>
+          <div class="digital-label">Placez les aiguilles</div>
+        </div>
+      </div>
+      <div class="vs-arrow">→</div>
+      <div class="clock-wrap">
+        <div class="clock-instruction">
+          🔵 Faites glisser l'aiguille des <strong>heures</strong><br>
+          🔴 Faites glisser l'aiguille des <strong>minutes</strong>
+        </div>
+        <canvas id="clockCanvas" width="280" height="280"></canvas>
+        <div class="legend">
+          <div class="leg-item"><div class="leg-dot" style="background:var(--hour-color);"></div><span style="font-size:.78rem;font-weight:700;color:var(--sepia);">Heures</span></div>
+          <div class="leg-item"><div class="leg-dot" style="background:var(--min-color);"></div><span style="font-size:.78rem;font-weight:700;color:var(--sepia);">Minutes</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="validate-wrap">
+      <button class="btn-validate" onclick="validateDigital()">✓ Valider ma réponse</button>
+    </div>
+    <div class="feedback" id="feedbackDigital"></div>
+  </div>
+
+  <!-- MODE ANALOG: show clock, choose time -->
+  <div id="modeAnalog" style="display:none;">
+    <div class="question-area">
+      <div class="clock-wrap">
+        <div class="clock-instruction">Quelle heure indique cette horloge ?</div>
+        <canvas id="clockCanvasStatic" width="280" height="280"></canvas>
+      </div>
+      <div class="vs-arrow">→</div>
+      <div style="display:flex;flex-direction:column;gap:10px;align-items:center;">
+        <div style="font-family:'Atkinson Hyperlegible',sans-serif;font-size:.9rem;font-weight:700;color:var(--sepia);margin-bottom:4px;">Choisissez la bonne heure</div>
+        <div class="qcm-wrap" id="qcmWrap"></div>
+      </div>
+    </div>
+    <div class="feedback" id="feedbackAnalog"></div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="resultOv">
+  <div id="resultBox">
+    <span class="ico" id="resultIco">🏆</span>
+    <h2>Résultats</h2>
+    <div class="result-score" id="resultScore"></div>
+    <p id="resultMsg"></p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn btn-ol btn-sm" onclick="backToStart()">Changer de mode</button>
+      <button class="btn btn-sm" onclick="startGame()">Rejouer</button>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div id="statsPanel">
+  <div id="statsBox">
+    <h2>📊 Statistiques</h2>
+    <span class="sub">Visibles uniquement par vous · Données locales</span>
+    <div id="statsContent"></div>
+    <div class="sa">
+      <button class="btn btn-ol btn-sm" onclick="resetStats()">Réinitialiser</button>
+      <button class="btn btn-sm" onclick="closeStats()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════
+//  CONFIG
+// ═══════════════════════════════════════════
+const DIFF_STEPS = {1:60, 2:30, 3:15, 4:5}; // minutes step per difficulty
+const TOTAL_QUESTIONS = 10;
+const CLOCK_R = 130; // canvas radius
+const CX = 140, CY = 140; // center
+
+// ═══════════════════════════════════════════
+//  STATS
+// ═══════════════════════════════════════════
+const STATS_KEY = 'heure_stats_v1';
+let _tc=0,_tct=null;
+document.getElementById('mainTitle').addEventListener('click',()=>{
+  _tc++;clearTimeout(_tct);_tct=setTimeout(()=>_tc=0,800);
+  if(_tc>=3){_tc=0;document.getElementById('statsBtn').style.display='block';toast('Mode admin','ok');}
+});
+function loadStats(){try{return JSON.parse(localStorage.getItem(STATS_KEY))||{};}catch(e){return{};}}
+function saveStats(s){try{localStorage.setItem(STATS_KEY,JSON.stringify(s));}catch(e){}}
+function trackSession(mode,diff,correct,total,sec){
+  const k=mode+'_d'+diff,st=loadStats();
+  if(!st[k])st[k]={mode,diff,sessions:0,correct:0,total:0,totalSec:0};
+  st[k].sessions++;st[k].correct+=correct;st[k].total+=total;st[k].totalSec+=sec;saveStats(st);
+}
+function openStats(){
+  const st=loadStats(),keys=Object.keys(st),c=document.getElementById('statsContent');
+  const modeLabel={digital:'Numérique→Cadran',analog:'Cadran→Numérique'};
+  const diffLabel={1:'Facile',2:'Moyen',3:'Difficile',4:'Expert'};
+  if(!keys.length){c.innerHTML='<p style="color:var(--sepia);font-style:italic;text-align:center;padding:14px 0;">Aucune session encore jouée.</p>';}
+  else{
+    keys.sort((a,b)=>st[b].totalSec-st[a].totalSec);const mx=st[keys[0]].totalSec||1;
+    c.innerHTML=keys.map(k=>{
+      const s=st[k],pct=s.total?Math.round(s.correct/s.total*100):0;
+      const m=0|s.totalSec/60,bw=Math.round(s.totalSec/mx*100);
+      return `<div class="srow">
+        <div style="font-size:.82rem;">${modeLabel[s.mode]||s.mode}<br><small style="opacity:.6">${diffLabel[s.diff]||s.diff}</small></div>
+        <div><div class="slbl">Sessions</div><div class="sval">${s.sessions}</div></div>
+        <div><div class="slbl">Réussite</div><div class="sval">${pct}%</div></div>
+        <div><div class="slbl">Temps</div><div class="sval">${m}m</div></div>
+        <div class="sbar-w"><div class="sbar" style="width:${bw}%"></div></div>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('statsPanel').classList.add('show');
+}
+function closeStats(){document.getElementById('statsPanel').classList.remove('show');}
+function resetStats(){if(confirm('Effacer toutes les statistiques ?')){localStorage.removeItem(STATS_KEY);closeStats();toast('Stats effacées','ok');}}
+
+// ═══════════════════════════════════════════
+//  GAME STATE
+// ═══════════════════════════════════════════
+let G = {
+  mode:'digital', diff:1, totalQ:10,
+  qIndex:0, score:0, timerSec:0, timerInt:null,
+  // Current question
+  targetH:10, targetM:10, // correct answer in hours/minutes
+  // Player clock hands (in degrees from 12 o'clock, clockwise)
+  playerHourDeg:  300, // 10:10 default → hour at 10 = 300°
+  playerMinDeg:   60,  // 10:10 default → min at 10 = 60°
+  dragging: null,  // 'hour' | 'minute' | null
+  results: [],     // {correct:bool} per question
+};
+
+function selMode(card){document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('active'));card.classList.add('active');G.mode=card.dataset.mode;}
+function afficherConseil(){
+  const el=document.getElementById('conseilHeure');
+  if(!el||typeof JDC==='undefined')return;
+  const b=JDC.bilanJeu('heure');
+  if(!b.parties){el.textContent='';return;}
+  const c=JDC.niveauConseille('heure');
+  const lbl={1:'Facile',2:'Moyen',3:'Difficile'}[c];
+  el.textContent=b.parties+' série(s) jouée(s). Niveau conseillé : '+lbl+'.';
+  const btn=document.querySelector('.ob[data-diff="'+c+'"]');
+  if(btn){document.querySelectorAll('.ob[data-diff]').forEach(x=>x.classList.remove('active'));btn.classList.add('active');G.diff=c;}
+}
+
+function selDiff(btn){document.querySelectorAll('[data-diff]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');G.diff=parseInt(btn.dataset.diff);}
+function selQ(btn){document.querySelectorAll('[data-q]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');G.totalQ=parseInt(btn.dataset.q);}
+
+// ═══════════════════════════════════════════
+//  GAME INIT
+// ═══════════════════════════════════════════
+function startGame(){
+  document.getElementById('startScreen').style.display='none';
+  document.getElementById('gameScreen').style.display='block';
+  document.getElementById('resultOv').classList.remove('show');
+  G.qIndex=0;G.score=0;G.results=[];
+  clearInterval(G.timerInt);G.timerSec=0;
+  G.timerInt=setInterval(()=>{G.timerSec++;updateTimer();},1000);
+  buildScorePips();
+  nextQuestion();
+}
+
+function backToStart(){
+  clearInterval(G.timerInt);
+  document.getElementById('gameScreen').style.display='none';
+  document.getElementById('startScreen').style.display='flex';
+  document.getElementById('resultOv').classList.remove('show');
+}
+
+function buildScorePips(){
+  const row=document.getElementById('scoreRow');row.innerHTML='';
+  for(let i=0;i<G.totalQ;i++){
+    const pip=document.createElement('div');pip.className='score-pip';pip.id='pip'+i;row.appendChild(pip);
+  }
+}
+
+// ═══════════════════════════════════════════
+//  QUESTION GENERATION
+// ═══════════════════════════════════════════
+function generateTime(){
+  const step=DIFF_STEPS[G.diff];
+  const totalSteps=Math.floor(12*60/step);
+  const pick=Math.floor(Math.random()*totalSteps);
+  const totalMin=pick*step;
+  const h=Math.floor(totalMin/60)%12||12; // 1-12
+  const m=totalMin%60;
+  return {h,m};
+}
+
+function nextQuestion(){
+  if(G.qIndex>=G.totalQ){showResult();return;}
+
+  const t=generateTime();
+  G.targetH=t.h;G.targetM=t.m;
+
+  // Reset player hands to 10:10
+  G.playerHourDeg=300;   // 10h → 300°
+  G.playerMinDeg=60;     // 10min → 60°
+
+  document.getElementById('hQ').textContent=(G.qIndex+1)+'/'+G.totalQ;
+  document.getElementById('hScore').textContent=G.score;
+
+  // Hide feedbacks
+  hideFeedback('feedbackDigital');
+  hideFeedback('feedbackAnalog');
+
+  if(G.mode==='digital'){
+    document.getElementById('modeDigital').style.display='block';
+    document.getElementById('modeAnalog').style.display='none';
+    initCanvas();
+    const h12=G.targetH<=12?G.targetH:G.targetH-12;
+    document.getElementById('digitalTime').textContent=
+      String(h12).padStart(2,'0')+':'+String(G.targetM).padStart(2,'0');
+    drawClock('clockCanvas', G.playerHourDeg, G.playerMinDeg, true);
+    document.querySelector('.btn-validate').disabled=false;
+  } else {
+    document.getElementById('modeDigital').style.display='none';
+    document.getElementById('modeAnalog').style.display='block';
+    // Draw static clock with correct time
+    const {hDeg,mDeg}=timeToDeg(G.targetH,G.targetM);
+    drawClock('clockCanvasStatic', hDeg, mDeg, false);
+    buildQCM();
+  }
+}
+
+function timeToDeg(h,m){
+  const mDeg=m*6; // 360/60
+  const hDeg=((h%12)+m/60)*30; // 360/12
+  return {hDeg,mDeg};
+}
+
+// ═══════════════════════════════════════════
+//  CLOCK DRAWING
+// ═══════════════════════════════════════════
+function drawClock(canvasId, hourDeg, minDeg, interactive){
+  const canvas=document.getElementById(canvasId);
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+  const cx=W/2,cy=H/2,r=W/2-8;
+
+  ctx.clearRect(0,0,W,H);
+
+  // Shadow
+  ctx.shadowColor='rgba(0,0,0,.2)';ctx.shadowBlur=20;
+
+  // Face
+  const grad=ctx.createRadialGradient(cx-r*.2,cy-r*.2,r*.1,cx,cy,r);
+  grad.addColorStop(0,'#fafaf8');grad.addColorStop(1,'#f0ece0');
+  ctx.fillStyle=grad;ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fill();
+  ctx.shadowBlur=0;
+
+  // Rim
+  ctx.strokeStyle='#b8a070';ctx.lineWidth=5;
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+  ctx.strokeStyle='rgba(255,255,255,.4)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.arc(cx,cy,r-3,0,Math.PI*2);ctx.stroke();
+
+  // Hour marks
+  for(let i=0;i<12;i++){
+    const a=(i*30-90)*Math.PI/180;
+    const isMajor=true;
+    const r1=r-8,r2=r-22;
+    ctx.strokeStyle='#6b4c2a';ctx.lineWidth=i%3===0?3:1.5;
+    ctx.beginPath();
+    ctx.moveTo(cx+Math.cos(a)*r1,cy+Math.sin(a)*r1);
+    ctx.lineTo(cx+Math.cos(a)*r2,cy+Math.sin(a)*r2);
+    ctx.stroke();
+  }
+
+  // Numbers
+  ctx.fillStyle='#3a2010';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.font=`bold ${r*.18}px "Atkinson Hyperlegible", sans-serif`;
+  for(let i=1;i<=12;i++){
+    const a=(i*30-90)*Math.PI/180,nr=r-38;
+    ctx.fillText(i,cx+Math.cos(a)*nr,cy+Math.sin(a)*nr);
+  }
+
+  // Minute marks (small)
+  for(let i=0;i<60;i++){
+    if(i%5===0)continue;
+    const a=(i*6-90)*Math.PI/180,r1=r-8,r2=r-15;
+    ctx.strokeStyle='rgba(107,76,42,.3)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(cx+Math.cos(a)*r1,cy+Math.sin(a)*r1);ctx.lineTo(cx+Math.cos(a)*r2,cy+Math.sin(a)*r2);ctx.stroke();
+  }
+
+  // ── HANDS ──
+  const hRad=(hourDeg-90)*Math.PI/180;
+  const mRad=(minDeg-90)*Math.PI/180;
+
+  // Hour hand
+  const hLen=r*.50;
+  drawHand(ctx,cx,cy,hRad,hLen,r*.04,getComputedStyle(document.documentElement).getPropertyValue('--hour-color').trim()||'#1a3d6e',interactive);
+
+  // Minute hand
+  const mLen=r*.72;
+  drawHand(ctx,cx,cy,mRad,mLen,r*.028,getComputedStyle(document.documentElement).getPropertyValue('--min-color').trim()||'#8b2020',interactive);
+
+  // Center dot
+  ctx.fillStyle='#2a2a2a';ctx.beginPath();ctx.arc(cx,cy,7,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#f0ece0';ctx.beginPath();ctx.arc(cx,cy,3.5,0,Math.PI*2);ctx.fill();
+
+  // If interactive, draw grab hints
+  if(interactive){
+    // Tip of hour hand
+    const hTipX=cx+Math.cos(hRad)*hLen,hTipY=cy+Math.sin(hRad)*hLen;
+    ctx.fillStyle='rgba(26,61,110,.25)';ctx.beginPath();ctx.arc(hTipX,hTipY,14,0,Math.PI*2);ctx.fill();
+    // Tip of minute hand
+    const mTipX=cx+Math.cos(mRad)*mLen,mTipY=cy+Math.sin(mRad)*mLen;
+    ctx.fillStyle='rgba(139,32,32,.22)';ctx.beginPath();ctx.arc(mTipX,mTipY,14,0,Math.PI*2);ctx.fill();
+  }
+}
+
+function drawHand(ctx,cx,cy,angle,len,width,color,shadow){
+  if(shadow){ctx.shadowColor='rgba(0,0,0,.25)';ctx.shadowBlur=6;ctx.shadowOffsetX=2;ctx.shadowOffsetY=2;}
+  ctx.strokeStyle=color;ctx.lineWidth=width*2;ctx.lineCap='round';
+  ctx.beginPath();
+  // Slightly behind center for balance
+  ctx.moveTo(cx-Math.cos(angle)*len*.18,cy-Math.sin(angle)*len*.18);
+  ctx.lineTo(cx+Math.cos(angle)*len,cy+Math.sin(angle)*len);
+  ctx.stroke();
+  ctx.shadowBlur=0;ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;
+}
+
+// ═══════════════════════════════════════════
+//  INTERACTIVE CLOCK — drag hands
+// ═══════════════════════════════════════════
+function getAngleDeg(cx,cy,x,y){
+  let a=Math.atan2(y-cy,x-cx)*180/Math.PI+90;
+  return((a%360)+360)%360;
+}
+
+function snapToDiff(deg,isHour){
+  if(isHour){
+    // Hours snap to 30° increments (hour positions) BUT smooth for fractions
+    return deg; // free for hours
+  }
+  // Minutes snap to step
+  const step=DIFF_STEPS[G.diff];
+  const degStep=step*6;
+  return Math.round(deg/degStep)*degStep;
+}
+
+function isNearHand(mx,my,handDeg,handLen,cx,cy){
+  const rad=(handDeg-90)*Math.PI/180;
+  const tipX=cx+Math.cos(rad)*handLen;
+  const tipY=cy+Math.sin(rad)*handLen;
+  const dist=Math.hypot(mx-tipX,my-tipY);
+  return dist<28; // grab radius
+}
+
+// Canvas bound lazily when digital mode is shown
+var _cvs=null, CX2=140, CY2=140, R2=130;
+
+function initCanvas(){
+  _cvs=document.getElementById('clockCanvas');
+  if(!_cvs) return;
+  var W=_cvs.width; CX2=W/2; CY2=W/2; R2=W/2-8;
+  if(_cvs._evBound) return;
+  _cvs._evBound=true;
+  _cvs.addEventListener('mousedown',function(e){e.preventDefault();handleDragStart(getPos(e));});
+  _cvs.addEventListener('touchstart',function(e){e.preventDefault();handleDragStart(getPos(e));},{passive:false});
+  window.addEventListener('mousemove',function(e){if(G.dragging)handleDragMove(getPos(e));});
+  window.addEventListener('touchmove',function(e){if(G.dragging){e.preventDefault();handleDragMove(getPos(e));}},{passive:false});
+  window.addEventListener('mouseup',function(){G.dragging=null;});
+  window.addEventListener('touchend',function(){G.dragging=null;});
+}
+
+function getPos(e){
+  if(!_cvs) return{x:0,y:0};
+  var rect=_cvs.getBoundingClientRect();
+  var scaleX=_cvs.width/rect.width, scaleY=_cvs.height/rect.height;
+  if(e.touches) return{x:(e.touches[0].clientX-rect.left)*scaleX,y:(e.touches[0].clientY-rect.top)*scaleY};
+  return{x:(e.clientX-rect.left)*scaleX,y:(e.clientY-rect.top)*scaleY};
+}
+
+function handleDragStart(pos){
+  if(G.mode!=='digital')return;
+  const hLen=R2*.50,mLen=R2*.72;
+  if(isNearHand(pos.x,pos.y,G.playerMinDeg,mLen,CX2,CY2)){G.dragging='minute';}
+  else if(isNearHand(pos.x,pos.y,G.playerHourDeg,hLen,CX2,CY2)){G.dragging='hour';}
+  else{
+    // Click anywhere: determine which hand is closer to the click angle
+    const clickDeg=getAngleDeg(CX2,CY2,pos.x,pos.y);
+    const dH=angleDiff(clickDeg,G.playerHourDeg);
+    const dM=angleDiff(clickDeg,G.playerMinDeg);
+    G.dragging=dH<dM?'hour':'minute';
+  }
+}
+
+function handleDragMove(pos){
+  const deg=getAngleDeg(CX2,CY2,pos.x,pos.y);
+  if(G.dragging==='hour'){
+    G.playerHourDeg=deg;
+  } else if(G.dragging==='minute'){
+    G.playerMinDeg=snapToDiff(deg,false);
+  }
+  drawClock('clockCanvas',G.playerHourDeg,G.playerMinDeg,true);
+}
+
+function angleDiff(a,b){let d=Math.abs(a-b);return d>180?360-d:d;}
+
+// ═══════════════════════════════════════════
+//  VALIDATE DIGITAL MODE
+// ═══════════════════════════════════════════
+function validateDigital(){
+  // Convert player hand degrees to H:M
+  const playerM=Math.round(G.playerMinDeg/6)%60;
+  const playerH=Math.round(G.playerHourDeg/30)%12||12;
+
+  // Tolerance: ±1 step
+  const step=DIFF_STEPS[G.diff];
+  const targetTotalMin=G.targetM+(G.targetH%12)*60;
+  const playerTotalMin=playerM+(playerH%12)*60;
+  let diff=Math.abs(targetTotalMin-playerTotalMin);
+  if(diff>360)diff=720-diff; // wrap around 12h
+
+  const tolerance=step*1.5; // 1.5 step tolerance
+  const correct=diff<=tolerance;
+
+  document.querySelector('.btn-validate').disabled=true;
+
+  if(correct){
+    G.score++;
+    showFeedback('feedbackDigital','✓ Bravo ! C\'est la bonne heure.','ok');
+  } else {
+    const {hDeg,mDeg}=timeToDeg(G.targetH,G.targetM);
+    const h12=G.targetH%12||12;
+    showFeedback('feedbackDigital','✗ La bonne réponse était '+String(h12).padStart(2,'0')+':'+String(G.targetM).padStart(2,'0')+' — Regardez la correction.','err');
+    // Show correct hands briefly
+    drawClock('clockCanvas',hDeg,mDeg,false);
+  }
+
+  G.results.push({correct});
+  markPip(G.qIndex,correct);
+  G.qIndex++;
+  setTimeout(()=>nextQuestion(),correct?1200:2200);
+}
+
+// ═══════════════════════════════════════════
+//  QCM — ANALOG MODE
+// ═══════════════════════════════════════════
+function buildQCM(){
+  const step=DIFF_STEPS[G.diff];
+  const correctTime={h:G.targetH,m:G.targetM};
+  const options=[correctTime];
+
+  // Generate 3 wrong options
+  while(options.length<4){
+    const t=generateTime();
+    if(!options.some(o=>o.h===t.h&&o.m===t.m))options.push(t);
+  }
+  const shuffled=shuffle(options);
+
+  const wrap=document.getElementById('qcmWrap');wrap.innerHTML='';
+  shuffled.forEach(opt=>{
+    const btn=document.createElement('button');btn.className='qcm-btn';
+    const h12=opt.h%12||12;
+    btn.textContent=String(h12).padStart(2,'0')+':'+String(opt.m).padStart(2,'0');
+    btn.dataset.h=opt.h;btn.dataset.m=opt.m;
+    btn.addEventListener('click',()=>selectQCM(btn,opt));
+    wrap.appendChild(btn);
+  });
+}
+
+function selectQCM(btn,opt){
+  // Disable all
+  document.querySelectorAll('.qcm-btn').forEach(b=>b.style.pointerEvents='none');
+  const correct=(opt.h===G.targetH&&opt.m===G.targetM);
+
+  if(correct){
+    btn.classList.add('correct-ans');
+    G.score++;
+    showFeedback('feedbackAnalog','✓ Bravo ! C\'est la bonne heure.','ok');
+  } else {
+    btn.classList.add('wrong-ans');
+    // Highlight correct
+    document.querySelectorAll('.qcm-btn').forEach(b=>{
+      if(parseInt(b.dataset.h)===G.targetH&&parseInt(b.dataset.m)===G.targetM)b.classList.add('correct-ans');
+    });
+    const h12=G.targetH%12||12;
+    showFeedback('feedbackAnalog','✗ La bonne réponse était '+String(h12).padStart(2,'0')+':'+String(G.targetM).padStart(2,'0'),'err');
+  }
+
+  G.results.push({correct});
+  markPip(G.qIndex,correct);
+  G.qIndex++;
+  setTimeout(()=>nextQuestion(),correct?1200:2200);
+}
+
+// ═══════════════════════════════════════════
+//  RESULT
+// ═══════════════════════════════════════════
+function showResult(){
+  clearInterval(G.timerInt);
+  const modeLabel={digital:'Numérique→Cadran',analog:'Cadran→Numérique'};
+  const diffLabel={1:'Facile',2:'Moyen',3:'Difficile',4:'Expert'};
+  trackSession(G.mode,G.diff,G.score,G.totalQ,G.timerSec);
+  if(typeof JDC!=='undefined'){
+    const reussi = G.score >= Math.ceil(G.totalQ*0.7);
+    const niv = Math.min(3, parseInt(G.diff)||1);
+    JDC.enregistrer('heure', niv, reussi, {duree:G.timerSec, erreurs:G.totalQ-G.score, variante:G.mode});
+  }
+
+  const pct=Math.round(G.score/G.totalQ*100);
+  let ico='📚',msg='Continuez à vous entraîner, vous progresserez !';
+  if(pct>=90){ico='🏆';msg='Excellent ! Vous maîtrisez parfaitement la lecture de l\'heure.';}
+  else if(pct>=70){ico='🥇';msg='Très bien ! Quelques erreurs mais vous êtes sur la bonne voie.';}
+  else if(pct>=50){ico='🥈';msg='Bien joué ! Encore un peu de pratique et vous y serez.';}
+
+  document.getElementById('resultIco').textContent=ico;
+  document.getElementById('resultScore').textContent=G.score+' / '+G.totalQ;
+  document.getElementById('resultMsg').textContent=msg;
+  document.getElementById('resultOv').classList.add('show');
+  if(pct>=70)confetti();
+}
+
+// ═══════════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════════
+function markPip(i,correct){
+  const pip=document.getElementById('pip'+i);
+  if(!pip)return;
+  pip.classList.add(correct?'correct':'wrong');
+  pip.style.animation='popPip .4s ease';
+  setTimeout(()=>pip.style.animation='',450);
+}
+function showFeedback(id,msg,type){
+  const el=document.getElementById(id);
+  el.textContent=msg;el.className='feedback show '+(type==='ok'?'ok':'err');
+}
+function hideFeedback(id){
+  const el=document.getElementById(id);if(el)el.className='feedback';
+}
+function updateTimer(){const m=0|G.timerSec/60,s=G.timerSec%60;document.getElementById('hTimer').textContent=m+':'+(s<10?'0':'')+s;}
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];}return b;}
+let _tt;function toast(msg,type='ok'){const t=document.getElementById('toast');t.textContent=msg;t.style.background=type==='err'?'var(--red)':'var(--green)';t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),2400);}
+function confetti(){const cols=['#c8922a','#2d6a4f','#8b2020','#1a3d6e','#FDD835','#E91E63'];for(let i=0;i<50;i++){const p=document.createElement('div');p.className='cp';p.style.left=Math.random()*100+'vw';p.style.background=cols[0|Math.random()*cols.length];p.style.animationDelay=Math.random()*1.2+'s';p.style.animationDuration=(2+Math.random()*1.3)+'s';p.style.transform=`rotate(${Math.random()*360}deg)`;document.body.appendChild(p);setTimeout(()=>p.remove(),4000);}}
+afficherConseil();
+</script>
+
+
+
+
+<details class="jdc-apropos">
+<summary>À propos de ce jeu</summary>
+<div class="corps">
+<p><strong>Le Jeu de l'Heure</strong> — Une horloge à aiguilles, et l'heure à retrouver en chiffres. Ou l'inverse : l'heure donnée, et les aiguilles à placer.</p>
+<h2>Pour qui</h2>
+<p>Aux personnes vivant avec une désorientation dans le temps. Lire une horloge à aiguilles est un savoir ancien, que ce jeu vient reprendre doucement et sans rien exiger.</p>
+<h2>Comment y jouer</h2>
+<ul>
+<li><strong>Seul</strong> : à son rythme.</li>
+<li><strong>À deux, avec un proche ou un aidant</strong> : en parlant de ce qu'on fait à cette heure-là : le café, le déjeuner, le journal du soir.</li>
+<li><strong>En petit groupe</strong> : l'horloge projetée, chacun donne son heure.</li>
+</ul>
+<p>Rattachez l'heure à un moment de la journée plutôt qu'à un chiffre. « L'heure du déjeuner » est plus solide que « midi et demi ».</p>
+<h2>Ce que ce jeu n'est pas</h2>
+<p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
+<h2>Qui le propose</h2>
+<p>Les Jardins de Célestine, un projet d'habitat partagé pour seniors, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="jeux.html">Voir tous les jeux</a>.</p>
+</div>
+</details>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+</footer>
+</body>
+</html>

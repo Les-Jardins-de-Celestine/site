@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calcul Mental — jeu en ligne gratuit · Les Jardins de Célestine</title>
+<meta name="description" content="Additions, soustractions, multiplications et divisions sur un tableau noir, à trois niveaux. Jeu en ligne gratuit pour senior, sans inscription.">
+<link rel="canonical" href="https://jardinsdecelestine.com/jeu_calcul">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --parchment:#eee8d5; --sepia:#5c3d1e; --gold:#c8922a;
+  --green:#2d6a4f; --red:#8b2020; --shadow:rgba(28,18,8,0.13);
+  --chalk:#f0ece0; --board:#1a2a1a; --board-edge:#2d4a2d;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:var(--parchment);
+  background-image:radial-gradient(ellipse at 20% 10%,rgba(200,146,42,.08) 0%,transparent 55%),
+    radial-gradient(ellipse at 80% 90%,rgba(45,106,79,.06) 0%,transparent 55%);
+  min-height:100vh;font-family:'Nunito',sans-serif;
+  color:#1c1208;user-select:none;-webkit-user-select:none;
+}
+
+/* HEADER */
+header{text-align:center;padding:18px 20px 12px;border-bottom:1px solid rgba(200,146,42,.2);position:relative;}
+header h1{font-family:'Atkinson Hyperlegible',sans-serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:700;color:var(--sepia);cursor:default;}
+header h1 em{color:var(--gold);font-style:normal;}
+header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-top:3px;}
+.divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:7px auto 0;}
+#statsBtn{display:none;position:absolute;top:16px;right:18px;background:none;border:1.5px solid rgba(200,146,42,.4);border-radius:6px;padding:4px 10px;font-family:'Nunito',sans-serif;font-size:.75rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+
+/* ── START SCREEN ── */
+#startScreen{display:flex;flex-direction:column;align-items:center;gap:24px;padding:36px 20px;}
+#startScreen h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.3rem;font-weight:700;color:var(--sepia);text-align:center;}
+
+.opt-group{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;max-width:500px;}
+.opt-label{font-size:.8rem;font-weight:700;color:var(--sepia);letter-spacing:.08em;text-transform:uppercase;opacity:.7;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+
+/* Level cards */
+.lvl-card{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  background:#f7f3ea;border:2.5px solid rgba(200,146,42,.3);
+  border-radius:12px;padding:16px 20px;cursor:pointer;
+  transition:all .2s;box-shadow:0 2px 8px var(--shadow);
+  min-width:130px;text-align:center;
+}
+.lvl-card:hover{border-color:var(--gold);}
+.lvl-card.active{border-color:var(--gold);background:rgba(200,146,42,.07);box-shadow:0 4px 16px rgba(200,146,42,.2);}
+.lvl-card .lvl-ico{font-size:1.8rem;}
+.lvl-card .lvl-name{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;color:var(--sepia);}
+.lvl-card .lvl-ops{font-size:.75rem;color:var(--sepia);opacity:.6;margin-top:2px;}
+
+.ob{background:#f7f3ea;border:2.5px solid rgba(200,146,42,.35);border-radius:8px;padding:10px 20px;cursor:pointer;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;color:var(--sepia);transition:all .2s;box-shadow:0 2px 8px var(--shadow);}
+.ob:hover{border-color:var(--gold);}
+.ob.active{background:var(--gold);color:white;border-color:var(--gold);box-shadow:0 4px 14px rgba(200,146,42,.4);}
+
+.btn-start{padding:14px 42px;background:var(--gold);color:white;border:none;border-radius:8px;cursor:pointer;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:.05em;box-shadow:0 5px 18px rgba(200,146,42,.4);transition:background .2s,transform .15s;}
+.btn-start:hover{background:#b07820;transform:translateY(-2px);}
+
+/* ── GAME SCREEN ── */
+#gameScreen{display:none;padding:14px 16px 40px;max-width:700px;margin:0 auto;}
+
+.hud{display:flex;gap:10px;justify-content:center;margin-bottom:12px;flex-wrap:wrap;}
+.hb{background:#f7f3ea;border:1px solid rgba(200,146,42,.4);border-radius:6px;padding:5px 16px;text-align:center;box-shadow:0 2px 6px var(--shadow);min-width:78px;}
+.hb .l{font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;color:var(--sepia);opacity:.6;display:block;}
+.hb .v{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;font-weight:700;color:var(--gold);line-height:1.1;}
+.hb.c{cursor:pointer;}.hb.c:hover{border-color:var(--gold);}
+
+/* SCORE PIPS */
+.score-row{display:flex;gap:8px;justify-content:center;margin-bottom:18px;flex-wrap:wrap;}
+.pip{width:22px;height:22px;border-radius:50%;border:2px solid rgba(200,146,42,.35);background:#f7f3ea;transition:all .3s;}
+.pip.ok{background:var(--green);border-color:var(--green);}
+.pip.ko{background:var(--red);border-color:var(--red);}
+
+/* ── CHALKBOARD ── */
+.chalkboard-wrap{
+  background:linear-gradient(135deg,#3a5a3a,#2a4a2a,#223322);
+  border-radius:16px;padding:10px;
+  box-shadow:0 8px 32px rgba(0,0,0,.45),inset 0 2px 0 rgba(255,255,255,.08);
+  margin-bottom:20px;
+}
+.chalkboard-inner{
+  background:var(--board);
+  border-radius:10px;padding:32px 28px 28px;
+  box-shadow:inset 0 2px 20px rgba(0,0,0,.4),inset 0 0 60px rgba(0,30,0,.2);
+  position:relative;overflow:hidden;
+  min-height:220px;display:flex;align-items:center;justify-content:center;
+}
+/* Chalk texture overlay */
+.chalkboard-inner::before{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;opacity:.6;
+}
+/* Chalk dust line at bottom */
+.chalkboard-inner::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:4px;
+  background:rgba(240,236,224,.06);
+}
+
+/* CALCULATION */
+.calc-display{
+  display:flex;flex-direction:column;align-items:flex-end;
+  gap:0;position:relative;z-index:1;
+  padding:0 20px;
+}
+.calc-number{
+  font-family:'Caveat',cursive;
+  font-size:clamp(3.5rem,10vw,6rem);
+  font-weight:700;color:var(--chalk);
+  line-height:1.05;letter-spacing:.04em;
+  text-shadow:1px 1px 0 rgba(255,255,255,.08),0 0 20px rgba(240,236,224,.15);
+  /* chalk imperfection */
+  filter:blur(.4px);
+}
+.calc-operator{
+  font-family:'Caveat',cursive;
+  font-size:clamp(3rem,8vw,5rem);
+  font-weight:700;color:#a0e8a0;
+  position:absolute;left:-10px;
+  text-shadow:0 0 12px rgba(160,232,160,.3);
+  filter:blur(.3px);
+}
+.calc-line{
+  width:100%;height:4px;
+  background:rgba(240,236,224,.7);
+  border-radius:2px;margin:4px 0 8px;
+  box-shadow:0 0 8px rgba(240,236,224,.3);
+  /* Chalk line imperfection */
+  clip-path:polygon(0 0,100% 10%,100% 90%,0 100%);
+}
+.calc-question{
+  font-family:'Caveat',cursive;
+  font-size:clamp(3.5rem,10vw,6rem);
+  font-weight:700;color:#ffd080;
+  line-height:1.05;letter-spacing:.04em;
+  text-shadow:0 0 16px rgba(255,208,128,.3);
+  filter:blur(.3px);
+}
+/* Chalk dust spots */
+.dust{position:absolute;border-radius:50%;background:rgba(240,236,224,.12);pointer-events:none;}
+
+/* ── ANSWER BUTTONS ── */
+.answers-grid{
+  display:grid;grid-template-columns:repeat(5,1fr);
+  gap:10px;margin-bottom:16px;
+}
+@media(max-width:500px){
+  .answers-grid{grid-template-columns:repeat(3,1fr);}
+}
+
+.ans-btn{
+  background:#f7f3ea;
+  border:2.5px solid rgba(200,146,42,.3);
+  border-radius:10px;padding:14px 8px;
+  font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:clamp(1.1rem,3.5vw,1.5rem);
+  font-weight:700;color:var(--sepia);
+  cursor:pointer;text-align:center;
+  box-shadow:0 3px 10px var(--shadow);
+  transition:all .2s;
+}
+.ans-btn:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 6px 16px var(--shadow);}
+.ans-btn.correct{background:var(--green);color:white;border-color:var(--green);transform:scale(1.05);}
+.ans-btn.wrong{background:var(--red);color:white;border-color:var(--red);}
+.ans-btn.reveal{background:#2d6a4f;color:white;border-color:#2d6a4f;animation:pulse .6s ease;}
+.ans-btn:disabled{cursor:default;transform:none;}
+
+/* FEEDBACK */
+.feedback{
+  text-align:center;font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:1rem;font-weight:700;
+  padding:10px 20px;border-radius:8px;
+  opacity:0;transition:opacity .3s;min-height:44px;
+}
+.feedback.show{opacity:1;}
+.feedback.ok{background:rgba(45,106,79,.15);color:var(--green);border:1.5px solid rgba(45,106,79,.3);}
+.feedback.ko{background:rgba(139,32,32,.12);color:var(--red);border:1.5px solid rgba(139,32,32,.25);}
+
+/* ── RESULT ── */
+#resultOv{display:none;position:fixed;inset:0;background:rgba(28,18,8,.75);z-index:50;align-items:center;justify-content:center;}
+#resultOv.show{display:flex;animation:fadeIn .3s ease;}
+#resultBox{background:#f7f3ea;border:2px solid var(--gold);border-radius:16px;padding:36px 44px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);animation:popIn .44s cubic-bezier(.34,1.56,.64,1);max-width:340px;width:90%;}
+#resultBox .ico{font-size:3.5rem;display:block;margin-bottom:12px;}
+#resultBox h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.8rem;font-weight:700;color:var(--sepia);margin-bottom:8px;}
+.result-score{font-family:'Atkinson Hyperlegible',sans-serif;font-size:2.4rem;font-weight:700;color:var(--gold);margin:8px 0;}
+#resultBox p{color:var(--sepia);font-size:.92rem;line-height:1.6;margin-bottom:20px;}
+.btn-row-r{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn{display:inline-block;padding:11px 24px;background:var(--gold);color:white;border:none;border-radius:8px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.92rem;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(200,146,42,.35);}
+.btn:hover{background:#b07820;}
+.btn-sm{padding:8px 18px;font-size:.8rem;}
+.btn-ol{background:transparent;border:2px solid var(--gold);color:var(--gold);box-shadow:none;}
+.btn-ol:hover{background:rgba(200,146,42,.08);}
+
+/* ── STATS ── */
+#statsPanel{display:none;position:fixed;inset:0;background:rgba(28,18,8,.75);z-index:60;align-items:center;justify-content:center;}
+#statsPanel.show{display:flex;animation:fadeIn .3s ease;}
+#statsBox{background:#f7f3ea;border:2px solid var(--gold);border-radius:14px;padding:28px 34px;max-width:440px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+#statsBox h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.3rem;font-weight:700;color:var(--sepia);margin-bottom:4px;}
+.sub{font-size:.73rem;color:var(--sepia);opacity:.58;margin-bottom:16px;display:block;}
+.srow{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(200,146,42,.14);}
+.srow:last-child{border-bottom:none;}
+.sval{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.88rem;font-weight:700;color:var(--gold);text-align:right;}
+.slbl{font-size:.52rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.1em;text-align:right;}
+.sbar-w{grid-column:1/-1;height:4px;background:rgba(200,146,42,.15);border-radius:2px;}
+.sbar{height:100%;background:var(--gold);border-radius:2px;transition:width .5s ease;}
+.sa{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;}
+
+/* TOAST */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(10px);color:white;padding:10px 22px;border-radius:8px;font-size:.86rem;font-weight:700;opacity:0;transition:all .25s;z-index:300;pointer-events:none;font-family:'Atkinson Hyperlegible',sans-serif;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+.cp{position:fixed;top:-10px;width:9px;height:9px;border-radius:2px;z-index:60;pointer-events:none;animation:fall 2.6s ease-in forwards;}
+
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@keyframes pipPop{0%{transform:scale(1)}50%{transform:scale(1.5)}100%{transform:scale(1)}}
+@keyframes chalkIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* Sortie de secours : toujours un moyen de revenir au catalogue. */
+.jdc-retour{display:block;text-align:center;padding:8px;font-size:.74rem;
+  color:#5c3d1e;opacity:.55;text-decoration:none;letter-spacing:.1em;
+  text-transform:uppercase;font-family:'Nunito',sans-serif;}
+.jdc-retour:hover{opacity:1;}
+@media print{.jdc-retour{display:none;}}
+
+/* Pied discret : le lien légal doit exister sur chaque page du site. */
+.jdc-legal{text-align:center;padding:16px 14px 22px;font-size:.78rem;line-height:1.6;
+  color:#5c3d1e;opacity:.6;font-family:'Nunito',sans-serif;}
+.jdc-legal a{color:inherit;}
+@media print{.jdc-legal{display:none;}}
+</style>
+<script src="jdc-parcours.js"></script>
+<style id="jdc-apropos-style">
+/* Bloc « À propos » : replié par défaut, lu en entier par les moteurs.
+   Couleurs écrites en dur — chaque jeu a ses propres variables CSS. */
+.jdc-apropos{max-width:680px;margin:28px auto 8px;padding:0 16px;
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;color:#5c3d1e;}
+.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;
+  letter-spacing:.02em;opacity:.62;padding:9px 0;text-align:center;
+  border-top:1px solid rgba(92,61,30,.16);}
+.jdc-apropos>summary::-webkit-details-marker{display:none}
+.jdc-apropos>summary::after{content:' \203A';display:inline-block;
+  transform:rotate(90deg);margin-left:5px;opacity:.7}
+.jdc-apropos[open]>summary::after{transform:rotate(-90deg)}
+.jdc-apropos>summary:hover,.jdc-apropos>summary:focus-visible{opacity:.95}
+.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;
+  text-align:left;opacity:.9}
+.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:#5c3d1e;
+  font-weight:700}
+.jdc-apropos p{margin:0 0 10px}
+.jdc-apropos ul{margin:0 0 10px;padding-left:20px}
+.jdc-apropos li{margin-bottom:5px}
+.jdc-apropos a{color:#2d6a4f}
+.hc .jdc-apropos{color:#000}
+.hc .jdc-apropos h2{color:#000}
+.hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
+</style>
+</head>
+<body>
+
+
+<a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
+<header>
+  <h1 id="mainTitle">Calcul <em>Mental</em></h1>
+  <p>Additions · Soustractions · Multiplications · Divisions</p>
+  <div class="divider"></div>
+  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
+</header>
+
+<!-- START SCREEN -->
+<div id="startScreen">
+  <h2>Choisissez votre niveau</h2>
+
+  <div class="opt-group">
+    <div class="btn-row">
+      <div class="lvl-card active" data-lvl="1" onclick="selLvl(this)">
+        <span class="lvl-ico">⭐</span>
+        <span class="lvl-name">Simple</span>
+        <span class="lvl-ops">+ et −</span>
+      </div>
+      <div class="lvl-card" data-lvl="2" onclick="selLvl(this)">
+        <span class="lvl-ico">⭐⭐</span>
+        <span class="lvl-name">Intermédiaire</span>
+        <span class="lvl-ops">+ , − et ×</span>
+      </div>
+      <div class="lvl-card" data-lvl="3" onclick="selLvl(this)">
+        <span class="lvl-ico">⭐⭐⭐</span>
+        <span class="lvl-name">Difficile</span>
+        <span class="lvl-ops">+ , − , × et ÷</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="opt-group">
+    <div class="opt-label">Nombre de questions</div>
+    <div class="btn-row">
+      <button class="ob" data-q="5" onclick="selQ(this)">5</button>
+      <button class="ob active" data-q="10" onclick="selQ(this)">10</button>
+      <button class="ob" data-q="15" onclick="selQ(this)">15</button>
+    </div>
+  </div>
+
+  <button class="btn-start" onclick="startGame()">▶ Commencer</button>
+</div>
+
+<!-- GAME SCREEN -->
+<div id="gameScreen">
+  <div class="hud">
+    <div class="hb"><span class="l">Question</span><span class="v" id="hQ">1/10</span></div>
+    <div class="hb"><span class="l">Score</span><span class="v" id="hScore">0</span></div>
+    <div class="hb"><span class="l">Temps</span><span class="v" id="hTimer">0:00</span></div>
+    <div class="hb c" onclick="backToStart()"><span class="l">Menu</span><span class="v" style="font-size:.9rem;">↩</span></div>
+  </div>
+
+  <div class="score-row" id="scoreRow"></div>
+
+  <!-- CHALKBOARD -->
+  <div class="chalkboard-wrap">
+    <div class="chalkboard-inner" id="chalkboard">
+      <div class="calc-display" id="calcDisplay"></div>
+    </div>
+  </div>
+
+  <!-- ANSWER BUTTONS -->
+  <div class="answers-grid" id="answersGrid"></div>
+
+  <!-- FEEDBACK -->
+  <div class="feedback" id="feedback"></div>
+</div>
+
+<!-- RESULT -->
+<div id="resultOv">
+  <div id="resultBox">
+    <span class="ico" id="resultIco">🏆</span>
+    <h2>Résultats</h2>
+    <div class="result-score" id="resultScore"></div>
+    <p id="resultMsg"></p>
+    <div class="btn-row-r">
+      <button class="btn btn-ol btn-sm" onclick="backToStart()">Changer de niveau</button>
+      <button class="btn btn-sm" onclick="startGame()">Rejouer</button>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div id="statsPanel">
+  <div id="statsBox">
+    <h2>📊 Statistiques</h2>
+    <span class="sub">Visibles uniquement par vous · Données locales</span>
+    <div id="statsContent"></div>
+    <div class="sa">
+      <button class="btn btn-ol btn-sm" onclick="resetStats()">Réinitialiser</button>
+      <button class="btn btn-sm" onclick="closeStats()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════
+//  STATS
+// ═══════════════════════════════════════════
+const STATS_KEY='calcul_stats_v1';
+let _tc=0,_tct=null;
+document.getElementById('mainTitle').addEventListener('click',()=>{
+  _tc++;clearTimeout(_tct);_tct=setTimeout(()=>_tc=0,800);
+  if(_tc>=3){_tc=0;document.getElementById('statsBtn').style.display='block';toast('Mode admin','ok');}
+});
+function loadStats(){try{return JSON.parse(localStorage.getItem(STATS_KEY))||{};}catch(e){return{};}}
+function saveStats(s){try{localStorage.setItem(STATS_KEY,JSON.stringify(s));}catch(e){}}
+function trackSession(lvl,correct,total,sec){
+  const k='lvl'+lvl,st=loadStats();
+  if(!st[k])st[k]={lvl,sessions:0,correct:0,total:0,totalSec:0};
+  st[k].sessions++;st[k].correct+=correct;st[k].total+=total;st[k].totalSec+=sec;saveStats(st);
+}
+function openStats(){
+  const st=loadStats(),keys=Object.keys(st),c=document.getElementById('statsContent');
+  const lvlLabel={'1':'⭐ Simple','2':'⭐⭐ Intermédiaire','3':'⭐⭐⭐ Difficile'};
+  if(!keys.length){c.innerHTML='<p style="color:var(--sepia);font-style:italic;text-align:center;padding:14px 0;">Aucune session encore jouée.</p>';}
+  else{
+    keys.sort();const mx=Math.max(...keys.map(k=>st[k].totalSec))||1;
+    c.innerHTML=keys.map(k=>{
+      const s=st[k],pct=s.total?Math.round(s.correct/s.total*100):0;
+      const m=0|s.totalSec/60,bw=Math.round(s.totalSec/mx*100);
+      const avg=s.sessions?Math.round(s.totalSec/s.sessions):0;
+      return `<div class="srow">
+        <div style="font-size:.85rem;font-weight:700;">${lvlLabel[''+s.lvl]||'Niveau '+s.lvl}</div>
+        <div><div class="slbl">Sessions</div><div class="sval">${s.sessions}</div></div>
+        <div><div class="slbl">Réussite</div><div class="sval">${pct}%</div></div>
+        <div><div class="slbl">Temps tot.</div><div class="sval">${m}m</div></div>
+        <div class="sbar-w"><div class="sbar" style="width:${bw}%"></div></div>
+        <div style="grid-column:1/-1;font-size:.68rem;color:var(--sepia);opacity:.5;">Moy. par session : ${0|avg/60}m${String(avg%60).padStart(2,'0')}s</div>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('statsPanel').classList.add('show');
+}
+function closeStats(){document.getElementById('statsPanel').classList.remove('show');}
+function resetStats(){if(confirm('Effacer toutes les statistiques ?')){localStorage.removeItem(STATS_KEY);closeStats();toast('Stats effacées','ok');}}
+
+// ═══════════════════════════════════════════
+//  GAME STATE
+// ═══════════════════════════════════════════
+let G={lvl:1,totalQ:10,qIndex:0,score:0,timerSec:0,timerInt:null,
+       curA:0,curB:0,curOp:'+',curAnswer:0};
+
+function afficherConseil(){
+  const el=document.getElementById('conseilCalcul');
+  if(!el||typeof JDC==='undefined')return;
+  const b=JDC.bilanJeu('calcul');
+  if(!b.parties){el.textContent='';return;}
+  const c=JDC.niveauConseille('calcul');
+  const lbl={1:'Simple',2:'Intermédiaire',3:'Difficile'}[c];
+  el.textContent=b.parties+' série(s) jouée(s). Niveau conseillé : '+lbl+'.';
+  const card=document.querySelector('.lvl-card[data-lvl="'+c+'"]');
+  if(card){document.querySelectorAll('.lvl-card').forEach(x=>x.classList.remove('active'));card.classList.add('active');G.lvl=c;}
+}
+
+function selLvl(card){document.querySelectorAll('.lvl-card').forEach(c=>c.classList.remove('active'));card.classList.add('active');G.lvl=parseInt(card.dataset.lvl);}
+function selQ(btn){document.querySelectorAll('[data-q]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');G.totalQ=parseInt(btn.dataset.q);}
+
+// ═══════════════════════════════════════════
+//  QUESTION GENERATION
+// ═══════════════════════════════════════════
+function randInt(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+
+function getOps(){
+  if(G.lvl===1)return['+','-'];
+  if(G.lvl===2)return['+','-','×'];
+  return['+','-','×','÷'];
+}
+
+function generateQuestion(){
+  const ops=getOps();
+  const op=ops[0|Math.random()*ops.length];
+  let a,b,answer;
+
+  if(op==='+'){
+    a=randInt(0,99); b=randInt(0,99-a); // ensure result ≤ 99
+    answer=a+b;
+  } else if(op==='-'){
+    a=randInt(1,99); b=randInt(0,a); // always positive result
+    answer=a-b;
+  } else if(op==='×'){
+    a=randInt(0,9); b=randInt(0,9);
+    answer=a*b;
+  } else { // ÷
+    // Generate clean division: pick b first, then a=answer×b
+    b=randInt(1,9);
+    answer=randInt(0,9);
+    a=answer*b; // a is always divisible by b
+  }
+
+  G.curA=a; G.curB=b; G.curOp=op; G.curAnswer=answer;
+}
+
+// Generate 5 answer choices — 1 correct + 4 plausible distractors
+function generateChoices(correct,op){
+  const choices=new Set([correct]);
+  let attempts=0;
+  while(choices.size<5 && attempts<200){
+    attempts++;
+    let offset;
+    // Distractors close to correct answer, scaled by operation
+    if(op==='×'||op==='÷'){
+      offset=randInt(-15,15);
+    } else {
+      offset=randInt(-20,20);
+    }
+    const candidate=correct+offset;
+    if(candidate>=0 && candidate!==correct){
+      choices.add(candidate);
+    }
+  }
+  // Fallback: add sequential if still not enough
+  let extra=1;
+  while(choices.size<5){
+    if(correct+extra>=0)choices.add(correct+extra);
+    if(choices.size<5&&correct-extra>=0)choices.add(correct-extra);
+    extra++;
+  }
+  return shuffle([...choices]).slice(0,5);
+}
+
+// ═══════════════════════════════════════════
+//  RENDER CHALKBOARD
+// ═══════════════════════════════════════════
+function renderChalkboard(){
+  const display=document.getElementById('calcDisplay');
+  display.innerHTML='';
+  display.style.animation='chalkIn .4s ease both';
+
+  // Number of digits for alignment
+  const aStr=String(G.curA);
+  const bStr=String(G.curB);
+  const maxLen=Math.max(aStr.length,bStr.length);
+
+  // Add chalk dust spots for atmosphere
+  const board=document.getElementById('chalkboard');
+  board.querySelectorAll('.dust').forEach(d=>d.remove());
+  for(let i=0;i<6;i++){
+    const d=document.createElement('div');d.className='dust';
+    d.style.cssText=`width:${randInt(4,18)}px;height:${randInt(3,10)}px;left:${randInt(5,90)}%;top:${randInt(5,90)}%;opacity:${(randInt(1,4)/10).toFixed(1)};transform:rotate(${randInt(0,180)}deg)`;
+    board.appendChild(d);
+  }
+
+  // First number (right-aligned)
+  const row1=makeChalkRow(G.curA,'');
+  display.appendChild(row1);
+
+  // Operator + second number
+  const row2=makeChalkRow(G.curB,G.curOp);
+  display.appendChild(row2);
+
+  // Line
+  const line=document.createElement('div');line.className='calc-line';
+  // Width based on max digits
+  const lineW=Math.max(120,maxLen*60+80);
+  line.style.width=lineW+'px';
+  display.appendChild(line);
+
+  // Question mark (result)
+  const row3=document.createElement('div');
+  row3.style.cssText='display:flex;align-items:center;justify-content:flex-end;width:100%;';
+  const q=document.createElement('div');q.className='calc-question';q.textContent='?';
+  row3.appendChild(q);
+  display.appendChild(row3);
+}
+
+function makeChalkRow(num,op){
+  const row=document.createElement('div');
+  row.style.cssText='display:flex;align-items:center;justify-content:flex-end;width:100%;position:relative;';
+  if(op){
+    const opEl=document.createElement('div');opEl.className='calc-operator';opEl.textContent=op;
+    row.appendChild(opEl);
+  }
+  const n=document.createElement('div');n.className='calc-number';n.textContent=num;
+  row.appendChild(n);
+  return row;
+}
+
+// ═══════════════════════════════════════════
+//  RENDER ANSWER BUTTONS
+// ═══════════════════════════════════════════
+function renderAnswers(){
+  const grid=document.getElementById('answersGrid');grid.innerHTML='';
+  const choices=generateChoices(G.curAnswer,G.curOp);
+  choices.forEach(val=>{
+    const btn=document.createElement('button');btn.className='ans-btn';
+    btn.textContent=val;btn.dataset.val=val;
+    btn.addEventListener('click',()=>selectAnswer(btn,val));
+    grid.appendChild(btn);
+  });
+}
+
+// ═══════════════════════════════════════════
+//  ANSWER SELECTION
+// ═══════════════════════════════════════════
+function selectAnswer(btn,val){
+  // Disable all
+  document.querySelectorAll('.ans-btn').forEach(b=>{b.disabled=true;});
+
+  const correct=(val===G.curAnswer);
+
+  if(correct){
+    btn.classList.add('correct');
+    G.score++;
+    showFeedback('✓ Bravo ! '+G.curA+' '+G.curOp+' '+G.curB+' = '+G.curAnswer,'ok');
+  } else {
+    btn.classList.add('wrong');
+    // Reveal correct
+    document.querySelectorAll('.ans-btn').forEach(b=>{
+      if(parseInt(b.dataset.val)===G.curAnswer)b.classList.add('reveal');
+    });
+    showFeedback('✗ La bonne réponse était '+G.curAnswer,'ko');
+  }
+
+  markPip(G.qIndex,correct);
+  G.qIndex++;
+  document.getElementById('hScore').textContent=G.score;
+  setTimeout(()=>nextQuestion(),correct?1100:2000);
+}
+
+// ═══════════════════════════════════════════
+//  GAME FLOW
+// ═══════════════════════════════════════════
+function startGame(){
+  document.getElementById('startScreen').style.display='none';
+  document.getElementById('gameScreen').style.display='block';
+  document.getElementById('resultOv').classList.remove('show');
+  G.qIndex=0;G.score=0;
+  clearInterval(G.timerInt);G.timerSec=0;updateTimer();
+  G.timerInt=setInterval(()=>{G.timerSec++;updateTimer();},1000);
+  buildPips();
+  nextQuestion();
+}
+
+function nextQuestion(){
+  if(G.qIndex>=G.totalQ){showResult();return;}
+  hideFeedback();
+  generateQuestion();
+  renderChalkboard();
+  renderAnswers();
+  document.getElementById('hQ').textContent=(G.qIndex+1)+'/'+G.totalQ;
+}
+
+function backToStart(){
+  clearInterval(G.timerInt);
+  document.getElementById('gameScreen').style.display='none';
+  document.getElementById('startScreen').style.display='flex';
+  document.getElementById('resultOv').classList.remove('show');
+}
+
+// ═══════════════════════════════════════════
+//  RESULT
+// ═══════════════════════════════════════════
+function showResult(){
+  clearInterval(G.timerInt);
+  const lvlLabel={1:'Simple',2:'Intermédiaire',3:'Difficile'};
+  trackSession(G.lvl,G.score,G.totalQ,G.timerSec);
+  if(typeof JDC!=='undefined'){
+    const reussi = G.score >= Math.ceil(G.totalQ*0.7);
+    JDC.enregistrer('calcul', G.lvl, reussi, {duree:G.timerSec, erreurs:G.totalQ-G.score});
+  }
+  const pct=Math.round(G.score/G.totalQ*100);
+  let ico='📚',msg='Continuez à vous entraîner, chaque effort compte !';
+  if(pct===100){ico='🏆';msg='Score parfait ! Vous maîtrisez parfaitement ce niveau.';}
+  else if(pct>=80){ico='🥇';msg='Excellent résultat ! Quelques petites erreurs seulement.';}
+  else if(pct>=60){ico='🥈';msg='Bon travail ! Avec un peu plus de pratique, vous y arriverez.';}
+  else if(pct>=40){ico='🥉';msg='Continuez, vous progressez à chaque session !';}
+  document.getElementById('resultIco').textContent=ico;
+  document.getElementById('resultScore').textContent=G.score+' / '+G.totalQ;
+  document.getElementById('resultMsg').textContent=msg;
+  document.getElementById('resultOv').classList.add('show');
+  if(pct>=70)confetti();
+}
+
+// ═══════════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════════
+function buildPips(){
+  const row=document.getElementById('scoreRow');row.innerHTML='';
+  for(let i=0;i<G.totalQ;i++){
+    const p=document.createElement('div');p.className='pip';p.id='pip'+i;row.appendChild(p);
+  }
+}
+function markPip(i,correct){
+  const p=document.getElementById('pip'+i);if(!p)return;
+  p.classList.add(correct?'ok':'ko');
+  p.style.animation='pipPop .4s ease';setTimeout(()=>p.style.animation='',450);
+}
+function showFeedback(msg,type){
+  const el=document.getElementById('feedback');
+  el.textContent=msg;el.className='feedback show '+(type==='ok'?'ok':'ko');
+}
+function hideFeedback(){
+  document.getElementById('feedback').className='feedback';
+}
+function updateTimer(){const m=0|G.timerSec/60,s=G.timerSec%60;document.getElementById('hTimer').textContent=m+':'+(s<10?'0':'')+s;}
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];}return b;}
+function randInt(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+let _tt;function toast(msg,type='ok'){const t=document.getElementById('toast');t.textContent=msg;t.style.background=type==='err'?'#8b2020':'#2d6a4f';t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),2400);}
+function confetti(){const cols=['#c8922a','#2d6a4f','#8b2020','#1a3d6e','#FDD835','#E91E63'];for(let i=0;i<50;i++){const p=document.createElement('div');p.className='cp';p.style.left=Math.random()*100+'vw';p.style.background=cols[0|Math.random()*cols.length];p.style.animationDelay=Math.random()*1.2+'s';p.style.animationDuration=(2+Math.random()*1.3)+'s';p.style.transform=`rotate(${Math.random()*360}deg)`;document.body.appendChild(p);setTimeout(()=>p.remove(),4000);}}
+afficherConseil();
+</script>
+
+
+
+
+<details class="jdc-apropos">
+<summary>À propos de ce jeu</summary>
+<div class="corps">
+<p><strong>Le Calcul Mental</strong> — Des additions, des soustractions, des multiplications et des divisions, posées sur un tableau noir d'école. Trois niveaux, du très simple à l'exigeant.</p>
+<h2>Pour qui</h2>
+<p>Aux personnes âgées qui gardent le goût des chiffres, y compris après un accident vasculaire ou dans le cadre d'une démence vasculaire, où l'attention fatigue vite mais où le calcul appris reste souvent solide. Le tableau noir n'est pas un hasard : c'est le décor dans lequel beaucoup ont appris à compter.</p>
+<h2>Comment y jouer</h2>
+<ul>
+<li><strong>Seul</strong> : à son rythme, sans chronomètre.</li>
+<li><strong>À deux, avec un proche ou un aidant</strong> : l'un pose l'opération à voix haute, l'autre répond.</li>
+<li><strong>En petit groupe</strong> : l'opération projetée, et le premier qui a la réponse la dit.</li>
+</ul>
+<p>Restez au premier niveau tant qu'il est confortable. Le calcul est le domaine où la mise en échec se sent le plus vite, et où elle décourage le plus durablement.</p>
+<h2>Ce que ce jeu n'est pas</h2>
+<p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
+<h2>Qui le propose</h2>
+<p>Les Jardins de Célestine, un projet d'habitat partagé pour seniors, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="jeux.html">Voir tous les jeux</a>.</p>
+</div>
+</details>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+</footer>
+</body>
+</html>

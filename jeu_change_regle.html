@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Change de Règle — jeu en ligne gratuit · Les Jardins de Célestine</title>
+<meta name="description" content="La consigne change en cours de route, et il faut suivre. Jeu de souplesse en ligne gratuit pour senior, sans inscription et sans mise en échec.">
+<link rel="canonical" href="https://jardinsdecelestine.com/jeu_change_regle">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="jdc-parcours.js"></script>
+<style>
+:root{--cream:#f7f3ea;--parchment:#eee8d5;--ink:#1c1208;--sepia:#5c3d1e;--gold:#c8922a;--green:#2d6a4f;--shadow:rgba(28,18,8,0.13);}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{background:var(--parchment);background-image:radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.08) 0%,transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(45,106,79,.06) 0%,transparent 55%);min-height:100vh;font-family:'Nunito',sans-serif;color:var(--ink);user-select:none;-webkit-user-select:none;}
+
+header{text-align:center;padding:16px 20px 10px;border-bottom:1px solid rgba(200,146,42,.2);position:relative;}
+header h1{font-family:'Atkinson Hyperlegible',sans-serif;font-size:clamp(1.3rem,3vw,1.9rem);font-weight:700;color:var(--sepia);cursor:default;}
+header h1 em{color:var(--gold);font-style:normal;}
+header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-top:3px;}
+.divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:6px auto 0;}
+#statsBtn{display:none;position:absolute;top:14px;right:16px;background:none;border:1.5px solid rgba(200,146,42,.4);border-radius:6px;padding:4px 10px;font-family:'Nunito',sans-serif;font-size:0.76rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+
+#intro{max-width:560px;margin:32px auto;padding:0 20px;text-align:center;}
+.card{background:var(--cream);border:1.5px solid rgba(200,146,42,.35);border-radius:16px;padding:28px 24px;box-shadow:0 8px 30px var(--shadow);}
+.card h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;color:var(--sepia);margin-bottom:10px;}
+.card p{font-size:1rem;line-height:1.65;color:var(--sepia);margin-bottom:16px;}
+.exemple{display:flex;gap:14px;justify-content:center;align-items:center;margin:14px 0 18px;}
+.niveaux{display:flex;flex-direction:column;gap:10px;}
+.niv{background:#fff;border:2px solid rgba(200,146,42,.45);border-radius:12px;padding:13px 16px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .18s;text-align:center;}
+.niv:hover{border-color:var(--gold);background:rgba(200,146,42,.08);transform:translateY(-2px);}
+.niv-mid{border-color:var(--gold);background:rgba(200,146,42,.06);}
+.niv-t{display:block;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.05rem;font-weight:700;color:var(--sepia);}
+.niv-d{display:block;font-size:0.84rem;color:var(--sepia);opacity:.7;margin-top:2px;}
+#suggestion{margin-top:14px;font-size:0.86rem;color:var(--sepia);opacity:.8;font-style:italic;}
+
+#game{display:none;max-width:640px;margin:0 auto;padding:14px 18px 40px;}
+#regleBar{background:var(--cream);border:2px solid var(--gold);border-radius:14px;padding:14px 18px;text-align:center;margin-bottom:16px;box-shadow:0 4px 16px var(--shadow);transition:all .3s;}
+#regleBar.change{animation:flash 1.1s ease;}
+@keyframes flash{0%,100%{background:var(--cream);}30%{background:#fdf0d8;transform:scale(1.02);}}
+#regleTitre{font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sepia);opacity:.6;}
+#regleTexte{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.15rem;font-weight:700;color:var(--sepia);margin-top:4px;}
+
+#hud{display:flex;justify-content:space-between;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.92rem;font-weight:700;color:var(--sepia);padding:0 4px 12px;}
+#hud .bon{color:var(--green);}
+
+#zoneCible{display:flex;justify-content:center;margin-bottom:22px;}
+.forme-box{background:var(--cream);border:2px solid rgba(200,146,42,.4);border-radius:16px;padding:20px 26px;box-shadow:0 6px 20px var(--shadow);}
+svg.forme{display:block;}
+
+#choix{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+@media (min-width:520px){#choix{grid-template-columns:repeat(4,1fr);}}
+.choix-btn{background:#fff;border:2.5px solid rgba(200,146,42,.4);border-radius:14px;padding:14px 8px;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.choix-btn:hover{border-color:var(--gold);transform:translateY(-2px);}
+.choix-btn.juste{border-color:var(--green);background:#e9f2ec;animation:pop .35s ease;}
+.choix-btn.presque{border-color:var(--gold);background:#fdf6e6;}
+@keyframes pop{0%{transform:scale(.94)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+.choix-lbl{font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.82rem;font-weight:700;color:var(--sepia);}
+
+#fin{display:none;max-width:520px;margin:34px auto;padding:0 20px;text-align:center;}
+.btn-g{background:var(--gold);color:#fff;border:none;border-radius:10px;padding:13px 28px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;margin:5px;}
+.btn-o{background:none;border:1.5px solid rgba(200,146,42,.55);color:var(--sepia);border-radius:10px;padding:13px 28px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;margin:5px;}
+
+#statsPanel{display:none;position:fixed;inset:0;background:rgba(28,18,8,.75);z-index:60;align-items:center;justify-content:center;padding:16px;}
+#statsPanel.show{display:flex;}
+#statsBox{background:var(--cream);border:2px solid var(--gold);border-radius:14px;padding:24px 28px;max-width:420px;width:100%;}
+#statsBox h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.15rem;color:var(--sepia);margin-bottom:12px;}
+.srow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(200,146,42,.15);font-size:0.9rem;color:var(--sepia);}
+.sa{display:flex;gap:10px;margin-top:14px;justify-content:flex-end;}
+.btn-sm{padding:6px 14px;border-radius:6px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;}
+.btn-ol{background:none;border:1.5px solid rgba(200,146,42,.5);color:var(--sepia);}
+.btn-gg{background:var(--gold);color:#fff;border:none;}
+.vide{font-style:italic;opacity:.6;text-align:center;padding:12px 0;font-size:0.9rem;}
+
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);color:#fff;background:var(--green);padding:11px 24px;border-radius:9px;font-size:0.9rem;font-weight:700;opacity:0;transition:all .25s;z-index:300;pointer-events:none;font-family:'Atkinson Hyperlegible',sans-serif;max-width:90vw;text-align:center;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+#toast.doux{background:#8b6b20;}
+.confetti{position:fixed;top:-14px;width:10px;height:14px;z-index:70;pointer-events:none;animation:cfall linear forwards;}
+@keyframes cfall{to{transform:translateY(105vh) rotate(720deg);opacity:.9;}}
+
+/* Sortie de secours : toujours un moyen de revenir au catalogue. */
+.jdc-retour{display:block;text-align:center;padding:8px;font-size:.74rem;
+  color:#5c3d1e;opacity:.55;text-decoration:none;letter-spacing:.1em;
+  text-transform:uppercase;font-family:'Nunito',sans-serif;}
+.jdc-retour:hover{opacity:1;}
+@media print{.jdc-retour{display:none;}}
+
+/* Pied discret : le lien légal doit exister sur chaque page du site. */
+.jdc-legal{text-align:center;padding:16px 14px 22px;font-size:.78rem;line-height:1.6;
+  color:#5c3d1e;opacity:.6;font-family:'Nunito',sans-serif;}
+.jdc-legal a{color:inherit;}
+@media print{.jdc-legal{display:none;}}
+</style>
+<style id="jdc-apropos-style">
+/* Bloc « À propos » : replié par défaut, lu en entier par les moteurs.
+   Couleurs écrites en dur — chaque jeu a ses propres variables CSS. */
+.jdc-apropos{max-width:680px;margin:28px auto 8px;padding:0 16px;
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;color:#5c3d1e;}
+.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;
+  letter-spacing:.02em;opacity:.62;padding:9px 0;text-align:center;
+  border-top:1px solid rgba(92,61,30,.16);}
+.jdc-apropos>summary::-webkit-details-marker{display:none}
+.jdc-apropos>summary::after{content:' \203A';display:inline-block;
+  transform:rotate(90deg);margin-left:5px;opacity:.7}
+.jdc-apropos[open]>summary::after{transform:rotate(-90deg)}
+.jdc-apropos>summary:hover,.jdc-apropos>summary:focus-visible{opacity:.95}
+.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;
+  text-align:left;opacity:.9}
+.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:#5c3d1e;
+  font-weight:700}
+.jdc-apropos p{margin:0 0 10px}
+.jdc-apropos ul{margin:0 0 10px;padding-left:20px}
+.jdc-apropos li{margin-bottom:5px}
+.jdc-apropos a{color:#2d6a4f}
+.hc .jdc-apropos{color:#000}
+.hc .jdc-apropos h2{color:#000}
+.hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
+</style>
+</head>
+<body>
+
+
+<a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
+<header>
+  <h1 id="mainTitle">Change de <em>Règle</em></h1>
+  <p>Suivre la consigne, même quand elle change</p>
+  <div class="divider"></div>
+  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
+</header>
+
+<div id="intro">
+  <div class="card">
+    <h2>Une forme, une couleur</h2>
+    <p>Une figure apparaît. Selon la consigne affichée, vous choisissez sa <strong>couleur</strong> ou bien sa <strong>forme</strong>. De temps en temps, la consigne change : elle est alors annoncée clairement.</p>
+    <div class="exemple">
+      <svg width="54" height="54" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#c0392b"/></svg>
+      <span style="font-size:1.4rem;opacity:.5">→</span>
+      <span style="font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.9rem;color:var(--sepia)">rond &nbsp;ou&nbsp; rouge</span>
+    </div>
+    <div class="niveaux">
+      <button class="niv" onclick="commencer(1)">
+        <span class="niv-t">Tranquille</span>
+        <span class="niv-d">12 figures · 2 couleurs, 2 formes</span>
+      </button>
+      <button class="niv niv-mid" onclick="commencer(2)">
+        <span class="niv-t">Attentif</span>
+        <span class="niv-d">16 figures · 3 couleurs, 3 formes</span>
+      </button>
+      <button class="niv" onclick="commencer(3)">
+        <span class="niv-t">Vif d'esprit</span>
+        <span class="niv-d">20 figures · 4 couleurs, 4 formes</span>
+      </button>
+    </div>
+    <div id="suggestion"></div>
+  </div>
+</div>
+
+<div id="game">
+  <div id="regleBar">
+    <div id="regleTitre">Consigne</div>
+    <div id="regleTexte">—</div>
+  </div>
+  <div id="hud">
+    <span>Figure <span id="numFig">1</span> / <span id="totFig">12</span></span>
+    <span class="bon"><span id="nbBon">0</span> trouvées</span>
+  </div>
+  <div id="zoneCible"><div class="forme-box"><svg id="svgCible" class="forme" width="150" height="150" viewBox="0 0 100 100"></svg></div></div>
+  <div id="choix"></div>
+</div>
+
+<div id="fin">
+  <div class="card">
+    <div style="font-size:2.4rem">🎯</div>
+    <h2 id="finTitre">Terminé !</h2>
+    <p id="finTexte"></p>
+    <button class="btn-g" onclick="rejouer()">Rejouer</button>
+    <button class="btn-o" onclick="retourIntro()">Changer de parcours</button>
+  </div>
+</div>
+
+<div id="statsPanel">
+  <div id="statsBox">
+    <h2>📊 Statistiques</h2>
+    <div id="statsContent"></div>
+    <div class="sa">
+      <button class="btn-sm btn-ol" onclick="resetStats()">Réinitialiser</button>
+      <button class="btn-sm btn-gg" onclick="closeStats()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════
+//   DONNÉES
+// ═══════════════════════════════
+const COULEURS = [
+  { id:'rouge', nom:'Rouge', hex:'#c0392b' },
+  { id:'bleu',  nom:'Bleu',  hex:'#2c6fa8' },
+  { id:'vert',  nom:'Vert',  hex:'#2d6a4f' },
+  { id:'jaune', nom:'Jaune', hex:'#d9a520' }
+];
+const FORMES = [
+  { id:'rond',     nom:'Rond' },
+  { id:'carre',    nom:'Carré' },
+  { id:'triangle', nom:'Triangle' },
+  { id:'etoile',   nom:'Étoile' }
+];
+
+// dessin d'une forme
+function svgForme(formeId, hex, taille){
+  const s = taille || 100;
+  let corps = '';
+  if(formeId==='rond')     corps = '<circle cx="50" cy="50" r="38" fill="'+hex+'"/>';
+  if(formeId==='carre')    corps = '<rect x="15" y="15" width="70" height="70" rx="8" fill="'+hex+'"/>';
+  if(formeId==='triangle') corps = '<path d="M50 12 L88 82 L12 82 Z" fill="'+hex+'" stroke-linejoin="round"/>';
+  if(formeId==='etoile')   corps = '<path d="M50 10 L61 38 L91 40 L68 59 L76 88 L50 72 L24 88 L32 59 L9 40 L39 38 Z" fill="'+hex+'"/>';
+  return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 100 100">'+corps+'</svg>';
+}
+
+const NIVEAUX = {
+  1: { total:12, nb:2, bloc:[4,6] },
+  2: { total:16, nb:3, bloc:[3,5] },
+  3: { total:20, nb:4, bloc:[3,4] }
+};
+
+// ═══════════════════════════════
+//   ÉTAT
+// ═══════════════════════════════
+let niveau=2, cfg=null, regle='couleur', tour=0, bons=0, erreurs=0, changements=0;
+let coulJeu=[], formJeu=[], cible=null, prochainChangement=0, startTime=null, playing=false;
+
+// ═══════════════════════════════
+//   STATS
+// ═══════════════════════════════
+const STATS_KEY='changeregle_stats_v1';
+let _tc=0,_tct=null;
+document.getElementById('mainTitle').addEventListener('click',()=>{
+  _tc++;clearTimeout(_tct);_tct=setTimeout(()=>_tc=0,800);
+  if(_tc>=3){_tc=0;document.getElementById('statsBtn').style.display='block';toast('Mode admin activé');}
+});
+function loadStats(){try{return JSON.parse(localStorage.getItem(STATS_KEY))||{};}catch(e){return{};}}
+function saveStats(x){try{localStorage.setItem(STATS_KEY,JSON.stringify(x));}catch(e){}}
+function trackLocal(niv,bons,total,err,sec){
+  const st=loadStats(),k='niv'+niv;
+  if(!st[k])st[k]={parties:0,totalBons:0,totalFig:0,totalErr:0,totalSec:0};
+  const g=st[k];g.parties++;g.totalBons+=bons;g.totalFig+=total;g.totalErr+=err;g.totalSec+=sec;
+  saveStats(st);
+}
+function openStats(){
+  const st=loadStats(),keys=Object.keys(st),c=document.getElementById('statsContent');
+  const lbl={niv1:'Tranquille',niv2:'Attentif',niv3:"Vif d'esprit"};
+  if(!keys.length){c.innerHTML='<p class="vide">Aucune partie encore jouée.</p>';}
+  else{
+    c.innerHTML=keys.map(k=>{
+      const s=st[k],pct=s.totalFig?Math.round(s.totalBons/s.totalFig*100):0;
+      return '<div class="srow"><span>'+(lbl[k]||k)+'</span><span>'+s.parties+' partie(s) · '+pct+'% de réussite</span></div>';
+    }).join('');
+  }
+  document.getElementById('statsPanel').classList.add('show');
+}
+function closeStats(){document.getElementById('statsPanel').classList.remove('show');}
+function resetStats(){if(confirm('Effacer les statistiques ?')){localStorage.removeItem(STATS_KEY);closeStats();toast('Statistiques effacées');}}
+document.getElementById('statsPanel').addEventListener('click',function(e){if(e.target===this)closeStats();});
+
+function toast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className=type==='doux'?'doux show':'show';
+  clearTimeout(t._t);t._t=setTimeout(()=>t.className='',2400);
+}
+
+function afficherSuggestion(){
+  const el=document.getElementById('suggestion');
+  if(typeof JDC==='undefined'){el.textContent='';return;}
+  const b=JDC.bilanJeu('changeregle');
+  if(!b.parties){el.textContent='';return;}
+  const c=JDC.niveauConseille('changeregle');
+  const lbl={1:'Tranquille',2:'Attentif',3:"Vif d'esprit"}[c];
+  el.textContent=b.parties+' partie(s) jouée(s). Parcours conseillé : '+lbl+'.';
+}
+afficherSuggestion();
+
+// ═══════════════════════════════
+//   JEU
+// ═══════════════════════════════
+function melange(a){
+  const r=a.slice();
+  for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}
+  return r;
+}
+
+function commencer(niv){
+  niveau=niv; cfg=NIVEAUX[niv];
+  coulJeu=melange(COULEURS).slice(0,cfg.nb);
+  formJeu=melange(FORMES).slice(0,cfg.nb);
+  regle = Math.random()<0.5 ? 'couleur' : 'forme';
+  tour=0; bons=0; erreurs=0; changements=0; playing=true;
+  startTime=Date.now();
+  prochainChangement = tour + cfg.bloc[0] + Math.floor(Math.random()*(cfg.bloc[1]-cfg.bloc[0]+1));
+  document.getElementById('intro').style.display='none';
+  document.getElementById('fin').style.display='none';
+  document.getElementById('game').style.display='block';
+  document.getElementById('totFig').textContent=cfg.total;
+  majRegle(false);
+  tourSuivant();
+}
+
+function majRegle(annonce){
+  const bar=document.getElementById('regleBar');
+  document.getElementById('regleTexte').textContent =
+    regle==='couleur' ? 'Choisissez la COULEUR' : 'Choisissez la FORME';
+  if(annonce){
+    bar.classList.remove('change');
+    void bar.offsetWidth;
+    bar.classList.add('change');
+    toast('Attention, la consigne change : ' + (regle==='couleur'?'la couleur':'la forme'), 'doux');
+  }
+}
+
+function tourSuivant(){
+  if(tour >= cfg.total){ terminer(); return; }
+  // changement de règle annoncé
+  if(tour === prochainChangement && tour < cfg.total-1){
+    regle = regle==='couleur' ? 'forme' : 'couleur';
+    changements++;
+    majRegle(true);
+    prochainChangement = tour + cfg.bloc[0] + Math.floor(Math.random()*(cfg.bloc[1]-cfg.bloc[0]+1));
+  }
+  tour++;
+  document.getElementById('numFig').textContent = tour;
+
+  const c = coulJeu[Math.floor(Math.random()*coulJeu.length)];
+  const f = formJeu[Math.floor(Math.random()*formJeu.length)];
+  cible = { couleur:c, forme:f };
+  document.getElementById('svgCible').innerHTML = svgForme(f.id, c.hex).replace(/<\/?svg[^>]*>/g,'');
+
+  const zone = document.getElementById('choix');
+  const liste = regle==='couleur' ? coulJeu : formJeu;
+  zone.innerHTML = melange(liste).map(o =>
+    '<button class="choix-btn" data-id="'+o.id+'">' +
+      (regle==='couleur'
+        ? '<span style="display:block;width:38px;height:38px;border-radius:50%;background:'+o.hex+'"></span>'
+        : svgForme(o.id, '#8a7a64', 38)) +
+      '<span class="choix-lbl">'+o.nom+'</span>' +
+    '</button>'
+  ).join('');
+
+  zone.querySelectorAll('.choix-btn').forEach(b=>{
+    b.addEventListener('click', function(){
+      if(!playing) return;
+      const bonId = regle==='couleur' ? cible.couleur.id : cible.forme.id;
+      if(this.dataset.id === bonId){
+        this.classList.add('juste');
+        bons++;
+        document.getElementById('nbBon').textContent = bons;
+        zone.querySelectorAll('.choix-btn').forEach(x=>x.style.pointerEvents='none');
+        setTimeout(tourSuivant, 620);
+      } else {
+        erreurs++;
+        this.classList.add('presque');
+        this.style.pointerEvents='none';
+        // rappel doux de la consigne, sans donner la réponse
+        toast(regle==='couleur' ? 'Ici on regarde la couleur' : 'Ici on regarde la forme', 'doux');
+      }
+    });
+  });
+}
+
+function terminer(){
+  playing=false;
+  const sec=Math.floor((Date.now()-startTime)/1000);
+  trackLocal(niveau, bons, cfg.total, erreurs, sec);
+  if(typeof JDC!=='undefined'){
+    JDC.enregistrer('changeregle', niveau, bons >= Math.ceil(cfg.total*0.7), {duree:sec, erreurs:erreurs});
+  }
+  document.getElementById('game').style.display='none';
+  document.getElementById('fin').style.display='block';
+  document.getElementById('finTitre').textContent =
+    erreurs===0 ? 'Sans une hésitation !' : 'C\'est terminé';
+  document.getElementById('finTexte').textContent =
+    bons + ' figures sur ' + cfg.total + ', avec ' + changements + ' changement' + (changements>1?'s':'') +
+    ' de consigne. ' + (erreurs===0 ? 'Vous avez suivi chaque changement sans faute.' :
+      'Changer de règle en cours de route demande de la souplesse : vous vous en êtes bien sorti.');
+  confetti();
+}
+
+function rejouer(){ commencer(niveau); }
+function retourIntro(){
+  playing=false;
+  document.getElementById('fin').style.display='none';
+  document.getElementById('game').style.display='none';
+  document.getElementById('intro').style.display='block';
+  afficherSuggestion();
+}
+
+window.addEventListener('beforeunload', function(){
+  if(playing && startTime && typeof JDC!=='undefined'){
+    JDC.enregistrer('changeregle', niveau, false, {duree:Math.floor((Date.now()-startTime)/1000), erreurs:erreurs});
+  }
+});
+
+function confetti(){
+  const colors=['#c8922a','#2d6a4f','#c96f4a','#3a6ea5','#b33a2b'];
+  for(let i=0;i<50;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDuration=(2+Math.random()*2)+'s';
+    c.style.animationDelay=(Math.random()*.8)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),5000);
+  }
+}
+</script>
+
+
+
+
+<details class="jdc-apropos">
+<summary>À propos de ce jeu</summary>
+<div class="corps">
+<p><strong>Change de Règle</strong> — On trie selon une consigne, puis la consigne change en cours de route et il faut suivre. D'abord par couleur, ensuite par forme.</p>
+<h2>Pour qui</h2>
+<p>Aux personnes âgées ayant une bonne autonomie. Changer de règle en cours de route est une opération de souplesse, l'une des premières touchées dans la dégénérescence frontotemporale.</p>
+<h2>Comment y jouer</h2>
+<ul>
+<li><strong>Seul</strong> : à son rythme.</li>
+<li><strong>À deux, avec un proche ou un aidant</strong> : en annonçant le changement de règle à voix haute.</li>
+</ul>
+<p>Annoncez le changement clairement, et laissez un temps d'arrêt avant de reprendre. La difficulté n'est pas la nouvelle règle, c'est de lâcher l'ancienne.</p>
+<h2>Ce que ce jeu n'est pas</h2>
+<p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
+<h2>Qui le propose</h2>
+<p>Les Jardins de Célestine, un projet d'habitat partagé pour seniors, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="jeux.html">Voir tous les jeux</a>.</p>
+</div>
+</details>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+</footer>
+</body>
+</html>

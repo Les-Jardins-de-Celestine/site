@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer=window.dataLayer||[];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js',new Date()); gtag('config','G-NT825E8XDT');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Labyrinthe — jeu en ligne gratuit · Les Jardins de Célestine</title>
+<meta name="description" content="Trouver le chemin, sans se presser et sans jamais se perdre pour de bon. Jeu de repérage en ligne gratuit pour senior, sans inscription.">
+<link rel="canonical" href="https://jardinsdecelestine.com/jeu_labyrinthe">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<script src="jdc-parcours.js"></script>
+<style>
+:root{
+  --parchment:#eee8d5; --sepia:#5c3d1e; --gold:#c8922a;
+  --green:#2d6a4f; --red:#8b2020; --shadow:rgba(28,18,8,.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{
+  background:var(--parchment);
+  background-image:radial-gradient(ellipse at 20% 10%,rgba(200,146,42,.08) 0%,transparent 55%),
+    radial-gradient(ellipse at 80% 90%,rgba(45,106,79,.06) 0%,transparent 55%);
+  min-height:100vh; font-family:'Nunito',sans-serif;
+  color:#1c1208; user-select:none; -webkit-user-select:none;
+  display:flex; flex-direction:column; align-items:center;
+}
+
+/* HEADER */
+header{text-align:center;padding:16px 20px 10px;border-bottom:1px solid rgba(200,146,42,.2);width:100%;position:relative;}
+header h1{font-family:'Atkinson Hyperlegible',sans-serif;font-size:clamp(1.3rem,4vw,1.9rem);font-weight:700;color:var(--sepia);}
+header h1 em{color:var(--gold);font-style:normal;}
+header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sepia);opacity:.5;margin-top:2px;}
+.divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:6px auto 0;}
+.back-btn{position:absolute;top:16px;left:14px;background:none;border:1.5px solid rgba(200,146,42,.4);border-radius:7px;padding:4px 10px;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:var(--sepia);cursor:pointer;transition:all .2s;}
+.back-btn:hover{border-color:var(--gold);background:rgba(200,146,42,.07);}
+#statsBtn{display:none;position:absolute;top:16px;right:14px;background:none;border:1.5px solid rgba(200,146,42,.4);border-radius:7px;padding:4px 10px;font-family:'Nunito',sans-serif;font-size:.75rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+
+/* START SCREEN */
+#startScreen{display:flex;flex-direction:column;align-items:center;gap:20px;padding:28px 16px;width:100%;max-width:500px;}
+#startScreen h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;font-weight:700;color:var(--sepia);text-align:center;}
+.opt-group{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;}
+.opt-label{font-size:.78rem;font-weight:700;color:var(--sepia);letter-spacing:.08em;text-transform:uppercase;opacity:.65;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+.lvl-card{display:flex;flex-direction:column;align-items:center;gap:5px;background:#f7f3ea;border:2.5px solid rgba(200,146,42,.3);border-radius:12px;padding:12px 16px;cursor:pointer;transition:all .2s;box-shadow:0 2px 8px var(--shadow);min-width:100px;text-align:center;}
+.lvl-card:hover{border-color:var(--gold);}
+.lvl-card.active{border-color:var(--gold);background:rgba(200,146,42,.07);box-shadow:0 4px 16px rgba(200,146,42,.2);}
+.lvl-card .lvl-ico{font-size:1.5rem;}
+.lvl-card .lvl-name{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.88rem;font-weight:700;color:var(--sepia);}
+.lvl-card .lvl-sub{font-size:.7rem;color:var(--sepia);opacity:.55;}
+.theme-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.theme-btn{background:#f7f3ea;border:2px solid rgba(200,146,42,.3);border-radius:8px;padding:7px 13px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:700;color:var(--sepia);transition:all .2s;}
+.theme-btn:hover{border-color:var(--gold);}
+.theme-btn.active{border-color:var(--gold);background:rgba(200,146,42,.1);}
+.start-btn{background:var(--gold);color:white;border:none;border-radius:10px;padding:13px 38px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:.05em;box-shadow:0 4px 16px rgba(200,146,42,.35);transition:all .2s;}
+.start-btn:hover{background:#b07820;transform:translateY(-1px);}
+#suggestion{font-size:.86rem;color:var(--sepia);opacity:.8;font-style:italic;text-align:center;}
+
+/* GAME SCREEN */
+#gameScreen{display:none;flex-direction:column;align-items:center;padding:10px 10px;width:100%;gap:8px;}
+
+/* HUD */
+.hud{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;width:100%;max-width:560px;}
+.hud-box{background:#f7f3ea;border:1.5px solid rgba(200,146,42,.3);border-radius:10px;padding:7px 16px;text-align:center;box-shadow:0 2px 8px var(--shadow);min-width:72px;}
+.hud-box .lbl{font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;color:var(--sepia);opacity:.6;}
+.hud-box .val{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold);line-height:1.2;}
+.hud-box.clickable{cursor:pointer;}
+.hud-box.clickable:hover{border-color:var(--gold);}
+
+/* MAZE */
+#mazeWrap{position:relative;border-radius:10px;overflow:hidden;box-shadow:0 4px 20px var(--shadow),0 0 0 3px rgba(200,146,42,.25);}
+canvas{display:block;touch-action:none;}
+
+/* JOYSTICK */
+#joystickZone{
+  position:relative;
+  width:170px; height:170px;
+  margin:2px auto 0; flex-shrink:0;
+  cursor:grab;
+}
+#joystickBase{
+  position:absolute; inset:0; border-radius:50%;
+  background:rgba(92,61,30,.06);
+  border:2.5px solid rgba(200,146,42,.28);
+  box-shadow:0 2px 14px var(--shadow),inset 0 1px 4px rgba(255,255,255,.4);
+}
+/* Cardinal markers */
+.jmark{position:absolute;font-size:.95rem;color:rgba(200,146,42,.35);pointer-events:none;}
+#jmU{top:8px;left:50%;transform:translateX(-50%);}
+#jmD{bottom:8px;left:50%;transform:translateX(-50%);}
+#jmL{left:10px;top:50%;transform:translateY(-50%);}
+#jmR{right:10px;top:50%;transform:translateY(-50%);}
+
+#joystickKnob{
+  position:absolute;
+  width:66px; height:66px; border-radius:50%;
+  background:radial-gradient(circle at 35% 32%, #e8a84a, #b87020);
+  box-shadow:0 5px 18px rgba(200,146,42,.5), inset 0 2px 4px rgba(255,255,255,.35);
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.45rem;
+  pointer-events:none;
+  transition:box-shadow .1s;
+}
+#joystickKnob.pressed{
+  box-shadow:0 2px 10px rgba(200,146,42,.45), inset 0 2px 4px rgba(255,255,255,.2);
+}
+.ctrl-hint{font-size:.68rem;color:var(--sepia);opacity:.4;text-align:center;margin-top:0;}
+
+/* OVERLAYS */
+.overlay{position:fixed;inset:0;background:rgba(28,18,8,.65);display:none;align-items:center;justify-content:center;z-index:100;}
+.overlay.show{display:flex;animation:fadeIn .25s ease;}
+.overlay-box{background:var(--parchment);border:3px solid var(--gold);border-radius:18px;padding:30px 34px;text-align:center;max-width:310px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,.35);}
+.overlay-box .ico{font-size:2.8rem;margin-bottom:10px;}
+.overlay-box h2{font-family:'Playfair Display',serif;font-size:1.45rem;color:var(--sepia);margin-bottom:6px;}
+.overlay-box p{font-size:.86rem;color:var(--sepia);opacity:.72;line-height:1.5;margin-bottom:18px;}
+.overlay-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.o-btn{padding:10px 22px;border-radius:9px;border:none;cursor:pointer;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.88rem;font-weight:700;transition:all .2s;}
+.o-btn.primary{background:var(--gold);color:white;box-shadow:0 3px 12px rgba(200,146,42,.35);}
+.o-btn.primary:hover{background:#b07820;}
+.o-btn.secondary{background:#f7f3ea;color:var(--sepia);border:2px solid rgba(200,146,42,.35);}
+.o-btn.secondary:hover{border-color:var(--gold);}
+
+/* STATS */
+#statsPanel{position:fixed;inset:0;background:rgba(28,18,8,.75);z-index:60;display:none;align-items:center;justify-content:center;}
+#statsPanel.show{display:flex;animation:fadeIn .3s ease;}
+#statsBox{background:#f7f3ea;border:2px solid var(--gold);border-radius:14px;padding:24px 28px;max-width:410px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+#statsBox h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.15rem;font-weight:700;color:var(--sepia);margin-bottom:3px;}
+.sub{font-size:.7rem;color:var(--sepia);opacity:.55;margin-bottom:14px;display:block;}
+.srow{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(200,146,42,.14);}
+.srow:last-child{border-bottom:none;}
+.sval{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.85rem;font-weight:700;color:var(--gold);text-align:right;}
+.slbl{font-size:.5rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.1em;text-align:right;}
+.sbar-w{grid-column:1/-1;height:4px;background:rgba(200,146,42,.15);border-radius:2px;}
+.sbar{height:100%;background:var(--gold);border-radius:2px;transition:width .5s ease;}
+.sa{display:flex;gap:10px;margin-top:14px;justify-content:flex-end;}
+.btn-sm{padding:7px 16px;border-radius:8px;border:none;cursor:pointer;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.82rem;font-weight:700;}
+.btn-sm.p{background:var(--gold);color:white;}
+.btn-sm.s{background:transparent;border:2px solid rgba(200,146,42,.4);color:var(--sepia);}
+
+/* MISC */
+.cp{position:fixed;top:-10px;width:9px;height:9px;border-radius:2px;z-index:200;pointer-events:none;animation:fall 2.6s ease-in forwards;}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+/* Pied discret : le lien légal doit exister sur chaque page du site. */
+.jdc-legal{text-align:center;padding:16px 14px 22px;font-size:.78rem;line-height:1.6;
+  color:#5c3d1e;opacity:.6;font-family:'Nunito',sans-serif;}
+.jdc-legal a{color:inherit;}
+@media print{.jdc-legal{display:none;}}
+</style>
+<style id="jdc-apropos-style">
+/* Bloc « À propos » : replié par défaut, lu en entier par les moteurs.
+   Couleurs écrites en dur — chaque jeu a ses propres variables CSS. */
+.jdc-apropos{max-width:680px;margin:28px auto 8px;padding:0 16px;
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;color:#5c3d1e;}
+.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;
+  letter-spacing:.02em;opacity:.62;padding:9px 0;text-align:center;
+  border-top:1px solid rgba(92,61,30,.16);}
+.jdc-apropos>summary::-webkit-details-marker{display:none}
+.jdc-apropos>summary::after{content:' \203A';display:inline-block;
+  transform:rotate(90deg);margin-left:5px;opacity:.7}
+.jdc-apropos[open]>summary::after{transform:rotate(-90deg)}
+.jdc-apropos>summary:hover,.jdc-apropos>summary:focus-visible{opacity:.95}
+.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;
+  text-align:left;opacity:.9}
+.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:#5c3d1e;
+  font-weight:700}
+.jdc-apropos p{margin:0 0 10px}
+.jdc-apropos ul{margin:0 0 10px;padding-left:20px}
+.jdc-apropos li{margin-bottom:5px}
+.jdc-apropos a{color:#2d6a4f}
+.hc .jdc-apropos{color:#000}
+.hc .jdc-apropos h2{color:#000}
+.hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
+</style>
+</head>
+<body>
+
+<header>
+  <button class="back-btn" onclick="goBack()">← Jeux</button>
+  <h1 id="mainTitle">Jeu du <em>Labyrinthe</em></h1>
+  <p>Navigation &amp; orientation spatiale</p>
+  <div class="divider"></div>
+  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
+</header>
+
+<!-- START SCREEN -->
+<div id="startScreen">
+  <h2>Choisissez votre niveau</h2>
+
+  <div class="opt-group">
+    <div class="opt-label">Difficulté</div>
+    <div class="btn-row">
+      <div class="lvl-card active" data-diff="easy" onclick="selDiff(this)">
+        <span class="lvl-ico">🌱</span>
+        <div class="lvl-name">Facile</div>
+        <div class="lvl-sub">9 × 9</div>
+      </div>
+      <div class="lvl-card" data-diff="medium" onclick="selDiff(this)">
+        <span class="lvl-ico">🌿</span>
+        <div class="lvl-name">Moyen</div>
+        <div class="lvl-sub">13 × 13</div>
+      </div>
+      <div class="lvl-card" data-diff="hard" onclick="selDiff(this)">
+        <span class="lvl-ico">🌳</span>
+        <div class="lvl-name">Difficile</div>
+        <div class="lvl-sub">19 × 19</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="opt-group">
+    <div class="opt-label">Aide visuelle</div>
+    <div class="theme-row">
+      <button class="theme-btn active" data-aid="hint" onclick="selAid(this)">Flèche indice</button>
+      <button class="theme-btn" data-aid="trail" onclick="selAid(this)">Trace du chemin</button>
+      <button class="theme-btn" data-aid="none" onclick="selAid(this)">Aucune</button>
+    </div>
+  </div>
+
+  <button class="start-btn" onclick="startGame()">Commencer 🗺️</button>
+  <div id="suggestion"></div>
+</div>
+
+<!-- GAME SCREEN -->
+<div id="gameScreen">
+  <div class="hud">
+    <div class="hud-box"><div class="lbl">Temps</div><div class="val" id="hudTime">0:00</div></div>
+    <div class="hud-box"><div class="lbl">Déplacements</div><div class="val" id="hudMoves">0</div></div>
+    <div class="hud-box clickable" onclick="showStart()"><div class="lbl">Menu</div><div class="val" style="font-size:.9rem;">↩</div></div>
+  </div>
+
+  <div id="mazeWrap"><canvas id="mazeCanvas"></canvas></div>
+
+  <!-- JOYSTICK -->
+  <div id="joystickZone">
+    <div id="joystickBase">
+      <span class="jmark" id="jmU">↑</span>
+      <span class="jmark" id="jmD">↓</span>
+      <span class="jmark" id="jmL">←</span>
+      <span class="jmark" id="jmR">→</span>
+    </div>
+    <div id="joystickKnob">😊</div>
+  </div>
+  <p class="ctrl-hint">Joystick tactile · clavier ↑↓←→</p>
+</div>
+
+<!-- WIN -->
+<div class="overlay" id="winOverlay">
+  <div class="overlay-box">
+    <div class="ico">🎉</div>
+    <h2>Bravo !</h2>
+    <p id="winMsg">Vous avez trouvé la sortie !</p>
+    <div class="overlay-btns">
+      <button class="o-btn primary" onclick="startGame()">Rejouer</button>
+      <button class="o-btn secondary" onclick="showStart()">Menu</button>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div id="statsPanel">
+  <div id="statsBox">
+    <h2>📊 Statistiques</h2>
+    <span class="sub">Données locales · Visibles uniquement par vous</span>
+    <div id="statsContent"></div>
+    <div class="sa">
+      <button class="btn-sm s" onclick="resetStats()">Réinitialiser</button>
+      <button class="btn-sm p" onclick="closeStats()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+//  STATS
+// ══════════════════════════════════════
+const STATS_KEY='labyrinthe_stats_v1';
+let _tc=0,_tct=null;
+document.getElementById('mainTitle').addEventListener('click',()=>{
+  _tc++;clearTimeout(_tct);_tct=setTimeout(()=>_tc=0,800);
+  if(_tc>=3){_tc=0;document.getElementById('statsBtn').style.display='block';toast('Mode admin');}
+});
+function loadStats(){try{return JSON.parse(localStorage.getItem(STATS_KEY))||{};}catch(e){return{};}}
+function saveStats(s){try{localStorage.setItem(STATS_KEY,JSON.stringify(s));}catch(e){}}
+function trackSession(diff,moves,sec){
+  const st=loadStats();
+  if(!st[diff])st[diff]={sessions:0,totalMoves:0,totalSec:0,bestSec:null,bestMoves:null};
+  const d=st[diff];
+  d.sessions++;d.totalMoves+=moves;d.totalSec+=sec;
+  if(!d.bestSec||sec<d.bestSec)d.bestSec=sec;
+  if(!d.bestMoves||moves<d.bestMoves)d.bestMoves=moves;
+  saveStats(st);
+}
+function openStats(){
+  const st=loadStats();
+  const labels={easy:'🌱 Facile',medium:'🌿 Moyen',hard:'🌳 Difficile'};
+  const c=document.getElementById('statsContent');
+  const keys=['easy','medium','hard'].filter(k=>st[k]);
+  if(!keys.length){
+    c.innerHTML='<p style="color:var(--sepia);font-style:italic;text-align:center;padding:14px 0;">Aucune partie encore jouée.</p>';
+  } else {
+    const maxS=Math.max(...keys.map(k=>st[k].sessions))||1;
+    c.innerHTML=keys.map(k=>{
+      const d=st[k];
+      const avgM=d.sessions?Math.round(d.totalMoves/d.sessions):0;
+      const fmt=s=>s==null?'—':Math.floor(s/60)+'m'+String(s%60).padStart(2,'0')+'s';
+      return `<div class="srow">
+        <div style="font-size:.83rem;font-weight:700;">${labels[k]}</div>
+        <div><div class="slbl">Parties</div><div class="sval">${d.sessions}</div></div>
+        <div><div class="slbl">Moy. dépl.</div><div class="sval">${avgM}</div></div>
+        <div><div class="slbl">Meilleur</div><div class="sval">${fmt(d.bestSec)}</div></div>
+        <div class="sbar-w"><div class="sbar" style="width:${Math.round(d.sessions/maxS*100)}%"></div></div>
+        <div style="grid-column:1/-1;font-size:.67rem;color:var(--sepia);opacity:.5;">Record déplacements : ${d.bestMoves||'—'}</div>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('statsPanel').classList.add('show');
+}
+function closeStats(){document.getElementById('statsPanel').classList.remove('show');}
+function resetStats(){
+  if(confirm('Effacer toutes les statistiques ?')){localStorage.removeItem(STATS_KEY);closeStats();toast('Stats effacées');}
+}
+
+// ══════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════
+const DIFFS={easy:{rows:9,cols:9},medium:{rows:13,cols:13},hard:{rows:19,cols:19}};
+let G={diff:'easy',aid:'hint',maze:[],rows:9,cols:9,px:0,py:0,moves:0,seconds:0,timerInt:null,trail:[],solved:false,cellSize:30};
+
+const NIV_PAR_DIFF={easy:1,medium:2,hard:3};
+const DIFF_PAR_NIV={1:'easy',2:'medium',3:'hard'};
+let _partieEnCours=false;
+
+function selDiff(btn){document.querySelectorAll('[data-diff]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');G.diff=btn.dataset.diff;}
+
+function afficherSuggestion(){
+  const el=document.getElementById('suggestion');
+  if(!el||typeof JDC==='undefined'){return;}
+  const b=JDC.bilanJeu('labyrinthe');
+  if(!b.parties){el.textContent='';return;}
+  const c=JDC.niveauConseille('labyrinthe');
+  const lbl={1:'Facile',2:'Moyen',3:'Difficile'}[c];
+  el.textContent=b.parties+' promenade'+(b.parties>1?'s':'')+' d\u00e9j\u00e0 faite'+(b.parties>1?'s':'')+'. Niveau conseill\u00e9 : '+lbl+'.';
+  const card=document.querySelector('.lvl-card[data-diff="'+DIFF_PAR_NIV[c]+'"]');
+  if(card){document.querySelectorAll('.lvl-card').forEach(x=>x.classList.remove('active'));card.classList.add('active');G.diff=DIFF_PAR_NIV[c];}
+}
+function selAid(btn){document.querySelectorAll('[data-aid]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');G.aid=btn.dataset.aid;}
+function showStart(){
+  if(_partieEnCours&&!G.solved&&typeof JDC!=='undefined'){
+    JDC.enregistrer('labyrinthe',NIV_PAR_DIFF[G.diff]||1,false,{duree:G.seconds,erreurs:0,variante:G.aid});
+  }
+  _partieEnCours=false;
+  afficherSuggestion();
+  document.getElementById('startScreen').style.display='flex';
+  document.getElementById('gameScreen').style.display='none';
+  document.getElementById('winOverlay').classList.remove('show');
+  clearInterval(G.timerInt);
+}
+function goBack(){window.location.href='jeux.html';}
+
+// ══════════════════════════════════════
+//  MAZE GENERATION
+// ══════════════════════════════════════
+function generateMaze(rows,cols){
+  const m=Array.from({length:rows},()=>Array.from({length:cols},()=>({n:true,e:true,s:true,w:true,visited:false})));
+  const stack=[{r:0,c:0}];m[0][0].visited=true;
+  const dirs=[{dr:-1,dc:0,wall:'n',opp:'s'},{dr:0,dc:1,wall:'e',opp:'w'},{dr:1,dc:0,wall:'s',opp:'n'},{dr:0,dc:-1,wall:'w',opp:'e'}];
+  while(stack.length){
+    const cur=stack[stack.length-1];
+    const nb=dirs.map(d=>({r:cur.r+d.dr,c:cur.c+d.dc,wall:d.wall,opp:d.opp})).filter(n=>n.r>=0&&n.r<rows&&n.c>=0&&n.c<cols&&!m[n.r][n.c].visited);
+    if(!nb.length){stack.pop();continue;}
+    const nx=nb[0|Math.random()*nb.length];
+    m[cur.r][cur.c][nx.wall]=false;m[nx.r][nx.c][nx.opp]=false;m[nx.r][nx.c].visited=true;stack.push({r:nx.r,c:nx.c});
+  }
+  return m;
+}
+
+// ══════════════════════════════════════
+//  DRAW
+// ══════════════════════════════════════
+function getCellSize(rows,cols){
+  const mw=Math.min(window.innerWidth-24,520);
+  const mh=window.innerHeight*.44;
+  return Math.max(Math.floor(Math.min(mw/cols,mh/rows)),16);
+}
+function drawMaze(){
+  const cv=document.getElementById('mazeCanvas'),ctx=cv.getContext('2d');
+  const cs=G.cellSize,rows=G.rows,cols=G.cols;
+  cv.width=cols*cs;cv.height=rows*cs;
+  ctx.fillStyle='#f7f3ea';ctx.fillRect(0,0,cv.width,cv.height);
+
+  if(G.aid==='trail'){
+    ctx.fillStyle='rgba(200,146,42,.22)';
+    for(const t of G.trail)ctx.fillRect(t.c*cs+2,t.r*cs+2,cs-4,cs-4);
+  }
+
+  // Exit
+  const er=rows-1,ec=cols-1;
+  const eg=ctx.createRadialGradient(ec*cs+cs/2,er*cs+cs/2,0,ec*cs+cs/2,er*cs+cs/2,cs);
+  eg.addColorStop(0,'rgba(45,106,79,.5)');eg.addColorStop(1,'rgba(45,106,79,.05)');
+  ctx.fillStyle=eg;ctx.fillRect(ec*cs,er*cs,cs,cs);
+  ctx.font=`${Math.round(cs*.55)}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('🏁',ec*cs+cs/2,er*cs+cs/2);
+
+  // Walls
+  ctx.strokeStyle='#5c3d1e';
+  ctx.lineWidth=Math.max(1.8,cs/9);
+  ctx.lineCap='square';
+  for(let r=0;r<rows;r++){
+    for(let c=0;c<cols;c++){
+      const cell=G.maze[r][c],x=c*cs,y=r*cs;
+      ctx.beginPath();
+      if(cell.n){ctx.moveTo(x,y);ctx.lineTo(x+cs,y);}
+      if(cell.w){ctx.moveTo(x,y);ctx.lineTo(x,y+cs);}
+      if(cell.e&&c===cols-1){ctx.moveTo(x+cs,y);ctx.lineTo(x+cs,y+cs);}
+      if(cell.s&&r===rows-1){ctx.moveTo(x,y+cs);ctx.lineTo(x+cs,y+cs);}
+      if(cell.e&&c<cols-1){ctx.moveTo(x+cs,y);ctx.lineTo(x+cs,y+cs);}
+      if(cell.s&&r<rows-1){ctx.moveTo(x,y+cs);ctx.lineTo(x+cs,y+cs);}
+      ctx.stroke();
+    }
+  }
+
+  if(G.aid==='hint')drawHint(ctx,cs);
+
+  // Player
+  const px=G.px,py=G.py,x=px*cs+cs/2,y=py*cs+cs/2,rad=cs*.3;
+  const pg=ctx.createRadialGradient(x,y,0,x,y,rad*2);
+  pg.addColorStop(0,'rgba(200,146,42,.32)');pg.addColorStop(1,'transparent');
+  ctx.fillStyle=pg;ctx.beginPath();ctx.arc(x,y,rad*2,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#c8922a';ctx.beginPath();ctx.arc(x,y,rad,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='white';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(x,y,rad,0,Math.PI*2);ctx.stroke();
+  ctx.fillStyle='white';ctx.font=`${Math.round(cs*.38)}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('😊',x,y+1);
+}
+function drawHint(ctx,cs){
+  const rows=G.rows,cols=G.cols,target={r:rows-1,c:cols-1};
+  const vis=Array.from({length:rows},()=>Array(cols).fill(false));
+  const prev=Array.from({length:rows},()=>Array(cols).fill(null));
+  const q=[{r:G.py,c:G.px}];vis[G.py][G.px]=true;
+  const dirs=[{dr:-1,dc:0,w:'n'},{dr:0,dc:1,w:'e'},{dr:1,dc:0,w:'s'},{dr:0,dc:-1,w:'w'}];
+  while(q.length){
+    const cur=q.shift();
+    if(cur.r===target.r&&cur.c===target.c)break;
+    for(const d of dirs){
+      const nr=cur.r+d.dr,nc=cur.c+d.dc;
+      if(nr<0||nr>=rows||nc<0||nc>=cols||vis[nr][nc]||G.maze[cur.r][cur.c][d.w])continue;
+      vis[nr][nc]=true;prev[nr][nc]={r:cur.r,c:cur.c};q.push({r:nr,c:nc});
+    }
+  }
+  // Walk path back to find the next cell from player
+  let cur=target,next=null;
+  while(prev[cur.r]&&prev[cur.r][cur.c]){
+    const p=prev[cur.r][cur.c];
+    if(p.r===G.py&&p.c===G.px){next=cur;break;}
+    cur=p;
+  }
+  if(!next)return;
+
+  // Direction vector
+  const dx=next.c-G.px, dy=next.r-G.py; // -1/0/+1 each
+
+  // Draw on the NEXT cell (not the player cell) so it's never hidden under the player
+  const nx=next.c, ny=next.r;
+  const cx2=nx*cs+cs/2, cy2=ny*cs+cs/2;
+  const r=cs*0.3;
+
+  // Bright green disc background
+  ctx.save();
+  ctx.globalAlpha=0.92;
+  ctx.fillStyle='#2d6a4f';
+  ctx.beginPath();ctx.arc(cx2,cy2,r,0,Math.PI*2);ctx.fill();
+
+  // White stroke ring
+  ctx.strokeStyle='white';ctx.lineWidth=Math.max(1.5,cs/14);
+  ctx.beginPath();ctx.arc(cx2,cy2,r,0,Math.PI*2);ctx.stroke();
+
+  // Solid white arrow triangle pointing in (dx,dy) direction
+  const hs=r*0.52; // half arrow size
+  ctx.fillStyle='white';
+  ctx.beginPath();
+  if(dy===-1){// up
+    ctx.moveTo(cx2,       cy2-hs);
+    ctx.lineTo(cx2+hs,    cy2+hs*0.5);
+    ctx.lineTo(cx2-hs,    cy2+hs*0.5);
+  } else if(dy===1){// down
+    ctx.moveTo(cx2,       cy2+hs);
+    ctx.lineTo(cx2+hs,    cy2-hs*0.5);
+    ctx.lineTo(cx2-hs,    cy2-hs*0.5);
+  } else if(dx===1){// right
+    ctx.moveTo(cx2+hs,    cy2);
+    ctx.lineTo(cx2-hs*0.5,cy2-hs);
+    ctx.lineTo(cx2-hs*0.5,cy2+hs);
+  } else {// left
+    ctx.moveTo(cx2-hs,    cy2);
+    ctx.lineTo(cx2+hs*0.5,cy2-hs);
+    ctx.lineTo(cx2+hs*0.5,cy2+hs);
+  }
+  ctx.closePath();ctx.fill();
+  ctx.restore();
+}
+
+// ══════════════════════════════════════
+//  GAME LOGIC
+// ══════════════════════════════════════
+function startGame(){
+  const d=DIFFS[G.diff];G.rows=d.rows;G.cols=d.cols;
+  G.maze=generateMaze(G.rows,G.cols);
+  G.px=0;G.py=0;G.moves=0;G.seconds=0;G.trail=[{r:0,c:0}];G.solved=false;
+  G.cellSize=getCellSize(G.rows,G.cols);
+  _partieEnCours=true;
+  document.getElementById('startScreen').style.display='none';
+  document.getElementById('gameScreen').style.display='flex';
+  document.getElementById('winOverlay').classList.remove('show');
+  document.getElementById('hudMoves').textContent='0';
+  document.getElementById('hudTime').textContent='0:00';
+  clearInterval(G.timerInt);
+  G.timerInt=setInterval(()=>{G.seconds++;const m=0|G.seconds/60,s=G.seconds%60;document.getElementById('hudTime').textContent=m+':'+(s<10?'0':'')+s;},1000);
+  drawMaze();
+}
+
+function move(dx,dy){
+  if(G.solved)return;
+  const nr=G.py+dy,nc=G.px+dx;
+  if(nr<0||nr>=G.rows||nc<0||nc>=G.cols)return;
+  const wmap={'-10':'n','10':'s','0-1':'w','01':'e'};
+  if(G.maze[G.py][G.px][wmap[`${dy}${dx}`]])return;
+  G.px=nc;G.py=nr;G.moves++;
+  document.getElementById('hudMoves').textContent=G.moves;
+  if(G.aid==='trail')G.trail.push({r:nr,c:nc});
+  drawMaze();
+  if(G.py===G.rows-1&&G.px===G.cols-1)win();
+}
+
+function win(){
+  G.solved=true;clearInterval(G.timerInt);
+  _partieEnCours=false;
+  trackSession(G.diff,G.moves,G.seconds);
+  if(typeof JDC!=='undefined'){
+    JDC.enregistrer('labyrinthe',NIV_PAR_DIFF[G.diff]||1,true,{duree:G.seconds,erreurs:0,variante:G.aid});
+  }
+  const m=0|G.seconds/60,s=G.seconds%60;
+  document.getElementById('winMsg').textContent=`Sortie trouvée en ${G.moves} déplacement${G.moves>1?'s':''} · ${m>0?m+'m':''}${s}s !`;
+  setTimeout(()=>{document.getElementById('winOverlay').classList.add('show');confetti();},300);
+}
+
+// ══════════════════════════════════════
+//  KEYBOARD
+// ══════════════════════════════════════
+document.addEventListener('keydown',e=>{
+  const map={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]};
+  if(map[e.key]){e.preventDefault();move(...map[e.key]);}
+});
+
+// ══════════════════════════════════════
+//  JOYSTICK VIRTUEL
+// ══════════════════════════════════════
+(function(){
+  const zone=document.getElementById('joystickZone');
+  const knob=document.getElementById('joystickKnob');
+  const RADIUS=60,DEAD=20,REPEAT_DELAY=300,REPEAT_INTERVAL=130;
+  let active=false,ox=0,oy=0,stepDir=null,repeatTimer=null;
+
+  function center(){const r=zone.getBoundingClientRect();return{x:r.left+r.width/2,y:r.top+r.height/2};}
+
+  function start(cx,cy){active=true;knob.classList.add('pressed');const c=center();ox=c.x;oy=c.y;update(cx,cy);}
+  function update(cx,cy){
+    if(!active)return;
+    let dx=cx-ox,dy=cy-oy,dist=Math.hypot(dx,dy);
+    if(dist>RADIUS){dx*=RADIUS/dist;dy*=RADIUS/dist;}
+    knob.style.transform=`translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px))`;
+    const dir=dist<DEAD?null:(Math.abs(dx)>Math.abs(dy)?(dx>0?'e':'w'):(dy>0?'s':'n'));
+    if(dir!==stepDir){
+      stepDir=dir;clearTimeout(repeatTimer);
+      if(dir){doMove(dir);repeatTimer=setTimeout(function r(){doMove(stepDir);repeatTimer=setTimeout(r,REPEAT_INTERVAL);},REPEAT_DELAY);}
+    }
+  }
+  function end(){if(!active)return;active=false;knob.classList.remove('pressed');knob.style.transform='translate(-50%,-50%)';clearTimeout(repeatTimer);stepDir=null;}
+  function doMove(d){const m={n:[0,-1],s:[0,1],w:[-1,0],e:[1,0]};if(m[d])move(...m[d]);}
+
+  zone.addEventListener('touchstart',e=>{e.preventDefault();const t=e.touches[0];start(t.clientX,t.clientY);},{passive:false});
+  zone.addEventListener('touchmove',e=>{e.preventDefault();const t=e.touches[0];update(t.clientX,t.clientY);},{passive:false});
+  zone.addEventListener('touchend',e=>{e.preventDefault();end();},{passive:false});
+  zone.addEventListener('touchcancel',e=>{e.preventDefault();end();},{passive:false});
+  zone.addEventListener('mousedown',e=>{start(e.clientX,e.clientY);});
+  window.addEventListener('mousemove',e=>{update(e.clientX,e.clientY);});
+  window.addEventListener('mouseup',end);
+})();
+
+// ══════════════════════════════════════
+//  RESIZE
+// ══════════════════════════════════════
+window.addEventListener('resize',()=>{
+  if(document.getElementById('gameScreen').style.display!=='none'){G.cellSize=getCellSize(G.rows,G.cols);drawMaze();}
+});
+
+// ══════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════
+function confetti(){
+  const cols=['#c8922a','#2d6a4f','#8b2020','#f0ece0','#d4a96a','#FDD835'];
+  for(let i=0;i<60;i++){
+    const el=document.createElement('div');el.className='cp';
+    el.style.cssText=`left:${Math.random()*100}%;background:${cols[0|Math.random()*cols.length]};animation-duration:${1.8+Math.random()*1.5}s;animation-delay:${Math.random()*.6}s;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;border-radius:${Math.random()>.5?'50%':'2px'};`;
+    document.body.appendChild(el);setTimeout(()=>el.remove(),3500);
+  }
+}
+window.addEventListener('beforeunload',function(){
+  if(_partieEnCours&&!G.solved&&typeof JDC!=='undefined'){
+    JDC.enregistrer('labyrinthe',NIV_PAR_DIFF[G.diff]||1,false,{duree:G.seconds,erreurs:0,variante:G.aid});
+  }
+});
+
+afficherSuggestion();
+
+let _tt;
+function toast(msg){
+  let t=document.getElementById('_toast');
+  if(!t){t=document.createElement('div');t.id='_toast';t.style.cssText='position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(10px);background:#2d6a4f;color:white;padding:9px 22px;border-radius:8px;font-size:.85rem;font-weight:700;opacity:0;transition:all .25s;z-index:300;pointer-events:none;font-family:"Atkinson Hyperlegible",sans-serif;';document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';
+  clearTimeout(_tt);_tt=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)';},2400);
+}
+</script>
+
+
+
+
+<details class="jdc-apropos">
+<summary>À propos de ce jeu</summary>
+<div class="corps">
+<p><strong>Le Labyrinthe</strong> — Un chemin à trouver d'un bout à l'autre. On avance, on revient si besoin, et on ne se perd jamais pour de bon.</p>
+<h2>Pour qui</h2>
+<p>Aux personnes âgées. Suivre un chemin des yeux et anticiper la suite met en jeu le repérage dans l'espace.</p>
+<h2>Comment y jouer</h2>
+<ul>
+<li><strong>Seul</strong> : en suivant le tracé du doigt sur l'écran.</li>
+<li><strong>À deux, avec un proche ou un aidant</strong> : l'un montre la direction, l'autre avance.</li>
+</ul>
+<p>Suivre le chemin du doigt, physiquement sur l'écran, aide beaucoup plus que de le suivre des yeux. Le geste soutient le repérage.</p>
+<h2>Ce que ce jeu n'est pas</h2>
+<p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
+<h2>Qui le propose</h2>
+<p>Les Jardins de Célestine, un projet d'habitat partagé pour seniors, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="jeux.html">Voir tous les jeux</a>.</p>
+</div>
+</details>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+</footer>
+</body>
+</html>

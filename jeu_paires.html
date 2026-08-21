@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Jeu des Paires — jeu en ligne gratuit · Les Jardins de Célestine</title>
+<meta name="description" content="Associer les images qui vont ensemble, à son rythme. Jeu en ligne gratuit pour personne âgée ou atteinte de troubles de la mémoire, sans inscription.">
+<link rel="canonical" href="https://jardinsdecelestine.com/jeu_paires">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="jdc-parcours.js"></script>
+<style>
+:root {
+  --cream:#f7f3ea; --parchment:#eee8d5; --ink:#1c1208;
+  --sepia:#5c3d1e; --gold:#c8922a; --green:#2d6a4f;
+  --red:#8b2020; --shadow:rgba(28,18,8,0.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{
+  background:var(--parchment);
+  background-image:
+    radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.08) 0%,transparent 55%),
+    radial-gradient(ellipse at 85% 90%,rgba(45,106,79,.06) 0%,transparent 55%);
+  min-height:100vh; font-family:'Nunito',sans-serif;
+  color:var(--ink); user-select:none; -webkit-user-select:none;
+}
+
+/* ── HEADER ── */
+header{text-align:center;padding:16px 20px 10px;border-bottom:1px solid rgba(200,146,42,.2);position:relative;}
+header h1{font-family:'Atkinson Hyperlegible',sans-serif;font-size:clamp(1.3rem,3vw,1.9rem);font-weight:700;color:var(--sepia);cursor:default;}
+header h1 em{color:var(--gold);font-style:normal;}
+header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-top:3px;}
+.divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:6px auto 0;}
+#statsBtn{display:none;position:absolute;top:14px;right:16px;background:none;border:1.5px solid rgba(200,146,42,.4);border-radius:6px;padding:4px 10px;font-family:'Nunito',sans-serif;font-size:.75rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+#statsBtn:hover{background:rgba(200,146,42,.1);}
+
+/* ── HUD ── */
+.hud{display:flex;gap:8px;justify-content:center;padding:10px 16px;flex-wrap:wrap;}
+.hud-box{background:var(--cream);border:1px solid rgba(200,146,42,.35);border-radius:8px;padding:6px 14px;text-align:center;box-shadow:0 2px 6px var(--shadow);min-width:64px;}
+.hud-lbl{font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sepia);opacity:.6;}
+.hud-val{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.35rem;font-weight:700;color:var(--gold);line-height:1.1;}
+
+/* ── ÉCRAN DÉMARRAGE ── */
+#startScreen{display:flex;flex-direction:column;align-items:center;gap:20px;padding:30px 20px;}
+#startScreen h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;font-weight:700;color:var(--sepia);text-align:center;}
+.mode-row,.level-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+.opt-btn{border:2.5px solid rgba(200,146,42,.35);background:var(--cream);color:var(--sepia);border-radius:10px;padding:10px 20px;cursor:pointer;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;transition:all .2s;box-shadow:0 2px 8px var(--shadow);text-align:center;line-height:1.4;}
+.opt-btn:hover,.opt-btn.active{background:var(--gold);color:white;border-color:var(--gold);}
+.how-box{background:var(--cream);border:2px solid rgba(200,146,42,.22);border-radius:12px;padding:14px 20px;max-width:380px;box-shadow:0 2px 8px var(--shadow);}
+#suggestion{font-size:.86rem;color:var(--sepia);opacity:.8;font-style:italic;text-align:center;}
+.how-box p{font-size:.88rem;color:var(--sepia);line-height:1.6;font-weight:600;text-align:center;}
+.btn-start{padding:13px 40px;background:var(--gold);color:white;border:none;border-radius:8px;cursor:pointer;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;box-shadow:0 4px 16px rgba(200,146,42,.35);transition:all .2s;}
+.btn-start:hover{background:#b07820;transform:translateY(-1px);}
+
+/* ── ZONE DE JEU ── */
+#gameScreen{display:none;padding:8px 12px 60px;}
+.columns{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:600px;margin:0 auto;}
+
+/* ── CARTE ── */
+.card{background:var(--cream);border:2.5px solid rgba(200,146,42,.4);border-radius:12px;padding:10px 8px;cursor:pointer;text-align:center;box-shadow:0 2px 8px var(--shadow);transition:transform .15s,box-shadow .15s,border-color .2s,background .2s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:80px;position:relative;}
+.card:hover:not(.matched):not(.selected){transform:translateY(-2px);box-shadow:0 5px 14px var(--shadow);}
+.card.selected{border-color:var(--gold);background:rgba(200,146,42,.12);box-shadow:0 0 0 3px rgba(200,146,42,.35),0 3px 10px var(--shadow);transform:scale(1.04);}
+.card.matched{border-color:var(--green);background:rgba(45,106,79,.07);cursor:default;opacity:.7;}
+.card.wrong{border-color:var(--red);background:rgba(139,32,32,.07);animation:shake .4s ease;}
+.card.matched::after{content:'✓';position:absolute;top:6px;right:8px;color:var(--green);font-weight:700;font-size:.8rem;}
+.card-emoji{font-size:clamp(1.6rem,5vw,2.2rem);line-height:1;}
+.card-text{font-size:clamp(.7rem,2.5vw,.82rem);color:var(--sepia);font-weight:700;line-height:1.2;text-align:center;}
+
+/* ── FEEDBACK ── */
+.feedback{text-align:center;padding:6px;font-size:.9rem;font-weight:700;min-height:28px;color:var(--green);}
+.feedback.err{color:var(--red);}
+
+/* ── PROGRESS ── */
+.progress-bar{width:100%;max-width:600px;height:5px;background:rgba(200,146,42,.15);border-radius:3px;margin:4px auto 6px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),#e8b84b);border-radius:3px;transition:width .4s ease;}
+
+/* ── VICTOIRE ── */
+#victoryBanner{display:none;flex-direction:column;align-items:center;gap:10px;background:var(--cream);border:2px solid rgba(200,146,42,.5);border-radius:14px;padding:24px 30px;text-align:center;box-shadow:0 6px 24px var(--shadow);max-width:380px;margin:20px auto 0;animation:fadeIn .5s ease;}
+#victoryBanner.show{display:flex;}
+#victoryBanner h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.5rem;color:var(--gold);}
+#victoryBanner p{font-size:.88rem;color:var(--sepia);font-style:italic;}
+.btn-replay{padding:10px 30px;background:var(--gold);color:white;border:none;border-radius:7px;cursor:pointer;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;margin-top:6px;}
+.btn-replay:hover{background:#b07820;}
+.btn-back{background:none;border:1.5px solid rgba(200,146,42,.4);border-radius:7px;padding:6px 16px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.82rem;font-weight:700;color:var(--sepia);cursor:pointer;margin-top:4px;}
+.btn-back:hover{background:rgba(200,146,42,.1);}
+
+/* ── STATS PANEL ── */
+#statsPanel{display:none;position:fixed;inset:0;background:rgba(28,18,8,.75);z-index:60;align-items:center;justify-content:center;}
+#statsPanel.show{display:flex;animation:fadeIn .3s ease;}
+#statsBox{background:var(--cream);border:2px solid var(--gold);border-radius:14px;padding:26px 30px;max-width:440px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+#statsBox h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;font-weight:700;color:var(--sepia);margin-bottom:4px;}
+.s-sub{font-size:.7rem;color:var(--sepia);opacity:.55;margin-bottom:14px;display:block;}
+.srow{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(200,146,42,.14);}
+.srow:last-child{border-bottom:none;}
+.srow-name{font-size:.82rem;font-weight:700;color:var(--sepia);}
+.srow-sub{font-size:.62rem;color:var(--sepia);opacity:.55;font-weight:400;}
+.scol{text-align:center;}
+.slbl{font-size:.52rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.08em;}
+.sval{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.9rem;font-weight:700;color:var(--gold);}
+.sval.green{color:var(--green);}
+.sbar-wrap{grid-column:1/-1;height:4px;background:rgba(200,146,42,.15);border-radius:2px;}
+.sbar{height:100%;background:var(--gold);border-radius:2px;transition:width .5s ease;}
+.sa{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;}
+.btn-sm{padding:6px 14px;border-radius:6px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;}
+.btn-ol{background:none;border:1.5px solid rgba(200,146,42,.5);color:var(--sepia);}
+.btn-ol:hover{background:rgba(200,146,42,.1);}
+.btn-g{background:var(--gold);color:white;border:none;}
+.btn-g:hover{background:#b07820;}
+.no-stats{font-size:.85rem;color:var(--sepia);opacity:.6;font-style:italic;text-align:center;padding:14px 0;}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(10px);color:white;background:#2d6a4f;padding:10px 22px;border-radius:8px;font-size:.86rem;font-weight:700;opacity:0;transition:all .25s;z-index:300;pointer-events:none;font-family:'Atkinson Hyperlegible',sans-serif;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+@keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.07);}100%{transform:scale(1);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.card.pop{animation:pop .3s ease;}
+
+.back-link{display:block;text-align:center;padding:10px;font-size:.75rem;color:var(--sepia);opacity:.55;text-decoration:none;letter-spacing:.1em;text-transform:uppercase;}
+.back-link:hover{opacity:1;}
+
+/* Pied discret : le lien légal doit exister sur chaque page du site. */
+.jdc-legal{text-align:center;padding:16px 14px 22px;font-size:.78rem;line-height:1.6;
+  color:#5c3d1e;opacity:.6;font-family:'Nunito',sans-serif;}
+.jdc-legal a{color:inherit;}
+@media print{.jdc-legal{display:none;}}
+</style>
+<style id="jdc-apropos-style">
+/* Bloc « À propos » : replié par défaut, lu en entier par les moteurs.
+   Couleurs écrites en dur — chaque jeu a ses propres variables CSS. */
+.jdc-apropos{max-width:680px;margin:28px auto 8px;padding:0 16px;
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;color:#5c3d1e;}
+.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;
+  letter-spacing:.02em;opacity:.62;padding:9px 0;text-align:center;
+  border-top:1px solid rgba(92,61,30,.16);}
+.jdc-apropos>summary::-webkit-details-marker{display:none}
+.jdc-apropos>summary::after{content:' \203A';display:inline-block;
+  transform:rotate(90deg);margin-left:5px;opacity:.7}
+.jdc-apropos[open]>summary::after{transform:rotate(-90deg)}
+.jdc-apropos>summary:hover,.jdc-apropos>summary:focus-visible{opacity:.95}
+.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;
+  text-align:left;opacity:.9}
+.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:#5c3d1e;
+  font-weight:700}
+.jdc-apropos p{margin:0 0 10px}
+.jdc-apropos ul{margin:0 0 10px;padding-left:20px}
+.jdc-apropos li{margin-bottom:5px}
+.jdc-apropos a{color:#2d6a4f}
+.hc .jdc-apropos{color:#000}
+.hc .jdc-apropos h2{color:#000}
+.hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
+</style>
+</head>
+<body>
+
+<a href="jeux.html" class="back-link">← Retour aux jeux</a>
+
+<header>
+  <h1 id="mainTitle">Jeu des <em>Paires</em></h1>
+  <div class="divider"></div>
+  <p>Associer · Reconnaître · Relier</p>
+  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
+</header>
+
+<!-- ÉCRAN DÉMARRAGE -->
+<div id="startScreen">
+  <h2>Quel type de paires ?</h2>
+  <div class="mode-row">
+    <button class="opt-btn active" onclick="selectMode('identique',this)">🔁 Même image<br><small style="font-weight:400;font-size:.78rem;">2 cartes identiques</small></button>
+    <button class="opt-btn" onclick="selectMode('motif',this)">🧩 Qui va ensemble ?<br><small style="font-weight:400;font-size:.78rem;">paires complémentaires</small></button>
+  </div>
+  <div class="level-row">
+    <button class="opt-btn active" onclick="selectLevel(4,this)">4 paires</button>
+    <button class="opt-btn" onclick="selectLevel(6,this)">6 paires</button>
+    <button class="opt-btn" onclick="selectLevel(8,this)">8 paires</button>
+  </div>
+  <div class="how-box">
+    <p id="howText">Toutes les cartes sont visibles. Cliquez sur une carte, puis sur celle qui lui ressemble pour former une paire.</p>
+  </div>
+  <button class="btn-start" onclick="startGame()">Commencer ▶</button>
+  <div id="suggestion"></div>
+</div>
+
+<!-- ÉCRAN DE JEU -->
+<div id="gameScreen">
+  <div class="hud">
+    <div class="hud-box"><div class="hud-lbl">Paires</div><div class="hud-val" id="hud-pairs">0</div></div>
+    <div class="hud-box"><div class="hud-lbl">Essais</div><div class="hud-val" id="hud-tries">0</div></div>
+    <div class="hud-box"><div class="hud-lbl">Temps</div><div class="hud-val" id="hud-time">0:00</div></div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  <div class="feedback" id="feedback"></div>
+  <div class="columns" id="columns"></div>
+  <div id="victoryBanner">
+    <div style="font-size:2rem">🌟</div>
+    <h2>Bravo !</h2>
+    <p id="victory-msg"></p>
+    <button class="btn-replay" onclick="startGame()">Rejouer</button>
+    <button class="btn-back" onclick="goStart()">← Changer de mode</button>
+  </div>
+</div>
+
+<!-- STATS PANEL -->
+<div id="statsPanel">
+  <div id="statsBox">
+    <h2>📊 Statistiques</h2>
+    <span class="s-sub">Enregistrées localement · Visibles uniquement par vous</span>
+    <div id="statsContent"></div>
+    <div class="sa">
+      <button class="btn-sm btn-ol" onclick="resetStats()">Réinitialiser</button>
+      <button class="btn-sm btn-g" onclick="closeStats()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════
+//   DONNÉES
+// ═══════════════════════════════
+const IDENTIQUE = [
+  {emoji:'🌹',label:'Rose'},{emoji:'🌻',label:'Tournesol'},{emoji:'🦋',label:'Papillon'},
+  {emoji:'🐦',label:'Oiseau'},{emoji:'☕',label:'Café'},{emoji:'🍎',label:'Pomme'},
+  {emoji:'🎂',label:'Gâteau'},{emoji:'🌙',label:'Lune'},{emoji:'⭐',label:'Étoile'},
+  {emoji:'🕊️',label:'Colombe'},{emoji:'🌿',label:'Feuille'},{emoji:'🕯️',label:'Bougie'},
+  {emoji:'🎵',label:'Musique'},{emoji:'🌈',label:'Arc-en-ciel'},{emoji:'🍀',label:'Trèfle'},
+  {emoji:'🌊',label:'Vague'},
+];
+
+const MOTIF = [
+  [{emoji:'☀️',label:'Soleil'},      {emoji:'🌻',label:'Tournesol'}],
+  [{emoji:'🌧️',label:'Pluie'},       {emoji:'🌂',label:'Parapluie'}],
+  [{emoji:'🐝',label:'Abeille'},      {emoji:'🍯',label:'Miel'}],
+  [{emoji:'🔑',label:'Clé'},          {emoji:'🚪',label:'Porte'}],
+  [{emoji:'🕯️',label:'Bougie'},       {emoji:'🌙',label:'Nuit'}],
+  [{emoji:'🎵',label:'Musique'},       {emoji:'🎧',label:'Casque'}],
+  [{emoji:'📚',label:'Livres'},        {emoji:'🤓',label:'Lecture'}],
+  [{emoji:'🌱',label:'Graine'},        {emoji:'🌳',label:'Arbre'}],
+  [{emoji:'🍋',label:'Citron'},        {emoji:'🍹',label:'Limonade'}],
+  [{emoji:'🐱',label:'Chat'},          {emoji:'🐟',label:'Poisson'}],
+  [{emoji:'☕',label:'Café'},          {emoji:'🥐',label:'Croissant'}],
+  [{emoji:'🌊',label:'Mer'},           {emoji:'⛵',label:'Bateau'}],
+  [{emoji:'❄️',label:'Neige'},         {emoji:'🧤',label:'Gants'}],
+  [{emoji:'🌹',label:'Rose'},          {emoji:'💐',label:'Bouquet'}],
+  [{emoji:'🐓',label:'Coq'},           {emoji:'🌅',label:'Aurore'}],
+  [{emoji:'🍞',label:'Pain'},          {emoji:'🧈',label:'Beurre'}],
+];
+
+// ═══════════════════════════════
+//   STATS — triple-clic sur titre
+// ═══════════════════════════════
+const STATS_KEY = 'paires_stats_v1';
+let _tc=0, _tct=null;
+
+document.getElementById('mainTitle').addEventListener('click', () => {
+  _tc++; clearTimeout(_tct);
+  _tct = setTimeout(() => _tc=0, 800);
+  if(_tc >= 3){ _tc=0; document.getElementById('statsBtn').style.display='block'; toast('Mode admin activé'); }
+});
+
+function loadStats(){ try{ return JSON.parse(localStorage.getItem(STATS_KEY))||{}; }catch(e){ return{}; } }
+function saveStats(s){ try{ localStorage.setItem(STATS_KEY,JSON.stringify(s)); }catch(e){} }
+
+function trackGame(mode, level, completed, sec, tries){
+  const key = mode+'_'+level;
+  const st = loadStats();
+  const modeLabel = mode==='identique' ? 'Même image' : 'Qui va ensemble ?';
+  if(!st[key]) st[key]={ modeLabel, level, plays:0, completions:0, totalSec:0, totalTries:0, bestSec:9999 };
+  st[key].plays++;
+  st[key].totalSec += sec;
+  st[key].totalTries += tries;
+  if(completed){
+    st[key].completions++;
+    if(sec < st[key].bestSec) st[key].bestSec = sec;
+  }
+  saveStats(st);
+}
+
+function openStats(){
+  const st = loadStats();
+  const keys = Object.keys(st);
+  const content = document.getElementById('statsContent');
+  if(!keys.length){
+    content.innerHTML = '<p class="no-stats">Aucune partie encore jouée.</p>';
+  } else {
+    keys.sort((a,b) => st[b].plays - st[a].plays);
+    const maxSec = Math.max(...keys.map(k => st[k].totalSec)) || 1;
+    content.innerHTML = keys.map(k => {
+      const s = st[k];
+      const pct = s.plays ? Math.round(s.completions/s.plays*100) : 0;
+      const avgTries = s.completions ? Math.round(s.totalTries/s.completions) : '-';
+      const bestM = s.bestSec<9999 ? Math.floor(s.bestSec/60)+'m'+String(s.bestSec%60).padStart(2,'0')+'s' : '-';
+      const bw = Math.round(s.totalSec/maxSec*100);
+      return `<div class="srow">
+        <div class="srow-name">${s.modeLabel}<br><span class="srow-sub">${s.level} paires</span></div>
+        <div class="scol"><div class="slbl">Parties</div><div class="sval">${s.plays}</div></div>
+        <div class="scol"><div class="slbl">Réussite</div><div class="sval green">${pct}%</div></div>
+        <div class="scol"><div class="slbl">Meilleur</div><div class="sval">${bestM}</div></div>
+        <div class="sbar-wrap"><div class="sbar" style="width:${bw}%"></div></div>
+        <div style="grid-column:1/-1;font-size:.68rem;color:var(--sepia);opacity:.5;">Essais moy. : ${avgTries} par partie réussie</div>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('statsPanel').classList.add('show');
+}
+
+function closeStats(){ document.getElementById('statsPanel').classList.remove('show'); }
+
+function resetStats(){
+  if(confirm('Effacer toutes les statistiques ?')){
+    localStorage.removeItem(STATS_KEY);
+    closeStats();
+    toast('Statistiques effacées');
+  }
+}
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ═══════════════════════════════
+//   ÉTAT
+// ═══════════════════════════════
+let mode='identique', level=4, cards=[], selected=null, matched=0, tries=0, locked=false;
+let timerInterval=null, seconds=0, partieEnCours=false;
+
+const NIV_PAR_LEVEL={4:1,6:2,8:3};
+
+function afficherSuggestion(){
+  const el=document.getElementById('suggestion');
+  if(!el||typeof JDC==='undefined')return;
+  const b=JDC.bilanJeu('paires');
+  if(!b.parties){el.textContent='';return;}
+  const c=JDC.niveauConseille('paires');
+  const nb={1:4,2:6,3:8}[c];
+  el.textContent=b.parties+' partie'+(b.parties>1?'s':'')+' jou\u00e9e'+(b.parties>1?'s':'')+'. Conseill\u00e9 : '+nb+' paires.';
+  const btn=document.querySelector('.level-row .opt-btn:nth-child('+c+')');
+  if(btn){document.querySelectorAll('.level-row .opt-btn').forEach(b2=>b2.classList.remove('active'));btn.classList.add('active');level=nb;}
+}
+
+function selectMode(m,btn){
+  mode=m;
+  document.querySelectorAll('.mode-row .opt-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('howText').textContent = m==='identique'
+    ? 'Toutes les cartes sont visibles. Cliquez sur une carte, puis sur celle qui lui ressemble pour former une paire.'
+    : 'Toutes les cartes sont visibles. Cliquez sur une carte, puis sur celle qui va naturellement avec elle.';
+}
+
+function selectLevel(n,btn){
+  level=n;
+  document.querySelectorAll('.level-row .opt-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function goStart(){
+  if(partieEnCours&&typeof JDC!=='undefined'){
+    JDC.enregistrer('paires', NIV_PAR_LEVEL[level]||1, false, {duree:seconds, erreurs:Math.max(0,tries-matched), variante:mode});
+  }
+  partieEnCours=false;
+  document.getElementById('gameScreen').style.display='none';
+  document.getElementById('startScreen').style.display='flex';
+  clearInterval(timerInterval);
+  afficherSuggestion();
+}
+
+window.addEventListener('beforeunload',function(){
+  if(partieEnCours&&typeof JDC!=='undefined'){
+    JDC.enregistrer('paires', NIV_PAR_LEVEL[level]||1, false, {duree:seconds, erreurs:Math.max(0,tries-matched), variante:mode});
+  }
+});
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function startGame(){
+  clearInterval(timerInterval);
+  seconds=0; tries=0; matched=0; selected=null; locked=false;
+  updateHUD();
+  document.getElementById('progress-fill').style.width='0%';
+  document.getElementById('feedback').textContent='';
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('victoryBanner').classList.remove('show');
+  document.getElementById('startScreen').style.display='none';
+  document.getElementById('gameScreen').style.display='block';
+  partieEnCours=true;
+
+  cards=[];
+  if(mode==='identique'){
+    shuffle(IDENTIQUE).slice(0,level).forEach((item,i)=>{
+      cards.push({pairId:i,emoji:item.emoji,label:item.label});
+      cards.push({pairId:i,emoji:item.emoji,label:item.label});
+    });
+  } else {
+    shuffle(MOTIF).slice(0,level).forEach((pair,i)=>{
+      cards.push({pairId:i,emoji:pair[0].emoji,label:pair[0].label});
+      cards.push({pairId:i,emoji:pair[1].emoji,label:pair[1].label});
+    });
+  }
+  cards=shuffle(cards);
+
+  const col=document.getElementById('columns');
+  col.innerHTML='';
+  cards.forEach((card,idx)=>{
+    const el=document.createElement('div');
+    el.className='card';
+    el.dataset.idx=idx;
+    el.innerHTML=`<div class="card-emoji">${card.emoji}</div><div class="card-text">${card.label}</div>`;
+    el.addEventListener('click',()=>onCardClick(idx,el));
+    col.appendChild(el);
+  });
+
+  timerInterval=setInterval(()=>{
+    seconds++;
+    const m=Math.floor(seconds/60),s=seconds%60;
+    document.getElementById('hud-time').textContent=`${m}:${s.toString().padStart(2,'0')}`;
+  },1000);
+}
+
+function onCardClick(idx,el){
+  if(locked||el.classList.contains('matched')) return;
+  if(selected&&selected.idx===idx){el.classList.remove('selected');selected=null;return;}
+  el.classList.add('selected');
+  if(!selected){selected={idx,el};return;}
+
+  const first=selected; selected=null; locked=true; tries++; updateHUD();
+  const isMatch=cards[first.idx].pairId===cards[idx].pairId;
+
+  if(isMatch){
+    showFeedback('✓ Bonne paire !',false);
+    setTimeout(()=>{
+      first.el.classList.remove('selected'); el.classList.remove('selected');
+      first.el.classList.add('matched','pop'); el.classList.add('matched','pop');
+      matched++; updateHUD();
+      document.getElementById('progress-fill').style.width=(matched/level*100)+'%';
+      locked=false;
+      if(matched===level) onVictory();
+    },300);
+  } else {
+    first.el.classList.add('wrong'); el.classList.add('wrong');
+    showFeedback('Pas tout à fait… réessayez.',true);
+    setTimeout(()=>{
+      first.el.classList.remove('selected','wrong');
+      el.classList.remove('selected','wrong');
+      locked=false;
+    },800);
+  }
+}
+
+function showFeedback(msg,isErr){
+  const fb=document.getElementById('feedback');
+  fb.textContent=msg; fb.className='feedback'+(isErr?' err':'');
+  clearTimeout(fb._t);
+  fb._t=setTimeout(()=>{fb.textContent='';fb.className='feedback';},1800);
+}
+
+function updateHUD(){
+  document.getElementById('hud-pairs').textContent=matched+'/'+level;
+  document.getElementById('hud-tries').textContent=tries;
+}
+
+function onVictory(){
+  clearInterval(timerInterval);
+  partieEnCours=false;
+  trackGame(mode, level, true, seconds, tries);
+  if(typeof JDC!=='undefined'){
+    JDC.enregistrer('paires', NIV_PAR_LEVEL[level]||1, true, {duree:seconds, erreurs:Math.max(0,tries-level), variante:mode});
+  }
+  const m=Math.floor(seconds/60),s=seconds%60;
+  const pct=tries>0?Math.round(matched/tries*100):100;
+  document.getElementById('victory-msg').textContent=
+    `${level} paires trouvées en ${m}:${s.toString().padStart(2,'0')} · ${tries} essais · ${pct}% de réussite`;
+  document.getElementById('victoryBanner').classList.add('show');
+}
+
+// Fermer stats en cliquant hors du box
+document.getElementById('statsPanel').addEventListener('click', function(e){
+  if(e.target===this) closeStats();
+});
+
+afficherSuggestion();
+</script>
+
+
+
+
+<details class="jdc-apropos">
+<summary>À propos de ce jeu</summary>
+<div class="corps">
+<p><strong>Le Jeu des Paires</strong> — Deux images qui vont ensemble, à retrouver l'une par rapport à l'autre : l'abeille et la ruche, le facteur et la boîte aux lettres. Toutes les images sont visibles, rien n'est caché.</p>
+<h2>Pour qui</h2>
+<p>Aux personnes âgées, y compris quand la mémoire immédiate est déjà atteinte : ici rien n'est à retenir, tout est sous les yeux. C'est un jeu de mise en relation, pas de mémorisation.</p>
+<h2>Comment y jouer</h2>
+<ul>
+<li><strong>Seul</strong> : en prenant le temps de regarder toute la planche d'abord.</li>
+<li><strong>À deux, avec un proche ou un aidant</strong> : l'un montre, l'autre dit pourquoi ces deux-là vont ensemble.</li>
+<li><strong>En petit groupe</strong> : chacun propose une paire, et le groupe dit s'il est d'accord.</li>
+</ul>
+<p>Le plus intéressant n'est pas de trouver la paire, c'est d'expliquer le lien. Deux personnes peuvent voir deux liens différents, et les deux se tiennent.</p>
+<h2>Ce que ce jeu n'est pas</h2>
+<p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
+<h2>Qui le propose</h2>
+<p>Les Jardins de Célestine, un projet d'habitat partagé pour seniors, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="jeux.html">Voir tous les jeux</a>.</p>
+</div>
+</details>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+</footer>
+</body>
+</html>

@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Les Mots Manquants — jeu en ligne gratuit · Les Jardins de Célestine</title>
+<meta name="description" content="Compléter les proverbes et les expressions d'autrefois. Jeu de langage en ligne gratuit, sans inscription, jouable seul ou à deux avec un proche.">
+<link rel="canonical" href="https://jardinsdecelestine.com/jeu_mots_manquants">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:#f7f3ea; --parchment:#eee8d5; --ink:#1c1208;
+  --sepia:#5c3d1e; --gold:#c8922a; --green:#2d6a4f;
+  --red:#8b2020; --shadow:rgba(28,18,8,0.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{
+  background:var(--parchment);
+  background-image:
+    radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.08) 0%,transparent 55%),
+    radial-gradient(ellipse at 85% 90%,rgba(45,106,79,.06) 0%,transparent 55%);
+  min-height:100vh; font-family:'Nunito',sans-serif;
+  color:var(--ink); user-select:none; -webkit-user-select:none;
+}
+
+header{text-align:center;padding:16px 20px 10px;border-bottom:1px solid rgba(200,146,42,.2);position:relative;}
+header h1{font-family:'Atkinson Hyperlegible',sans-serif;font-size:clamp(1.3rem,3vw,1.9rem);font-weight:700;color:var(--sepia);cursor:default;}
+header h1 em{color:var(--gold);font-style:normal;}
+header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-top:3px;}
+.divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:6px auto 0;}
+#statsBtn{display:none;position:absolute;top:14px;right:16px;background:none;border:1.5px solid rgba(200,146,42,.4);border-radius:6px;padding:4px 10px;font-family:'Nunito',sans-serif;font-size:.75rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+#statsBtn:hover{background:rgba(200,146,42,.1);}
+
+/* ── CHOIX DU TEXTE ── */
+#menu,#menuTextes{max-width:600px;margin:34px auto;padding:0 20px;}
+#menu h2,#menuTextes h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.15rem;color:var(--sepia);text-align:center;margin-bottom:8px;}
+#menu .hint,#menuTextes .hint{text-align:center;font-size:.92rem;color:var(--sepia);opacity:.75;margin-bottom:20px;}
+.niveaux{display:flex;flex-direction:column;gap:10px;margin:14px 0 4px;}
+.niv{background:#fff;border:2px solid rgba(200,146,42,.45);border-radius:12px;padding:13px 16px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .18s;text-align:center;}
+.niv:hover{border-color:var(--gold);background:rgba(200,146,42,.08);transform:translateY(-2px);}
+.niv-mid{border-color:var(--gold);background:rgba(200,146,42,.06);}
+.niv-t{display:block;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.05rem;font-weight:700;color:var(--sepia);}
+.niv-d{display:block;font-size:.82rem;color:var(--sepia);opacity:.7;margin-top:2px;}
+#suggestion{margin-top:14px;font-size:.86rem;color:var(--sepia);opacity:.8;text-align:center;font-style:italic;}
+.badge-new{display:inline-block;background:var(--green);color:#fff;font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;}
+.badge-vu{display:inline-block;background:rgba(92,61,30,.12);color:var(--sepia);font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;}
+.fable-card{display:block;width:100%;text-align:left;background:var(--cream);border:1.5px solid rgba(200,146,42,.35);border-radius:14px;padding:18px 22px;margin-bottom:14px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s;}
+.fable-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 22px var(--shadow);}
+.fable-card .ft{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.08rem;font-weight:700;color:var(--sepia);}
+.fable-card .fs{font-size:.82rem;color:var(--sepia);opacity:.65;margin-top:2px;}
+
+/* ── JEU ── */
+#game{display:none;max-width:680px;margin:0 auto;padding:14px 18px 40px;}
+#hud{display:flex;justify-content:space-between;align-items:center;padding:4px 2px 12px;font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;color:var(--sepia);font-size:.92rem;}
+#hud .prog{color:var(--green);}
+#backBtn{background:none;border:1.5px solid rgba(200,146,42,.45);border-radius:8px;padding:5px 12px;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+#backBtn:hover{background:rgba(200,146,42,.1);}
+
+#texte{background:var(--cream);border:1.5px solid rgba(200,146,42,.35);border-radius:14px;padding:24px 26px;font-family:'Atkinson Hyperlegible',serif;font-size:1.12rem;line-height:2.1;color:var(--ink);box-shadow:0 8px 26px var(--shadow);}
+#texte .vers{display:block;}
+.trou{display:inline-block;min-width:96px;border-bottom:2.5px dashed var(--gold);text-align:center;color:transparent;border-radius:4px;padding:0 8px;cursor:pointer;transition:all .2s;}
+.trou.actif{background:rgba(200,146,42,.16);border-bottom-style:solid;}
+.trou.ok{color:var(--green);font-weight:700;border-bottom:2.5px solid var(--green);cursor:default;background:none;}
+.trou.shake{animation:shk .35s;}
+@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+#banque{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:18px;}
+.mot{background:#fff;border:1.5px solid rgba(200,146,42,.45);border-radius:10px;padding:9px 18px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;color:var(--sepia);cursor:pointer;transition:all .18s;}
+.mot:hover{border-color:var(--gold);background:rgba(200,146,42,.08);}
+.mot.used{opacity:0;pointer-events:none;transform:scale(.6);}
+.mot.shake{animation:shk .35s;border-color:var(--red);color:var(--red);}
+
+#doneBox{display:none;margin-top:20px;text-align:center;}
+#doneBox .msg{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.1rem;font-weight:700;color:var(--green);margin-bottom:12px;}
+.btn-g2{background:var(--gold);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;margin:0 5px;}
+.btn-g2:hover{background:#b07820;}
+.btn-o2{background:none;border:1.5px solid rgba(200,146,42,.5);color:var(--sepia);border-radius:10px;padding:12px 24px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;margin:0 5px;}
+.btn-o2:hover{background:rgba(200,146,42,.1);}
+
+/* ── STATS ── */
+#statsPanel{display:none;position:fixed;inset:0;background:rgba(28,18,8,.75);z-index:60;align-items:center;justify-content:center;}
+#statsPanel.show{display:flex;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+#statsBox{background:var(--cream);border:2px solid var(--gold);border-radius:14px;padding:26px 30px;max-width:440px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+#statsBox h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;font-weight:700;color:var(--sepia);margin-bottom:4px;}
+.s-sub{font-size:.7rem;color:var(--sepia);opacity:.55;margin-bottom:14px;display:block;}
+.srow{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(200,146,42,.14);}
+.srow:last-child{border-bottom:none;}
+.srow-name{font-size:.82rem;font-weight:700;color:var(--sepia);}
+.scol{text-align:center;}
+.slbl{font-size:.52rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.08em;}
+.sval{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.9rem;font-weight:700;color:var(--gold);}
+.sval.green{color:var(--green);}
+.sa{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;}
+.btn-sm{padding:6px 14px;border-radius:6px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;}
+.btn-ol{background:none;border:1.5px solid rgba(200,146,42,.5);color:var(--sepia);}
+.btn-g{background:var(--gold);color:white;border:none;}
+.no-stats{font-size:.85rem;color:var(--sepia);opacity:.6;font-style:italic;text-align:center;padding:14px 0;}
+
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(10px);color:white;background:#2d6a4f;padding:10px 22px;border-radius:8px;font-size:.86rem;font-weight:700;opacity:0;transition:all .25s;z-index:300;pointer-events:none;font-family:'Atkinson Hyperlegible',sans-serif;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+.confetti{position:fixed;top:-14px;width:10px;height:14px;z-index:70;pointer-events:none;animation:cfall linear forwards;}
+@keyframes cfall{to{transform:translateY(105vh) rotate(720deg);opacity:.9;}}
+
+/* Sortie de secours : toujours un moyen de revenir au catalogue. */
+.jdc-retour{display:block;text-align:center;padding:8px;font-size:.74rem;
+  color:#5c3d1e;opacity:.55;text-decoration:none;letter-spacing:.1em;
+  text-transform:uppercase;font-family:'Nunito',sans-serif;}
+.jdc-retour:hover{opacity:1;}
+@media print{.jdc-retour{display:none;}}
+
+/* Pied discret : le lien légal doit exister sur chaque page du site. */
+.jdc-legal{text-align:center;padding:16px 14px 22px;font-size:.78rem;line-height:1.6;
+  color:#5c3d1e;opacity:.6;font-family:'Nunito',sans-serif;}
+.jdc-legal a{color:inherit;}
+@media print{.jdc-legal{display:none;}}
+</style>
+<script src="jdc-parcours.js"></script>
+<style id="jdc-apropos-style">
+/* Bloc « À propos » : replié par défaut, lu en entier par les moteurs.
+   Couleurs écrites en dur — chaque jeu a ses propres variables CSS. */
+.jdc-apropos{max-width:680px;margin:28px auto 8px;padding:0 16px;
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;color:#5c3d1e;}
+.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;
+  letter-spacing:.02em;opacity:.62;padding:9px 0;text-align:center;
+  border-top:1px solid rgba(92,61,30,.16);}
+.jdc-apropos>summary::-webkit-details-marker{display:none}
+.jdc-apropos>summary::after{content:' \203A';display:inline-block;
+  transform:rotate(90deg);margin-left:5px;opacity:.7}
+.jdc-apropos[open]>summary::after{transform:rotate(-90deg)}
+.jdc-apropos>summary:hover,.jdc-apropos>summary:focus-visible{opacity:.95}
+.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;
+  text-align:left;opacity:.9}
+.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:#5c3d1e;
+  font-weight:700}
+.jdc-apropos p{margin:0 0 10px}
+.jdc-apropos ul{margin:0 0 10px;padding-left:20px}
+.jdc-apropos li{margin-bottom:5px}
+.jdc-apropos a{color:#2d6a4f}
+.hc .jdc-apropos{color:#000}
+.hc .jdc-apropos h2{color:#000}
+.hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
+</style>
+</head>
+<body>
+
+
+<a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
+<header>
+  <h1 id="mainTitle">Les Mots <em>Manquants</em></h1>
+  <p>Retrouvez les mots des textes appris autrefois</p>
+  <div class="divider"></div>
+  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
+</header>
+
+<div id="menu">
+  <h2>Choisissez votre niveau</h2>
+  <p class="hint">Des mots ont disparu du texte. Touchez un mot dans la liste pour le remettre à sa place. Votre mémoire connaît ces textes mieux que vous ne le pensez.</p>
+  <div class="niveaux">
+    <button class="niv" onclick="choisirNiveau(1)">
+      <span class="niv-t">Découverte</span>
+      <span class="niv-d">Les mots les plus familiers</span>
+    </button>
+    <button class="niv niv-mid" onclick="choisirNiveau(2)">
+      <span class="niv-t">Promenade</span>
+      <span class="niv-d">Un peu plus de mots à retrouver</span>
+    </button>
+    <button class="niv" onclick="choisirNiveau(3)">
+      <span class="niv-t">Grand tour</span>
+      <span class="niv-d">Le texte entier, mots rares compris</span>
+    </button>
+  </div>
+  <div id="suggestion"></div>
+</div>
+
+<div id="menuTextes" style="display:none">
+  <h2>Choisissez votre texte</h2>
+  <p class="hint" id="hintNiveau"></p>
+  <div id="fablesList"></div>
+  <button class="btn-o2" style="margin-top:6px" onclick="retourNiveaux()">← Changer de niveau</button>
+</div>
+
+<div id="game">
+  <div id="hud">
+    <button id="backBtn" onclick="backMenu()">← Autres textes</button>
+    <span class="prog"><span id="progNow">0</span> / <span id="progTot">0</span> mots</span>
+  </div>
+  <div id="texte"></div>
+  <div id="banque"></div>
+  <div id="doneBox">
+    <p class="msg" id="doneMsg">Texte reconstitué, bravo !</p>
+    <button class="btn-g2" onclick="lireTexte()">🔊 Écouter le texte</button>
+    <button class="btn-o2" onclick="backMenu()">Choisir un autre texte</button>
+  </div>
+</div>
+
+<div id="statsPanel">
+  <div id="statsBox">
+    <h2>📊 Statistiques</h2>
+    <span class="s-sub">Les Mots Manquants — usage local de cet appareil</span>
+    <div id="statsContent"></div>
+    <div class="sa">
+      <button class="btn-sm btn-ol" onclick="resetStats()">Réinitialiser</button>
+      <button class="btn-sm btn-g" onclick="closeStats()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════
+//   TEXTES (domaine public — Jean de La Fontaine, 1668)
+//   segments : chaîne = texte fixe ; {m:'mot'} = trou
+// ═══════════════════════════════
+const TEXTES = [
+  {id:"corbeau",titre:"Le Corbeau et le Renard",auteur:"Jean de La Fontaine",type:"fable",vers:[
+    ["Maître ",{m:"Corbeau",niv:1},", sur un ",{m:"arbre",niv:1}," ",{m:"perché",niv:2},","],
+    ["Tenait en son ",{m:"bec",niv:1}," un ",{m:"fromage",niv:1},"."],
+    ["Maître ",{m:"Renard",niv:1},", par l'",{m:"odeur",niv:2}," ",{m:"alléché",niv:3},","],
+    ["Lui tint à peu près ce ",{m:"langage",niv:2}," :"],
+    ["« Hé ! bonjour, Monsieur du Corbeau."],
+    ["Que vous êtes ",{m:"joli",niv:1}," ! que vous me semblez ",{m:"beau",niv:1}," !"],
+    ["Sans mentir, si votre ",{m:"ramage",niv:3}],
+    ["Se rapporte à votre ",{m:"plumage",niv:2},","],
+    ["Vous êtes le ",{m:"Phénix",niv:3}," des hôtes de ces ",{m:"bois",niv:1},". »"],
+    ["À ces mots le Corbeau ne se sent pas de ",{m:"joie",niv:1}," ;"],
+    ["Et pour montrer sa belle ",{m:"voix",niv:1},","],
+    ["Il ouvre un large bec, laisse tomber sa ",{m:"proie",niv:2},"."],
+    ["Le Renard s'en ",{m:"saisit",niv:2},", et dit : « Mon bon Monsieur,"],
+    ["Apprenez que tout ",{m:"flatteur",niv:3}],
+    ["Vit aux ",{m:"dépens",niv:3}," de celui qui l'",{m:"écoute",niv:1}," :"],
+    ["Cette ",{m:"leçon",niv:1}," vaut bien un fromage, sans doute. »"],
+    ["Le Corbeau, ",{m:"honteux",niv:2}," et ",{m:"confus",niv:2},","],
+    ["Jura, mais un peu ",{m:"tard",niv:1},", qu'on ne l'y prendrait plus."]
+  ]},
+  {id:"cigale",titre:"La Cigale et la Fourmi",auteur:"Jean de La Fontaine",type:"fable",vers:[
+    ["La ",{m:"Cigale",niv:1},", ayant ",{m:"chanté",niv:1}],
+    ["Tout l'",{m:"été",niv:1},","],
+    ["Se trouva fort ",{m:"dépourvue",niv:3}],
+    ["Quand la ",{m:"bise",niv:2}," fut venue :"],
+    ["Pas un seul petit ",{m:"morceau",niv:1}],
+    ["De ",{m:"mouche",niv:1}," ou de ",{m:"vermisseau",niv:3},"."],
+    ["Elle alla crier ",{m:"famine",niv:2}],
+    ["Chez la ",{m:"Fourmi",niv:1}," sa ",{m:"voisine",niv:1},","],
+    ["La priant de lui ",{m:"prêter",niv:2}],
+    ["Quelque ",{m:"grain",niv:1}," pour ",{m:"subsister",niv:3}],
+    ["Jusqu'à la ",{m:"saison",niv:1}," nouvelle."],
+    ["« Je vous ",{m:"paierai",niv:2},", lui dit-elle,"],
+    ["Avant l'oût, foi d'",{m:"animal",niv:1},","],
+    ["Intérêt et ",{m:"principal",niv:3},". »"],
+    ["La Fourmi n'est pas ",{m:"prêteuse",niv:3}," :"],
+    ["C'est là son moindre ",{m:"défaut",niv:2},"."],
+    ["« Que faisiez-vous au temps ",{m:"chaud",niv:1}," ?"],
+    ["Dit-elle à cette ",{m:"emprunteuse",niv:3},"."],
+    ["— Nuit et jour à tout venant"],
+    ["Je ",{m:"chantais",niv:1},", ne vous déplaise."],
+    ["— Vous chantiez ? j'en suis fort ",{m:"aise",niv:2}," :"],
+    ["Eh bien ! ",{m:"dansez",niv:1}," maintenant. »"]
+  ]},
+  {id:"lievre",titre:"Le Lièvre et la Tortue",auteur:"Jean de La Fontaine",type:"fable",vers:[
+    ["Rien ne sert de ",{m:"courir",niv:1}," ; il faut ",{m:"partir",niv:1}," à point."],
+    ["Le ",{m:"Lièvre",niv:1}," et la ",{m:"Tortue",niv:1}," en sont un ",{m:"témoignage",niv:3},"."],
+    ["« ",{m:"Gageons",niv:3},", dit celle-ci, que vous n'atteindrez point"],
+    ["Si tôt que moi ce ",{m:"but",niv:1},". — Si tôt ? Êtes-vous ",{m:"sage",niv:2}," ?"],
+    ["Repartit l'animal ",{m:"léger",niv:2},"."],
+    ["Ma ",{m:"commère",niv:3},", il vous faut purger"],
+    ["Avec quatre grains d'",{m:"ellébore",niv:3},"."],
+    ["— Sage ou non, je ",{m:"parie",niv:2}," encore. »"],
+    ["Ainsi fut fait : et de tous deux"],
+    ["On mit près du but les ",{m:"enjeux",niv:3},"."],
+    ["La Tortue partit, elle s'",{m:"évertue",niv:3},","],
+    ["Elle se hâte avec ",{m:"lenteur",niv:2},"."],
+    ["Lui cependant ",{m:"méprise",niv:2}," une telle ",{m:"victoire",niv:1},","],
+    ["Tient la gageure à peu de ",{m:"gloire",niv:2},","],
+    ["Croit qu'il y va de son ",{m:"honneur",niv:1}],
+    ["De partir ",{m:"tard",niv:1},". Il ",{m:"broute",niv:2},", il se repose,"],
+    ["Il s'amuse à toute autre chose"],
+    ["Qu'à la gageure. À la fin, quand il vit"],
+    ["Que l'autre touchait presque au bout de la ",{m:"carrière",niv:2},","],
+    ["Il partit comme un ",{m:"trait",niv:1}," ; mais les élans qu'il fit"],
+    ["Furent ",{m:"vains",niv:2}," : la Tortue arriva la ",{m:"première",niv:1},"."]
+  ]},
+  {id:"chene",titre:"Le Chêne et le Roseau",auteur:"Jean de La Fontaine",type:"fable",vers:[
+    ["Le ",{m:"Chêne",niv:1}," un jour dit au ",{m:"Roseau",niv:1}," :"],
+    ["« Vous avez bien ",{m:"sujet",niv:2}," d'accuser la ",{m:"Nature",niv:2}," ;"],
+    ["Un ",{m:"roitelet",niv:3}," pour vous est un pesant ",{m:"fardeau",niv:3},"."],
+    ["Le moindre ",{m:"vent",niv:1}," qui d'aventure"],
+    ["Fait rider la face de l'",{m:"eau",niv:1},","],
+    ["Vous oblige à baisser la ",{m:"tête",niv:1}," ;"],
+    ["Cependant que mon ",{m:"front",niv:2},", au ",{m:"Caucase",niv:3}," pareil,"],
+    ["Non content d'arrêter les ",{m:"rayons",niv:1}," du ",{m:"soleil",niv:1},","],
+    ["Brave l'effort de la ",{m:"tempête",niv:2},"."],
+    ["Tout vous est ",{m:"aquilon",niv:3},", tout me semble ",{m:"zéphyr",niv:3},". »"],
+    ["Le Roseau lui ",{m:"répondit",niv:1}," :"],
+    ["« Votre ",{m:"compassion",niv:3}," part d'un bon ",{m:"naturel",niv:2}," ;"],
+    ["Mais quittez ce ",{m:"souci",niv:1},". Les vents me sont"],
+    ["moins qu'à vous ",{m:"redoutables",niv:2},"."],
+    ["Je ",{m:"plie",niv:1},", et ne ",{m:"romps",niv:2}," pas. »"]
+  ]},
+  {id:"loup",titre:"Le Loup et l'Agneau",auteur:"Jean de La Fontaine",type:"fable",vers:[
+    ["La ",{m:"raison",niv:1}," du plus ",{m:"fort",niv:1}," est toujours la ",{m:"meilleure",niv:1}," :"],
+    ["Nous l'allons ",{m:"montrer",niv:2}," tout à l'heure."],
+    ["Un ",{m:"Agneau",niv:1}," se ",{m:"désaltérait",niv:3}],
+    ["Dans le ",{m:"courant",niv:2}," d'une ",{m:"onde",niv:3}," pure."],
+    ["Un ",{m:"Loup",niv:1}," survient à ",{m:"jeun",niv:2},", qui cherchait ",{m:"aventure",niv:2},","],
+    ["Et que la ",{m:"faim",niv:1}," en ces lieux ",{m:"attirait",niv:2},"."],
+    ["« Qui te rend si ",{m:"hardi",niv:3}," de troubler mon ",{m:"breuvage",niv:3}," ?"],
+    ["Dit cet animal plein de ",{m:"rage",niv:2}," :"],
+    ["Tu seras ",{m:"châtié",niv:3}," de ta ",{m:"témérité",niv:3},"."],
+    ["— ",{m:"Sire",niv:2},", répond l'Agneau, que Votre ",{m:"Majesté",niv:2}],
+    ["Ne se mette pas en ",{m:"colère",niv:1}," ;"],
+    ["Mais plutôt qu'elle ",{m:"considère",niv:2}],
+    ["Que je me vas désaltérant"],
+    ["Dans le courant,"],
+    ["Plus de vingt ",{m:"pas",niv:1}," au-dessous d'Elle. »"]
+  ]},
+  {id:"laboureur",titre:"Le Laboureur et ses Enfants",auteur:"Jean de La Fontaine",type:"fable",vers:[
+    [{m:"Travaillez",niv:1},", prenez de la ",{m:"peine",niv:1}," :"],
+    ["C'est le ",{m:"fonds",niv:3}," qui manque le moins."],
+    ["Un riche ",{m:"Laboureur",niv:1},", sentant sa mort ",{m:"prochaine",niv:2},","],
+    ["Fit venir ses ",{m:"enfants",niv:1},", leur parla sans ",{m:"témoins",niv:3},"."],
+    ["« Gardez-vous, leur dit-il, de ",{m:"vendre",niv:1}," l'",{m:"héritage",niv:2}],
+    ["Que nous ont laissé nos ",{m:"parents",niv:1}," :"],
+    ["Un ",{m:"trésor",niv:1}," est ",{m:"caché",niv:1}," dedans."],
+    ["Je ne sais pas l'",{m:"endroit",niv:2}," ; mais un peu de ",{m:"courage",niv:2}],
+    ["Vous le fera ",{m:"trouver",niv:1}," : vous en viendrez à bout."],
+    ["Remuez votre ",{m:"champ",niv:1}," dès qu'on aura fait l'oût :"],
+    ["Creusez, ",{m:"fouillez",niv:2},", ",{m:"bêchez",niv:3}," ; ne laissez nulle ",{m:"place",niv:1}],
+    ["Où la ",{m:"main",niv:1}," ne passe et repasse. »"],
+    ["Le père mort, les fils vous ",{m:"retournent",niv:2}," le champ,"],
+    ["Deçà, delà, partout ; si bien qu'au bout de l'an"],
+    ["Il en ",{m:"rapporta",niv:2}," ",{m:"davantage",niv:2},"."],
+    ["D'",{m:"argent",niv:1},", point de caché. Mais le père fut ",{m:"sage",niv:1}],
+    ["De leur montrer, avant sa mort,"],
+    ["Que le ",{m:"travail",niv:1}," est un trésor."]
+  ]},
+  {id:"rats",titre:"Le Rat de ville et le Rat des champs",auteur:"Jean de La Fontaine",type:"fable",vers:[
+    ["Autrefois le ",{m:"Rat",niv:1}," de ",{m:"ville",niv:1}],
+    [{m:"Invita",niv:2}," le Rat des ",{m:"champs",niv:1},","],
+    ["D'une ",{m:"façon",niv:1}," fort ",{m:"civile",niv:2},","],
+    ["À des ",{m:"reliefs",niv:3}," d'",{m:"ortolans",niv:3},"."],
+    ["Sur un ",{m:"tapis",niv:1}," de ",{m:"Turquie",niv:2}],
+    ["Le ",{m:"couvert",niv:2}," se trouva mis."],
+    ["Je laisse à ",{m:"penser",niv:1}," la vie"],
+    ["Que firent ces deux ",{m:"amis",niv:1},"."],
+    ["Le ",{m:"régal",niv:3}," fut fort ",{m:"honnête",niv:2},","],
+    ["Rien ne ",{m:"manquait",niv:1}," au ",{m:"festin",niv:2}," ;"],
+    ["Mais quelqu'un ",{m:"troubla",niv:2}," la ",{m:"fête",niv:1}],
+    ["Pendant qu'ils étaient en train."],
+    ["À la ",{m:"porte",niv:1}," de la ",{m:"salle",niv:1}],
+    ["Ils entendirent du ",{m:"bruit",niv:1}," :"],
+    ["Le Rat de ville ",{m:"détale",niv:3},","],
+    ["Son ",{m:"camarade",niv:2}," le suit."]
+  ]},
+  {id:"automne",titre:"Chanson d'automne",auteur:"Paul Verlaine",type:"po\u00e8me",vers:[
+    ["Les ",{m:"sanglots",niv:2}," longs"],
+    ["Des ",{m:"violons",niv:2}],
+    ["De l'",{m:"automne",niv:1}],
+    [{m:"Blessent",niv:2}," mon ",{m:"cœur",niv:1}],
+    ["D'une ",{m:"langueur",niv:3}],
+    [{m:"Monotone",niv:2},"."],
+    [""],
+    ["Tout ",{m:"suffocant",niv:3}],
+    ["Et ",{m:"blême",niv:3},", quand"],
+    [{m:"Sonne",niv:1}," l'",{m:"heure",niv:1},","],
+    ["Je me ",{m:"souviens",niv:1}],
+    ["Des jours ",{m:"anciens",niv:1}],
+    ["Et je ",{m:"pleure",niv:1}," ;"],
+    [""],
+    ["Et je m'en ",{m:"vais",niv:1}],
+    ["Au ",{m:"vent",niv:1}," ",{m:"mauvais",niv:2}],
+    ["Qui m'",{m:"emporte",niv:2}],
+    ["Deçà, delà,"],
+    ["Pareil à la"],
+    [{m:"Feuille",niv:1}," ",{m:"morte",niv:1},"."]
+  ]},
+  {id:"demain",titre:"Demain dès l'aube",auteur:"Victor Hugo",type:"po\u00e8me",vers:[
+    ["Demain, dès l'",{m:"aube",niv:1},", à l'heure où ",{m:"blanchit",niv:2}," la ",{m:"campagne",niv:1},","],
+    ["Je ",{m:"partirai",niv:1},". Vois-tu, je sais que tu m'",{m:"attends",niv:1},"."],
+    ["J'irai par la ",{m:"forêt",niv:1},", j'irai par la ",{m:"montagne",niv:1},"."],
+    ["Je ne puis ",{m:"demeurer",niv:2}," loin de toi plus longtemps."],
+    [""],
+    ["Je marcherai les ",{m:"yeux",niv:1}," fixés sur mes ",{m:"pensées",niv:2},","],
+    ["Sans rien voir au dehors, sans entendre aucun ",{m:"bruit",niv:1},","],
+    ["Seul, ",{m:"inconnu",niv:2},", le dos ",{m:"courbé",niv:2},", les mains ",{m:"croisées",niv:2},","],
+    [{m:"Triste",niv:1},", et le jour pour moi sera comme la ",{m:"nuit",niv:1},"."],
+    [""],
+    ["Je ne regarderai ni l'",{m:"or",niv:2}," du soir qui ",{m:"tombe",niv:2},","],
+    ["Ni les ",{m:"voiles",niv:3}," au loin descendant vers ",{m:"Harfleur",niv:3},","],
+    ["Et quand j'arriverai, je mettrai sur ta ",{m:"tombe",niv:1}],
+    ["Un ",{m:"bouquet",niv:1}," de ",{m:"houx",niv:3}," vert et de ",{m:"bruyère",niv:3}," en ",{m:"fleur",niv:1},"."]
+  ]},
+  {id:"mirabeau",titre:"Le Pont Mirabeau",auteur:"Guillaume Apollinaire",type:"po\u00e8me",vers:[
+    ["Sous le ",{m:"pont",niv:1}," Mirabeau ",{m:"coule",niv:1}," la ",{m:"Seine",niv:1}],
+    ["Et nos ",{m:"amours",niv:1}],
+    ["Faut-il qu'il m'en ",{m:"souvienne",niv:2}],
+    ["La ",{m:"joie",niv:1}," venait toujours après la ",{m:"peine",niv:1}],
+    [""],
+    ["Vienne la ",{m:"nuit",niv:1}," sonne l'",{m:"heure",niv:1}],
+    ["Les jours s'en vont je ",{m:"demeure",niv:2}],
+    [""],
+    ["Les ",{m:"mains",niv:1}," dans les mains restons face à ",{m:"face",niv:1}],
+    ["Tandis que sous"],
+    ["Le pont de nos ",{m:"bras",niv:1}," ",{m:"passe",niv:2}],
+    ["Des ",{m:"éternels",niv:3}," regards l'",{m:"onde",niv:3}," si ",{m:"lasse",niv:3}],
+    [""],
+    ["L'",{m:"amour",niv:1}," s'en va comme cette eau ",{m:"courante",niv:2}],
+    ["L'amour s'en va"],
+    ["Comme la ",{m:"vie",niv:1}," est ",{m:"lente",niv:2}],
+    ["Et comme l'",{m:"Espérance",niv:2}," est ",{m:"violente",niv:3}]
+  ]}
+];
+
+// ═══════════════════════════════
+//   ÉTAT
+// ═══════════════════════════════
+let cur = null, trous = [], actif = 0, faits = 0, erreurs = 0;
+let startTime = null, playing = false, niveau = 2;
+
+// ═══════════════════════════════
+//   STATS — triple-clic sur titre
+// ═══════════════════════════════
+const STATS_KEY = 'motsmanquants_stats_v1';
+let _tc = 0, _tct = null;
+document.getElementById('mainTitle').addEventListener('click', () => {
+  _tc++; clearTimeout(_tct);
+  _tct = setTimeout(() => _tc = 0, 800);
+  if(_tc >= 3){ _tc = 0; document.getElementById('statsBtn').style.display = 'block'; toast('Mode admin activé'); }
+});
+function loadStats(){ try{ return JSON.parse(localStorage.getItem(STATS_KEY)) || {}; }catch(e){ return {}; } }
+function saveStats(s){ try{ localStorage.setItem(STATS_KEY, JSON.stringify(s)); }catch(e){} }
+function trackGame(id, titre, completed, sec, err){
+  const st = loadStats();
+  if(!st[id]) st[id] = { titre, plays:0, completions:0, totalSec:0, totalErr:0, bestSec:9999 };
+  st[id].plays++;
+  st[id].totalSec += sec;
+  st[id].totalErr += err;
+  if(completed){
+    st[id].completions++;
+    if(sec < st[id].bestSec) st[id].bestSec = sec;
+  }
+  saveStats(st);
+}
+function openStats(){
+  const st = loadStats();
+  const keys = Object.keys(st);
+  const content = document.getElementById('statsContent');
+  if(!keys.length){
+    content.innerHTML = '<p class="no-stats">Aucune partie encore jouée.</p>';
+  } else {
+    content.innerHTML = keys.map(k => {
+      const s = st[k];
+      const pct = s.plays ? Math.round(s.completions / s.plays * 100) : 0;
+      const avgErr = s.completions ? Math.round(s.totalErr / s.completions) : '-';
+      const bestM = s.bestSec < 9999 ? Math.floor(s.bestSec/60) + 'm' + String(s.bestSec%60).padStart(2,'0') + 's' : '-';
+      return '<div class="srow">' +
+        '<div class="srow-name">' + s.titre + '</div>' +
+        '<div class="scol"><div class="slbl">Parties</div><div class="sval">' + s.plays + '</div></div>' +
+        '<div class="scol"><div class="slbl">Réussite</div><div class="sval green">' + pct + '%</div></div>' +
+        '<div class="scol"><div class="slbl">Meilleur</div><div class="sval">' + bestM + '</div></div>' +
+        '<div style="grid-column:1/-1;font-size:.68rem;color:var(--sepia);opacity:.5;">Erreurs (moy.) : ' + avgErr + ' par texte réussi</div>' +
+        '</div>';
+    }).join('');
+  }
+  document.getElementById('statsPanel').classList.add('show');
+}
+function closeStats(){ document.getElementById('statsPanel').classList.remove('show'); }
+function resetStats(){
+  if(confirm('Effacer toutes les statistiques ?')){
+    localStorage.removeItem(STATS_KEY);
+    closeStats();
+    toast('Statistiques effacées');
+  }
+}
+document.getElementById('statsPanel').addEventListener('click', function(e){ if(e.target === this) closeStats(); });
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ═══════════════════════════════
+//   MENU
+// ═══════════════════════════════
+const NB_MOTS = { 1: 5, 2: 10, 3: 15 };
+
+// Sélectionne un nombre FIXE de mots, en piochant d'abord dans les plus
+// familiers (niv 1), puis les courants (niv 2), puis les rares (niv 3).
+function choisirTrous(t, niv){
+  const nb = NB_MOTS[niv] || 5;
+  const tous = [];
+  t.vers.forEach((v, iv) => v.forEach((s, is) => {
+    if(typeof s !== 'string') tous.push({ iv: iv, is: is, m: s.m, niv: s.niv });
+  }));
+  const parNiv = { 1: [], 2: [], 3: [] };
+  tous.forEach(x => parNiv[x.niv].push(x));
+
+  // ordre de pioche selon le niveau choisi
+  const ordre = niv === 1 ? [1, 2, 3] : niv === 2 ? [2, 1, 3] : [3, 2, 1];
+  let choisis = [];
+  ordre.forEach(n => {
+    if(choisis.length >= nb) return;
+    const dispo = melange(parNiv[n]);
+    choisis = choisis.concat(dispo.slice(0, nb - choisis.length));
+  });
+  // remettre dans l'ordre du texte
+  choisis.sort((a, b) => a.iv - b.iv || a.is - b.is);
+  return choisis;
+}
+
+function choisirNiveau(niv){
+  niveau = niv;
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('menuTextes').style.display = 'block';
+  const lbl = niv === 1 ? 'Découverte' : niv === 2 ? 'Promenade' : 'Grand tour';
+  document.getElementById('hintNiveau').textContent =
+    lbl + ' · ' + NB_MOTS[niv] + ' mots à retrouver. Les textes les moins vus apparaissent en premier.';
+  buildMenu();
+}
+
+function retourNiveaux(){
+  document.getElementById('menuTextes').style.display = 'none';
+  document.getElementById('menu').style.display = 'block';
+  afficherSuggestion();
+}
+
+function afficherSuggestion(){
+  const el = document.getElementById('suggestion');
+  if(!el || typeof JDC === 'undefined'){ return; }
+  const b = JDC.bilanJeu('motsmanquants');
+  if(!b.parties){ el.textContent = ''; return; }
+  const conseil = JDC.niveauConseille('motsmanquants');
+  const lbl = conseil === 1 ? 'Découverte' : conseil === 2 ? 'Promenade' : 'Grand tour';
+  el.textContent = b.parties + (b.parties > 1 ? ' textes déjà reconstitués. ' : ' texte déjà reconstitué. ')
+                 + 'Niveau conseillé : ' + lbl + '.';
+}
+
+function buildMenu(){
+  let ordre = TEXTES.map(t => t.id);
+  let vus = [];
+  if(typeof JDC !== 'undefined'){
+    const d = JDC.lire();
+    vus = (d.vus && d.vus.motsmanquants) ? d.vus.motsmanquants : [];
+    ordre.sort((a, b) => vus.indexOf(a) - vus.indexOf(b));
+  }
+  document.getElementById('fablesList').innerHTML = ordre.map(id => {
+    const i = TEXTES.findIndex(t => t.id === id);
+    const t = TEXTES[i];
+    const jamais = vus.indexOf(id) === -1;
+    return '<button class="fable-card" onclick="startTexte(' + i + ')">' +
+      '<span class="ft">' + t.titre +
+      (jamais ? '<span class="badge-new">nouveau</span>' : '<span class="badge-vu">déjà lu</span>') +
+      '</span><br>' +
+      '<span class="fs">' + t.auteur + ' · ' + t.type + '</span>' +
+      '</button>';
+  }).join('');
+}
+
+function backMenu(){
+  if(playing && startTime && typeof JDC !== 'undefined'){
+    JDC.enregistrer('motsmanquants', niveau, false,
+      { duree: Math.floor((Date.now() - startTime)/1000), erreurs: erreurs, variante: cur ? cur.id : null });
+  }
+  playing = false;
+  document.getElementById('game').style.display = 'none';
+  document.getElementById('menuTextes').style.display = 'none';
+  document.getElementById('menu').style.display = 'block';
+  afficherSuggestion();
+  window.speechSynthesis && window.speechSynthesis.cancel();
+}
+
+function melange(a){
+  const r = a.slice();
+  for(let i = r.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [r[i], r[j]] = [r[j], r[i]];
+  }
+  return r;
+}
+
+function startTexte(i){
+  cur = TEXTES[i];
+  trous = []; faits = 0; erreurs = 0; actif = 0; playing = true;
+  startTime = Date.now();
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('menuTextes').style.display = 'none';
+  document.getElementById('game').style.display = 'block';
+  document.getElementById('doneBox').style.display = 'none';
+
+  const selection = choisirTrous(cur, niveau);
+  const cles = {};
+  selection.forEach(x => { cles[x.iv + '-' + x.is] = true; });
+
+  let html = '', ti = 0;
+  cur.vers.forEach((v, iv) => {
+    html += '<span class="vers">';
+    v.forEach((seg, is) => {
+      if(typeof seg === 'string'){ html += seg; }
+      else if(cles[iv + '-' + is]){
+        trous.push(seg.m);
+        html += '<span class="trou" id="trou-' + ti + '" data-i="' + ti + '" onclick="selTrou(' + ti + ')">' + seg.m + '</span>';
+        ti++;
+      } else {
+        html += seg.m;
+      }
+    });
+    html += '</span>';
+  });
+  document.getElementById('texte').innerHTML = html;
+  document.getElementById('progNow').textContent = '0';
+  document.getElementById('progTot').textContent = trous.length;
+
+  document.getElementById('banque').innerHTML = melange(trous.map((m, k) => ({ m: m, k: k }))).map(o =>
+    '<button class="mot" id="mot-' + o.k + '" data-m="' + o.m + '" onclick="tryMot(' + o.k + ')">' + o.m + '</button>'
+  ).join('');
+
+  setActif(0);
+}
+
+function setActif(i){
+  document.querySelectorAll('.trou').forEach(t => t.classList.remove('actif'));
+  const el = document.getElementById('trou-' + i);
+  if(el && !el.classList.contains('ok')){ el.classList.add('actif'); actif = i; }
+}
+
+function selTrou(i){
+  const el = document.getElementById('trou-' + i);
+  if(el.classList.contains('ok')) return;
+  setActif(i);
+}
+
+function premierVide(){
+  for(let i = 0; i < trous.length; i++){
+    if(!document.getElementById('trou-' + i).classList.contains('ok')) return i;
+  }
+  return -1;
+}
+
+function tryMot(k){
+  if(!playing) return;
+  const btn = document.getElementById('mot-' + k);
+  const mot = btn.dataset.m;
+  const cible = document.getElementById('trou-' + actif);
+  if(!cible || cible.classList.contains('ok')){ setActif(premierVide()); return; }
+
+  if(mot === trous[actif]){
+    cible.classList.remove('actif');
+    cible.classList.add('ok');
+    btn.classList.add('used');
+    faits++;
+    document.getElementById('progNow').textContent = faits;
+    if(faits === trous.length){ win(); return; }
+    const nv = premierVide();
+    if(nv >= 0) setActif(nv);
+  } else {
+    erreurs++;
+    btn.classList.add('shake');
+    cible.classList.add('shake');
+    setTimeout(() => { btn.classList.remove('shake'); cible.classList.remove('shake'); }, 400);
+  }
+}
+
+function win(){
+  playing = false;
+  const sec = Math.floor((Date.now() - startTime) / 1000);
+  trackGame(cur.id, cur.titre, true, sec, erreurs);
+  if(typeof JDC !== 'undefined'){
+    JDC.enregistrer('motsmanquants', niveau, true, { duree: sec, erreurs: erreurs, variante: cur.id });
+    JDC.marquerVu('motsmanquants', cur.id);
+  }
+  document.getElementById('doneMsg').textContent =
+    'Texte reconstitué en ' + Math.floor(sec/60) + 'm' + String(sec%60).padStart(2,'0') + 's — bravo !';
+  document.getElementById('doneBox').style.display = 'block';
+  confetti();
+}
+
+function lireTexte(){
+  if(!('speechSynthesis' in window)){ toast('Lecture audio non disponible'); return; }
+  window.speechSynthesis.cancel();
+  const txt = cur.vers.map(v => v.map(s => typeof s === 'string' ? s : s.m).join('')).join('\n');
+  const u = new SpeechSynthesisUtterance(cur.titre + '. ' + txt);
+  u.lang = 'fr-FR'; u.rate = 0.92;
+  window.speechSynthesis.speak(u);
+}
+
+window.addEventListener('beforeunload', function(){
+  if(playing && startTime){
+    const sec = Math.floor((Date.now() - startTime) / 1000);
+    trackGame(cur.id, cur.titre, false, sec, erreurs);
+    if(typeof JDC !== 'undefined') JDC.enregistrer('motsmanquants', niveau, false, { duree: sec, erreurs: erreurs, variante: cur.id });
+  }
+});
+
+// ═══════════════════════════════
+//   CONFETTI
+// ═══════════════════════════════
+function confetti(){
+  const colors = ['#c8922a','#2d6a4f','#c96f4a','#3a6ea5','#b33a2b'];
+  for(let i = 0; i < 60; i++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDuration = (2 + Math.random() * 2) + 's';
+    c.style.animationDelay = (Math.random() * .8) + 's';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 5000);
+  }
+}
+afficherSuggestion();
+</script>
+
+
+
+
+<details class="jdc-apropos">
+<summary>À propos de ce jeu</summary>
+<div class="corps">
+<p><strong>Les Mots Manquants</strong> — Un proverbe, une expression d'autrefois, une chanson : il manque un mot, et il faut le retrouver. « Qui vole un œuf… », « Il ne faut pas vendre la peau de l'ours… »</p>
+<h2>Pour qui</h2>
+<p>Aux personnes âgées, y compris à un stade avancé. Les proverbes sont logés dans une mémoire très ancienne et très solide : ils reviennent souvent tout seuls, avant même qu'on ait fini la phrase.</p>
+<h2>Comment y jouer</h2>
+<ul>
+<li><strong>Seul</strong> : à son rythme.</li>
+<li><strong>À deux, avec un proche ou un aidant</strong> : commencez la phrase à voix haute et laissez l'autre la finir. C'est souvent immédiat, et c'est un beau moment.</li>
+<li><strong>En petit groupe</strong> : toute la salle finit la phrase ensemble, sans se concerter.</li>
+</ul>
+<p>C'est le jeu à essayer en premier quand plus rien ne semble marcher. Il demande très peu et rend beaucoup.</p>
+<h2>Ce que ce jeu n'est pas</h2>
+<p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
+<h2>Qui le propose</h2>
+<p>Les Jardins de Célestine, un projet d'habitat partagé pour seniors, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="jeux.html">Voir tous les jeux</a>.</p>
+</div>
+</details>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+</footer>
+</body>
+</html>
