@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Géographie · jeu en ligne gratuit pour senior · Les Jardins de Célestine</title>
+<meta name="description" content="Les capitales, les continents et la France apprise par cœur, en trois propositions et trois niveaux. Sans score et sans chrono, on peut toujours réessayer. Gratuit, sans inscription.">
+<link rel="canonical" href="https://jardinsdecelestine.com/geographie">
+<!-- LIGNE À SUPPRIMER LE JOUR DE LA PUBLICATION -->
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --parchment:#eee8d5; --sepia:#5c3d1e; --gold:#c8922a;
+  --green:#2d6a4f; --card:#f7f3ea; --shadow:rgba(28,18,8,.13);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--parchment);
+  background-image:radial-gradient(ellipse at 20% 10%,rgba(200,146,42,.08) 0%,transparent 55%),
+    radial-gradient(ellipse at 80% 90%,rgba(45,106,79,.06) 0%,transparent 55%);
+  min-height:100vh;font-family:'Nunito',system-ui,sans-serif;color:#1c1208}
+.jdc-retour{display:block;text-align:center;padding:16px 8px;font-size:.74rem;
+  color:var(--sepia);opacity:.55;text-decoration:none;letter-spacing:.1em;
+  text-transform:uppercase}
+.jdc-retour:hover{opacity:1}
+header{text-align:center;padding:18px 20px 12px;
+  border-bottom:1px solid rgba(200,146,42,.2)}
+header h1{font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:700;color:var(--sepia)}
+header h1 em{color:var(--gold);font-style:normal}
+header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--sepia);opacity:.55;margin-top:3px}
+.divider{width:60px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  margin:7px auto 0}
+main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
+.ecran[hidden]{display:none !important}
+
+#accueil{display:flex;flex-direction:column;align-items:center;gap:26px;
+  text-align:center}
+.chapo{max-width:540px;font-size:1.08rem;line-height:1.65;color:#3a2a16}
+.chapo b{color:var(--sepia)}
+.groupe{width:100%;max-width:620px}
+.etiquette{font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--sepia);opacity:.6;font-weight:700;margin-bottom:10px}
+.rangee{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+
+.gros,.opt{font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;
+  background:var(--card);color:var(--sepia);
+  border:2.5px solid rgba(200,146,42,.45);border-radius:14px;cursor:pointer;
+  box-shadow:0 2px 8px var(--shadow);
+  transition:border-color .15s,background .15s,opacity .25s}
+.gros{font-size:1.1rem;padding:16px 26px;min-height:58px;min-width:170px}
+.gros:hover,.opt:hover{border-color:var(--gold);background:#fffdf7}
+.gros:focus-visible,.opt:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+.gros.actif{background:var(--sepia);color:#fdf9f0;border-color:var(--sepia)}
+.gros.premier{background:var(--sepia);color:#fdf9f0;border-color:var(--sepia)}
+.gros.premier:hover{background:#6d4a26}
+.discret{background:none;border:none;font-family:'Nunito',sans-serif;
+  font-size:.92rem;color:var(--green);cursor:pointer;text-decoration:underline;
+  padding:10px 12px;min-height:44px}
+
+/* ── La question ──────────────────────────────────────── */
+#jeu{display:flex;flex-direction:column;gap:20px;align-items:center}
+.plateau{width:100%;background:var(--card);border-radius:16px;
+  border:1px solid rgba(200,146,42,.3);box-shadow:0 4px 18px var(--shadow);
+  padding:38px 28px;text-align:center}
+.question{font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:clamp(1.3rem,3vw,1.75rem);line-height:1.45;color:#1c1208}
+.props{display:flex;flex-direction:column;gap:12px;width:100%;max-width:520px}
+.opt{font-size:1.25rem;padding:20px 24px;min-height:66px;width:100%}
+/* Une proposition écartée s'efface, elle ne se barre pas et ne rougit pas. */
+.opt.ecartee{opacity:.3;pointer-events:none;box-shadow:none;
+  border-color:rgba(200,146,42,.2)}
+.opt.trouvee{background:var(--green);border-color:var(--green);color:#fff}
+
+.suite{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
+  align-items:center}
+.ou{font-size:.8rem;color:var(--sepia);opacity:.5;letter-spacing:.1em;
+  text-transform:uppercase}
+
+#regles h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.15rem;
+  color:var(--sepia);margin:20px 0 10px}
+#regles h2:first-child{margin-top:0}
+#regles ul{list-style:none}
+#regles li{margin-bottom:12px;line-height:1.6;font-size:1rem;color:#3a2a16}
+#regles b{color:var(--sepia);display:block}
+.avert{background:#f7f3ea;border-left:4px solid var(--gold);
+  padding:14px 16px;border-radius:0 8px 8px 0;font-size:.95rem;line-height:1.6}
+.bas{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:26px 0 6px}
+.jdc-legal{text-align:center;padding:20px 14px 26px;font-size:.78rem;
+  line-height:1.6;color:var(--sepia);opacity:.6}
+.jdc-legal a{color:inherit}
+
+/* ══ Écran de départ : le motif des jeux du site ══════════
+   Copié de jeu_calcul.html sans y toucher. Ne pas réinventer : un
+   visiteur qui a joué au Calcul Mental doit retrouver les mêmes gestes. */
+#accueil h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.3rem;
+  font-weight:700;color:var(--sepia);text-align:center}
+.opt-group{display:flex;flex-direction:column;align-items:center;gap:10px;
+  width:100%;max-width:500px}
+.opt-label{font-size:.8rem;font-weight:700;color:var(--sepia);
+  letter-spacing:.08em;text-transform:uppercase;opacity:.7}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+.lvl-card{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  background:#f7f3ea;border:2.5px solid rgba(200,146,42,.3);
+  border-radius:12px;padding:16px 20px;cursor:pointer;
+  transition:all .2s;box-shadow:0 2px 8px var(--shadow);
+  min-width:130px;text-align:center}
+.lvl-card:hover{border-color:var(--gold)}
+.lvl-card.active{border-color:var(--gold);background:rgba(200,146,42,.07);
+  box-shadow:0 4px 16px rgba(200,146,42,.2)}
+.lvl-card:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+.lvl-card .lvl-ico{font-size:1.8rem}
+.lvl-card .lvl-name{font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:.95rem;font-weight:700;color:var(--sepia)}
+.lvl-card .lvl-ops{font-size:.75rem;color:var(--sepia);opacity:.6;
+  margin-top:2px;max-width:108px;line-height:1.35}
+
+.ob{background:#f7f3ea;border:2.5px solid rgba(200,146,42,.35);
+  border-radius:8px;padding:10px 20px;cursor:pointer;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;
+  font-weight:700;color:var(--sepia);transition:all .2s;
+  box-shadow:0 2px 8px var(--shadow);min-height:44px}
+.ob:hover{border-color:var(--gold)}
+.ob.active{background:var(--gold);color:#fff;border-color:var(--gold);
+  box-shadow:0 4px 14px rgba(200,146,42,.4)}
+.ob:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+
+.btn-start{padding:14px 42px;background:var(--gold);color:#fff;border:none;
+  border-radius:8px;cursor:pointer;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.05rem;
+  font-weight:700;letter-spacing:.05em;
+  box-shadow:0 5px 18px rgba(200,146,42,.4);
+  transition:background .2s,transform .15s;min-height:48px}
+.btn-start:hover{background:#b07820;transform:translateY(-2px)}
+.btn-start:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+
+/* Le bouton d'action en cours de partie, doré lui aussi. */
+.btn{display:inline-block;padding:11px 24px;background:var(--gold);color:#fff;
+  border:none;border-radius:8px;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:.92rem;
+  font-weight:700;cursor:pointer;min-height:44px;
+  box-shadow:0 4px 14px rgba(200,146,42,.35)}
+.btn:hover{background:#b07820}
+.btn:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+
+@media (max-width:520px){
+  .gros{min-width:0;flex:1 1 100%}
+  .plateau{padding:30px 18px}
+}
+</style>
+</head>
+<body>
+
+<a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
+<header>
+  <h1>La <em>géographie</em></h1>
+  <p>Les capitales · Les continents · La France</p>
+  <div class="divider"></div>
+</header>
+
+<main>
+
+<section class="ecran" id="accueil">
+  <h2>Choisissez votre sujet</h2>
+
+  <div class="opt-group">
+    <div class="btn-row" id="niveaux">
+      <div class="lvl-card active" data-n="facile" tabindex="0" role="button">
+        <span class="lvl-ico">⭐</span>
+        <span class="lvl-name">Simple</span>
+        <span class="lvl-ops">propositions très différentes</span>
+      </div>
+      <div class="lvl-card" data-n="moyen" tabindex="0" role="button">
+        <span class="lvl-ico">⭐⭐</span>
+        <span class="lvl-name">Intermédiaire</span>
+        <span class="lvl-ops">une proposition proche</span>
+      </div>
+      <div class="lvl-card" data-n="difficile" tabindex="0" role="button">
+        <span class="lvl-ico">⭐⭐⭐</span>
+        <span class="lvl-name">Difficile</span>
+        <span class="lvl-ops">deux propositions proches</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="opt-group">
+    <div class="opt-label">Sujet</div>
+    <div class="btn-row" id="familles">
+      <button type="button" class="ob active" data-f="france">La France</button>
+      <button type="button" class="ob" data-f="capitales">Les capitales</button>
+      <button type="button" class="ob" data-f="continents">Les continents</button>
+    </div>
+  </div>
+
+  <button type="button" class="btn-start" id="bJouer">▶ Commencer</button>
+  <button type="button" class="discret" id="bRegles">Comment s'en servir</button>
+</section>
+
+<section class="ecran" id="jeu" hidden>
+  <div class="plateau"><p class="question" id="question"></p></div>
+  <div class="props" id="props"></div>
+  <div class="suite">
+    <button type="button" class="btn" id="bPasser">Question suivante</button>
+    <span class="ou">ou</span>
+    <button type="button" class="discret" id="bAccueil1">changer de sujet</button>
+  </div>
+</section>
+
+<section class="ecran" id="regles" hidden>
+  <h2>Comment s'en servir</h2>
+  <ul>
+    <li><b>Trois propositions, et on peut réessayer.</b> Une proposition qui
+      ne va pas s'efface simplement, et les autres restent. Rien ne devient
+      rouge, rien ne sonne, rien ne dit « faux ».</li>
+    <li><b>Passer coûte aussi peu que répondre.</b> Le bouton « Question
+      suivante » est là dès le début, à côté des propositions.</li>
+    <li><b>Aucun score, aucun chronomètre, aucun décompte.</b> Personne ne
+      saura combien d'essais ont été nécessaires, pas même la page.</li>
+    <li><b>Le réglage se change en cours de route.</b> Si « beaucoup » est
+      trop serré, on repasse à « pas du tout » sans commentaire.</li>
+    <li><b>Rien que des réponses qui n'ont pas changé depuis 1950.</b> Une
+      personne qui a appris sa géographie vers cette époque a retenu Rio
+      pour le Brésil et Bonn pour l'Allemagne, et elle avait raison. Ces
+      pays-là ne sont pas dans le jeu, pour que personne ne soit pris en
+      défaut par l'Histoire.</li>
+  </ul>
+  <p class="avert">Ce n'est pas un soin et ça ne remplace rien. C'est une
+    activité de loisir. Cette page ne collecte rien, ne conserve rien et ne
+    transmet rien.</p>
+  <div class="bas">
+    <button type="button" class="gros" id="bAccueil2">Revenir au début</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var Q = [
+{f:"capitales",n:"facile",q:"Quelle est la capitale de la France ?",b:"Paris",m:["Wellington","Buenos Aires"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de la France ?",b:"Paris",m:["Bruxelles","Bamako"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de la France ?",b:"Paris",m:["Oslo","Madrid"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de l'Italie ?",b:"Rome",m:["Alger","Canberra"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de l'Italie ?",b:"Rome",m:["Amsterdam","Nairobi"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de l'Italie ?",b:"Rome",m:["Stockholm","Oslo"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de l'Espagne ?",b:"Madrid",m:["Téhéran","Washington"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de l'Espagne ?",b:"Madrid",m:["Paris","Canberra"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de l'Espagne ?",b:"Madrid",m:["Bucarest","Copenhague"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale du Portugal ?",b:"Lisbonne",m:["Tokyo","La Havane"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale du Portugal ?",b:"Lisbonne",m:["Berne","Washington"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale du Portugal ?",b:"Lisbonne",m:["Moscou","Bruxelles"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale du Royaume-Uni ?",b:"Londres",m:["Buenos Aires","Lima"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale du Royaume-Uni ?",b:"Londres",m:["Vienne","Buenos Aires"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale du Royaume-Uni ?",b:"Londres",m:["Bucarest","Budapest"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de la Belgique ?",b:"Bruxelles",m:["Pékin","Ankara"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de la Belgique ?",b:"Bruxelles",m:["Athènes","Bamako"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de la Belgique ?",b:"Bruxelles",m:["Amsterdam","Lisbonne"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de la Suisse ?",b:"Berne",m:["Pékin","New Delhi"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de la Suisse ?",b:"Berne",m:["Athènes","Alger"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de la Suisse ?",b:"Berne",m:["Madrid","Helsinki"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de l'Autriche ?",b:"Vienne",m:["Ankara","Addis-Abeba"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de l'Autriche ?",b:"Vienne",m:["Londres","Lima"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de l'Autriche ?",b:"Vienne",m:["Stockholm","Athènes"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de la Grèce ?",b:"Athènes",m:["Addis-Abeba","Dakar"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de la Grèce ?",b:"Athènes",m:["Varsovie","Caracas"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de la Grèce ?",b:"Athènes",m:["Budapest","Amsterdam"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de la Suède ?",b:"Stockholm",m:["Bangkok","Santiago"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de la Suède ?",b:"Stockholm",m:["Paris","Lima"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de la Suède ?",b:"Stockholm",m:["Dublin","Paris"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de la Norvège ?",b:"Oslo",m:["Mexico","Bangkok"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de la Norvège ?",b:"Oslo",m:["Dublin","Washington"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de la Norvège ?",b:"Oslo",m:["Varsovie","Moscou"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale du Danemark ?",b:"Copenhague",m:["Buenos Aires","Caracas"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale du Danemark ?",b:"Copenhague",m:["Londres","Washington"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale du Danemark ?",b:"Copenhague",m:["Oslo","Londres"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de l'Irlande ?",b:"Dublin",m:["Rabat","Tokyo"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de l'Irlande ?",b:"Dublin",m:["Rome","Wellington"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de l'Irlande ?",b:"Dublin",m:["Helsinki","Copenhague"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de la Pologne ?",b:"Varsovie",m:["Tunis","Bangkok"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de la Pologne ?",b:"Varsovie",m:["Madrid","Ottawa"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de la Pologne ?",b:"Varsovie",m:["Vienne","Amsterdam"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de la Hongrie ?",b:"Budapest",m:["Wellington","Ankara"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de la Hongrie ?",b:"Budapest",m:["Copenhague","Montevideo"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de la Hongrie ?",b:"Budapest",m:["Athènes","Moscou"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de la Roumanie ?",b:"Bucarest",m:["Beyrouth","Dakar"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de la Roumanie ?",b:"Bucarest",m:["Varsovie","Lima"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de la Roumanie ?",b:"Bucarest",m:["Bruxelles","Copenhague"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de la Russie ?",b:"Moscou",m:["Rabat","La Havane"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de la Russie ?",b:"Moscou",m:["Berne","Tokyo"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de la Russie ?",b:"Moscou",m:["Budapest","Helsinki"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale du Japon ?",b:"Tokyo",m:["Wellington","Bruxelles"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale du Japon ?",b:"Tokyo",m:["New Delhi","Ottawa"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale du Japon ?",b:"Tokyo",m:["New Delhi","Bangkok"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de la Chine ?",b:"Pékin",m:["Alger","Helsinki"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de la Chine ?",b:"Pékin",m:["Ankara","Bruxelles"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de la Chine ?",b:"Pékin",m:["New Delhi","Beyrouth"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de l'Inde ?",b:"New Delhi",m:["Santiago","Dublin"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de l'Inde ?",b:"New Delhi",m:["Pékin","Canberra"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de l'Inde ?",b:"New Delhi",m:["Beyrouth","Pékin"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de la Turquie ?",b:"Ankara",m:["Dublin","Bucarest"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de la Turquie ?",b:"Ankara",m:["Séoul","Stockholm"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de la Turquie ?",b:"Ankara",m:["New Delhi","Beyrouth"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de l'Iran ?",b:"Téhéran",m:["Berne","Canberra"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de l'Iran ?",b:"Téhéran",m:["New Delhi","Madrid"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de l'Iran ?",b:"Téhéran",m:["Beyrouth","Bangkok"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale du Liban ?",b:"Beyrouth",m:["Helsinki","Rabat"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale du Liban ?",b:"Beyrouth",m:["Téhéran","Washington"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale du Liban ?",b:"Beyrouth",m:["Pékin","Tokyo"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de l'Égypte ?",b:"Le Caire",m:["Amsterdam","Prague"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de l'Égypte ?",b:"Le Caire",m:["Dakar","Amsterdam"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de l'Égypte ?",b:"Le Caire",m:["Addis-Abeba","Bamako"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale du Maroc ?",b:"Rabat",m:["Ottawa","Montevideo"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale du Maroc ?",b:"Rabat",m:["Nairobi","Rome"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale du Maroc ?",b:"Rabat",m:["Tunis","Nairobi"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de la Tunisie ?",b:"Tunis",m:["Séoul","Varsovie"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de la Tunisie ?",b:"Tunis",m:["Nairobi","Ottawa"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de la Tunisie ?",b:"Tunis",m:["Rabat","Dakar"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de l'Algérie ?",b:"Alger",m:["Bangkok","Wellington"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de l'Algérie ?",b:"Alger",m:["Bamako","Madrid"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de l'Algérie ?",b:"Alger",m:["Addis-Abeba","Dakar"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale du Sénégal ?",b:"Dakar",m:["Oslo","Bucarest"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale du Sénégal ?",b:"Dakar",m:["Rabat","La Havane"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale du Sénégal ?",b:"Dakar",m:["Le Caire","Addis-Abeba"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de l'Éthiopie ?",b:"Addis-Abeba",m:["Mexico","Pékin"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de l'Éthiopie ?",b:"Addis-Abeba",m:["Dakar","Téhéran"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de l'Éthiopie ?",b:"Addis-Abeba",m:["Rabat","Alger"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale des États-Unis ?",b:"Washington",m:["Le Caire","Bangkok"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale des États-Unis ?",b:"Washington",m:["Buenos Aires","Amsterdam"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale des États-Unis ?",b:"Washington",m:["Caracas","Mexico"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale du Canada ?",b:"Ottawa",m:["Téhéran","Wellington"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale du Canada ?",b:"Ottawa",m:["Washington","Madrid"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale du Canada ?",b:"Ottawa",m:["Lima","La Havane"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale du Mexique ?",b:"Mexico",m:["Nairobi","Varsovie"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale du Mexique ?",b:"Mexico",m:["Ottawa","Rabat"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale du Mexique ?",b:"Mexico",m:["Ottawa","Montevideo"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de l'Argentine ?",b:"Buenos Aires",m:["Wellington","Budapest"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de l'Argentine ?",b:"Buenos Aires",m:["La Havane","Bucarest"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de l'Argentine ?",b:"Buenos Aires",m:["Lima","Santiago"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale du Chili ?",b:"Santiago",m:["Londres","Alger"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale du Chili ?",b:"Santiago",m:["Caracas","Bucarest"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale du Chili ?",b:"Santiago",m:["Washington","Lima"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale du Pérou ?",b:"Lima",m:["Bamako","Bucarest"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale du Pérou ?",b:"Lima",m:["Washington","Moscou"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale du Pérou ?",b:"Lima",m:["La Havane","Caracas"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de Cuba ?",b:"La Havane",m:["Copenhague","Alger"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de Cuba ?",b:"La Havane",m:["Washington","Paris"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de Cuba ?",b:"La Havane",m:["Lima","Buenos Aires"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de l'Australie ?",b:"Canberra",m:["Tunis","Bruxelles"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de l'Australie ?",b:"Canberra",m:["Wellington","Vienne"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de l'Australie ?",b:"Canberra",m:["Wellington","Dakar"]},
+{f:"capitales",n:"facile",q:"Quelle est la capitale de la Nouvelle-Zélande ?",b:"Wellington",m:["Ankara","Rome"]},
+{f:"capitales",n:"moyen",q:"Quelle est la capitale de la Nouvelle-Zélande ?",b:"Wellington",m:["Canberra","Rabat"]},
+{f:"capitales",n:"difficile",q:"Quelle est la capitale de la Nouvelle-Zélande ?",b:"Wellington",m:["Canberra","Berne"]},
+{f:"continents",n:"facile",q:"Sur quel continent se trouve le Japon ?",b:"Asie",m:["Europe","Océanie"]},
+{f:"continents",n:"facile",q:"Sur quel continent se trouve la Chine ?",b:"Asie",m:["Amérique","Afrique"]},
+{f:"continents",n:"facile",q:"Sur quel continent se trouve l'Inde ?",b:"Asie",m:["Océanie","Amérique"]},
+{f:"continents",n:"difficile",q:"Sur quel continent se trouve l'Iran ?",b:"Asie",m:["Afrique","Europe"]},
+{f:"continents",n:"difficile",q:"Sur quel continent se trouve le Liban ?",b:"Asie",m:["Europe","Océanie"]},
+{f:"continents",n:"difficile",q:"Sur quel continent se trouve la Turquie ?",b:"Asie",m:["Europe","Océanie"]},
+{f:"continents",n:"facile",q:"Sur quel continent se trouve l'Égypte ?",b:"Afrique",m:["Océanie","Amérique"]},
+{f:"continents",n:"facile",q:"Sur quel continent se trouve le Maroc ?",b:"Afrique",m:["Océanie","Amérique"]},
+{f:"continents",n:"facile",q:"Sur quel continent se trouve l'Algérie ?",b:"Afrique",m:["Amérique","Europe"]},
+{f:"continents",n:"moyen",q:"Sur quel continent se trouve le Sénégal ?",b:"Afrique",m:["Asie","Océanie"]},
+{f:"continents",n:"difficile",q:"Sur quel continent se trouve l'Éthiopie ?",b:"Afrique",m:["Europe","Amérique"]},
+{f:"continents",n:"moyen",q:"Sur quel continent se trouve le Kenya ?",b:"Afrique",m:["Asie","Amérique"]},
+{f:"continents",n:"facile",q:"Sur quel continent se trouve l'Italie ?",b:"Europe",m:["Amérique","Asie"]},
+{f:"continents",n:"moyen",q:"Sur quel continent se trouve la Suède ?",b:"Europe",m:["Asie","Océanie"]},
+{f:"continents",n:"facile",q:"Sur quel continent se trouve la Grèce ?",b:"Europe",m:["Asie","Amérique"]},
+{f:"continents",n:"moyen",q:"Sur quel continent se trouve la Pologne ?",b:"Europe",m:["Asie","Afrique"]},
+{f:"continents",n:"facile",q:"Sur quel continent se trouve le Portugal ?",b:"Europe",m:["Amérique","Océanie"]},
+{f:"continents",n:"difficile",q:"Sur quel continent se trouve la Hongrie ?",b:"Europe",m:["Afrique","Asie"]},
+{f:"continents",n:"facile",q:"Sur quel continent se trouve le Canada ?",b:"Amérique",m:["Europe","Afrique"]},
+{f:"continents",n:"facile",q:"Sur quel continent se trouve le Mexique ?",b:"Amérique",m:["Asie","Europe"]},
+{f:"continents",n:"moyen",q:"Sur quel continent se trouve le Pérou ?",b:"Amérique",m:["Afrique","Asie"]},
+{f:"continents",n:"moyen",q:"Sur quel continent se trouve le Chili ?",b:"Amérique",m:["Europe","Asie"]},
+{f:"continents",n:"facile",q:"Sur quel continent se trouve Cuba ?",b:"Amérique",m:["Océanie","Europe"]},
+{f:"continents",n:"facile",q:"Sur quel continent se trouve l'Argentine ?",b:"Amérique",m:["Océanie","Europe"]},
+{f:"continents",n:"facile",q:"Sur quel continent se trouve l'Australie ?",b:"Océanie",m:["Asie","Afrique"]},
+{f:"continents",n:"moyen",q:"Sur quel continent se trouve la Nouvelle-Zélande ?",b:"Océanie",m:["Europe","Amérique"]},
+{f:"france",n:"facile",q:"D'où vient la moutarde ?",b:"Dijon",m:["Aix","Agen"]},
+{f:"france",n:"moyen",q:"D'où vient la moutarde ?",b:"Dijon",m:["Agen","les Alpes"]},
+{f:"france",n:"difficile",q:"D'où vient la moutarde ?",b:"Dijon",m:["Carpentras","la Loire"]},
+{f:"france",n:"facile",q:"D'où vient le nougat ?",b:"Montélimar",m:["Cambrai","la Méditerranée"]},
+{f:"france",n:"moyen",q:"D'où vient le nougat ?",b:"Montélimar",m:["Lyon","Quimper"]},
+{f:"france",n:"difficile",q:"D'où vient le nougat ?",b:"Montélimar",m:["Lyon","les Alpes"]},
+{f:"france",n:"facile",q:"D'où vient la porcelaine ?",b:"Limoges",m:["Quimper","Strasbourg"]},
+{f:"france",n:"moyen",q:"D'où vient la porcelaine ?",b:"Limoges",m:["Thiers","Castelnaudary"]},
+{f:"france",n:"difficile",q:"D'où vient la porcelaine ?",b:"Limoges",m:["Aix","la Manche"]},
+{f:"france",n:"facile",q:"D'où viennent les couteaux ?",b:"Thiers",m:["la Méditerranée","Marseille"]},
+{f:"france",n:"moyen",q:"D'où viennent les couteaux ?",b:"Thiers",m:["Carpentras","Calais"]},
+{f:"france",n:"difficile",q:"D'où viennent les couteaux ?",b:"Thiers",m:["la Manche","les Pyrénées"]},
+{f:"france",n:"facile",q:"D'où vient la dentelle du Nord ?",b:"Calais",m:["le Rhône","Normandie"]},
+{f:"france",n:"moyen",q:"D'où vient la dentelle du Nord ?",b:"Calais",m:["Cambrai","Dijon"]},
+{f:"france",n:"difficile",q:"D'où vient la dentelle du Nord ?",b:"Calais",m:["Cambrai","Dijon"]},
+{f:"france",n:"facile",q:"D'où viennent les bêtises ?",b:"Cambrai",m:["la Loire","Montélimar"]},
+{f:"france",n:"moyen",q:"D'où viennent les bêtises ?",b:"Cambrai",m:["Calais","Strasbourg"]},
+{f:"france",n:"difficile",q:"D'où viennent les bêtises ?",b:"Cambrai",m:["Calais","les Alpes"]},
+{f:"france",n:"facile",q:"D'où vient le savon ?",b:"Marseille",m:["la Garonne","la Seine"]},
+{f:"france",n:"moyen",q:"D'où vient le savon ?",b:"Marseille",m:["Carpentras","Agen"]},
+{f:"france",n:"difficile",q:"D'où vient le savon ?",b:"Marseille",m:["Carpentras","Aix"]},
+{f:"france",n:"facile",q:"D'où viennent les calissons ?",b:"Aix",m:["la Loire","les Pyrénées"]},
+{f:"france",n:"moyen",q:"D'où viennent les calissons ?",b:"Aix",m:["Carpentras","la Seine"]},
+{f:"france",n:"difficile",q:"D'où viennent les calissons ?",b:"Aix",m:["Marseille","Carpentras"]},
+{f:"france",n:"facile",q:"D'où vient la faïence bretonne ?",b:"Quimper",m:["Limoges","Normandie"]},
+{f:"france",n:"moyen",q:"D'où vient la faïence bretonne ?",b:"Quimper",m:["Orléans","Strasbourg"]},
+{f:"france",n:"difficile",q:"D'où vient la faïence bretonne ?",b:"Quimper",m:["le Rhône","Normandie"]},
+{f:"france",n:"facile",q:"D'où viennent les berlingots ?",b:"Carpentras",m:["Cambrai","la Loire"]},
+{f:"france",n:"moyen",q:"D'où viennent les berlingots ?",b:"Carpentras",m:["Marseille","la Garonne"]},
+{f:"france",n:"difficile",q:"D'où viennent les berlingots ?",b:"Carpentras",m:["Aix","Marseille"]},
+{f:"france",n:"facile",q:"D'où vient le vinaigre ?",b:"Orléans",m:["Normandie","Limoges"]},
+{f:"france",n:"moyen",q:"D'où vient le vinaigre ?",b:"Orléans",m:["Dijon","Limoges"]},
+{f:"france",n:"difficile",q:"D'où vient le vinaigre ?",b:"Orléans",m:["Agen","Marseille"]},
+{f:"france",n:"facile",q:"D'où viennent les pruneaux ?",b:"Agen",m:["Calais","Strasbourg"]},
+{f:"france",n:"moyen",q:"D'où viennent les pruneaux ?",b:"Agen",m:["Castelnaudary","Orléans"]},
+{f:"france",n:"difficile",q:"D'où viennent les pruneaux ?",b:"Agen",m:["Castelnaudary","la Loire"]},
+{f:"france",n:"facile",q:"D'où vient la quenelle ?",b:"Lyon",m:["les Alpes","Thiers"]},
+{f:"france",n:"moyen",q:"D'où vient la quenelle ?",b:"Lyon",m:["Montélimar","Dijon"]},
+{f:"france",n:"difficile",q:"D'où vient la quenelle ?",b:"Lyon",m:["Montélimar","Quimper"]},
+{f:"france",n:"facile",q:"D'où vient le cassoulet ?",b:"Castelnaudary",m:["l'Atlantique","Montélimar"]},
+{f:"france",n:"moyen",q:"D'où vient le cassoulet ?",b:"Castelnaudary",m:["Agen","Limoges"]},
+{f:"france",n:"difficile",q:"D'où vient le cassoulet ?",b:"Castelnaudary",m:["Agen","Lyon"]},
+{f:"france",n:"facile",q:"D'où vient la choucroute ?",b:"Strasbourg",m:["la Méditerranée","Montélimar"]},
+{f:"france",n:"moyen",q:"D'où vient la choucroute ?",b:"Strasbourg",m:["Montélimar","Carpentras"]},
+{f:"france",n:"difficile",q:"D'où vient la choucroute ?",b:"Strasbourg",m:["Calais","Castelnaudary"]},
+{f:"france",n:"facile",q:"D'où vient le camembert ?",b:"Normandie",m:["le Rhône","Strasbourg"]},
+{f:"france",n:"moyen",q:"D'où vient le camembert ?",b:"Normandie",m:["Lyon","Strasbourg"]},
+{f:"france",n:"difficile",q:"D'où vient le camembert ?",b:"Normandie",m:["les Pyrénées","Dijon"]},
+{f:"france",n:"facile",q:"Quel fleuve traverse Orléans ?",b:"la Loire",m:["Dijon","les Alpes"]},
+{f:"france",n:"moyen",q:"Quel fleuve traverse Orléans ?",b:"la Loire",m:["le Rhône","la Manche"]},
+{f:"france",n:"difficile",q:"Quel fleuve traverse Orléans ?",b:"la Loire",m:["la Seine","la Garonne"]},
+{f:"france",n:"facile",q:"Quel fleuve traverse Rouen ?",b:"la Seine",m:["Aix","les Alpes"]},
+{f:"france",n:"moyen",q:"Quel fleuve traverse Rouen ?",b:"la Seine",m:["la Marne","la Manche"]},
+{f:"france",n:"difficile",q:"Quel fleuve traverse Rouen ?",b:"la Seine",m:["la Loire","le Rhône"]},
+{f:"france",n:"facile",q:"Quel fleuve traverse Bordeaux ?",b:"la Garonne",m:["le Massif central","Montélimar"]},
+{f:"france",n:"moyen",q:"Quel fleuve traverse Bordeaux ?",b:"la Garonne",m:["le Rhône","la Méditerranée"]},
+{f:"france",n:"difficile",q:"Quel fleuve traverse Bordeaux ?",b:"la Garonne",m:["la Seine","la Marne"]},
+{f:"france",n:"facile",q:"Quel fleuve traverse Avignon ?",b:"le Rhône",m:["Cambrai","les Pyrénées"]},
+{f:"france",n:"moyen",q:"Quel fleuve traverse Avignon ?",b:"le Rhône",m:["la Seine","les Pyrénées"]},
+{f:"france",n:"difficile",q:"Quel fleuve traverse Avignon ?",b:"le Rhône",m:["la Garonne","la Loire"]},
+{f:"france",n:"facile",q:"Quel fleuve traverse Strasbourg ?",b:"le Rhin",m:["Quimper","Thiers"]},
+{f:"france",n:"moyen",q:"Quel fleuve traverse Strasbourg ?",b:"le Rhin",m:["la Seine","la Méditerranée"]},
+{f:"france",n:"difficile",q:"Quel fleuve traverse Strasbourg ?",b:"le Rhin",m:["la Loire","la Garonne"]},
+{f:"france",n:"facile",q:"Quel fleuve traverse Amboise ?",b:"la Loire",m:["Lyon","Montélimar"]},
+{f:"france",n:"moyen",q:"Quel fleuve traverse Amboise ?",b:"la Loire",m:["la Garonne","Lyon"]},
+{f:"france",n:"difficile",q:"Quel fleuve traverse Amboise ?",b:"la Loire",m:["le Rhin","la Garonne"]},
+{f:"france",n:"facile",q:"Au bord de quelle mer se trouve Nice ?",b:"la Méditerranée",m:["Castelnaudary","la Loire"]},
+{f:"france",n:"moyen",q:"Au bord de quelle mer se trouve Nice ?",b:"la Méditerranée",m:["l'Atlantique","Carpentras"]},
+{f:"france",n:"difficile",q:"Au bord de quelle mer se trouve Nice ?",b:"la Méditerranée",m:["l'Atlantique","la mer du Nord"]},
+{f:"france",n:"facile",q:"Au bord de quelle mer se trouve Deauville ?",b:"la Manche",m:["Carpentras","Agen"]},
+{f:"france",n:"moyen",q:"Au bord de quelle mer se trouve Deauville ?",b:"la Manche",m:["la Méditerranée","Strasbourg"]},
+{f:"france",n:"difficile",q:"Au bord de quelle mer se trouve Deauville ?",b:"la Manche",m:["la Méditerranée","l'Atlantique"]},
+{f:"france",n:"facile",q:"Au bord de quel océan se trouve Biarritz ?",b:"l'Atlantique",m:["Normandie","Carpentras"]},
+{f:"france",n:"moyen",q:"Au bord de quel océan se trouve Biarritz ?",b:"l'Atlantique",m:["la Méditerranée","la Loire"]},
+{f:"france",n:"difficile",q:"Au bord de quel océan se trouve Biarritz ?",b:"l'Atlantique",m:["la Manche","la Méditerranée"]},
+{f:"france",n:"facile",q:"Au pied de quelle montagne se trouve Chamonix ?",b:"les Alpes",m:["la Manche","Calais"]},
+{f:"france",n:"moyen",q:"Au pied de quelle montagne se trouve Chamonix ?",b:"les Alpes",m:["le Massif central","Montélimar"]},
+{f:"france",n:"difficile",q:"Au pied de quelle montagne se trouve Chamonix ?",b:"les Alpes",m:["les Vosges","le Massif central"]},
+{f:"france",n:"facile",q:"Au pied de quelle montagne se trouve Lourdes ?",b:"les Pyrénées",m:["le Rhône","le Rhin"]},
+{f:"france",n:"moyen",q:"Au pied de quelle montagne se trouve Lourdes ?",b:"les Pyrénées",m:["les Alpes","la Garonne"]},
+{f:"france",n:"difficile",q:"Au pied de quelle montagne se trouve Lourdes ?",b:"les Pyrénées",m:["le Massif central","les Alpes"]},
+{f:"france",n:"facile",q:"Au pied de quelle montagne se trouve Le Puy ?",b:"le Massif central",m:["Lyon","Thiers"]},
+{f:"france",n:"moyen",q:"Au pied de quelle montagne se trouve Le Puy ?",b:"le Massif central",m:["les Pyrénées","Orléans"]},
+{f:"france",n:"difficile",q:"Au pied de quelle montagne se trouve Le Puy ?",b:"le Massif central",m:["les Alpes","les Pyrénées"]}
+  ];
+
+  var ecrans = {
+    accueil: document.getElementById('accueil'),
+    jeu:     document.getElementById('jeu'),
+    regles:  document.getElementById('regles')
+  };
+  function montrer(nom) {
+    Object.keys(ecrans).forEach(function (k) { ecrans[k].hidden = (k !== nom); });
+    window.scrollTo(0, 0);
+  }
+
+  var famille = 'france', niveau = 'facile';
+  var paquet = [], pose = 0;
+
+  function brasser() {
+    paquet = Q.filter(function (x) {
+      return x.f === famille && x.n === niveau;
+    });
+    for (var i = paquet.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = paquet[i]; paquet[i] = paquet[j]; paquet[j] = t;
+    }
+    pose = 0;
+  }
+
+  var elQ = document.getElementById('question');
+  var elP = document.getElementById('props');
+
+  function poser() {
+    if (pose >= paquet.length) { brasser(); }
+    var c = paquet[pose++];
+    elQ.textContent = c.q;
+    elP.innerHTML = '';
+    // Les trois propositions sont mêlées à l'affichage : sinon la bonne
+    // serait toujours à la même place et ça se remarque très vite.
+    var choix = [c.b, c.m[0], c.m[1]];
+    for (var i = choix.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = choix[i]; choix[i] = choix[j]; choix[j] = t;
+    }
+    choix.forEach(function (texte) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'opt';
+      b.textContent = texte;
+      b.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); b.click(); }
+      });
+      b.addEventListener('click', function () {
+        if (texte === c.b) {
+          b.classList.add('trouvee');
+          Array.prototype.forEach.call(elP.children, function (o) {
+            if (o !== b) { o.classList.add('ecartee'); }
+          });
+        } else {
+          // On écarte, on ne sanctionne pas : pas de rouge, pas de son,
+          // pas de message. La proposition s'efface, les autres restent.
+          b.classList.add('ecartee');
+        }
+      });
+      elP.appendChild(b);
+    });
+  }
+
+  function groupe(id, attr, sur) {
+    var bs = document.querySelectorAll('#' + id + ' .lvl-card, #' + id + ' .ob');
+    Array.prototype.forEach.call(bs, function (b) {
+      b.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); b.click(); }
+      });
+      b.addEventListener('click', function () {
+        Array.prototype.forEach.call(bs, function (o) { o.classList.remove('active'); });
+        b.classList.add('active');
+        sur(b.dataset[attr]);
+      });
+    });
+  }
+  groupe('familles', 'f', function (v) { famille = v; });
+  groupe('niveaux', 'n', function (v) { niveau = v; });
+
+  document.getElementById('bJouer').addEventListener('click', function () {
+    brasser(); poser(); montrer('jeu');
+  });
+  document.getElementById('bPasser').addEventListener('click', poser);
+  document.getElementById('bRegles').addEventListener('click', function () { montrer('regles'); });
+  document.getElementById('bAccueil1').addEventListener('click', function () { montrer('accueil'); });
+  document.getElementById('bAccueil2').addEventListener('click', function () { montrer('accueil'); });
+})();
+</script>
+
+</body>
+</html>

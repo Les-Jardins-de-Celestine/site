@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Le double et la moitié · jeu de calcul en ligne gratuit pour senior · Les Jardins de Célestine</title>
+<meta name="description" content="Doubler une recette, partager en deux : un geste de tous les jours plutôt qu'une opération. Trois niveaux, sans score ni chronomètre. Gratuit.">
+<link rel="canonical" href="https://jardinsdecelestine.com/jeu_double">
+<!-- LIGNE À SUPPRIMER LE JOUR DE LA PUBLICATION -->
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --parchment:#eee8d5; --sepia:#5c3d1e; --gold:#c8922a;
+  --green:#2d6a4f; --card:#f7f3ea; --shadow:rgba(28,18,8,.13);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--parchment);
+  background-image:radial-gradient(ellipse at 20% 10%,rgba(200,146,42,.08) 0%,transparent 55%),
+    radial-gradient(ellipse at 80% 90%,rgba(45,106,79,.06) 0%,transparent 55%);
+  min-height:100vh;font-family:'Nunito',system-ui,sans-serif;color:#1c1208}
+
+.jdc-retour{display:block;text-align:center;padding:16px 8px;font-size:.74rem;
+  color:var(--sepia);opacity:.55;text-decoration:none;letter-spacing:.1em;
+  text-transform:uppercase}
+.jdc-retour:hover{opacity:1}
+header{text-align:center;padding:18px 20px 12px;
+  border-bottom:1px solid rgba(200,146,42,.2)}
+header h1{font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:700;color:var(--sepia)}
+header h1 em{color:var(--gold);font-style:normal}
+header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--sepia);opacity:.55;margin-top:3px}
+.divider{width:60px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  margin:7px auto 0}
+main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
+
+/* !important : #accueil porte un display:flex posé par un sélecteur d'id,
+   qui l'emporterait sur .ecran[hidden]. Défaut déjà commis, plus jamais. */
+.ecran[hidden]{display:none !important}
+
+/* ══ Écran de départ : le motif des jeux du site, copié tel quel ══ */
+#accueil{display:flex;flex-direction:column;align-items:center;gap:24px;
+  text-align:center}
+#accueil h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.3rem;
+  font-weight:700;color:var(--sepia)}
+.chapo{max-width:540px;font-size:1.05rem;line-height:1.6;color:#3a2a16}
+.opt-group{display:flex;flex-direction:column;align-items:center;gap:10px;
+  width:100%;max-width:500px}
+.opt-label{font-size:.8rem;font-weight:700;color:var(--sepia);
+  letter-spacing:.08em;text-transform:uppercase;opacity:.7}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+.lvl-card{display:flex;flex-direction:column;align-items:center;gap:8px;
+  background:var(--card);border:2.5px solid rgba(200,146,42,.3);
+  border-radius:12px;padding:16px 20px;cursor:pointer;transition:all .2s;
+  box-shadow:0 2px 8px var(--shadow);min-width:130px;text-align:center}
+.lvl-card:hover{border-color:var(--gold)}
+.lvl-card.active{border-color:var(--gold);background:rgba(200,146,42,.07);
+  box-shadow:0 4px 16px rgba(200,146,42,.2)}
+.lvl-card:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+.lvl-card .lvl-ico{font-size:1.8rem}
+.lvl-card .lvl-name{font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:.95rem;font-weight:700;color:var(--sepia)}
+.lvl-card .lvl-ops{font-size:.75rem;color:var(--sepia);opacity:.6;
+  margin-top:2px;max-width:108px;line-height:1.35}
+
+.ob{background:var(--card);border:2.5px solid rgba(200,146,42,.35);
+  border-radius:8px;padding:10px 20px;cursor:pointer;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;
+  font-weight:700;color:var(--sepia);transition:all .2s;
+  box-shadow:0 2px 8px var(--shadow);min-height:44px}
+.ob:hover{border-color:var(--gold)}
+.ob.active{background:var(--gold);color:#fff;border-color:var(--gold);
+  box-shadow:0 4px 14px rgba(200,146,42,.4)}
+.ob:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+
+.btn-start{padding:14px 42px;background:var(--gold);color:#fff;border:none;
+  border-radius:8px;cursor:pointer;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.05rem;
+  font-weight:700;letter-spacing:.05em;min-height:48px;
+  box-shadow:0 5px 18px rgba(200,146,42,.4);
+  transition:background .2s,transform .15s}
+.btn-start:hover{background:#b07820;transform:translateY(-2px)}
+.btn-start:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+.btn{display:inline-block;padding:11px 24px;background:var(--gold);color:#fff;
+  border:none;border-radius:8px;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:.92rem;
+  font-weight:700;cursor:pointer;min-height:44px;
+  box-shadow:0 4px 14px rgba(200,146,42,.35)}
+.btn:hover{background:#b07820}
+.btn:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+.discret{background:none;border:none;font-family:'Nunito',sans-serif;
+  font-size:.92rem;color:var(--green);cursor:pointer;text-decoration:underline;
+  padding:10px 12px;min-height:44px}
+
+/* ══ La question ══ */
+#jeu{display:flex;flex-direction:column;gap:20px;align-items:center}
+.plateau{width:100%;background:var(--card);border-radius:16px;
+  border:1px solid rgba(200,146,42,.3);box-shadow:0 4px 18px var(--shadow);
+  padding:38px 28px;text-align:center}
+.question{font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:clamp(1.3rem,3vw,1.75rem);line-height:1.5;color:#1c1208}
+.contexte{font-size:1rem;color:var(--sepia);opacity:.75;margin-bottom:10px}
+.props{display:flex;flex-direction:column;gap:12px;width:100%;max-width:520px}
+.opt{font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;
+  background:var(--card);color:var(--sepia);
+  border:2.5px solid rgba(200,146,42,.45);border-radius:14px;cursor:pointer;
+  box-shadow:0 2px 8px var(--shadow);font-size:1.35rem;padding:20px 24px;
+  min-height:66px;width:100%;font-variant-numeric:tabular-nums;
+  transition:border-color .15s,background .15s,opacity .25s}
+.opt:hover{border-color:var(--gold);background:#fffdf7}
+.opt:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+/* Une proposition écartée s'efface. Elle ne se barre pas, ne rougit pas. */
+.opt.ecartee{opacity:.3;pointer-events:none;box-shadow:none;
+  border-color:rgba(200,146,42,.2)}
+.opt.trouvee{background:var(--green);border-color:var(--green);color:#fff}
+.suite{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
+  align-items:center}
+
+/* ══ Le passage automatique ══════════════════════════════════════════
+   Demande de Flo : quand la bonne réponse est trouvée, on passe tout seul
+   à la suivante au bout de dix secondes.
+
+   Deux garde-fous, parce qu'un écran qui change de lui-même pendant qu'on
+   le regarde encore est déroutant, et que ce public-là n'a pas envie de
+   courir après la machine :
+     - une barre montre que ça va tourner. Elle n'affiche AUCUN chiffre :
+       ce n'est pas un chronomètre, la réponse est déjà trouvée, il n'y a
+       rien à faire dans le temps imparti ;
+     - « rester ici » arrête tout, et il n'y a plus qu'à appuyer sur
+       Question suivante quand on veut. */
+.attente{width:100%;max-width:520px;display:flex;flex-direction:column;
+  align-items:center;gap:8px}
+.attente[hidden]{display:none}
+.jauge{width:100%;height:4px;border-radius:2px;
+  background:rgba(200,146,42,.2);overflow:hidden}
+.jauge span{display:block;height:100%;width:0;background:var(--gold);
+  border-radius:2px;animation:remplir 10s linear forwards}
+@keyframes remplir{from{width:0}to{width:100%}}
+@media (prefers-reduced-motion:reduce){
+  .jauge span{animation:none;width:100%;opacity:.35}
+}
+.ou{font-size:.8rem;color:var(--sepia);opacity:.5;letter-spacing:.1em;
+  text-transform:uppercase}
+
+/* ══ Comment s'en servir ══ */
+#regles h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.15rem;
+  color:var(--sepia);margin:20px 0 10px}
+#regles h2:first-child{margin-top:0}
+#regles ul{list-style:none}
+#regles li{margin-bottom:12px;line-height:1.6;font-size:1rem;color:#3a2a16}
+#regles b{color:var(--sepia);display:block}
+.avert{background:var(--card);border-left:4px solid var(--gold);
+  padding:14px 16px;border-radius:0 8px 8px 0;font-size:.95rem;line-height:1.6}
+.bas{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+  margin:26px 0 6px}
+.jdc-legal{text-align:center;padding:20px 14px 26px;font-size:.78rem;
+  line-height:1.6;color:var(--sepia);opacity:.6}
+.jdc-legal a{color:inherit}
+@media (max-width:520px){
+  .btn-start,.btn{width:100%}
+  .plateau{padding:30px 18px}
+}
+</style>
+</head>
+<body>
+
+<a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
+<header>
+  <h1>Le double et la <em>moitié</em></h1>
+  <p>Doubler la recette, partager en deux</p>
+  <div class="divider"></div>
+</header>
+
+<main>
+
+<section class="ecran" id="accueil">
+  <p class="chapo">Doubler les proportions pour six au lieu de trois, partager la note en deux. Ce sont des gestes, plus que des opérations.</p>
+  <h2>Choisissez votre niveau</h2>
+  <div class="opt-group">
+    <div class="btn-row" id="niveaux">
+      <div class="lvl-card active" data-n="simple"
+           tabindex="0" role="button">
+        <span class="lvl-ico">⭐</span>
+        <span class="lvl-name">Simple</span>
+        <span class="lvl-ops">jusqu'à quarante</span>
+      </div>
+      <div class="lvl-card" data-n="moyen"
+           tabindex="0" role="button">
+        <span class="lvl-ico">⭐⭐</span>
+        <span class="lvl-name">Intermédiaire</span>
+        <span class="lvl-ops">jusqu'à deux cents</span>
+      </div>
+      <div class="lvl-card" data-n="difficile"
+           tabindex="0" role="button">
+        <span class="lvl-ico">⭐⭐⭐</span>
+        <span class="lvl-name">Difficile</span>
+        <span class="lvl-ops">jusqu'au millier</span>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" class="btn-start" id="bJouer">▶ Commencer</button>
+  <button type="button" class="discret" id="bRegles">Comment s'en servir</button>
+</section>
+
+<section class="ecran" id="jeu" hidden>
+  <div class="plateau">
+    <p class="contexte" id="contexte" hidden></p>
+    <p class="question" id="question"></p>
+  </div>
+  <div class="props" id="props"></div>
+  <div class="attente" id="attente" hidden>
+    <div class="jauge" aria-hidden="true"><span></span></div>
+    <button type="button" class="discret" id="bRester">rester sur cette question</button>
+  </div>
+  <div class="suite">
+    <button type="button" class="btn" id="bPasser">Question suivante</button>
+    <span class="ou">ou</span>
+    <button type="button" class="discret" id="bAccueil1">changer de niveau</button>
+  </div>
+</section>
+
+<section class="ecran" id="regles" hidden>
+  <h2>Comment s'en servir</h2>
+  <ul>
+    <li><b>Trois propositions, et on peut réessayer.</b> Une proposition qui
+      ne va pas s'efface simplement, et les autres restent. Rien ne devient
+      rouge, rien ne sonne, rien ne dit « faux ».</li>
+    <li><b>Passer coûte aussi peu que répondre.</b> Le bouton « Question
+      suivante » est là dès le début, à côté des propositions.</li>
+    <li><b>Aucun score, aucun chronomètre, aucun décompte.</b> Personne ne
+      saura combien d'essais ont été nécessaires, pas même la page.</li>
+    <li><b>Une fois la bonne réponse trouvée, on passe tout seul au bout de
+      dix secondes.</b> Une barre le montre. Si on veut regarder plus
+      longtemps, « rester sur cette question » arrête tout, et on repart
+      quand on veut.</li>
+    <li><b>Le niveau se change en cours de route</b>, sans commentaire.</li>
+    <li><b>Un nombre sur deux est pair.</b> On ne demande jamais la
+      moitié d'un nombre impair : la réponse serait une virgule, et ce
+      n'est pas le geste qu'on cherche.</li>
+  </ul>
+  <p class="avert">Ce n'est pas un soin et ça ne remplace rien. C'est une activité de loisir. Cette page ne collecte rien, ne conserve rien et ne transmet rien.</p>
+  <div class="bas">
+    <button type="button" class="btn-start" id="bAccueil2">Revenir au début</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var Q = [
+{n:"simple",q:"La moitié de 32 ?",b:"16",m:["17","21"]},
+{n:"simple",q:"Le double de 10 ?",b:"20",m:["30","10"]},
+{n:"simple",q:"Le double de 20 ?",b:"40",m:["50","60"]},
+{n:"simple",q:"Le double de 4 ?",b:"8",m:["6","10"]},
+{n:"simple",q:"La moitié de 36 ?",b:"18",m:["28","72"]},
+{n:"simple",q:"Le double de 34 ?",b:"68",m:["66","70"]},
+{n:"simple",q:"Le double de 28 ?",b:"56",m:["54","84"]},
+{n:"simple",q:"Le double de 18 ?",b:"36",m:["28","26"]},
+{n:"simple",q:"Le double de 30 ?",b:"60",m:["50","40"]},
+{n:"simple",q:"Le double de 22 ?",b:"44",m:["54","32"]},
+{n:"simple",q:"La moitié de 6 ?",b:"3",m:["13","2"]},
+{n:"simple",q:"La moitié de 14 ?",b:"7",m:["2","6"]},
+{n:"simple",q:"La moitié de 12 ?",b:"6",m:["11","1"]},
+{n:"simple",q:"Le double de 2 ?",b:"4",m:["12","6"]},
+{n:"simple",q:"La moitié de 26 ?",b:"13",m:["18","8"]},
+{n:"simple",q:"Le double de 8 ?",b:"16",m:["14","24"]},
+{n:"simple",q:"La moitié de 24 ?",b:"12",m:["7","22"]},
+{n:"simple",q:"La moitié de 38 ?",b:"19",m:["24","20"]},
+{n:"simple",q:"La moitié de 16 ?",b:"8",m:["7","3"]},
+{n:"moyen",q:"La moitié de 180 ?",b:"90",m:["100","360"]},
+{n:"moyen",q:"Le double de 88 ?",b:"176",m:["166","178"]},
+{n:"moyen",q:"Le double de 140 ?",b:"280",m:["150","420"]},
+{n:"moyen",q:"La moitié de 66 ?",b:"33",m:["38","132"]},
+{n:"moyen",q:"La moitié de 102 ?",b:"51",m:["56","204"]},
+{n:"moyen",q:"La moitié de 124 ?",b:"62",m:["72","61"]},
+{n:"moyen",q:"La moitié de 158 ?",b:"79",m:["89","316"]},
+{n:"moyen",q:"Le double de 60 ?",b:"120",m:["130","122"]},
+{n:"moyen",q:"Le double de 114 ?",b:"228",m:["238","124"]},
+{n:"moyen",q:"La moitié de 78 ?",b:"39",m:["156","44"]},
+{n:"moyen",q:"Le double de 80 ?",b:"160",m:["162","170"]},
+{n:"moyen",q:"Le double de 168 ?",b:"336",m:["346","326"]},
+{n:"moyen",q:"La moitié de 72 ?",b:"36",m:["37","41"]},
+{n:"moyen",q:"Le double de 20 ?",b:"40",m:["42","50"]},
+{n:"moyen",q:"Le double de 132 ?",b:"264",m:["274","262"]},
+{n:"moyen",q:"La moitié de 134 ?",b:"67",m:["77","66"]},
+{n:"moyen",q:"La moitié de 144 ?",b:"72",m:["82","288"]},
+{n:"moyen",q:"Le double de 40 ?",b:"80",m:["90","78"]},
+{n:"moyen",q:"La moitié de 68 ?",b:"34",m:["35","29"]},
+{n:"moyen",q:"Le double de 116 ?",b:"232",m:["222","242"]},
+{n:"moyen",q:"La moitié de 174 ?",b:"87",m:["92","97"]},
+{n:"moyen",q:"Le double de 56 ?",b:"112",m:["110","66"]},
+{n:"moyen",q:"La moitié de 100 ?",b:"50",m:["49","45"]},
+{n:"moyen",q:"La moitié de 196 ?",b:"98",m:["93","99"]},
+{n:"moyen",q:"La moitié de 164 ?",b:"82",m:["81","92"]},
+{n:"moyen",q:"La moitié de 62 ?",b:"31",m:["36","41"]},
+{n:"moyen",q:"Le double de 128 ?",b:"256",m:["384","254"]},
+{n:"moyen",q:"Le double de 44 ?",b:"88",m:["98","78"]},
+{n:"moyen",q:"Le double de 166 ?",b:"332",m:["176","498"]},
+{n:"moyen",q:"La moitié de 178 ?",b:"89",m:["94","356"]},
+{n:"moyen",q:"La moitié de 96 ?",b:"48",m:["53","47"]},
+{n:"moyen",q:"La moitié de 142 ?",b:"71",m:["70","81"]},
+{n:"moyen",q:"Le double de 136 ?",b:"272",m:["282","274"]},
+{n:"moyen",q:"Le double de 50 ?",b:"100",m:["102","60"]},
+{n:"moyen",q:"La moitié de 110 ?",b:"55",m:["54","65"]},
+{n:"moyen",q:"Le double de 130 ?",b:"260",m:["140","270"]},
+{n:"moyen",q:"La moitié de 38 ?",b:"19",m:["18","20"]},
+{n:"moyen",q:"Le double de 184 ?",b:"368",m:["552","366"]},
+{n:"moyen",q:"La moitié de 118 ?",b:"59",m:["60","236"]},
+{n:"moyen",q:"La moitié de 86 ?",b:"43",m:["38","44"]},
+{n:"moyen",q:"La moitié de 32 ?",b:"16",m:["15","26"]},
+{n:"moyen",q:"La moitié de 194 ?",b:"97",m:["96","92"]},
+{n:"moyen",q:"La moitié de 148 ?",b:"74",m:["84","75"]},
+{n:"moyen",q:"Le double de 24 ?",b:"48",m:["72","46"]},
+{n:"moyen",q:"La moitié de 84 ?",b:"42",m:["43","37"]},
+{n:"difficile",q:"Le double de 346 ?",b:"692",m:["690","356"]},
+{n:"difficile",q:"Le double de 88 ?",b:"176",m:["166","186"]},
+{n:"difficile",q:"Le double de 420 ?",b:"840",m:["830","430"]},
+{n:"difficile",q:"La moitié de 646 ?",b:"323",m:["1 292","328"]},
+{n:"difficile",q:"Le double de 494 ?",b:"988",m:["1 482","978"]},
+{n:"difficile",q:"Le double de 110 ?",b:"220",m:["330","222"]},
+{n:"difficile",q:"La moitié de 292 ?",b:"146",m:["141","145"]},
+{n:"difficile",q:"La moitié de 792 ?",b:"396",m:["401","391"]},
+{n:"difficile",q:"Le double de 248 ?",b:"496",m:["506","498"]},
+{n:"difficile",q:"Le double de 946 ?",b:"1 892",m:["2 838","1 894"]},
+{n:"difficile",q:"La moitié de 748 ?",b:"374",m:["369","375"]},
+{n:"difficile",q:"Le double de 56 ?",b:"112",m:["110","168"]},
+{n:"difficile",q:"Le double de 202 ?",b:"404",m:["406","414"]},
+{n:"difficile",q:"Le double de 252 ?",b:"504",m:["514","756"]},
+{n:"difficile",q:"La moitié de 370 ?",b:"185",m:["740","180"]},
+{n:"difficile",q:"Le double de 396 ?",b:"792",m:["794","790"]},
+{n:"difficile",q:"Le double de 802 ?",b:"1 604",m:["1 614","1 594"]},
+{n:"difficile",q:"La moitié de 326 ?",b:"163",m:["162","158"]},
+{n:"difficile",q:"Le double de 554 ?",b:"1 108",m:["564","1 118"]},
+{n:"difficile",q:"Le double de 182 ?",b:"364",m:["362","546"]},
+{n:"difficile",q:"La moitié de 688 ?",b:"344",m:["1 376","343"]},
+{n:"difficile",q:"Le double de 798 ?",b:"1 596",m:["2 394","808"]},
+{n:"difficile",q:"La moitié de 354 ?",b:"177",m:["176","172"]},
+{n:"difficile",q:"La moitié de 294 ?",b:"147",m:["146","142"]},
+{n:"difficile",q:"La moitié de 920 ?",b:"460",m:["461","470"]},
+{n:"difficile",q:"Le double de 862 ?",b:"1 724",m:["1 726","1 714"]},
+{n:"difficile",q:"La moitié de 498 ?",b:"249",m:["248","244"]},
+{n:"difficile",q:"Le double de 754 ?",b:"1 508",m:["764","1 506"]},
+{n:"difficile",q:"Le double de 288 ?",b:"576",m:["574","578"]},
+{n:"difficile",q:"Le double de 478 ?",b:"956",m:["958","966"]},
+{n:"difficile",q:"La moitié de 132 ?",b:"66",m:["61","76"]},
+{n:"difficile",q:"Le double de 936 ?",b:"1 872",m:["1 862","1 870"]},
+{n:"difficile",q:"Le double de 436 ?",b:"872",m:["862","882"]},
+{n:"difficile",q:"Le double de 270 ?",b:"540",m:["280","550"]},
+{n:"difficile",q:"Le double de 750 ?",b:"1 500",m:["1 502","2 250"]},
+{n:"difficile",q:"La moitié de 698 ?",b:"349",m:["348","344"]},
+{n:"difficile",q:"Le double de 932 ?",b:"1 864",m:["2 796","1 862"]},
+{n:"difficile",q:"La moitié de 228 ?",b:"114",m:["113","119"]},
+{n:"difficile",q:"Le double de 330 ?",b:"660",m:["662","650"]},
+{n:"difficile",q:"La moitié de 168 ?",b:"84",m:["89","94"]},
+{n:"difficile",q:"La moitié de 828 ?",b:"414",m:["419","415"]},
+{n:"difficile",q:"Le double de 620 ?",b:"1 240",m:["1 242","1 860"]},
+{n:"difficile",q:"Le double de 466 ?",b:"932",m:["934","930"]},
+{n:"difficile",q:"La moitié de 70 ?",b:"35",m:["34","40"]},
+{n:"difficile",q:"La moitié de 68 ?",b:"34",m:["33","44"]}
+  ];
+
+  var ecrans = {
+    accueil: document.getElementById('accueil'),
+    jeu:     document.getElementById('jeu'),
+    regles:  document.getElementById('regles')
+  };
+  function montrer(nom) {
+    Object.keys(ecrans).forEach(function (k) { ecrans[k].hidden = (k !== nom); });
+    window.scrollTo(0, 0);
+  }
+
+  var niveau = 'simple';
+  var unite = '';
+  // « § » est le jeton du symbole monétaire. Il ne doit jamais rester à
+  // l'écran : s'il y est, c'est que le réglage n'a pas été branché.
+  function u(t) { return String(t).split('§').join(unite); }
+  var paquet = [], pose = 0;
+
+  // Brassé une fois puis distribué. Un tirage indépendant à chaque clic
+  // ramènerait la même question deux fois de suite, et ça se lit comme une
+  // panne de la machine ou de soi.
+  function brasser() {
+    paquet = Q.filter(function (x) { return x.n === niveau; });
+    for (var i = paquet.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = paquet[i]; paquet[i] = paquet[j]; paquet[j] = t;
+    }
+    pose = 0;
+  }
+
+  var elA = document.getElementById('attente');
+  var minuteur = null;
+
+  // Le minuteur est TOUJOURS annulé avant de faire autre chose : sinon il
+  // se déclenche plus tard et fait sauter une question depuis un autre
+  // écran, ce qui est incompréhensible pour qui regarde.
+  function annuler() {
+    if (minuteur) { clearTimeout(minuteur); minuteur = null; }
+    elA.hidden = true;
+    var j = elA.querySelector('.jauge span');
+    j.style.animation = 'none';
+    void j.offsetWidth;              // force le navigateur à repartir de zéro
+    j.style.animation = '';
+  }
+
+  function lancerLeChangement() {
+    annuler();
+    elA.hidden = false;
+    minuteur = setTimeout(function () { minuteur = null; poser(); }, 10000);
+  }
+
+  var elQ = document.getElementById('question');
+  var elC = document.getElementById('contexte');
+  var elP = document.getElementById('props');
+
+  function poser() {
+    annuler();
+    if (pose >= paquet.length) { brasser(); }
+    var c = paquet[pose++];
+    elC.textContent = u(c.c || '');
+    elC.hidden = !c.c;
+    elQ.textContent = u(c.q);
+    elP.innerHTML = '';
+    // Les propositions sont mêlées à l'affichage : sinon la bonne serait
+    // toujours à la même place, et ça se remarque très vite.
+    var choix = [u(c.b), u(c.m[0]), u(c.m[1])];
+    for (var i = choix.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = choix[i]; choix[i] = choix[j]; choix[j] = t;
+    }
+    choix.forEach(function (texte) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'opt';
+      b.textContent = texte;
+      b.addEventListener('click', function () {
+        if (texte === u(c.b)) {
+          b.classList.add('trouvee');
+          Array.prototype.forEach.call(elP.children, function (o) {
+            if (o !== b) { o.classList.add('ecartee'); }
+          });
+          lancerLeChangement();
+        } else {
+          // On écarte, on ne sanctionne pas.
+          b.classList.add('ecartee');
+        }
+      });
+      elP.appendChild(b);
+    });
+  }
+
+  var bs = document.querySelectorAll('#niveaux .lvl-card');
+  Array.prototype.forEach.call(bs, function (b) {
+    function choisir() {
+      Array.prototype.forEach.call(bs, function (o) { o.classList.remove('active'); });
+      b.classList.add('active');
+      niveau = b.dataset.n;
+    }
+    b.addEventListener('click', choisir);
+    b.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); choisir(); }
+    });
+  });
+
+  var us = document.querySelectorAll('#unites .ob');
+  Array.prototype.forEach.call(us, function (b) {
+    b.addEventListener('click', function () {
+      Array.prototype.forEach.call(us, function (o) { o.classList.remove('active'); });
+      b.classList.add('active');
+      unite = b.dataset.u;
+    });
+  });
+
+  document.getElementById('bJouer').addEventListener('click', function () {
+    brasser(); poser(); montrer('jeu');
+  });
+  document.getElementById('bPasser').addEventListener('click', poser);
+  document.getElementById('bRester').addEventListener('click', annuler);
+  document.getElementById('bRegles').addEventListener('click', function () {
+    annuler(); montrer('regles');
+  });
+  document.getElementById('bAccueil1').addEventListener('click', function () {
+    annuler(); montrer('accueil');
+  });
+  document.getElementById('bAccueil2').addEventListener('click', function () { montrer('accueil'); });
+})();
+</script>
+
+</body>
+</html>

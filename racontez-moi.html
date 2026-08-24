@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Racontez-moi — cartes de souvenirs · Les Jardins de Célestine</title>
+<meta name="description" content="Douze scènes d'autrefois à regarder ensemble. Pas de question, pas de bonne réponse : on parle si on veut. Gratuit, sans inscription, et imprimable.">
+<link rel="canonical" href="https://jardinsdecelestine.com/racontez-moi">
+<!-- LIGNE À SUPPRIMER LE JOUR DE LA PUBLICATION : tant qu'elle est là, la
+     page n'est pas référencée. C'est voulu, elle n'est pas encore validée. -->
+<link rel="preload" as="image" href="images/recit/carte01.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --parchment:#eee8d5; --sepia:#5c3d1e; --gold:#c8922a;
+  --green:#2d6a4f; --card:#f7f3ea; --shadow:rgba(28,18,8,.13);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--parchment);
+  background-image:radial-gradient(ellipse at 20% 10%,rgba(200,146,42,.08) 0%,transparent 55%),
+    radial-gradient(ellipse at 80% 90%,rgba(45,106,79,.06) 0%,transparent 55%);
+  min-height:100vh;font-family:'Nunito',system-ui,sans-serif;color:#1c1208;
+}
+
+/* Sortie de secours : toujours un moyen de revenir au catalogue. */
+/* 14 px de padding et non 8 : mesuré à 30 px de haut avec 8, sous la
+   cible tactile de 44 px recommandée. Le rendu est identique, la zone
+   cliquable non. Les autres jeux du site ont le même défaut. */
+.jdc-retour{display:block;text-align:center;padding:16px 8px;font-size:.74rem;
+  color:var(--sepia);opacity:.55;text-decoration:none;letter-spacing:.1em;
+  text-transform:uppercase}
+.jdc-retour:hover{opacity:1}
+
+header{text-align:center;padding:18px 20px 12px;
+  border-bottom:1px solid rgba(200,146,42,.2)}
+header h1{font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:700;color:var(--sepia)}
+header h1 em{color:var(--gold);font-style:normal}
+header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--sepia);opacity:.55;margin-top:3px}
+.divider{width:60px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  margin:7px auto 0}
+
+main{max-width:900px;margin:0 auto;padding:22px 16px 8px}
+/* !important n'est pas de la paresse ici : #accueil et #lacarte portent un
+   display:flex posé par un sélecteur d'id, qui l'emporte sur .ecran[hidden]
+   et laissait les deux écrans empilés. Défaut vu à la capture d'écran, pas
+   au test : celui-ci vérifiait qu'un écran était visible, jamais que les
+   autres étaient cachés. Le test a été corrigé aussi. */
+.ecran[hidden]{display:none !important}
+
+/* ── Accueil ──────────────────────────────────────────── */
+#accueil{text-align:center;display:flex;flex-direction:column;
+  align-items:center;gap:22px}
+.chapo{max-width:560px;font-size:1.08rem;line-height:1.65;color:#3a2a16}
+.chapo b{color:var(--sepia)}
+.rangee{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+
+.gros{
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.15rem;
+  font-weight:700;background:var(--card);color:var(--sepia);
+  border:2.5px solid rgba(200,146,42,.45);border-radius:14px;
+  padding:18px 30px;cursor:pointer;min-height:60px;min-width:210px;
+  box-shadow:0 2px 8px var(--shadow);transition:border-color .15s,background .15s}
+.gros:hover{border-color:var(--gold);background:#fffdf7}
+.gros:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+.gros.premier{background:var(--sepia);color:#fdf9f0;border-color:var(--sepia)}
+.gros.premier:hover{background:#6d4a26}
+
+.discret{background:none;border:none;font-family:'Nunito',sans-serif;
+  font-size:.92rem;color:var(--green);cursor:pointer;text-decoration:underline;
+  padding:10px 12px;min-height:44px}
+.discret:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+
+/* ── La carte ─────────────────────────────────────────── */
+#lacarte{display:flex;flex-direction:column;gap:16px;align-items:center}
+.plateau{width:100%;background:var(--card);border-radius:16px;
+  border:1px solid rgba(200,146,42,.3);box-shadow:0 4px 18px var(--shadow);
+  overflow:hidden}
+.plateau img{display:block;width:100%;height:auto;aspect-ratio:16/9;
+  object-fit:cover;background:#e8e2d4}
+.dessous{padding:20px 24px 22px}
+.phrase{font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:clamp(1.25rem,2.6vw,1.7rem);line-height:1.45;color:#1c1208}
+.nom{margin-top:10px;font-size:.74rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--sepia);opacity:.55}
+
+details.aide{width:100%;max-width:640px;border-top:1px solid rgba(200,146,42,.3);
+  padding-top:10px}
+details.aide>summary{cursor:pointer;list-style:none;font-size:.82rem;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--sepia);opacity:.6;
+  padding:8px 0;min-height:44px;display:flex;align-items:center;gap:8px}
+details.aide>summary::-webkit-details-marker{display:none}
+details.aide>summary::before{content:"+";font-weight:700;font-size:1.05rem}
+details.aide[open]>summary::before{content:"–"}
+details.aide>summary:hover{opacity:1}
+.aide-corps{font-size:1rem;line-height:1.6;color:#3a2a16;padding:2px 0 12px}
+.aide-corps p{font-style:italic;opacity:.8;margin-bottom:8px;font-size:.92rem}
+.aide-corps li{margin:0 0 6px 18px}
+
+/* ── Menu des douze ───────────────────────────────────── */
+.grille{display:grid;gap:14px;
+  grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.vign{background:var(--card);border:2px solid rgba(200,146,42,.3);
+  border-radius:12px;padding:0;overflow:hidden;cursor:pointer;
+  display:flex;flex-direction:column;text-align:left;
+  transition:border-color .15s;font-family:'Nunito',sans-serif}
+.vign:hover{border-color:var(--gold)}
+.vign:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+.vign img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;
+  display:block;background:#e8e2d4}
+.vign span{padding:11px 13px;font-size:1rem;font-weight:700;color:var(--sepia)}
+
+/* ── Règles ───────────────────────────────────────────── */
+#regles h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.15rem;
+  color:var(--sepia);margin:20px 0 10px}
+#regles h2:first-child{margin-top:0}
+#regles ul{list-style:none}
+#regles li{margin-bottom:12px;line-height:1.6;font-size:1rem;color:#3a2a16}
+#regles b{color:var(--sepia);display:block}
+.avert{background:#f7f3ea;border-left:4px solid var(--gold);
+  padding:14px 16px;border-radius:0 8px 8px 0;font-size:.95rem;line-height:1.6}
+
+.bas{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+  margin:26px 0 6px}
+
+.jdc-legal{text-align:center;padding:20px 14px 26px;font-size:.78rem;
+  line-height:1.6;color:var(--sepia);opacity:.6}
+.jdc-legal a{color:inherit}
+
+
+/* ══ Écran de départ : le motif des jeux du site ══════════
+   Copié de jeu_calcul.html sans y toucher. Ne pas réinventer : un
+   visiteur qui a joué au Calcul Mental doit retrouver les mêmes gestes. */
+#accueil h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.3rem;
+  font-weight:700;color:var(--sepia);text-align:center}
+.opt-group{display:flex;flex-direction:column;align-items:center;gap:10px;
+  width:100%;max-width:500px}
+.opt-label{font-size:.8rem;font-weight:700;color:var(--sepia);
+  letter-spacing:.08em;text-transform:uppercase;opacity:.7}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+.lvl-card{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  background:#f7f3ea;border:2.5px solid rgba(200,146,42,.3);
+  border-radius:12px;padding:16px 20px;cursor:pointer;
+  transition:all .2s;box-shadow:0 2px 8px var(--shadow);
+  min-width:130px;text-align:center}
+.lvl-card:hover{border-color:var(--gold)}
+.lvl-card.active{border-color:var(--gold);background:rgba(200,146,42,.07);
+  box-shadow:0 4px 16px rgba(200,146,42,.2)}
+.lvl-card:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+.lvl-card .lvl-ico{font-size:1.8rem}
+.lvl-card .lvl-name{font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:.95rem;font-weight:700;color:var(--sepia)}
+.lvl-card .lvl-ops{font-size:.75rem;color:var(--sepia);opacity:.6;
+  margin-top:2px;max-width:150px;line-height:1.35}
+
+.ob{background:#f7f3ea;border:2.5px solid rgba(200,146,42,.35);
+  border-radius:8px;padding:10px 20px;cursor:pointer;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;
+  font-weight:700;color:var(--sepia);transition:all .2s;
+  box-shadow:0 2px 8px var(--shadow);min-height:44px}
+.ob:hover{border-color:var(--gold)}
+.ob.active{background:var(--gold);color:#fff;border-color:var(--gold);
+  box-shadow:0 4px 14px rgba(200,146,42,.4)}
+.ob:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+
+.btn-start{padding:14px 42px;background:var(--gold);color:#fff;border:none;
+  border-radius:8px;cursor:pointer;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.05rem;
+  font-weight:700;letter-spacing:.05em;
+  box-shadow:0 5px 18px rgba(200,146,42,.4);
+  transition:background .2s,transform .15s;min-height:48px}
+.btn-start:hover{background:#b07820;transform:translateY(-2px)}
+.btn-start:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+
+/* Le bouton d'action en cours de partie, doré lui aussi. */
+.btn{display:inline-block;padding:11px 24px;background:var(--gold);color:#fff;
+  border:none;border-radius:8px;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:.92rem;
+  font-weight:700;cursor:pointer;min-height:44px;
+  box-shadow:0 4px 14px rgba(200,146,42,.35)}
+.btn:hover{background:#b07820}
+.btn:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+
+@media (max-width:520px){
+  .gros{min-width:0;width:100%;padding:16px 20px}
+  .rangee{width:100%}
+  .dessous{padding:16px 17px 18px}
+}
+@media print{ .jdc-retour,.rangee,.bas,.discret,header p,.divider{display:none} }
+</style>
+</head>
+<body>
+
+<a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
+<header>
+  <h1>Racontez-<em>moi</em></h1>
+  <p>Douze scènes d'autrefois</p>
+  <div class="divider"></div>
+</header>
+
+<main>
+
+<!-- ─────────────── Accueil ─────────────── -->
+<section class="ecran" id="accueil">
+  <p class="chapo">Chaque carte montre un lieu vide et pose un détail.
+    On regarde, on parle si
+    on veut, et on passe à la suivante quand on veut.</p>
+  <div class="rangee">
+    <button type="button" class="btn-start" id="bTirer">▶ Tirer une carte</button>
+    <button type="button" class="ob" id="bChoisir">Choisir une carte</button>
+  </div>
+  <div class="rangee">
+    <button type="button" class="discret" id="bRegles">Comment s'en servir</button>
+    <a class="discret" href="racontez-moi.pdf" download
+       target="_blank" rel="noopener">Imprimer le jeu (PDF)</a>
+  </div>
+</section>
+
+<!-- ─────────────── La carte ─────────────── -->
+<section class="ecran" id="lacarte" hidden>
+  <div class="plateau">
+    <img id="img" src="" alt="">
+    <div class="dessous">
+      <p class="phrase" id="phrase"></p>
+      <p class="nom" id="nom"></p>
+    </div>
+  </div>
+
+  <details class="aide">
+    <summary>Pour l'accompagnant</summary>
+    <div class="aide-corps">
+      <p>À glisser dans un silence qui gêne, pas à dérouler. Une séance où
+        l'on n'en utilise aucune est une bonne séance.</p>
+      <ul id="relances"></ul>
+    </div>
+  </details>
+
+  <div class="rangee">
+    <button type="button" class="btn" id="bSuivante">Carte suivante</button>
+    <button type="button" class="gros" id="bMenu">Choisir une carte</button>
+  </div>
+  <button type="button" class="discret" id="bAccueil1">Revenir au début</button>
+</section>
+
+<!-- ─────────────── Les douze ─────────────── -->
+<section class="ecran" id="menu" hidden>
+  <div class="grille">
+    <button type="button" class="vign" data-n="1">
+      <img src="images/recit/carte01.jpg" alt="" loading="lazy" width="1376" height="768">
+      <span>La salle de classe</span>
+    </button>
+    <button type="button" class="vign" data-n="2">
+      <img src="images/recit/carte02.jpg" alt="" loading="lazy" width="1376" height="768">
+      <span>La cour de récréation</span>
+    </button>
+    <button type="button" class="vign" data-n="3">
+      <img src="images/recit/carte03.jpg" alt="" loading="lazy" width="1376" height="768">
+      <span>Le lavoir</span>
+    </button>
+    <button type="button" class="vign" data-n="4">
+      <img src="images/recit/carte04.jpg" alt="" loading="lazy" width="1376" height="768">
+      <span>La cuisine</span>
+    </button>
+    <button type="button" class="vign" data-n="5">
+      <img src="images/recit/carte05.jpg" alt="" loading="lazy" width="1376" height="768">
+      <span>L'épicerie</span>
+    </button>
+    <button type="button" class="vign" data-n="6">
+      <img src="images/recit/carte06.jpg" alt="" loading="lazy" width="1376" height="768">
+      <span>La cour de ferme</span>
+    </button>
+    <button type="button" class="vign" data-n="7">
+      <img src="images/recit/carte07.jpg" alt="" loading="lazy" width="1376" height="768">
+      <span>L'établi</span>
+    </button>
+    <button type="button" class="vign" data-n="8">
+      <img src="images/recit/carte08.jpg" alt="" loading="lazy" width="1376" height="768">
+      <span>L'atelier de couture</span>
+    </button>
+    <button type="button" class="vign" data-n="9">
+      <img src="images/recit/carte09.jpg" alt="" loading="lazy" width="1376" height="768">
+      <span>Le bal</span>
+    </button>
+    <button type="button" class="vign" data-n="10">
+      <img src="images/recit/carte10.jpg" alt="" loading="lazy" width="1376" height="768">
+      <span>La table du dimanche</span>
+    </button>
+    <button type="button" class="vign" data-n="11">
+      <img src="images/recit/carte11.jpg" alt="" loading="lazy" width="1376" height="768">
+      <span>Le départ en vacances</span>
+    </button>
+    <button type="button" class="vign" data-n="12">
+      <img src="images/recit/carte12.jpg" alt="" loading="lazy" width="1376" height="768">
+      <span>Le quai de gare</span>
+    </button>
+  </div>
+  <div class="bas">
+    <button type="button" class="gros" id="bAccueil2">Revenir au début</button>
+  </div>
+</section>
+
+<!-- ─────────────── Règles ─────────────── -->
+<section class="ecran" id="regles" hidden>
+  <h2>Avant de commencer</h2>
+  <ul>
+  <li><b>Ce n'est pas un soin.</b> « It should not try to resolve either past or present problems ; it is not therapy, even if it might be therapeutic » (revue NIHR sur le life story work). Aucune mesure, aucune comparaison, aucun compte rendu.</li>
+  <li><b>Quand s'abstenir.</b> Agitation importante le jour même. Troubles de la vue ou de l'audition non corrigés : on corrige d'abord. Démence liée à l'alcool. Et en groupe, antécédents de violences ou de stress post-traumatique connus (Fondation Médéric Alzheimer, fiche réminiscence 2024).</li>
+  <li><b>Attention au proche qui accompagne.</b> C'est le point que personne n'affiche et il est documenté : dans l'essai REMCARE (488 personnes), les aidants engagés dans un dispositif de réminiscence long rapportent une hausse significative de l'anxiété, et « carers attending more groups showed increased care-giving stress ». D'où le format court, sans objectif, qu'on peut arrêter à tout moment.</li>
+  <li><b>Les relances sont facultatives.</b> Elles sont là si le silence s'installe et gêne, pas pour être déroulées. Une séance où l'on n'en utilise aucune est une bonne séance.</li>
+  </ul>
+
+  <h2>Les cinq règles</h2>
+  <ul>
+  <li><b>On apporte, on ne réclame pas.</b> La carte donne un détail ; elle ne demande pas de le retrouver. Devant des images génériques, les personnes racontent « quite detailed and emotional stories of personal significance » ; devant des photos de famille, presque rien, parce que la photo de famille fonctionne comme un test (Astell 2010, repris par BMC Geriatrics 2023).</li>
+  <li><b>On ne corrige jamais.</b> Ni la date, ni le nom, ni le lieu. « Évitez de tester la mémoire », « évitez d'obstiner » (CIUSSS de la Capitale-Nationale, document destiné aux proches).</li>
+  <li><b>Une carte sans réponse se repose, et on n'y revient pas.</b> La HAS le pose noir sur blanc pour le recueil : « Respecter ainsi le résident dans son intimité et son choix de ne pas vouloir aborder certains points », et « savoir accepter que le résident n'ait pas de demande ».</li>
+  <li><b>On s'arrête quand la personne s'arrête, pas quand le paquet est fini.</b> « Ne surtout pas chercher à recueillir en une seule fois tous les éléments » (HAS). Trois cartes valent mieux que douze.</li>
+  <li><b>Ce qui se dit appartient à la personne.</b> Rien n'est noté, transmis ni conservé sans son accord, aujourd'hui comme plus tard. Le reproche fait à trente trames de récit de vie analysées en 2024 est justement qu'aucune ne dit à qui appartient le récit (Möllergren & Harnett, Dementia).</li>
+  </ul>
+
+  <p class="avert">Ce n'est pas un soin et ça ne remplace rien. C'est une
+    activité de loisir. Rien de ce qui se dit n'est enregistré par cette
+    page : elle ne collecte rien, ne conserve rien et ne transmet rien.</p>
+
+  <div class="bas">
+    <button type="button" class="gros" id="bAccueil3">Revenir au début</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var CARTES = [
+{n:1,t:"La salle de classe",p:"Le poêle est allumé. Au fond de la classe, on a froid quand même.",r:["Le nom du maître ou de la maîtresse, s'il revient.","La place qu'on occupait : devant, au fond, près de la fenêtre.","Ce qu'on avait sur la table. L'encrier, la plume, le buvard."]},
+{n:2,t:"La cour de récréation",p:"La marelle est tracée à la craie. Le ballon de cuir pèse lourd.",r:["Les jeux : les billes, l'élastique, la corde.","Le préau les jours de pluie.","Quelqu'un avec qui on était toujours."]},
+{n:3,t:"Le lavoir",p:"L'eau est froide, même en juin. Le battoir est posé sur la pierre.",r:["Le jour de la semaine où on lavait.","Ce qui se disait là-bas et nulle part ailleurs.","Le poids du linge mouillé."]},
+{n:4,t:"La cuisine",p:"Le café vient d'être moulu. La toile cirée est encore humide.",r:["L'odeur du matin dans cette pièce.","Qui se levait le premier.","Ce qui chauffait toujours sur le coin de la cuisinière."]},
+{n:5,t:"L'épicerie",p:"La balance est en cuivre. Le bocal est ouvert sur le comptoir.",r:["Ce qu'on achetait au détail : le sucre, le sel, la lessive.","Le nom de l'épicière, s'il vient.","Le goût de ce qu'on avait le droit de prendre."]},
+{n:6,t:"La cour de ferme",p:"La porte de l'étable est ouverte. Le seau est plein jusqu'au bord.",r:["Une bête qui avait un nom.","L'heure à laquelle il fallait y être.","Le bruit du matin dans une cour comme celle-là."]},
+{n:7,t:"L'établi",p:"Ça sent le copeau frais. La chaise attend d'être recollée.",r:["Un geste que les mains savaient faire seules.","L'outil qu'on ne prêtait à personne.","Ce qu'on réparait au lieu de le jeter."]},
+{n:8,t:"L'atelier de couture",p:"La pédale est froide le matin. La boîte à boutons est ouverte.",r:["Ce qu'on faisait soi-même plutôt que de l'acheter.","Le tissu qu'on gardait sans oser le couper.","Le temps que prenait un ourlet."]},
+{n:9,t:"Le bal",p:"Le parquet vient d'être ciré. L'accordéon attend sur sa chaise.",r:["L'air qu'on jouait à tous les bals.","Ce qu'on mettait pour y aller.","L'heure à laquelle il fallait être rentré."]},
+{n:10,t:"La table du dimanche",p:"La table est mise, la soupière au milieu. Personne n'est encore assis.",r:["La place de chacun autour de la table.","Le plat qui revenait tous les dimanches.","Combien de temps on restait à table."]},
+{n:11,t:"Le départ en vacances",p:"Les valises sont sanglées sur la galerie. La route est encore vide.",r:["Qui conduisait.","Ce qu'il y avait dans le panier.","Le moment de la journée où on partait."]},
+{n:12,t:"Le quai de gare",p:"Les valises sont posées sur le quai. Le train n'est pas là.",r:["Un départ dont on se souvient.","Qui était sur le quai.","Ce qu'on emportait quand on partait pour longtemps."]}
+  ];
+  var ALT = [
+"Une salle de classe d'école communale, vide, avec ses pupitres de bois, un poêle en fonte et un tableau noir.",
+"Une cour d'école de village, déserte, avec une marelle à la craie, un préau et un ballon de cuir posé au sol.",
+"Un lavoir de village sous son toit de tuiles, le bassin plein, un battoir de bois posé sur la margelle.",
+"Une cuisine de maison de campagne, vide, avec sa cuisinière à bois, un buffet à vaisselle et une table à toile cirée.",
+"L'intérieur d'une épicerie de village, sans personne, avec une balance de cuivre sur le comptoir et des bocaux sur les étagères.",
+"Une cour de ferme déserte, la porte de l'étable ouverte, un abreuvoir de pierre et un seau de zinc.",
+"Un établi de menuisier dans un atelier vide, avec sa presse, quelques outils au mur et des copeaux au sol.",
+"Un atelier de couture familial, sans personne, avec une machine à pédale, un mannequin de couturière et une boîte à boutons ouverte.",
+"Une salle des fêtes préparée pour un bal, parquet vide, guirlandes de papier et un accordéon posé sur une chaise.",
+"Une table de salle à manger dressée pour un repas de famille, nappe blanche et soupière au centre, personne n'est assis.",
+"Une berline française des années soixante, valises sanglées sur la galerie, arrêtée devant une maison de campagne.",
+"Le quai désert d'une petite gare de campagne, sa marquise de fer, un banc de bois et des valises posées."
+  ];
+
+  var ecrans = {
+    accueil: document.getElementById('accueil'),
+    carte:   document.getElementById('lacarte'),
+    menu:    document.getElementById('menu'),
+    regles:  document.getElementById('regles')
+  };
+
+  function montrer(nom) {
+    Object.keys(ecrans).forEach(function (k) {
+      ecrans[k].hidden = (k !== nom);
+    });
+    window.scrollTo(0, 0);
+  }
+
+  // ── Le paquet ───────────────────────────────────────────────────────
+  // On brasse une fois et on distribue dans l'ordre brassé. Un tirage
+  // indépendant à chaque clic ramènerait la même carte deux fois de suite,
+  // et ça se lit comme une panne.
+  var paquet = [], pose = 0;
+
+  function brasser() {
+    paquet = CARTES.map(function (c, i) { return i; });
+    for (var i = paquet.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = paquet[i]; paquet[i] = paquet[j]; paquet[j] = t;
+    }
+    pose = 0;
+  }
+
+  function suivante() {
+    if (pose >= paquet.length) { brasser(); }
+    poser(paquet[pose++]);
+  }
+
+  var img = document.getElementById('img');
+  var phrase = document.getElementById('phrase');
+  var nom = document.getElementById('nom');
+  var relances = document.getElementById('relances');
+  var aide = document.querySelector('details.aide');
+
+  function poser(i) {
+    var c = CARTES[i];
+    img.src = 'images/recit/carte' + (c.n < 10 ? '0' : '') + c.n + '.jpg';
+    img.alt = ALT[i];
+    phrase.textContent = c.p;
+    nom.textContent = c.t;
+    relances.innerHTML = '';
+    c.r.forEach(function (r) {
+      var li = document.createElement('li');
+      li.textContent = r;
+      relances.appendChild(li);
+    });
+    // Le dépliant se referme à chaque carte : sinon l'accompagnant lit les
+    // relances avant même d'avoir laissé le silence s'installer.
+    aide.open = false;
+    montrer('carte');
+    // On précharge la suivante pour qu'elle ne s'affiche pas par morceaux.
+    if (pose < paquet.length) {
+      var n = CARTES[paquet[pose]].n;
+      new Image().src = 'images/recit/carte' + (n < 10 ? '0' : '') + n + '.jpg';
+    }
+  }
+
+  document.getElementById('bTirer').addEventListener('click', function () {
+    brasser(); suivante();
+  });
+  document.getElementById('bSuivante').addEventListener('click', suivante);
+  document.getElementById('bChoisir').addEventListener('click', function () {
+    montrer('menu');
+  });
+  document.getElementById('bMenu').addEventListener('click', function () {
+    montrer('menu');
+  });
+  document.getElementById('bRegles').addEventListener('click', function () {
+    montrer('regles');
+  });
+  ['bAccueil1', 'bAccueil2', 'bAccueil3'].forEach(function (id) {
+    document.getElementById(id).addEventListener('click', function () {
+      montrer('accueil');
+    });
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('.vign'),
+    function (b) {
+      b.addEventListener('click', function () {
+        var n = parseInt(b.dataset.n, 10);
+        // Une carte choisie sort aussi du paquet : on ne veut pas qu'elle
+        // revienne au tirage juste après avoir été vue.
+        var pos = paquet.indexOf(n - 1);
+        if (pos >= pose) {
+          paquet.splice(pos, 1);
+          paquet.splice(pose, 0, n - 1);
+          pose++;
+        }
+        poser(n - 1);
+      });
+    });
+
+  brasser();
+})();
+</script>
+
+</body>
+</html>

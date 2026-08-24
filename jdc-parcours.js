@@ -42,6 +42,12 @@
     apres:         { nom: "Qu'est-ce qui vient après ?", fonction: 'logique', exigence: 1, niveaux: 3 },
     grandeliste:   { nom: 'La grande liste',    fonction: 'langage', exigence: 1, niveaux: 1 },
     range:         { nom: 'Où est-ce rangé ?',  fonction: 'attention', exigence: 1, niveaux: 3 },
+    monnaie:       { nom: 'Rendre la Monnaie', fonction: 'calcul', exigence: 1, niveaux: 3 },
+    tables:        { nom: 'Les Tables', fonction: 'calcul', exigence: 2, niveaux: 3 },
+    double:        { nom: 'Le double et la moitié', fonction: 'calcul', exigence: 2, niveaux: 3 },
+    geographie:    { nom: 'La Géographie', fonction: 'temps', exigence: 2, niveaux: 3 },
+    devinettes:    { nom: 'Ça vous revient ?', fonction: 'langage', exigence: 1, niveaux: 3 },
+    racontezmoi:   { nom: 'Racontez-moi', fonction: 'langage', exigence: 1, niveaux: 3 },
     /* Les enquêtes à concertation se jouent à plusieurs. Un seul identifiant
        pour toutes : ce qui les distingue est la variante (potager, goûter…). */
     enquete_groupe: { nom: 'Les enquêtes à plusieurs', fonction: 'logique', exigence: 2, niveaux: 1 }
@@ -50,11 +56,11 @@
   var FONCTIONS = {
     memoire:   'La mémoire',
     langage:   'Les mots et le langage',
-    calcul:    'La logique et le calcul',
+    calcul:    'Les nombres et le calcul',
     attention: "L'attention et l'observation",
-    temps:     'Le repérage dans le temps',
+    temps:     'Se repérer dans le temps et dans l\'espace',
     executif:  'La souplesse et le contrôle',
-    logique:   'Le raisonnement'
+    logique:   'La logique et la déduction'
   };
 
   /* ── Lecture / écriture ── */

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Devinettes d'autrefois · remue-méninges en ligne gratuit · Les Jardins de Célestine</title>
+<meta name="description" content="Trente devinettes d'autrefois, celles qu'on connaît depuis l'enfance. Aucun score, aucune mauvaise réponse : on retourne la carte quand on veut. Gratuit, sans inscription.">
+<link rel="canonical" href="https://jardinsdecelestine.com/ca-vous-revient">
+<!-- LIGNE À SUPPRIMER LE JOUR DE LA PUBLICATION : tant qu'elle est là, la
+     page n'est pas référencée. C'est voulu, elle n'est pas encore validée. -->
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --parchment:#eee8d5; --sepia:#5c3d1e; --gold:#c8922a;
+  --green:#2d6a4f; --card:#f7f3ea; --shadow:rgba(28,18,8,.13);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--parchment);
+  background-image:radial-gradient(ellipse at 20% 10%,rgba(200,146,42,.08) 0%,transparent 55%),
+    radial-gradient(ellipse at 80% 90%,rgba(45,106,79,.06) 0%,transparent 55%);
+  min-height:100vh;font-family:'Nunito',system-ui,sans-serif;color:#1c1208;
+}
+.jdc-retour{display:block;text-align:center;padding:16px 8px;font-size:.74rem;
+  color:var(--sepia);opacity:.55;text-decoration:none;letter-spacing:.1em;
+  text-transform:uppercase}
+.jdc-retour:hover{opacity:1}
+
+header{text-align:center;padding:18px 20px 12px;
+  border-bottom:1px solid rgba(200,146,42,.2)}
+header h1{font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:700;color:var(--sepia)}
+header h1 em{color:var(--gold);font-style:normal}
+header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--sepia);opacity:.55;margin-top:3px}
+.divider{width:60px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  margin:7px auto 0}
+
+main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
+/* !important : #accueil et #lacarte portent un display:flex posé par un
+   sélecteur d'id, qui l'emporterait sur .ecran[hidden]. Défaut déjà commis
+   sur racontez-moi.html, corrigé ici d'emblée. */
+.ecran[hidden]{display:none !important}
+
+#accueil{text-align:center;display:flex;flex-direction:column;
+  align-items:center;gap:22px}
+.chapo{max-width:540px;font-size:1.08rem;line-height:1.65;color:#3a2a16}
+.chapo b{color:var(--sepia)}
+.rangee{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+
+.gros{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.15rem;
+  font-weight:700;background:var(--card);color:var(--sepia);
+  border:2.5px solid rgba(200,146,42,.45);border-radius:14px;
+  padding:18px 30px;cursor:pointer;min-height:60px;min-width:210px;
+  box-shadow:0 2px 8px var(--shadow);transition:border-color .15s,background .15s}
+.gros:hover{border-color:var(--gold);background:#fffdf7}
+.gros:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+.gros.premier{background:var(--sepia);color:#fdf9f0;border-color:var(--sepia)}
+.gros.premier:hover{background:#6d4a26}
+.discret{background:none;border:none;font-family:'Nunito',sans-serif;
+  font-size:.92rem;color:var(--green);cursor:pointer;text-decoration:underline;
+  padding:10px 12px;min-height:44px}
+.discret:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+
+/* ── La carte ─────────────────────────────────────────── */
+#lacarte{display:flex;flex-direction:column;gap:16px;align-items:center}
+.plateau{width:100%;background:var(--card);border-radius:16px;
+  border:1px solid rgba(200,146,42,.3);box-shadow:0 4px 18px var(--shadow);
+  padding:40px 30px;min-height:220px;display:flex;flex-direction:column;
+  justify-content:center;text-align:center;position:relative}
+.question{font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:clamp(1.35rem,3.2vw,1.85rem);line-height:1.5;color:#1c1208}
+.numero{position:absolute;top:14px;left:18px;font-size:.72rem;
+  letter-spacing:.16em;color:var(--sepia);opacity:.4;font-weight:700}
+
+.reponse{margin-top:26px;padding-top:22px;
+  border-top:1px solid rgba(200,146,42,.35)}
+.reponse[hidden]{display:none}
+.reponse .mot{font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:clamp(1.6rem,4vw,2.3rem);font-weight:700;color:var(--green)}
+
+.indice{margin-top:18px;font-size:1.05rem;line-height:1.55;
+  color:var(--sepia);font-style:italic}
+.indice[hidden]{display:none}
+
+/* ── La liste des trente ──────────────────────────────── */
+.liste{display:flex;flex-direction:column;gap:8px;width:100%}
+.ligne{background:var(--card);border:1.5px solid rgba(200,146,42,.28);
+  border-radius:10px;padding:14px 16px;cursor:pointer;text-align:left;
+  font-family:'Nunito',sans-serif;font-size:1.02rem;line-height:1.45;
+  color:#1c1208;min-height:48px;display:flex;gap:12px;align-items:baseline;
+  transition:border-color .15s,background .15s}
+.ligne:hover{border-color:var(--gold);background:#fffdf7}
+.ligne:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+.ligne .num{font-size:.74rem;font-weight:700;color:var(--sepia);opacity:.45;
+  letter-spacing:.1em;flex:0 0 auto}
+
+/* ── Comment s'en servir ──────────────────────────────── */
+#regles h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.15rem;
+  color:var(--sepia);margin:20px 0 10px}
+#regles h2:first-child{margin-top:0}
+#regles ul{list-style:none}
+#regles li{margin-bottom:12px;line-height:1.6;font-size:1rem;color:#3a2a16}
+#regles b{color:var(--sepia);display:block}
+.avert{background:#f7f3ea;border-left:4px solid var(--gold);
+  padding:14px 16px;border-radius:0 8px 8px 0;font-size:.95rem;line-height:1.6}
+
+.bas{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+  margin:26px 0 6px}
+.jdc-legal{text-align:center;padding:20px 14px 26px;font-size:.78rem;
+  line-height:1.6;color:var(--sepia);opacity:.6}
+.jdc-legal a{color:inherit}
+
+
+/* ══ Écran de départ : le motif des jeux du site ══════════
+   Copié de jeu_calcul.html sans y toucher. Ne pas réinventer : un
+   visiteur qui a joué au Calcul Mental doit retrouver les mêmes gestes. */
+#accueil h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.3rem;
+  font-weight:700;color:var(--sepia);text-align:center}
+.opt-group{display:flex;flex-direction:column;align-items:center;gap:10px;
+  width:100%;max-width:500px}
+.opt-label{font-size:.8rem;font-weight:700;color:var(--sepia);
+  letter-spacing:.08em;text-transform:uppercase;opacity:.7}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+.lvl-card{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  background:#f7f3ea;border:2.5px solid rgba(200,146,42,.3);
+  border-radius:12px;padding:16px 20px;cursor:pointer;
+  transition:all .2s;box-shadow:0 2px 8px var(--shadow);
+  min-width:130px;text-align:center}
+.lvl-card:hover{border-color:var(--gold)}
+.lvl-card.active{border-color:var(--gold);background:rgba(200,146,42,.07);
+  box-shadow:0 4px 16px rgba(200,146,42,.2)}
+.lvl-card:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+.lvl-card .lvl-ico{font-size:1.8rem}
+.lvl-card .lvl-name{font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:.95rem;font-weight:700;color:var(--sepia)}
+.lvl-card .lvl-ops{font-size:.75rem;color:var(--sepia);opacity:.6;
+  margin-top:2px;max-width:150px;line-height:1.35}
+
+.ob{background:#f7f3ea;border:2.5px solid rgba(200,146,42,.35);
+  border-radius:8px;padding:10px 20px;cursor:pointer;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;
+  font-weight:700;color:var(--sepia);transition:all .2s;
+  box-shadow:0 2px 8px var(--shadow);min-height:44px}
+.ob:hover{border-color:var(--gold)}
+.ob.active{background:var(--gold);color:#fff;border-color:var(--gold);
+  box-shadow:0 4px 14px rgba(200,146,42,.4)}
+.ob:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+
+.btn-start{padding:14px 42px;background:var(--gold);color:#fff;border:none;
+  border-radius:8px;cursor:pointer;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.05rem;
+  font-weight:700;letter-spacing:.05em;
+  box-shadow:0 5px 18px rgba(200,146,42,.4);
+  transition:background .2s,transform .15s;min-height:48px}
+.btn-start:hover{background:#b07820;transform:translateY(-2px)}
+.btn-start:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+
+/* Le bouton d'action en cours de partie, doré lui aussi. */
+.btn{display:inline-block;padding:11px 24px;background:var(--gold);color:#fff;
+  border:none;border-radius:8px;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:.92rem;
+  font-weight:700;cursor:pointer;min-height:44px;
+  box-shadow:0 4px 14px rgba(200,146,42,.35)}
+.btn:hover{background:#b07820}
+.btn:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+
+@media (max-width:520px){
+  .gros{min-width:0;width:100%;padding:16px 20px}
+  .rangee{width:100%}
+  .plateau{padding:34px 20px}
+}
+</style>
+</head>
+<body>
+
+<a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
+<header>
+  <h1>Ça vous <em>revient</em> ?</h1>
+  <p>Trente devinettes d'autrefois</p>
+  <div class="divider"></div>
+</header>
+
+<main>
+
+<section class="ecran" id="accueil">
+  <p class="chapo">Ce sont les devinettes qu'on entendait dans les cours de
+    récréation et aux veillées. Si la réponse ne
+    vient pas, il y a un indice, et sinon on retourne la carte.</p>
+  <div class="rangee">
+    <button type="button" class="btn-start" id="bTirer">▶ Tirer une carte</button>
+    <button type="button" class="ob" id="bChoisir">Choisir dans la liste</button>
+  </div>
+  <div class="rangee">
+    <button type="button" class="discret" id="bRegles">Comment s'en servir</button>
+  </div>
+</section>
+
+<section class="ecran" id="lacarte" hidden>
+  <div class="plateau">
+    <span class="numero" id="numero"></span>
+    <p class="question" id="question"></p>
+    <p class="indice" id="indice" hidden></p>
+    <div class="reponse" id="reponse" hidden>
+      <span class="mot" id="mot"></span>
+    </div>
+  </div>
+
+  <div class="rangee">
+    <button type="button" class="gros" id="bIndice">Un indice</button>
+    <button type="button" class="gros" id="bRetourner">Retourner la carte</button>
+  </div>
+  <div class="rangee">
+    <button type="button" class="btn" id="bSuivante">Carte suivante</button>
+    <button type="button" class="gros" id="bMenu">Choisir dans la liste</button>
+  </div>
+  <button type="button" class="discret" id="bAccueil1">Revenir au début</button>
+</section>
+
+<section class="ecran" id="menu" hidden>
+  <div class="liste">
+    <button type="button" class="ligne" data-n="0"><span class="num">01</span>Qu'est-ce qui fait le tour de la maison sans bouger ?</button>
+    <button type="button" class="ligne" data-n="1"><span class="num">02</span>Qu'est-ce qui a un dos et quatre pieds, et ne marche jamais ?</button>
+    <button type="button" class="ligne" data-n="2"><span class="num">03</span>Qu'est-ce qui a des bras mais pas de mains ?</button>
+    <button type="button" class="ligne" data-n="3"><span class="num">04</span>Qu'est-ce qui a un cou mais pas de tête ?</button>
+    <button type="button" class="ligne" data-n="4"><span class="num">05</span>Qu'est-ce qui a une tête et un pied, mais pas de corps ?</button>
+    <button type="button" class="ligne" data-n="5"><span class="num">06</span>Qu'est-ce qui a des dents et ne mord personne ?</button>
+    <button type="button" class="ligne" data-n="6"><span class="num">07</span>Qu'est-ce qui a une langue et ne parle pas ?</button>
+    <button type="button" class="ligne" data-n="7"><span class="num">08</span>Qu'est-ce qui a des feuilles et pas une seule branche ?</button>
+    <button type="button" class="ligne" data-n="8"><span class="num">09</span>Je suis plein de trous et je retiens l'eau.</button>
+    <button type="button" class="ligne" data-n="9"><span class="num">10</span>On me casse avant de se servir de moi.</button>
+    <button type="button" class="ligne" data-n="10"><span class="num">11</span>Plus j'essuie, plus je suis mouillé.</button>
+    <button type="button" class="ligne" data-n="11"><span class="num">12</span>Il est blanc quand il est sale et noir quand il est propre.</button>
+    <button type="button" class="ligne" data-n="12"><span class="num">13</span>Qu'est-ce qui a des ailes et ne vole pas ?</button>
+    <button type="button" class="ligne" data-n="13"><span class="num">14</span>Qu'est-ce qui va de la cave au grenier sans jamais bouger ?</button>
+    <button type="button" class="ligne" data-n="14"><span class="num">15</span>Qu'est-ce qui court sans jamais s'arrêter ?</button>
+    <button type="button" class="ligne" data-n="15"><span class="num">16</span>Qu'est-ce qui se lève sans jamais s'être couché ?</button>
+    <button type="button" class="ligne" data-n="16"><span class="num">17</span>Qu'est-ce qui tombe sans jamais se faire mal ?</button>
+    <button type="button" class="ligne" data-n="17"><span class="num">18</span>Qu'est-ce qui a des aiguilles et ne pique pas ?</button>
+    <button type="button" class="ligne" data-n="18"><span class="num">19</span>Plus il y en a, moins on voit clair.</button>
+    <button type="button" class="ligne" data-n="19"><span class="num">20</span>Qu'est-ce qui peut être dans la mer et dans le ciel ?</button>
+    <button type="button" class="ligne" data-n="20"><span class="num">21</span>Qu'est-ce qui traverse le champ sans jamais avancer ?</button>
+    <button type="button" class="ligne" data-n="21"><span class="num">22</span>Qu'est-ce qui a des yeux et ne voit rien ?</button>
+    <button type="button" class="ligne" data-n="22"><span class="num">23</span>Je marche sans jambes et je pleure sans yeux.</button>
+    <button type="button" class="ligne" data-n="23"><span class="num">24</span>Qu'est-ce qui monte et ne redescend jamais ?</button>
+    <button type="button" class="ligne" data-n="24"><span class="num">25</span>Je porte des lunettes et je n'y vois rien.</button>
+    <button type="button" class="ligne" data-n="25"><span class="num">26</span>Qu'est-ce qui est à vous et dont les autres se servent plus que vous ?</button>
+    <button type="button" class="ligne" data-n="26"><span class="num">27</span>Qu'est-ce qui répond dans toutes les langues sans en connaître aucune ?</button>
+    <button type="button" class="ligne" data-n="27"><span class="num">28</span>Plus on en enlève, plus il devient grand.</button>
+    <button type="button" class="ligne" data-n="28"><span class="num">29</span>Qu'est-ce qui devient plus léger quand on le remplit ?</button>
+    <button type="button" class="ligne" data-n="29"><span class="num">30</span>Qu'est-ce qu'on peut attraper mais pas lancer ?</button>
+  </div>
+  <div class="bas">
+    <button type="button" class="gros" id="bAccueil2">Revenir au début</button>
+  </div>
+</section>
+
+<section class="ecran" id="regles" hidden>
+  <h2>Comment s'en servir</h2>
+  <ul>
+    <li><b>On lit à voix haute, et on attend.</b> Le silence fait partie du
+      jeu. Une devinette d'autrefois ne se calcule pas, elle remonte, et ça
+      prend le temps que ça prend.</li>
+    <li><b>Il n'y a rien à taper et rien à cocher.</b> Aucune case, aucun
+      choix à faire : donc aucune réponse fausse possible.</li>
+    <li><b>L'indice avant la réponse.</b> Il oriente sans donner. C'est ce
+      qu'on dit quand ça ne vient pas.</li>
+    <li><b>Retourner la carte n'est pas abandonner.</b> On retourne quand on
+      veut, même tout de suite, même sans avoir cherché.</li>
+    <li><b>On s'arrête quand la personne s'arrête</b>, pas quand les trente
+      sont passées. Cinq devinettes est une bonne séance.</li>
+    <li><b>On ne corrige jamais.</b> Si une autre réponse est proposée et
+      qu'elle tient debout, elle est bonne. Beaucoup de ces devinettes en
+      ont plusieurs.</li>
+  </ul>
+
+  <p class="avert">Ce n'est pas un soin et ça ne remplace rien. C'est une
+    activité de loisir. Cette page ne collecte rien, ne conserve rien et ne
+    transmet rien.</p>
+
+  <div class="bas">
+    <button type="button" class="gros" id="bAccueil3">Revenir au début</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var D = [
+{q:"Qu'est-ce qui fait le tour de la maison sans bouger ?",r:"les murs",i:"C'est en pierre, et c'est tout autour de vous en ce moment."},
+{q:"Qu'est-ce qui a un dos et quatre pieds, et ne marche jamais ?",r:"la chaise",i:"Il y en a une derrière vous."},
+{q:"Qu'est-ce qui a des bras mais pas de mains ?",r:"le fauteuil",i:"On s'y assied, et on y pose les coudes."},
+{q:"Qu'est-ce qui a un cou mais pas de tête ?",r:"la bouteille",i:"C'est en verre, et on la débouche."},
+{q:"Qu'est-ce qui a une tête et un pied, mais pas de corps ?",r:"l'épingle",i:"C'est tout petit, et ça pique."},
+{q:"Qu'est-ce qui a des dents et ne mord personne ?",r:"le peigne",i:"C'est sur la coiffeuse, le matin."},
+{q:"Qu'est-ce qui a une langue et ne parle pas ?",r:"la chaussure",i:"C'est sous le lacet."},
+{q:"Qu'est-ce qui a des feuilles et pas une seule branche ?",r:"le livre",i:"On les tourne une par une."},
+{q:"Je suis plein de trous et je retiens l'eau.",r:"l'éponge",i:"C'est au bord de l'évier."},
+{q:"On me casse avant de se servir de moi.",r:"l'œuf",i:"C'est la poule qui le pond."},
+{q:"Plus j'essuie, plus je suis mouillé.",r:"le torchon",i:"C'est pendu à sa barre, près de la cuisinière."},
+{q:"Il est blanc quand il est sale et noir quand il est propre.",r:"le tableau noir",i:"C'est au fond de la classe, et on l'efface avec un chiffon."},
+{q:"Qu'est-ce qui a des ailes et ne vole pas ?",r:"le moulin",i:"C'est sur la colline, et le vent le fait tourner."},
+{q:"Qu'est-ce qui va de la cave au grenier sans jamais bouger ?",r:"l'escalier",i:"On le monte et on le descend, lui reste où il est."},
+{q:"Qu'est-ce qui court sans jamais s'arrêter ?",r:"la rivière",i:"Ça passe sous le pont."},
+{q:"Qu'est-ce qui se lève sans jamais s'être couché ?",r:"le soleil",i:"Ça arrive tous les matins, à l'est."},
+{q:"Qu'est-ce qui tombe sans jamais se faire mal ?",r:"la pluie",i:"Ça mouille, et on sort le parapluie."},
+{q:"Qu'est-ce qui a des aiguilles et ne pique pas ?",r:"l'horloge",i:"C'est accroché au mur de la cuisine, et ça fait du bruit la nuit."},
+{q:"Plus il y en a, moins on voit clair.",r:"le brouillard",i:"C'est le matin d'automne, au-dessus des champs."},
+{q:"Qu'est-ce qui peut être dans la mer et dans le ciel ?",r:"l'étoile",i:"Il y en a cinq branches."},
+{q:"Qu'est-ce qui traverse le champ sans jamais avancer ?",r:"le chemin",i:"On le prend pour aller au village."},
+{q:"Qu'est-ce qui a des yeux et ne voit rien ?",r:"la pomme de terre",i:"C'est dans la cave, et au printemps ça germe."},
+{q:"Je marche sans jambes et je pleure sans yeux.",r:"le nuage",i:"C'est là-haut, et ça change de forme."},
+{q:"Qu'est-ce qui monte et ne redescend jamais ?",r:"l'âge",i:"Ça augmente d'un, une fois par an."},
+{q:"Je porte des lunettes et je n'y vois rien.",r:"le nez",i:"C'est au milieu de la figure."},
+{q:"Qu'est-ce qui est à vous et dont les autres se servent plus que vous ?",r:"votre prénom",i:"C'est ce qu'on dit quand on vous appelle."},
+{q:"Qu'est-ce qui répond dans toutes les langues sans en connaître aucune ?",r:"l'écho",i:"C'est dans la montagne, quand on crie."},
+{q:"Plus on en enlève, plus il devient grand.",r:"le trou",i:"On le creuse avec une pelle."},
+{q:"Qu'est-ce qui devient plus léger quand on le remplit ?",r:"le ballon",i:"C'est de l'air qu'on met dedans."},
+{q:"Qu'est-ce qu'on peut attraper mais pas lancer ?",r:"un rhume",i:"Ça arrive en hiver, et on éternue."}
+  ];
+
+  var ecrans = {
+    accueil: document.getElementById('accueil'),
+    carte:   document.getElementById('lacarte'),
+    menu:    document.getElementById('menu'),
+    regles:  document.getElementById('regles')
+  };
+  function montrer(nom) {
+    Object.keys(ecrans).forEach(function (k) { ecrans[k].hidden = (k !== nom); });
+    window.scrollTo(0, 0);
+  }
+
+  // Paquet brassé une fois puis distribué : un tirage indépendant à chaque
+  // clic ramènerait la même carte deux fois de suite, ce qui se lit comme
+  // une panne. Même choix que sur racontez-moi.html.
+  var paquet = [], pose = 0;
+  function brasser() {
+    paquet = D.map(function (c, i) { return i; });
+    for (var i = paquet.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = paquet[i]; paquet[i] = paquet[j]; paquet[j] = t;
+    }
+    pose = 0;
+  }
+  function suivante() {
+    if (pose >= paquet.length) { brasser(); }
+    poser(paquet[pose++]);
+  }
+
+  var elQ = document.getElementById('question');
+  var elI = document.getElementById('indice');
+  var elR = document.getElementById('reponse');
+  var elM = document.getElementById('mot');
+  var elN = document.getElementById('numero');
+
+  function poser(i) {
+    var c = D[i];
+    elQ.textContent = c.q;
+    elI.textContent = c.i;
+    elM.textContent = c.r;
+    elN.textContent = ('0' + (i + 1)).slice(-2);
+    // Indice et réponse repartent cachés à chaque carte.
+    elI.hidden = true;
+    elR.hidden = true;
+    montrer('carte');
+  }
+
+  document.getElementById('bIndice').addEventListener('click', function () {
+    elI.hidden = false;
+  });
+  document.getElementById('bRetourner').addEventListener('click', function () {
+    elR.hidden = false;
+  });
+  document.getElementById('bTirer').addEventListener('click', function () {
+    brasser(); suivante();
+  });
+  document.getElementById('bSuivante').addEventListener('click', suivante);
+  document.getElementById('bChoisir').addEventListener('click', function () { montrer('menu'); });
+  document.getElementById('bMenu').addEventListener('click', function () { montrer('menu'); });
+  document.getElementById('bRegles').addEventListener('click', function () { montrer('regles'); });
+  ['bAccueil1', 'bAccueil2', 'bAccueil3'].forEach(function (id) {
+    document.getElementById(id).addEventListener('click', function () { montrer('accueil'); });
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('.ligne'), function (b) {
+    b.addEventListener('click', function () {
+      var n = parseInt(b.dataset.n, 10);
+      var pos = paquet.indexOf(n);
+      if (pos >= pose) {
+        paquet.splice(pos, 1);
+        paquet.splice(pose, 0, n);
+        pose++;
+      }
+      poser(n);
+    });
+  });
+
+  brasser();
+})();
+</script>
+
+</body>
+</html>
