@@ -22,7 +22,7 @@
 :root {
   --cream:#f7f3ea; --parchment:#eee8d5; --ink:#1c1208;
   --sepia:#5c3d1e; --gold:#c8922a; --green:#2d6a4f;
-  --red:#8b2020; --shadow:rgba(28,18,8,0.13);
+  --red:#6b4c2a; --shadow:rgba(28,18,8,0.13);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{
@@ -46,7 +46,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 /* ── HUD ── */
 .hud{display:flex;gap:8px;justify-content:center;padding:10px 16px;flex-wrap:wrap;}
 .hud-box{background:var(--cream);border:1px solid rgba(200,146,42,.35);border-radius:8px;padding:6px 14px;text-align:center;box-shadow:0 2px 6px var(--shadow);min-width:64px;}
-.hud-lbl{font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sepia);opacity:.6;}
+.hud-lbl{font-size:0.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sepia);opacity:.6;}
 .hud-val{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.35rem;font-weight:700;color:var(--gold);line-height:1.1;}
 
 /* ── ÉCRAN DÉMARRAGE ── */
@@ -73,7 +73,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 .card.wrong{border-color:var(--red);background:rgba(139,32,32,.07);animation:shake .4s ease;}
 .card.matched::after{content:'✓';position:absolute;top:6px;right:8px;color:var(--green);font-weight:700;font-size:.8rem;}
 .card-emoji{font-size:clamp(1.6rem,5vw,2.2rem);line-height:1;}
-.card-text{font-size:clamp(.7rem,2.5vw,.82rem);color:var(--sepia);font-weight:700;line-height:1.2;text-align:center;}
+.card-text{font-size:clamp(0.72rem,2.5vw,.82rem);color:var(--sepia);font-weight:700;line-height:1.2;text-align:center;}
 
 /* ── FEEDBACK ── */
 .feedback{text-align:center;padding:6px;font-size:.9rem;font-weight:700;min-height:28px;color:var(--green);}
@@ -98,13 +98,13 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 #statsPanel.show{display:flex;animation:fadeIn .3s ease;}
 #statsBox{background:var(--cream);border:2px solid var(--gold);border-radius:14px;padding:26px 30px;max-width:440px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.4);}
 #statsBox h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;font-weight:700;color:var(--sepia);margin-bottom:4px;}
-.s-sub{font-size:.7rem;color:var(--sepia);opacity:.55;margin-bottom:14px;display:block;}
+.s-sub{font-size:0.72rem;color:var(--sepia);opacity:.55;margin-bottom:14px;display:block;}
 .srow{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(200,146,42,.14);}
 .srow:last-child{border-bottom:none;}
 .srow-name{font-size:.82rem;font-weight:700;color:var(--sepia);}
-.srow-sub{font-size:.62rem;color:var(--sepia);opacity:.55;font-weight:400;}
+.srow-sub{font-size:0.72rem;color:var(--sepia);opacity:.55;font-weight:400;}
 .scol{text-align:center;}
-.slbl{font-size:.52rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.08em;}
+.slbl{font-size:0.72rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.08em;}
 .sval{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.9rem;font-weight:700;color:var(--gold);}
 .sval.green{color:var(--green);}
 .sbar-wrap{grid-column:1/-1;height:4px;background:rgba(200,146,42,.15);border-radius:2px;}
@@ -160,6 +160,17 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
+<style>#victory-sub{font-style:italic;opacity:.7;margin:-2px 0 10px}</style>
+
+<style id="trame-confettis">
+.jdc-cp{position:fixed;top:-10px;width:9px;height:9px;border-radius:2px;
+  z-index:60;pointer-events:none;animation:jdcTombe 2.6s ease-in forwards}
+@keyframes jdcTombe{
+  to{transform:translateY(105vh) rotate(540deg);opacity:0}}
+@media (prefers-reduced-motion:reduce){.jdc-cp{display:none}}
+</style>
 </head>
 <body>
 
@@ -169,7 +180,6 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
   <h1 id="mainTitle">Jeu des <em>Paires</em></h1>
   <div class="divider"></div>
   <p>Associer · Reconnaître · Relier</p>
-  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
 </header>
 
 <!-- ÉCRAN DÉMARRAGE -->
@@ -195,18 +205,17 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 <div id="gameScreen">
   <div class="hud">
     <div class="hud-box"><div class="hud-lbl">Paires</div><div class="hud-val" id="hud-pairs">0</div></div>
-    <div class="hud-box"><div class="hud-lbl">Essais</div><div class="hud-val" id="hud-tries">0</div></div>
-    <div class="hud-box"><div class="hud-lbl">Temps</div><div class="hud-val" id="hud-time">0:00</div></div>
   </div>
   <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
   <div class="feedback" id="feedback"></div>
   <div class="columns" id="columns"></div>
   <div id="victoryBanner">
-    <div style="font-size:2rem">🌟</div>
+    <div style="font-size:2rem">🎉</div>
     <h2>Bravo !</h2>
     <p id="victory-msg"></p>
+    <p id="victory-sub" class="victory-sub"></p>
     <button class="btn-replay" onclick="startGame()">Rejouer</button>
-    <button class="btn-back" onclick="goStart()">← Changer de mode</button>
+    <button class="btn-back" onclick="goStart()">↩ Revenir au début</button>
   </div>
 </div>
 
@@ -266,7 +275,7 @@ let _tc=0, _tct=null;
 document.getElementById('mainTitle').addEventListener('click', () => {
   _tc++; clearTimeout(_tct);
   _tct = setTimeout(() => _tc=0, 800);
-  if(_tc >= 3){ _tc=0; document.getElementById('statsBtn').style.display='block'; toast('Mode admin activé'); }
+  if(_tc >= 3){ _tc=0;  toast('Mode admin activé'); }
 });
 
 function loadStats(){ try{ return JSON.parse(localStorage.getItem(STATS_KEY))||{}; }catch(e){ return{}; } }
@@ -308,7 +317,7 @@ function openStats(){
         <div class="scol"><div class="slbl">Réussite</div><div class="sval green">${pct}%</div></div>
         <div class="scol"><div class="slbl">Meilleur</div><div class="sval">${bestM}</div></div>
         <div class="sbar-wrap"><div class="sbar" style="width:${bw}%"></div></div>
-        <div style="grid-column:1/-1;font-size:.68rem;color:var(--sepia);opacity:.5;">Essais moy. : ${avgTries} par partie réussie</div>
+        <div style="grid-column:1/-1;font-size:0.72rem;color:var(--sepia);opacity:.5;">Essais moy. : ${avgTries} par partie réussie</div>
       </div>`;
     }).join('');
   }
@@ -427,11 +436,9 @@ function startGame(){
     col.appendChild(el);
   });
 
-  timerInterval=setInterval(()=>{
-    seconds++;
-    const m=Math.floor(seconds/60),s=seconds%60;
-    document.getElementById('hud-time').textContent=`${m}:${s.toString().padStart(2,'0')}`;
-  },1000);
+  // Plus de chronomètre à l'écran : on ne le lance plus. La
+  // variable seconds reste à zéro, et le carnet de parcours,
+  // qui la reçoit, s'en accommode.
 }
 
 function onCardClick(idx,el){
@@ -473,7 +480,6 @@ function showFeedback(msg,isErr){
 
 function updateHUD(){
   document.getElementById('hud-pairs').textContent=matched+'/'+level;
-  document.getElementById('hud-tries').textContent=tries;
 }
 
 function onVictory(){
@@ -483,10 +489,11 @@ function onVictory(){
   if(typeof JDC!=='undefined'){
     JDC.enregistrer('paires', NIV_PAR_LEVEL[level]||1, true, {duree:seconds, erreurs:Math.max(0,tries-level), variante:mode});
   }
-  const m=Math.floor(seconds/60),s=seconds%60;
-  const pct=tries>0?Math.round(matched/tries*100):100;
-  document.getElementById('victory-msg').textContent=
-    `${level} paires trouvées en ${m}:${s.toString().padStart(2,'0')} · ${tries} essais · ${pct}% de réussite`;
+  document.getElementById('victory-msg').textContent =
+    'Toutes les paires sont retrouvées.';
+  document.getElementById('victory-sub').textContent =
+    'Rien ne vous échappe.';
+  jdcConfettis();
   document.getElementById('victoryBanner').classList.add('show');
 }
 
@@ -526,5 +533,27 @@ afficherSuggestion();
   <span aria-hidden="true"> · </span>
   <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
 </footer>
+
+<script id="trame-confettis-js">
+/* La même fête dans tous les jeux. Aucune couleur rouge : la charte
+   l'interdit, et un rouge qui tombe sur un écran de réussite se lit comme
+   une correction. */
+function jdcConfettis(){
+  var couleurs=['#c9963a','#2a5c3f','#6b4c2a','#ede5d0','#b8882e'];
+  for(var i=0;i<36;i++){
+    var e=document.createElement('div');
+    e.className='jdc-cp';
+    e.style.left=(10+Math.random()*80)+'%';
+    e.style.background=couleurs[0|Math.random()*couleurs.length];
+    e.style.animationDelay=(Math.random()*0.8)+'s';
+    e.style.animationDuration=(2+Math.random()*1.5)+'s';
+    var t=6+Math.random()*8;
+    e.style.width=t+'px'; e.style.height=t+'px';
+    e.style.borderRadius=Math.random()>0.5?'50%':'2px';
+    document.body.appendChild(e);
+    setTimeout(function(x){return function(){x.remove();};}(e),4200);
+  }
+}
+</script>
 </body>
 </html>

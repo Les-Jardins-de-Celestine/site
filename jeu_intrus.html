@@ -6,14 +6,14 @@
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Trouver l'Intrus — jeu en ligne gratuit · Les Jardins de Célestine</title>
-<meta name="description" content="Repérer l'image qui n'a rien à faire là. Jeu d'observation en ligne gratuit pour personne âgée, sans inscription et sans chronomètre.">
+<meta name="description" content="Repérer l'image qui n'a rien à faire là. Jeu de discrimination visuelle en ligne gratuit pour personne âgée, sans inscription et sans chronomètre.">
 <link rel="canonical" href="https://jardinsdecelestine.com/jeu_intrus">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --cream:#f7f3ea;--parchment:#ede8d5;--ink:#1c1208;
   --sepia:#5c3d1e;--gold:#c8922a;--green:#2d6a4f;
-  --red:#8b2020;--blue:#1a3d6e;--shadow:rgba(28,18,8,.13);
+  --red:#6b4c2a;--blue:#1a3d6e;--shadow:rgba(28,18,8,.13);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
@@ -296,6 +296,8 @@ body{
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
 </head>
 <body>
 
@@ -308,9 +310,7 @@ body{
     <div class="logo-title" id="logoTitle">Trouver l'Intrus</div>
     <div class="logo-sub">Quel élément ne va pas avec les autres ?</div>
   </div>
-  <button id="statsBtn" onclick="openStats()" style="display:none;position:absolute;top:14px;right:16px;background:none;border:1.5px solid rgba(200,146,42,.4);border-radius:6px;padding:4px 10px;font-size:0.72rem;font-weight:700;color:#5c3d1e;cursor:pointer;font-family:'Atkinson Hyperlegible',sans-serif;">📊 Stats</button>
-
-  <span class="section-title">Thème</span>
+<span class="section-title">Thème</span>
   <div class="card-row" id="themeRow">
     <div class="sel-card on" data-th="0" onclick="selTheme(0)">
       <span class="ico">🌿</span>
@@ -363,11 +363,7 @@ body{
 <!-- ══════════ JEU ══════════ -->
 <div id="gameScreen">
   <div id="topBar">
-    <div class="hb">
-      <span class="l">Score</span>
-      <span class="v" id="hScore">0</span>
-    </div>
-    <div class="hb-sep"></div>
+
     <div class="hb">
       <span class="l">Question</span>
       <span class="v" id="hQ">1/10</span>
@@ -375,12 +371,8 @@ body{
     <div class="hb-sep"></div>
     <div class="hb-prog"><div class="hb-fill" id="hFill" style="width:0%"></div></div>
     <div class="hb-sep"></div>
-    <div class="hb">
-      <span class="l">Erreurs</span>
-      <span class="v" id="hErr">0</span>
-    </div>
-    <div class="hb-sep"></div>
-    <button class="btn-menu" onclick="goMenu()">↩</button>
+
+    <button class="btn-menu" onclick="goMenu()">↩ Revenir au début</button>
   </div>
 
   <div class="question-zone">
@@ -396,14 +388,13 @@ body{
 
 <!-- ══════════ FIN ══════════ -->
 <div id="winScreen">
-  <div class="win-ico" id="wIco">🏆</div>
+  <div class="win-ico" id="wIco">🎉</div>
   <div class="win-title" id="wTitle">Bravo !</div>
   <div class="win-score" id="wScore">10 / 10</div>
   <div class="win-msg" id="wMsg"></div>
   <div class="win-btns">
-    <button class="btn-w btn-ol" id="statsBtnWin" onclick="openStats()" style="display:none;">📊 Stats</button>
-    <button class="btn-w" onclick="replayGame()">Rejouer ✦</button>
-    <button class="btn-w btn-ol" onclick="goMenu()">Menu</button>
+<button class="btn-w" onclick="replayGame()">Rejouer</button>
+    <button class="btn-w btn-ol" onclick="goMenu()">↩ Revenir au début</button>
   </div>
 </div>
 
@@ -804,8 +795,6 @@ function renderQuestion(){
   document.getElementById('qTitle').textContent = q.q;
   document.getElementById('qCat').textContent = q.cat;
   document.getElementById('hQ').textContent = (G.qIdx+1)+'/'+G.total;
-  document.getElementById('hScore').textContent = G.score;
-  document.getElementById('hErr').textContent = G.errors;
   document.getElementById('hFill').style.width = (G.qIdx/G.total*100)+'%';
 
   // Construire les choix
@@ -894,23 +883,16 @@ function showWin(){
     JDC.enregistrer('intrus', 1, G.score>=Math.ceil(G.total*0.7), {erreurs:G.total-G.score});
   }
 
-  var pct = G.score/G.total;
-  var ico  = pct===1?'🏆':pct>=.7?'🥇':pct>=.5?'🥈':'🌟';
-  var title= pct===1?'Parfait !':pct>=.7?'Bravo !':pct>=.5?'Bien joué !':'Continuez !';
-  var msg  = pct===1?'Aucune erreur — résultat exceptionnel !':
-             pct>=.7?'Excellente performance !':
-             pct>=.5?'Bon travail, encore un peu de pratique !':
-             'C\'est en jouant qu\'on progresse — réessayez !';
-
-  document.getElementById('wIco').textContent   = ico;
-  document.getElementById('wTitle').textContent  = title;
-  document.getElementById('wScore').textContent  = G.score+' / '+G.total;
-  document.getElementById('wMsg').textContent    = msg;
+  // Plus de palier : « Parfait », « Bravo », « Bien joué »
+  // ou « Continuez » selon le pourcentage, c'était une note
+  // déguisée en encouragement.
+  document.getElementById('wIco').textContent = '🎉';
+  document.getElementById('wTitle').textContent = 'Bravo !';
+  document.getElementById('wScore').textContent = '';
+  document.getElementById('wMsg').textContent = 'Tous les intrus sont trouvés.';
   document.getElementById('winScreen').classList.add('active');
-
-  // Enregistrer stats
   saveStats();
-  if(pct>=.7) confetti();
+  confetti();
 }
 
 // ══════════════════════════════════════════════════════
@@ -933,9 +915,9 @@ document.getElementById('logoTitle').addEventListener('click',function(){
   _stt=setTimeout(function(){_stc=0;},800);
   if(_stc>=3){
     _stc=0;
-    document.getElementById('statsBtn').style.display='block';
-    document.getElementById('statsBtnWin').style.display='inline-flex';
-    openStats();
+    
+    
+    
   }
 });
 
@@ -983,14 +965,14 @@ var _toastT;
 function toast(msg,type){
   var t=document.getElementById('toast');
   t.textContent=msg;
-  t.style.background=type==='ok'?'#2d6a4f':'#8b2020';
+  t.style.background=type==='ok'?'#2d6a4f':'#6b4c2a';
   t.classList.add('show');
   clearTimeout(_toastT);
   _toastT=setTimeout(function(){t.classList.remove('show');},1500);
 }
 
 function confetti(){
-  var cols=['#c8922a','#2d6a4f','#8b2020','#1a3d6e','#FDD835','#E91E63','#3498db'];
+  var cols=['#c8922a','#2d6a4f','#6b4c2a','#1a3d6e','#FDD835','#E91E63','#3498db'];
   for(var i=0;i<55;i++){
     var p=document.createElement('div');p.className='cp';
     p.style.left=Math.random()*100+'vw';
@@ -1011,6 +993,7 @@ function confetti(){
 <summary>À propos de ce jeu</summary>
 <div class="corps">
 <p><strong>Trouver l'Intrus</strong> — Plusieurs images qui vont ensemble, et une qui n'a rien à faire là. Trois fruits et un outil, quatre oiseaux et un poisson.</p>
+<p data-famille="1">C'est un <strong>jeu de discrimination visuelle</strong> : ce qui compte est la catégorie à laquelle appartient chaque image, pas son détail.</p>
 <h2>Pour qui</h2>
 <p>Aux personnes âgées, à tous les stades. Repérer ce qui détonne est l'une des opérations les plus robustes : elle résiste longtemps.</p>
 <h2>Comment y jouer</h2>

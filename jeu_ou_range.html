@@ -60,7 +60,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 @keyframes rip{from{width:14px;height:14px;opacity:.85;}to{width:70px;height:70px;opacity:0;}}
 
 #carnet{background:var(--cream);border:2px solid rgba(200,146,42,.4);border-radius:14px;padding:16px 18px;box-shadow:0 8px 26px var(--shadow);}
-.carnet-t{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-bottom:8px;}
+.carnet-t{font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-bottom:8px;}
 #recherche{background:#fff;border:2px solid var(--gold);border-radius:10px;padding:13px 15px;margin-bottom:6px;display:flex;align-items:center;gap:12px;}
 #recherche img{height:46px;width:auto;border-radius:6px;}
 #recherche .txt{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;line-height:1.4;color:var(--ink);}
@@ -68,7 +68,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 #trouves{list-style:none;}
 #trouves li{background:#e9f2ec;border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:9px 12px;margin-bottom:8px;font-size:.9rem;line-height:1.45;color:var(--ink);animation:slideIn .35s ease;}
 @keyframes slideIn{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:translateX(0);}}
-#trouves li .n{display:inline-block;background:var(--green);color:#fff;font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;font-size:.68rem;width:19px;height:19px;border-radius:50%;text-align:center;line-height:19px;margin-right:7px;}
+#trouves li .n{display:inline-block;background:var(--green);color:#fff;font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;font-size:0.72rem;width:19px;height:19px;border-radius:50%;text-align:center;line-height:19px;margin-right:7px;}
 .vide{font-size:.86rem;color:var(--sepia);opacity:.5;font-style:italic;padding:6px 0;}
 #aideBtn{width:100%;margin-top:12px;background:none;border:1.5px dashed rgba(200,146,42,.6);border-radius:9px;padding:9px;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;color:var(--sepia);cursor:pointer;}
 #aideBtn:hover{background:rgba(200,146,42,.1);}
@@ -138,6 +138,8 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
 </head>
 <body>
 
@@ -147,7 +149,6 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
   <h1 id="mainTitle">Où est-ce <em>rangé</em> ?</h1>
   <p>Le ménage est fait, tout a changé de place</p>
   <div class="divider"></div>
-  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
 </header>
 
 <div id="intro">
@@ -192,7 +193,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
         <ul id="trouves"><li class="vide" style="background:none;border:none;padding:0">Rien pour l'instant.</li></ul>
         <button id="aideBtn" onclick="demanderAide()">Un petit coup de pouce ?</button>
         <div id="aideTxt"></div>
-        <button id="retour" onclick="retourIntro()">← Revenir au début</button>
+        <button id="retour" onclick="retourIntro()">↩ Revenir au début</button>
       </div>
     </div>
   </div>
@@ -203,7 +204,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
     <div class="big">🏡</div>
     <h2>Tout est retrouvé !</h2>
     <p id="winTxt"></p>
-    <button class="btn-g2" onclick="retourIntro()">Recommencer</button>
+    <button class="btn-g2" onclick="retourIntro()">Rejouer</button>
   </div>
 </div>
 
@@ -265,7 +266,7 @@ const STATS_KEY = 'range_stats_v1';
 let _tc = 0, _tct = null;
 document.getElementById('mainTitle').addEventListener('click', () => {
   _tc++; clearTimeout(_tct); _tct = setTimeout(() => _tc = 0, 800);
-  if(_tc >= 3){ _tc = 0; document.getElementById('statsBtn').style.display = 'block'; toast('Mode admin activé'); }
+  if(_tc >= 3){ _tc = 0;  toast('Mode admin activé'); }
 });
 function loadStats(){ try{ return JSON.parse(localStorage.getItem(STATS_KEY)) || {}; }catch(e){ return {}; } }
 function saveStats(s){ try{ localStorage.setItem(STATS_KEY, JSON.stringify(s)); }catch(e){} }
@@ -435,7 +436,7 @@ window.addEventListener('beforeunload', function(){
 });
 
 function confetti(){
-  const colors = ['#c8922a','#2d6a4f','#c96f4a','#3a6ea5','#b33a2b'];
+  const colors = ['#c8922a','#2d6a4f','#6b4c2a','#3a6ea5','#6b4c2a'];
   for(let i = 0; i < 55; i++){
     const c = document.createElement('div');
     c.className = 'confetti';

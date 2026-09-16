@@ -14,14 +14,14 @@
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Les Mots Manquants — jeu en ligne gratuit · Les Jardins de Célestine</title>
-<meta name="description" content="Compléter les proverbes et les expressions d'autrefois. Jeu de langage en ligne gratuit, sans inscription, jouable seul ou à deux avec un proche.">
+<meta name="description" content="Compléter les proverbes et les expressions d'autrefois. Jeu de vocabulaire et de langage en ligne gratuit, sans inscription, jouable seul ou à deux avec un proche.">
 <link rel="canonical" href="https://jardinsdecelestine.com/jeu_mots_manquants">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
   --cream:#f7f3ea; --parchment:#eee8d5; --ink:#1c1208;
   --sepia:#5c3d1e; --gold:#c8922a; --green:#2d6a4f;
-  --red:#8b2020; --shadow:rgba(28,18,8,0.13);
+  --red:#6b4c2a; --shadow:rgba(28,18,8,0.13);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{
@@ -52,8 +52,8 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 .niv-t{display:block;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.05rem;font-weight:700;color:var(--sepia);}
 .niv-d{display:block;font-size:.82rem;color:var(--sepia);opacity:.7;margin-top:2px;}
 #suggestion{margin-top:14px;font-size:.86rem;color:var(--sepia);opacity:.8;text-align:center;font-style:italic;}
-.badge-new{display:inline-block;background:var(--green);color:#fff;font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;}
-.badge-vu{display:inline-block;background:rgba(92,61,30,.12);color:var(--sepia);font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;}
+.badge-new{display:inline-block;background:var(--green);color:#fff;font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;}
+.badge-vu{display:inline-block;background:rgba(92,61,30,.12);color:var(--sepia);font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;}
 .fable-card{display:block;width:100%;text-align:left;background:var(--cream);border:1.5px solid rgba(200,146,42,.35);border-radius:14px;padding:18px 22px;margin-bottom:14px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s;}
 .fable-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 22px var(--shadow);}
 .fable-card .ft{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.08rem;font-weight:700;color:var(--sepia);}
@@ -93,12 +93,12 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 #statsBox{background:var(--cream);border:2px solid var(--gold);border-radius:14px;padding:26px 30px;max-width:440px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.4);}
 #statsBox h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;font-weight:700;color:var(--sepia);margin-bottom:4px;}
-.s-sub{font-size:.7rem;color:var(--sepia);opacity:.55;margin-bottom:14px;display:block;}
+.s-sub{font-size:0.72rem;color:var(--sepia);opacity:.55;margin-bottom:14px;display:block;}
 .srow{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(200,146,42,.14);}
 .srow:last-child{border-bottom:none;}
 .srow-name{font-size:.82rem;font-weight:700;color:var(--sepia);}
 .scol{text-align:center;}
-.slbl{font-size:.52rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.08em;}
+.slbl{font-size:0.72rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.08em;}
 .sval{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.9rem;font-weight:700;color:var(--gold);}
 .sval.green{color:var(--green);}
 .sa{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;}
@@ -152,6 +152,8 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
 </head>
 <body>
 
@@ -161,7 +163,6 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
   <h1 id="mainTitle">Les Mots <em>Manquants</em></h1>
   <p>Retrouvez les mots des textes appris autrefois</p>
   <div class="divider"></div>
-  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
 </header>
 
 <div id="menu">
@@ -188,20 +189,20 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
   <h2>Choisissez votre texte</h2>
   <p class="hint" id="hintNiveau"></p>
   <div id="fablesList"></div>
-  <button class="btn-o2" style="margin-top:6px" onclick="retourNiveaux()">← Changer de niveau</button>
+  <button class="btn-o2" style="margin-top:6px" onclick="retourNiveaux()">↩ Revenir au début</button>
 </div>
 
 <div id="game">
   <div id="hud">
-    <button id="backBtn" onclick="backMenu()">← Autres textes</button>
+    <button id="backBtn" onclick="backMenu()">↩ Revenir au début</button>
     <span class="prog"><span id="progNow">0</span> / <span id="progTot">0</span> mots</span>
   </div>
   <div id="texte"></div>
   <div id="banque"></div>
   <div id="doneBox">
-    <p class="msg" id="doneMsg">Texte reconstitué, bravo !</p>
+    <p class="msg" id="doneMsg">Bravo !</p>
     <button class="btn-g2" onclick="lireTexte()">🔊 Écouter le texte</button>
-    <button class="btn-o2" onclick="backMenu()">Choisir un autre texte</button>
+    <button class="btn-o2" onclick="backMenu()">↩ Revenir au début</button>
   </div>
 </div>
 
@@ -437,7 +438,7 @@ let _tc = 0, _tct = null;
 document.getElementById('mainTitle').addEventListener('click', () => {
   _tc++; clearTimeout(_tct);
   _tct = setTimeout(() => _tc = 0, 800);
-  if(_tc >= 3){ _tc = 0; document.getElementById('statsBtn').style.display = 'block'; toast('Mode admin activé'); }
+  if(_tc >= 3){ _tc = 0;  toast('Mode admin activé'); }
 });
 function loadStats(){ try{ return JSON.parse(localStorage.getItem(STATS_KEY)) || {}; }catch(e){ return {}; } }
 function saveStats(s){ try{ localStorage.setItem(STATS_KEY, JSON.stringify(s)); }catch(e){} }
@@ -470,7 +471,7 @@ function openStats(){
         '<div class="scol"><div class="slbl">Parties</div><div class="sval">' + s.plays + '</div></div>' +
         '<div class="scol"><div class="slbl">Réussite</div><div class="sval green">' + pct + '%</div></div>' +
         '<div class="scol"><div class="slbl">Meilleur</div><div class="sval">' + bestM + '</div></div>' +
-        '<div style="grid-column:1/-1;font-size:.68rem;color:var(--sepia);opacity:.5;">Erreurs (moy.) : ' + avgErr + ' par texte réussi</div>' +
+        '<div style="grid-column:1/-1;font-size:0.72rem;color:var(--sepia);opacity:.5;">Erreurs (moy.) : ' + avgErr + ' par texte réussi</div>' +
         '</div>';
     }).join('');
   }
@@ -682,8 +683,11 @@ function win(){
     JDC.enregistrer('motsmanquants', niveau, true, { duree: sec, erreurs: erreurs, variante: cur.id });
     JDC.marquerVu('motsmanquants', cur.id);
   }
+  // Plus de durée affichée : la page promet elle-même « ni
+  // chronomètre » dans son À propos, et l'écran de fin en
+  // montrait un.
   document.getElementById('doneMsg').textContent =
-    'Texte reconstitué en ' + Math.floor(sec/60) + 'm' + String(sec%60).padStart(2,'0') + 's — bravo !';
+    'Le texte est reconstitué. Rien ne vous échappe.';
   document.getElementById('doneBox').style.display = 'block';
   confetti();
 }
@@ -709,7 +713,7 @@ window.addEventListener('beforeunload', function(){
 //   CONFETTI
 // ═══════════════════════════════
 function confetti(){
-  const colors = ['#c8922a','#2d6a4f','#c96f4a','#3a6ea5','#b33a2b'];
+  const colors = ['#c8922a','#2d6a4f','#6b4c2a','#3a6ea5','#6b4c2a'];
   for(let i = 0; i < 60; i++){
     const c = document.createElement('div');
     c.className = 'confetti';
@@ -731,6 +735,7 @@ afficherSuggestion();
 <summary>À propos de ce jeu</summary>
 <div class="corps">
 <p><strong>Les Mots Manquants</strong> — Un proverbe, une expression d'autrefois, une chanson : il manque un mot, et il faut le retrouver. « Qui vole un œuf… », « Il ne faut pas vendre la peau de l'ours… »</p>
+<p data-famille="1">C'est un <strong>jeu de vocabulaire et de langage</strong> : ces textes-là ne se calculent pas, ils reviennent d'eux-mêmes.</p>
 <h2>Pour qui</h2>
 <p>Aux personnes âgées, y compris à un stade avancé. Les proverbes sont logés dans une mémoire très ancienne et très solide : ils reviennent souvent tout seuls, avant même qu'on ait fini la phrase.</p>
 <h2>Comment y jouer</h2>

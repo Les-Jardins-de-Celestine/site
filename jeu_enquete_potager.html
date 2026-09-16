@@ -15,7 +15,7 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{background:var(--parchment);background-image:radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.08) 0%,transparent 55%);
   min-height:100vh;font-family:'Nunito',sans-serif;color:var(--ink);}
-.retour{display:block;text-align:center;padding:5px;font-size:.7rem;color:var(--sepia);opacity:.5;
+.retour{display:block;text-align:center;padding:5px;font-size:0.72rem;color:var(--sepia);opacity:.5;
   text-decoration:none;letter-spacing:.1em;text-transform:uppercase;}
 .retour:hover{opacity:1;}
 
@@ -113,6 +113,12 @@ body{background:var(--parchment);background-image:radial-gradient(ellipse at 15%
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="trame-retour-enq">
+.btn-retour-jeu{background:none;border:1.5px solid rgba(200,146,42,.45);
+  border-radius:8px;padding:5px 12px;font-family:inherit;font-size:.8rem;
+  font-weight:700;color:inherit;cursor:pointer;margin-top:10px}
+.btn-retour-jeu:active{background:rgba(200,146,42,.12)}
+</style>
 </head>
 <body>
 
@@ -165,6 +171,7 @@ body{background:var(--parchment);background-image:radial-gradient(ellipse at 15%
     <div id="retourTexte"></div>
     <div class="barre">
       <button class="btn-g" onclick="suivante()" id="btnSuite">La suite →</button>
+      <div><button type="button" class="btn-retour-jeu" onclick="revenirAuDebut()">↩ Revenir au début</button></div>
     </div>
   </div>
 </div>
@@ -175,8 +182,8 @@ body{background:var(--parchment);background-image:radial-gradient(ellipse at 15%
     <p id="finTexte"></p>
     <ul id="recap"></ul>
     <div class="barre" style="margin-top:18px">
-      <button class="btn-g" onclick="location.reload()">Recommencer</button>
-      <a class="btn-o" href="jeux.html" style="text-decoration:none;display:inline-flex;align-items:center">Retour aux jeux</a>
+      <button class="btn-g" onclick="revenirAuDebut()">↩ Revenir au début</button>
+      <a class="btn-o" href="jeux.html" style="text-decoration:none;display:inline-flex;align-items:center">← Retour aux jeux</a>
     </div>
   </div>
 </div>
@@ -227,6 +234,16 @@ function melange(a){
   var r = a.slice();
   for(var i = r.length - 1; i > 0; i--){ var j = Math.floor(Math.random()*(i+1)); var t = r[i]; r[i] = r[j]; r[j] = t; }
   return r;
+}
+
+function revenirAuDebut(){
+  // Remplace un location.reload() : recharger toute la page blanchit l'écran
+  // et retélécharge les images. Ici on change simplement d'écran.
+  document.getElementById('jeu').style.display = 'none';
+  var f = document.getElementById('fin');
+  if (f) f.style.display = 'none';
+  document.getElementById('accueil').style.display = 'block';
+  window.scrollTo(0, 0);
 }
 
 function commencer(){

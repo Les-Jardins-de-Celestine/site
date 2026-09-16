@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Le moment de la journée — jeu gratuit · Les Jardins de Célestine</title>
 <link rel="canonical" href="https://jardinsdecelestine.com/jeu_journee">
-<meta name="description" content="Ranger chaque objet au moment de la journée qui lui va. Jeu de repérage dans le temps en ligne gratuit, sans inscription.">
+<meta name="description" content="Ranger chaque objet au moment de la journée qui lui va. Jeu de chronologie et de repérage dans le temps en ligne gratuit, sans inscription.">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="jdc-parcours.js"></script>
 <style>
@@ -58,9 +58,9 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
 @media (max-height:900px){
   header{padding:9px 20px 6px;}
   header h1{font-size:1.22rem;}
-  header p{font-size:0.68rem;margin-top:1px;}
+  header p{font-size:0.72rem;margin-top:1px;}
   .divider{margin-top:4px;}
-  .retour{padding:5px;font-size:.68rem;}
+  .retour{padding:5px;font-size:0.72rem;}
   #game{padding:8px 14px 18px;}
   #barre{padding:0 2px 8px;}
   .scene{padding:14px 14px;}
@@ -140,6 +140,8 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
 </head>
 <body>
 
@@ -149,7 +151,6 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
   <h1 id="mainTitle">Le moment de la <em>journée</em></h1>
   <p>Le matin, l'après-midi ou le soir</p>
   <div class="divider"></div>
-  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
 </header>
 
 <div id="accueil">
@@ -176,7 +177,7 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
 
 <div id="game">
   <div id="barre">
-    <button class="lien" onclick="retourAccueil()">← Changer de parcours</button>
+    <button class="lien" onclick="retourAccueil()">↩ Revenir au début</button>
     <span id="compteur"></span>
   </div>
 
@@ -196,8 +197,8 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
   <div class="modale">
     <h2 id="finTitre">C'est terminé</h2>
     <p id="finTexte"></p>
-    <button class="btn-g" onclick="rejouer()">Recommencer</button>
-    <button class="btn-o" onclick="retourAccueil()">Changer de parcours</button>
+    <button class="btn-g" onclick="rejouer()">Rejouer</button>
+    <button class="btn-o" onclick="retourAccueil()">↩ Revenir au début</button>
   </div>
 </div>
 
@@ -279,7 +280,7 @@ document.getElementById('mainTitle').addEventListener('click', function(){
   var m = Date.now();
   clics = (m - dernier < 600) ? clics + 1 : 1;
   dernier = m;
-  if(clics >= 3){ clics = 0; document.getElementById('statsBtn').style.display = 'block'; openStats(); }
+  if(clics >= 3){ clics = 0;   }
 });
 function loadStats(){ try{ return JSON.parse(localStorage.getItem(STATS_KEY)) || {}; }catch(e){ return {}; } }
 function saveStats(x){ try{ localStorage.setItem(STATS_KEY, JSON.stringify(x)); }catch(e){} }
@@ -471,6 +472,7 @@ afficherSuggestion();
 <summary>À propos de ce jeu</summary>
 <div class="corps">
 <p><strong>Le moment de la journée</strong> — Le bol du petit-déjeuner, la lampe de chevet, le soleil qui se lève : à quel moment de la journée chaque chose appartient-elle ? Matin, midi, après-midi, soir.</p>
+<p data-famille="1">C'est un <strong>jeu de chronologie du quotidien</strong> : les repères sont ceux de la journée vécue, pas ceux du calendrier.</p>
 <h2>Pour qui</h2>
 <p>Aux personnes vivant avec une désorientation dans le temps. Le découpage de la journée est un repère plus accessible que l'heure exacte.</p>
 <h2>Comment y jouer</h2>

@@ -10,7 +10,9 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Racontez-moi — jeu en ligne gratuit · Les Jardins de Célestine</title>
+<title>Ça me revient — jeu en ligne gratuit · Les Jardins de Célestine</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="description" content="Une image, et ce qu'elle réveille comme souvenirs. Support de réminiscence en ligne gratuit, à faire à deux avec un proche, sans inscription.">
 <meta name="robots" content="noindex, follow">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -45,7 +47,7 @@ header p{font-size:.74rem;letter-spacing:.15em;text-transform:uppercase;color:va
 .coll:hover{border-color:var(--gold);background:rgba(200,146,42,.07);transform:translateY(-2px);box-shadow:0 8px 22px var(--shadow);}
 .coll-t{display:block;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.05rem;font-weight:700;color:var(--sepia);}
 .coll-s{display:block;font-size:.84rem;color:var(--sepia);opacity:.7;margin-top:3px;}
-.coll-n{display:inline-block;font-size:.68rem;font-weight:700;background:rgba(92,61,30,.1);color:var(--sepia);border-radius:20px;padding:2px 9px;margin-top:7px;}
+.coll-n{display:inline-block;font-size:0.72rem;font-weight:700;background:rgba(92,61,30,.1);color:var(--sepia);border-radius:20px;padding:2px 9px;margin-top:7px;}
 #bilan{margin-top:16px;font-size:.86rem;color:var(--sepia);opacity:.8;font-style:italic;text-align:center;}
 
 /* ── JEU ── */
@@ -125,16 +127,17 @@ header p{font-size:.74rem;letter-spacing:.15em;text-transform:uppercase;color:va
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
 </head>
 <body>
 
 <a class="retour" href="jeux.html">← Retour aux jeux</a>
 
 <header>
-  <h1 id="titre">Racontez-<em>moi</em></h1>
+  <h1 id="titre">Ça me <em>revient</em></h1>
   <p>Un souvenir, une conversation</p>
   <div class="divider"></div>
-  <button id="statsBtn" onclick="ouvrirStats()">📊 Stats</button>
 </header>
 
 <div id="accueil">
@@ -152,7 +155,7 @@ header p{font-size:.74rem;letter-spacing:.15em;text-transform:uppercase;color:va
 
 <div id="jeu">
   <div id="barre">
-    <button class="lien" onclick="retourAccueil()">← Autres collections</button>
+    <button class="lien" onclick="retourAccueil()">↩ Revenir au début</button>
     <span id="compteur"></span>
   </div>
 
@@ -176,7 +179,7 @@ header p{font-size:.74rem;letter-spacing:.15em;text-transform:uppercase;color:va
 <div id="panneau">
   <div id="boite">
     <h2>📊 Statistiques</h2>
-    <span class="s-sous">Racontez-moi · données locales à cet appareil</span>
+    <span class="s-sous">Ça me revient · données locales à cet appareil</span>
     <div id="contenuStats"></div>
     <div class="s-actions">
       <button class="btn-c" onclick="reinit()">Réinitialiser</button>
@@ -290,7 +293,7 @@ var CLE = 'racontemoi_stats_v1';
 var _tc = 0, _tct = null;
 document.getElementById('titre').addEventListener('click', function(){
   _tc++; clearTimeout(_tct); _tct = setTimeout(function(){ _tc = 0; }, 800);
-  if(_tc >= 3){ _tc = 0; document.getElementById('statsBtn').style.display = 'block'; toast('Mode admin activé'); }
+  if(_tc >= 3){ _tc = 0;  toast('Mode admin activé'); }
 });
 function lire(){ try{ return JSON.parse(localStorage.getItem(CLE)) || {}; }catch(e){ return {}; } }
 function ecrire(x){ try{ localStorage.setItem(CLE, JSON.stringify(x)); }catch(e){} }
@@ -473,7 +476,7 @@ construireAccueil();
 <details class="jdc-apropos">
 <summary>À propos de ce jeu</summary>
 <div class="corps">
-<p><strong>Racontez-moi</strong> — Une image d'autrefois, et ce qu'elle réveille. Il n'y a rien à trouver, rien à valider : l'image est là pour ouvrir la parole.</p>
+<p><strong>Ça me revient</strong> — Une image d'autrefois, et ce qu'elle réveille. Il n'y a rien à trouver, rien à valider : l'image est là pour ouvrir la parole.</p>
 <h2>Pour qui</h2>
 <p>Aux duos aidant et proche. C'est un support de réminiscence, pas un jeu : il ne se gagne pas et ne se termine pas. Il convient à tous les stades, y compris quand les autres jeux sont devenus trop difficiles.</p>
 <h2>Comment y jouer</h2>

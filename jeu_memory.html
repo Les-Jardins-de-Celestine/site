@@ -24,7 +24,7 @@
   --ink: #1a1208;
   --sepia: #6b4c2a;
   --gold: #c9963a;
-  --red: #8b2020;
+  --red: #6b4c2a;
   --green: #2a5c3f;
   --shadow: rgba(26,18,8,0.15);
 }
@@ -175,7 +175,7 @@ header p { font-size:0.78rem; letter-spacing: 0.18em; text-transform: uppercase;
 .card-emoji img{width:100%;height:100%;object-fit:contain;border-radius:8px;display:block;}
 .card-label {
   font-family: 'Nunito', sans-serif;
-  font-size: clamp(0.62rem,2.5vw,0.82rem);
+  font-size: clamp(0.72rem,2.5vw,0.82rem);
   color: var(--sepia);
   text-align: center;
   line-height: 1.2;
@@ -290,6 +290,8 @@ header p { font-size:0.78rem; letter-spacing: 0.18em; text-transform: uppercase;
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
 </head>
 <body>
 
@@ -299,15 +301,11 @@ header p { font-size:0.78rem; letter-spacing: 0.18em; text-transform: uppercase;
   <h1>Jeu de <em>Memory</em></h1>
   <p>Mémoire & concentration</p>
   <div class="divider"></div>
-  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
 </header>
 
 <!-- HUD -->
 <div class="hud" id="hud" style="display:none;">
   <div class="hud-box"><div class="lbl">Paires</div><div class="val" id="hPaires">0</div></div>
-  <div class="hud-box"><div class="lbl">Tentatives</div><div class="val" id="hTentatives">0</div></div>
-  <div class="hud-box"><div class="lbl">Score</div><div class="val" id="hScore">0</div></div>
-  <div class="hud-box"><div class="lbl">Temps</div><div class="val" id="hTemps">0:00</div></div>
 </div>
 
 <!-- START SCREEN -->
@@ -332,20 +330,20 @@ header p { font-size:0.78rem; letter-spacing: 0.18em; text-transform: uppercase;
 <div id="gameBoard" style="display:none;">
   <div class="board-grid" id="grid"></div>
   <div style="text-align:center; margin-top:4px;">
-    <button class="btn-sm" onclick="goStart()">↩ Changer de thème</button>
+    <button class="btn-sm" onclick="goStart()">↩ Revenir au début</button>
   </div>
 </div>
 
 <!-- RESULT -->
 <div id="resultScreen">
-  <span class="trophy" id="trophy">🏆</span>
+  <span class="trophy" id="trophy">🎉</span>
   <h2 id="resultTitle">Bravo !</h2>
   <div class="score-big" id="resultScore">100</div>
   <div class="score-sub" id="resultSub">points</div>
   <p class="result-msg" id="resultMsg"></p>
   <div class="result-btns">
     <button class="btn" onclick="restartSame()">Rejouer</button>
-    <button class="btn-sm" onclick="goStart()">Changer de thème</button>
+    <button class="btn-sm" onclick="goStart()">↩ Revenir au début</button>
   </div>
 </div>
 
@@ -541,7 +539,7 @@ function startGame() {
   // Re-assign pairId properly
   const labelToIds = {};
   deck.forEach((c,i) => { if(!labelToIds[c.label]) labelToIds[c.label]=[]; labelToIds[c.label].push(i); });
-  deck.forEach((c,i) => { c.pairId = labelToIds[c.label].find(x=>x!==i) ?? i; c.idx=i; });
+  deck.forEach((c,i) => { var p = labelToIds[c.label].find(x=>x!==i); c.pairId = (p === undefined ? i : p); c.idx=i; });
 
   S.cards = deck;
   S.flipped = [];
@@ -563,6 +561,8 @@ function startGame() {
   else cols = 'g4';
 
   show('gameBoard'); hide('startScreen'); hide('resultScreen');
+  // Le bandeau ne porte plus que « Paires » : c'est le repère
+  // d'avancement que tous les autres jeux affichent.
   document.getElementById('hud').style.display = 'flex';
   updateHUD();
 
@@ -657,7 +657,6 @@ function flipCard(idx) {
 // ════════════════════════════════════════
 function tickTimer() {
   S.seconds++;
-  document.getElementById('hTemps').textContent = fmtTime(S.seconds);
 }
 function fmtTime(s) {
   const m = Math.floor(s/60), ss = s%60;
@@ -669,8 +668,6 @@ function fmtTime(s) {
 // ════════════════════════════════════════
 function updateHUD() {
   document.getElementById('hPaires').textContent = S.matched + '/' + S.nPairs;
-  document.getElementById('hTentatives').textContent = S.tentatives;
-  document.getElementById('hScore').textContent = S.score;
 }
 
 // ════════════════════════════════════════
@@ -681,30 +678,19 @@ function endGame() {
   if(typeof JDC!=='undefined'){
     JDC.enregistrer('memory', 1, true, {duree:S.seconds, erreurs:Math.max(0,S.tentatives-S.nPairs)});
   }
-  const ratio = S.nPairs / S.tentatives;
-  const timeBonus = Math.max(0, 50 - Math.floor(S.seconds/5));
-  const finalScore = S.score + timeBonus;
-
-  let trophy = '🥉', title = 'Bien joué !', msg;
-  if (ratio >= 0.9) { trophy='🏆'; title='Exceptionnel !'; }
-  else if (ratio >= 0.7) { trophy='🥇'; title='Excellent !'; }
-  else if (ratio >= 0.5) { trophy='🥈'; title='Très bien !'; }
-
-  msg = `Toutes les ${S.nPairs} paires trouvées en ${fmtTime(S.seconds)} avec ${S.tentatives} tentatives.`;
-  if (ratio >= 0.9) msg += ' Une mémoire remarquable !';
-  else if (ratio >= 0.7) msg += ' Beau travail de concentration !';
-
-  recordGame(S.nPairs, S.seconds, S.tentatives, finalScore);
+  // Le panneau de notes ne garde que le nombre de parties : on lui passe
+  // ce qu'il attend, rien de tout cela ne va à l'écran.
+  recordGame(S.nPairs, S.seconds, S.tentatives, S.score);
 
   hide('gameBoard');
   document.getElementById('hud').style.display = 'none';
   show('resultScreen');
 
-  document.getElementById('trophy').textContent = trophy;
-  document.getElementById('resultTitle').textContent = title;
-  document.getElementById('resultScore').textContent = finalScore;
-  document.getElementById('resultSub').textContent = `points · ${fmtTime(S.seconds)} · ${S.tentatives} essais`;
-  document.getElementById('resultMsg').textContent = msg;
+  document.getElementById('trophy').textContent = '🎉';
+  document.getElementById('resultTitle').textContent = 'Bravo !';
+  document.getElementById('resultScore').textContent = '';
+  document.getElementById('resultSub').textContent = 'Rien ne vous échappe.';
+  document.getElementById('resultMsg').textContent = 'Toutes les paires sont retrouvées.';
 
   confetti();
 }
@@ -726,7 +712,11 @@ function restartSame() {
 // ════════════════════════════════════════
 //  UTILS
 // ════════════════════════════════════════
-function show(id) { document.getElementById(id).style.display = ''; }
+function show(id) {
+  // « block » et non '' : la feuille de style masque #resultScreen,
+  // et enlever le style en ligne laisserait cette règle en place.
+  document.getElementById(id).style.display = 'block';
+}
 function hide(id) { document.getElementById(id).style.display = 'none'; }
 
 function shuffle(a) {
@@ -748,7 +738,7 @@ function toast(msg) {
 }
 
 function confetti() {
-  const colors = ['#c9963a','#2a5c3f','#8b2020','#ede5d0','#6b4c2a'];
+  const colors = ['#c9963a','#2a5c3f','#6b4c2a','#ede5d0','#6b4c2a'];
   for (let i=0; i<36; i++) {
     const el = document.createElement('div');
     el.className = 'cp';

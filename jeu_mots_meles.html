@@ -14,7 +14,7 @@
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Mots Mêlés — jeu en ligne gratuit · Les Jardins de Célestine</title>
-<meta name="description" content="Des mots mêlés en gros caractères, cinq thèmes et plusieurs tailles de grille. Gratuit, en ligne, sans inscription et sans chronomètre.">
+<meta name="description" content="Des mots mêlés en gros caractères, cinq thèmes et plusieurs tailles de grille. Jeu de vocabulaire gratuit, en ligne, sans inscription et sans chronomètre.">
 <link rel="canonical" href="https://jardinsdecelestine.com/jeu_mots_meles">
 <!-- Atkinson Hyperlegible: conçue pour les personnes malvoyantes -->
 <!-- Nunito: ronde, sans-serif, très lisible -->
@@ -27,7 +27,7 @@
   --sepia: #6b4c2a;
   --gold: #c9963a;
   --gold-light: #e8c872;
-  --red: #8b2020;
+  --red: #6b4c2a;
   --green: #2a6b45;
   --shadow: rgba(26,18,8,0.14);
   --cell: 52px;
@@ -74,7 +74,7 @@ header p {
 .cb {
   background: var(--cream); border: 2px solid rgba(201,150,58,.35);
   border-radius: 6px; padding: 7px 14px;
-  font-family: 'Atkinson Hyperlegible', sans-serif; font-size: clamp(.7rem,2vw,.85rem);
+  font-family: 'Atkinson Hyperlegible', sans-serif; font-size: clamp(.9rem,3vw,1rem);
   color: var(--sepia); cursor: pointer; transition: all .18s;
   box-shadow: 0 2px 6px var(--shadow);
 }
@@ -88,7 +88,7 @@ header p {
   padding: 0 16px;
 }
 .hb { background: var(--cream); border: 1px solid rgba(201,150,58,.4); border-radius: 5px; padding: 5px 16px; text-align: center; box-shadow: 0 2px 6px var(--shadow); min-width: 80px; }
-.hb .l { font-size: .58rem; letter-spacing: .16em; text-transform: uppercase; color: var(--sepia); opacity: .6; display: block; }
+.hb .l { font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--sepia); opacity: .6; display: block; }
 .hb .v { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--gold); line-height: 1.1; }
 
 /* ── GAME LAYOUT ── */
@@ -210,7 +210,7 @@ header p {
 .srow:last-child{border-bottom:none;}
 .srow-name{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.88rem;color:var(--sepia);}
 .srow-val{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;color:var(--gold);text-align:right;}
-.srow-lbl{font-size:.56rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.1em;text-align:right;}
+.srow-lbl{font-size:0.72rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.1em;text-align:right;}
 .sbar-wrap{grid-column:1/-1;height:4px;background:rgba(201,150,58,.15);border-radius:2px;margin-top:-3px;}
 .sbar{height:100%;background:var(--gold);border-radius:2px;transition:width .5s ease;}
 .stats-actions{display:flex;gap:10px;margin-top:18px;justify-content:flex-end;}
@@ -323,6 +323,22 @@ body.enjeu #accueil{display:none;}
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
+<style id="trame-grille-mm">
+/* La grille et la liste des mots restaient côte à côte quoi qu'il arrive
+   (« never stacked »), ce qui poussait la page à 590 px de large sur un
+   téléphone de 390. Sous 760 px, la liste passe dessous. */
+@media (max-width: 760px){
+  .game-area{flex-direction:column!important;align-items:center!important;
+    flex-wrap:wrap!important;gap:14px!important;padding:0 10px 24px!important}
+  .word-panel{width:100%!important;max-width:520px;max-height:none!important}
+  .word-list{display:grid;grid-template-columns:repeat(2,1fr);gap:2px 12px}
+  .grid-wrap{max-width:100%;overflow-x:auto;overflow-y:hidden;
+    padding-bottom:4px}
+  #grid{margin:0 auto}
+}
+</style>
 </head>
 <body>
 
@@ -333,7 +349,6 @@ body.enjeu #accueil{display:none;}
   <p>Jeu de vocabulaire</p>
   <div class="divider"></div>
   <!-- Stats: triple-clic sur le titre -->
-  <button id="statsBtn" onclick="openStats()" style="display:none;position:absolute;top:18px;right:20px;background:none;border:1.5px solid rgba(201,150,58,.4);border-radius:6px;padding:5px 12px;font-family:'Nunito',sans-serif;font-size:.8rem;color:var(--sepia);cursor:pointer;">📊 Stats</button>
 </header>
 
 <!-- ÉCRAN D'ACCUEIL -->
@@ -370,7 +385,7 @@ body.enjeu #accueil{display:none;}
 
 <!-- BARRE DE JEU -->
 <div class="barre-jeu" id="barreJeu">
-  <button class="mini-btn" onclick="retourAccueil()">← Changer de grille</button>
+  <button class="mini-btn" onclick="retourAccueil()">↩ Revenir au début</button>
   <span class="barre-titre" id="barreTitre">—</span>
   <button class="mini-btn go" onclick="newGame()">▶ Nouvelle grille</button>
 </div>
@@ -513,7 +528,7 @@ function titleClick(){
   _titleTimer = setTimeout(()=>{ _titleClicks=0; }, 800);
   if(_titleClicks >= 3){
     _titleClicks=0;
-    document.getElementById('statsBtn').style.display='block';
+    
     toast('Mode admin activé');
   }
 }
@@ -549,12 +564,12 @@ function openStats(){
       const avg=s.plays?Math.round(s.totalSec/s.plays):0;
       const bw=Math.round(s.totalSec/maxSec*100);
       return `<div class="srow">
-        <div class="srow-name">${s.theme} <span style="font-size:.68rem;opacity:.6">${s.diff} · ${s.size}</span></div>
+        <div class="srow-name">${s.theme} <span style="font-size:0.72rem;opacity:.6">${s.diff} · ${s.size}</span></div>
         <div><div class="srow-lbl">Parties</div><div class="srow-val">${s.plays}</div></div>
         <div><div class="srow-lbl">Réussies</div><div class="srow-val">${pct}%</div></div>
         <div><div class="srow-lbl">Temps total</div><div class="srow-val">${m}m${String(s.totalSec%60).padStart(2,'0')}s</div></div>
         <div class="sbar-wrap"><div class="sbar" style="width:${bw}%"></div></div>
-        <div style="grid-column:1/-1;font-size:.7rem;color:var(--sepia);opacity:.5;">Moy. par partie : ${0|avg/60}m${String(avg%60).padStart(2,'0')}s</div>
+        <div style="grid-column:1/-1;font-size:0.72rem;color:var(--sepia);opacity:.5;">Moy. par partie : ${0|avg/60}m${String(avg%60).padStart(2,'0')}s</div>
       </div>`;
     }).join('');
   }
@@ -631,10 +646,27 @@ function newGame() {
   G.timerInt = setInterval(()=>{G.timerSec++;updateTimer();}, 1000);
   document.getElementById('winOv').classList.remove('show');
 
-  // Cell size responsive
-  const cellPx = S===10 ? 52 : S===15 ? 38 : 28;
-  document.documentElement.style.setProperty('--cell', cellPx+'px');
-  document.getElementById('grid').style.gap = S===10?'3px':S===15?'2px':'1px';
+  // La taille des cases se calcule sur la place réellement disponible.
+  // Elle était écrite en dur (52, 38, 28 px), ce qui faisait déborder la
+  // page de 200 px sur un téléphone : les deux premières colonnes
+  // sortaient par la gauche et la liste des mots par la droite.
+  ajusterCases();
+}
+
+function ajusterCases(){
+  const S = G.size;
+  if(!S) return;
+  const gap = S===10 ? 3 : S===15 ? 2 : 1;
+  const maxi = S===10 ? 52 : S===15 ? 38 : 28;   // les anciennes valeurs
+  const MINI = 20;                               // en dessous, illisible
+  const zone = document.querySelector('.grid-wrap');
+  const large = zone ? zone.clientWidth : window.innerWidth;
+  // 18 px : le cadre de la grille, ses bords et son rembourrage
+  const place = Math.floor((large - 18 - gap * (S - 1)) / S);
+  const cellPx = Math.max(MINI, Math.min(maxi, place));
+  document.documentElement.style.setProperty('--cell', cellPx + 'px');
+  const g = document.getElementById('grid');
+  if(g) g.style.gap = gap + 'px';
 }
 
 function tryPlace(word, dirs, S) {
@@ -842,7 +874,7 @@ function updateHUD(){ document.getElementById('hFound').textContent=G.foundCount
 
 let _tt; function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),2200);}
 
-function confetti(){const cols=['#c9963a','#2a6b45','#8b2020','#2a4a7a','#FDD835','#E91E63'];for(let i=0;i<50;i++){const p=document.createElement('div');p.className='cp';p.style.left=Math.random()*100+'vw';p.style.background=cols[0|Math.random()*cols.length];p.style.animationDelay=Math.random()*1.2+'s';p.style.animationDuration=(2+Math.random()*1.4)+'s';p.style.transform=`rotate(${Math.random()*360}deg)`;document.body.appendChild(p);setTimeout(()=>p.remove(),4000);}}
+function confetti(){const cols=['#c9963a','#2a6b45','#6b4c2a','#2a4a7a','#FDD835','#E91E63'];for(let i=0;i<50;i++){const p=document.createElement('div');p.className='cp';p.style.left=Math.random()*100+'vw';p.style.background=cols[0|Math.random()*cols.length];p.style.animationDelay=Math.random()*1.2+'s';p.style.animationDuration=(2+Math.random()*1.4)+'s';p.style.transform=`rotate(${Math.random()*360}deg)`;document.body.appendChild(p);setTimeout(()=>p.remove(),4000);}}
 
 // ── LAUNCH ──
 // la partie démarre au clic sur Commencer
@@ -856,6 +888,7 @@ afficherConseil();
 <summary>À propos de ce jeu</summary>
 <div class="corps">
 <p><strong>Les Mots Mêlés</strong> — Une grille de lettres, des mots cachés dedans, à repérer et à entourer. Cinq thèmes au choix, plusieurs tailles de grille et plusieurs niveaux.</p>
+<p data-famille="1">C'est un <strong>jeu de vocabulaire</strong> : les mots d'une même grille appartiennent tous à un thème, ce qui aide à les chercher.</p>
 <h2>Pour qui</h2>
 <p>Aux personnes âgées qui lisent encore confortablement. Les lettres sont en gros caractères et la grille peut être réduite quand la grande devient fatigante.</p>
 <h2>Comment y jouer</h2>
@@ -877,5 +910,18 @@ afficherConseil();
   <span aria-hidden="true"> · </span>
   <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
 </footer>
+<script id="ajusterCases-rotation">
+/* Tourner le téléphone change la largeur : sans ça, la grille garderait la
+   taille calculée pour l'autre sens. */
+(function(){
+  var t;
+  window.addEventListener('resize', function(){
+    clearTimeout(t);
+    t = setTimeout(function(){
+      if (typeof ajusterCases === 'function') ajusterCases();
+    }, 120);
+  });
+})();
+</script>
 </body>
 </html>

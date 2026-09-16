@@ -21,7 +21,7 @@
 :root {
   --cream:#f7f3ea; --parchment:#eee8d5; --ink:#1c1208;
   --sepia:#5c3d1e; --gold:#c8922a; --green:#2d6a4f;
-  --red:#8b2020; --blue:#1a3d6e; --shadow:rgba(28,18,8,0.13);
+  --red:#6b4c2a; --blue:#1a3d6e; --shadow:rgba(28,18,8,0.13);
   --radius:12px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -93,7 +93,7 @@ header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:va
 /* HUD */
 .hud{display:flex;gap:10px;justify-content:center;margin-bottom:10px;flex-wrap:wrap;}
 .hb{background:var(--cream);border:1px solid rgba(200,146,42,.4);border-radius:6px;padding:5px 16px;text-align:center;box-shadow:0 2px 6px var(--shadow);min-width:78px;}
-.hb .l{font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;color:var(--sepia);opacity:.6;display:block;}
+.hb .l{font-size:0.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--sepia);opacity:.6;display:block;}
 .hb .v{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;font-weight:700;color:var(--gold);line-height:1.1;}
 .hb.clickable{cursor:pointer;}
 .hb.clickable:hover{border-color:var(--gold);}
@@ -247,7 +247,7 @@ header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:va
 .srow{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(200,146,42,.14);}
 .srow:last-child{border-bottom:none;}
 .sval{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.9rem;font-weight:700;color:var(--gold);text-align:right;}
-.slbl{font-size:.53rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.1em;text-align:right;}
+.slbl{font-size:0.72rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.1em;text-align:right;}
 .sbar-w{grid-column:1/-1;height:4px;background:rgba(200,146,42,.15);border-radius:2px;}
 .sbar{height:100%;background:var(--gold);border-radius:2px;transition:width .5s ease;}
 .sa{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;}
@@ -305,6 +305,20 @@ header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:va
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
+<style id="trame-menu-assoc">
+/* Menu était une boîte identique aux jauges, distinguée par le seul
+   « cursor: pointer », qui n'existe pas sur un écran tactile. Il prend la
+   forme du bouton « 🔊 Écouter » d'à côté, qui, lui, se voit. */
+.btn-menu{background:none;border:1.5px solid rgba(200,146,42,.5);
+  border-radius:8px;padding:5px 11px;font-family:inherit;font-size:.78rem;
+  font-weight:700;color:inherit;cursor:pointer}
+.btn-menu:active{background:rgba(200,146,42,.12)}
+/* Le libellé des jauges était à .55rem, soit 8,8 px : sous le plancher du
+   site, « jamais sous 0,72 rem ». */
+.hb .l{font-size:.72rem!important}
+</style>
 </head>
 <body>
 
@@ -314,7 +328,6 @@ header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:va
   <h1 id="mainTitle">Jeu des <em>Associations</em></h1>
   <p>Associer l'image à son nom</p>
   <div class="divider"></div>
-  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
 </header>
 
 <!-- START SCREEN -->
@@ -339,10 +352,8 @@ header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:va
 <div id="gameScreen">
   <div class="hud">
     <button id="btnEcoute" onclick="lireNoms()" style="background:none;border:1.5px solid rgba(200,146,42,.5);border-radius:8px;padding:5px 11px;font-family:inherit;font-size:.78rem;font-weight:700;color:inherit;cursor:pointer">🔊 Écouter</button>
-    <div class="hb"><span class="l">Temps</span><span class="v" id="hTimer">0:00</span></div>
     <div class="hb"><span class="l">Trouvés</span><span class="v" id="hFound">0/0</span></div>
-    <div class="hb"><span class="l">Erreurs</span><span class="v" id="hErr">0</span></div>
-    <div class="hb clickable" onclick="backToStart()"><span class="l">Menu</span><span class="v" style="font-size:.9rem;">↩</span></div>
+    <button type="button" class="btn-menu" onclick="backToStart()">↩ Revenir au début</button>
   </div>
   <div class="instr" id="instrBar">Glissez un nom sur l'image qui lui correspond</div>
 
@@ -363,7 +374,7 @@ header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:va
     <p>Toutes les paires trouvées !</p>
     <div class="win-time" id="winTime"></div>
     <p id="winMsg" style="margin-bottom:20px;"></p>
-    <button class="btn" onclick="newGame()">Rejouer ✦</button>
+    <button class="btn" onclick="newGame()">Rejouer</button>
   </div>
 </div>
 
@@ -477,7 +488,7 @@ const STATS_KEY='assoc_v2_stats';
 let _tc=0,_tct=null;
 document.getElementById('mainTitle').addEventListener('click',()=>{
   _tc++;clearTimeout(_tct);_tct=setTimeout(()=>_tc=0,800);
-  if(_tc>=3){_tc=0;document.getElementById('statsBtn').style.display='block';toast('Mode admin','ok');}
+  if(_tc>=3){_tc=0;}
 });
 function loadStats(){try{return JSON.parse(localStorage.getItem(STATS_KEY))||{};}catch(e){return{};}}
 function saveStats(s){try{localStorage.setItem(STATS_KEY,JSON.stringify(s));}catch(e){}}
@@ -495,7 +506,7 @@ function openStats(){
     c.innerHTML=keys.map(k=>{
       const s=st[k],m=0|s.totalSec/60,pct=s.plays?Math.round(s.completions/s.plays*100):0;
       const avg=s.plays?Math.round(s.totalSec/s.plays):0,bw=Math.round(s.totalSec/mx*100);
-      return `<div class="srow"><div>${s.n} objets</div><div><div class="slbl">Parties</div><div class="sval">${s.plays}</div></div><div><div class="slbl">Réussies</div><div class="sval">${pct}%</div></div><div class="sbar-w"><div class="sbar" style="width:${bw}%"></div></div><div style="grid-column:1/-1;font-size:.68rem;color:var(--sepia);opacity:.5;">Moy ${0|avg/60}m${String(avg%60).padStart(2,'0')}s · Erreurs moy ${s.plays?Math.round(s.totalErrors/s.plays):0}</div></div>`;
+      return `<div class="srow"><div>${s.n} objets</div><div><div class="slbl">Parties</div><div class="sval">${s.plays}</div></div><div><div class="slbl">Réussies</div><div class="sval">${pct}%</div></div><div class="sbar-w"><div class="sbar" style="width:${bw}%"></div></div><div style="grid-column:1/-1;font-size:0.72rem;color:var(--sepia);opacity:.5;">Moy ${0|avg/60}m${String(avg%60).padStart(2,'0')}s · Erreurs moy ${s.plays?Math.round(s.totalErrors/s.plays):0}</div></div>`;
     }).join('');
   }
   document.getElementById('statsPanel').classList.add('show');
@@ -577,8 +588,8 @@ function startGame(){
   document.getElementById('startScreen').style.display='none';
   document.getElementById('gameScreen').style.display='block';
   G.found=0;G.errors=0;
-  clearInterval(G.timerInt);G.timerSec=0;updateTimer();
-  G.timerInt=setInterval(()=>{G.timerSec++;updateTimer();},1000);
+  clearInterval(G.timerInt);G.timerSec=0;
+  // Plus de chronomètre affiché : on ne le lance plus.
   G.objects=choisirObjets(G.n);
   renderCards();renderNames();updateHUD();
 }
@@ -590,13 +601,9 @@ function newGame(){
 
 function backToStart(){
   setTimeout(afficherConseil,50);
-  if(G.timerSec>3){
-    trackGame(G.n,false,G.timerSec,G.errors);
-    if(typeof JDC!=='undefined'){
-      const niv = G.n<=4?1:G.n<=6?2:3;
-      JDC.enregistrer('associations', niv, false, {duree:G.timerSec, erreurs:G.errors});
-    }
-  }
+  // Quitter n'est pas échouer. Revenir au menu pour changer de
+  // thème, ou parce qu'on est interrompu, n'a pas à s'inscrire au
+  // carnet du côté des échecs.
   clearInterval(G.timerInt);
   window.speechSynthesis && window.speechSynthesis.cancel();
   document.getElementById('gameScreen').style.display='none';
@@ -718,10 +725,12 @@ function win(){
   }
   clearInterval(G.timerInt);
   trackGame(G.n,true,G.timerSec,G.errors);
-  const m=0|G.timerSec/60,s=G.timerSec%60;
-  document.getElementById('winTime').textContent=m+':'+(s<10?'0':'')+s;
-  const msgs=['Aucune erreur — parfait !','Excellent travail !','Bravo, toutes les paires trouvées !'];
-  document.getElementById('winMsg').textContent=G.errors===0?msgs[0]:G.errors<=2?msgs[1]:msgs[2];
+  // Plus de temps affiché, et une seule fin pour tout le monde. Les trois
+  // anciens messages se choisissaient sur un compte d'erreurs jamais montré :
+  // deux personnes voyaient le même écran avec deux verdicts différents.
+  document.getElementById('winTime').textContent='';
+  document.getElementById('winMsg').textContent=
+    'Toutes les paires sont trouvées. Rien ne vous échappe.';
   document.getElementById('winOv').classList.add('show');
   confetti();
 }
@@ -730,8 +739,7 @@ function win(){
 //  UTILS
 // ═══════════════════════════════
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];}return b;}
-function updateTimer(){const m=0|G.timerSec/60,s=G.timerSec%60;document.getElementById('hTimer').textContent=m+':'+(s<10?'0':'')+s;}
-function updateHUD(){document.getElementById('hFound').textContent=G.found+'/'+G.n;document.getElementById('hErr').textContent=G.errors;}
+function updateHUD(){document.getElementById('hFound').textContent=G.found+'/'+G.n;}
 let _toastT;
 function toast(msg,type='ok'){
   const t=document.getElementById('toast');t.textContent=msg;
@@ -739,7 +747,7 @@ function toast(msg,type='ok'){
   t.classList.add('show');clearTimeout(_toastT);_toastT=setTimeout(()=>t.classList.remove('show'),2400);
 }
 function confetti(){
-  const cols=['#c8922a','#2d6a4f','#8b2020','#1a3d6e','#FDD835','#E91E63'];
+  const cols=['#c8922a','#2d6a4f','#6b4c2a','#1a3d6e','#FDD835','#E91E63'];
   for(let i=0;i<50;i++){
     const p=document.createElement('div');p.className='cp';
     p.style.left=Math.random()*100+'vw';p.style.background=cols[0|Math.random()*cols.length];

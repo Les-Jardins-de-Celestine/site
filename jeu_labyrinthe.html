@@ -19,7 +19,7 @@
 <style>
 :root{
   --parchment:#eee8d5; --sepia:#5c3d1e; --gold:#c8922a;
-  --green:#2d6a4f; --red:#8b2020; --shadow:rgba(28,18,8,.13);
+  --green:#2d6a4f; --red:#6b4c2a; --shadow:rgba(28,18,8,.13);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{
@@ -52,7 +52,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 .lvl-card.active{border-color:var(--gold);background:rgba(200,146,42,.07);box-shadow:0 4px 16px rgba(200,146,42,.2);}
 .lvl-card .lvl-ico{font-size:1.5rem;}
 .lvl-card .lvl-name{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.88rem;font-weight:700;color:var(--sepia);}
-.lvl-card .lvl-sub{font-size:.7rem;color:var(--sepia);opacity:.55;}
+.lvl-card .lvl-sub{font-size:0.72rem;color:var(--sepia);opacity:.55;}
 .theme-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
 .theme-btn{background:#f7f3ea;border:2px solid rgba(200,146,42,.3);border-radius:8px;padding:7px 13px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:700;color:var(--sepia);transition:all .2s;}
 .theme-btn:hover{border-color:var(--gold);}
@@ -67,7 +67,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 /* HUD */
 .hud{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;width:100%;max-width:560px;}
 .hud-box{background:#f7f3ea;border:1.5px solid rgba(200,146,42,.3);border-radius:10px;padding:7px 16px;text-align:center;box-shadow:0 2px 8px var(--shadow);min-width:72px;}
-.hud-box .lbl{font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;color:var(--sepia);opacity:.6;}
+.hud-box .lbl{font-size:0.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--sepia);opacity:.6;}
 .hud-box .val{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold);line-height:1.2;}
 .hud-box.clickable{cursor:pointer;}
 .hud-box.clickable:hover{border-color:var(--gold);}
@@ -111,7 +111,7 @@ canvas{display:block;touch-action:none;}
 #joystickKnob.pressed{
   box-shadow:0 2px 10px rgba(200,146,42,.45), inset 0 2px 4px rgba(255,255,255,.2);
 }
-.ctrl-hint{font-size:.68rem;color:var(--sepia);opacity:.4;text-align:center;margin-top:0;}
+.ctrl-hint{font-size:0.72rem;color:var(--sepia);opacity:.4;text-align:center;margin-top:0;}
 
 /* OVERLAYS */
 .overlay{position:fixed;inset:0;background:rgba(28,18,8,.65);display:none;align-items:center;justify-content:center;z-index:100;}
@@ -132,11 +132,11 @@ canvas{display:block;touch-action:none;}
 #statsPanel.show{display:flex;animation:fadeIn .3s ease;}
 #statsBox{background:#f7f3ea;border:2px solid var(--gold);border-radius:14px;padding:24px 28px;max-width:410px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.4);}
 #statsBox h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.15rem;font-weight:700;color:var(--sepia);margin-bottom:3px;}
-.sub{font-size:.7rem;color:var(--sepia);opacity:.55;margin-bottom:14px;display:block;}
+.sub{font-size:0.72rem;color:var(--sepia);opacity:.55;margin-bottom:14px;display:block;}
 .srow{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(200,146,42,.14);}
 .srow:last-child{border-bottom:none;}
 .sval{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.85rem;font-weight:700;color:var(--gold);text-align:right;}
-.slbl{font-size:.5rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.1em;text-align:right;}
+.slbl{font-size:0.72rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.1em;text-align:right;}
 .sbar-w{grid-column:1/-1;height:4px;background:rgba(200,146,42,.15);border-radius:2px;}
 .sbar{height:100%;background:var(--gold);border-radius:2px;transition:width .5s ease;}
 .sa{display:flex;gap:10px;margin-top:14px;justify-content:flex-end;}
@@ -180,6 +180,8 @@ canvas{display:block;touch-action:none;}
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
 </head>
 <body>
 
@@ -188,7 +190,6 @@ canvas{display:block;touch-action:none;}
   <h1 id="mainTitle">Jeu du <em>Labyrinthe</em></h1>
   <p>Navigation &amp; orientation spatiale</p>
   <div class="divider"></div>
-  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
 </header>
 
 <!-- START SCREEN -->
@@ -260,7 +261,7 @@ canvas{display:block;touch-action:none;}
     <p id="winMsg">Vous avez trouvé la sortie !</p>
     <div class="overlay-btns">
       <button class="o-btn primary" onclick="startGame()">Rejouer</button>
-      <button class="o-btn secondary" onclick="showStart()">Menu</button>
+      <button class="o-btn secondary" onclick="showStart()">↩ Revenir au début</button>
     </div>
   </div>
 </div>
@@ -286,7 +287,7 @@ const STATS_KEY='labyrinthe_stats_v1';
 let _tc=0,_tct=null;
 document.getElementById('mainTitle').addEventListener('click',()=>{
   _tc++;clearTimeout(_tct);_tct=setTimeout(()=>_tc=0,800);
-  if(_tc>=3){_tc=0;document.getElementById('statsBtn').style.display='block';toast('Mode admin');}
+  if(_tc>=3){_tc=0;}
 });
 function loadStats(){try{return JSON.parse(localStorage.getItem(STATS_KEY))||{};}catch(e){return{};}}
 function saveStats(s){try{localStorage.setItem(STATS_KEY,JSON.stringify(s));}catch(e){}}
@@ -318,7 +319,7 @@ function openStats(){
         <div><div class="slbl">Moy. dépl.</div><div class="sval">${avgM}</div></div>
         <div><div class="slbl">Meilleur</div><div class="sval">${fmt(d.bestSec)}</div></div>
         <div class="sbar-w"><div class="sbar" style="width:${Math.round(d.sessions/maxS*100)}%"></div></div>
-        <div style="grid-column:1/-1;font-size:.67rem;color:var(--sepia);opacity:.5;">Record déplacements : ${d.bestMoves||'—'}</div>
+        <div style="grid-column:1/-1;font-size:0.72rem;color:var(--sepia);opacity:.5;">Record déplacements : ${d.bestMoves||'—'}</div>
       </div>`;
     }).join('');
   }
@@ -604,7 +605,7 @@ window.addEventListener('resize',()=>{
 //  UTILS
 // ══════════════════════════════════════
 function confetti(){
-  const cols=['#c8922a','#2d6a4f','#8b2020','#f0ece0','#d4a96a','#FDD835'];
+  const cols=['#c8922a','#2d6a4f','#6b4c2a','#f0ece0','#d4a96a','#FDD835'];
   for(let i=0;i<60;i++){
     const el=document.createElement('div');el.className='cp';
     el.style.cssText=`left:${Math.random()*100}%;background:${cols[0|Math.random()*cols.length]};animation-duration:${1.8+Math.random()*1.5}s;animation-delay:${Math.random()*.6}s;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;border-radius:${Math.random()>.5?'50%':'2px'};`;

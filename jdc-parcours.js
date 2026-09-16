@@ -48,6 +48,11 @@
     geographie:    { nom: 'La Géographie', fonction: 'temps', exigence: 2, niveaux: 3 },
     devinettes:    { nom: 'Ça vous revient ?', fonction: 'langage', exigence: 1, niveaux: 3 },
     racontezmoi:   { nom: 'Racontez-moi', fonction: 'langage', exigence: 1, niveaux: 3 },
+    filannee:      { nom: "Le Fil de l'Année", fonction: 'temps', exigence: 1, niveaux: 1 },
+    objets:        { nom: "Les Objets d'Autrefois", fonction: 'langage', exigence: 1, niveaux: 1 },
+    racontemoi:    { nom: "Ça me revient", fonction: 'langage', exigence: 1, niveaux: 1 },
+    lettrejour:    { nom: "La Lettre du Jour", fonction: 'langage', exigence: 1, niveaux: 1 },
+    panier:        { nom: "Le bon panier", fonction: 'logique', exigence: 1, niveaux: 1 },
     /* Les enquêtes à concertation se jouent à plusieurs. Un seul identifiant
        pour toutes : ce qui les distingue est la variante (potager, goûter…). */
     enquete_groupe: { nom: 'Les enquêtes à plusieurs', fonction: 'logique', exigence: 2, niveaux: 1 }

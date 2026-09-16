@@ -11,6 +11,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Le bon panier — jeu en ligne gratuit · Les Jardins de Célestine</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="description" content="Trier ce qui va ensemble et remplir le bon panier. Jeu du quotidien en ligne gratuit pour personne âgée, sans inscription.">
 <meta name="robots" content="noindex, follow">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -111,7 +113,7 @@ header p{font-size:.74rem;letter-spacing:.15em;text-transform:uppercase;color:va
   #panier .vide{padding:14px 0;font-size:.84rem;}
   .dans-panier{width:74px;padding:5px 4px 4px;}
   .dans-panier img{max-width:56px;}
-  .dans-panier .obj-n{font-size:.66rem;}
+  .dans-panier .obj-n{font-size:0.72rem;}
   #zonePanier{box-shadow:0 6px 10px -8px rgba(28,18,8,.35);}
 }
 #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(10px);color:#fff;background:#8b6b20;padding:11px 22px;border-radius:9px;font-size:.9rem;font-weight:700;opacity:0;transition:all .25s;z-index:300;pointer-events:none;font-family:'Atkinson Hyperlegible',sans-serif;max-width:90vw;text-align:center;}
@@ -150,6 +152,8 @@ header p{font-size:.74rem;letter-spacing:.15em;text-transform:uppercase;color:va
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
 </head>
 <body>
 
@@ -159,7 +163,6 @@ header p{font-size:.74rem;letter-spacing:.15em;text-transform:uppercase;color:va
   <h1 id="titre">Le bon <em>panier</em></h1>
   <p>Reconnaître ce qui va ensemble</p>
   <div class="divider"></div>
-  <button id="statsBtn" onclick="ouvrirStats()">📊 Stats</button>
 </header>
 
 <div id="accueil">
@@ -187,7 +190,7 @@ header p{font-size:.74rem;letter-spacing:.15em;text-transform:uppercase;color:va
 
 <div id="jeu">
   <div id="barre">
-    <button class="lien" onclick="retourAccueil()">← Changer de niveau</button>
+    <button class="lien" onclick="retourAccueil()">↩ Revenir au début</button>
     <span id="avancement"></span>
   </div>
 
@@ -207,7 +210,7 @@ header p{font-size:.74rem;letter-spacing:.15em;text-transform:uppercase;color:va
   <div id="fin">
     <p class="msg" id="finMsg">Le panier est plein !</p>
     <button class="btn-or" onclick="manche()">Une autre consigne →</button>
-    <button class="btn-vide" onclick="retourAccueil()">Changer de niveau</button>
+    <button class="btn-vide" onclick="retourAccueil()">↩ Revenir au début</button>
   </div>
 </div>
 
@@ -439,7 +442,7 @@ var CLE = 'panier_stats_v1';
 var _tc = 0, _tct = null;
 document.getElementById('titre').addEventListener('click', function(){
   _tc++; clearTimeout(_tct); _tct = setTimeout(function(){ _tc = 0; }, 800);
-  if(_tc >= 3){ _tc = 0; document.getElementById('statsBtn').style.display = 'block'; toast('Mode admin activé'); }
+  if(_tc >= 3){ _tc = 0;  toast('Mode admin activé'); }
 });
 function lireL(){ try{ return JSON.parse(localStorage.getItem(CLE)) || {}; }catch(e){ return {}; } }
 function ecrireL(x){ try{ localStorage.setItem(CLE, JSON.stringify(x)); }catch(e){} }
@@ -685,7 +688,7 @@ window.addEventListener('beforeunload', function(){
 });
 
 function confetti(){
-  var cols = ['#c8922a','#2d6a4f','#c96f4a','#3a6ea5','#b33a2b'];
+  var cols = ['#c8922a','#2d6a4f','#6b4c2a','#3a6ea5','#6b4c2a'];
   for(var i = 0; i < 55; i++){
     var c = document.createElement('div');
     c.className = 'confetti';

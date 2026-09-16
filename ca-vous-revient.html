@@ -225,9 +225,8 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
   </div>
   <div class="rangee">
     <button type="button" class="btn" id="bSuivante">Carte suivante</button>
-    <button type="button" class="gros" id="bMenu">Choisir dans la liste</button>
-  </div>
-  <button type="button" class="discret" id="bAccueil1">Revenir au début</button>
+</div>
+  <button type="button" class="discret" id="bAccueil1">↩ Revenir au début</button>
 </section>
 
 <section class="ecran" id="menu" hidden>
@@ -264,7 +263,7 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
     <button type="button" class="ligne" data-n="29"><span class="num">30</span>Qu'est-ce qu'on peut attraper mais pas lancer ?</button>
   </div>
   <div class="bas">
-    <button type="button" class="gros" id="bAccueil2">Revenir au début</button>
+    <button type="button" class="gros" id="bAccueil2">↩ Revenir au début</button>
   </div>
 </section>
 
@@ -292,7 +291,7 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
     transmet rien.</p>
 
   <div class="bas">
-    <button type="button" class="gros" id="bAccueil3">Revenir au début</button>
+    <button type="button" class="gros" id="bAccueil3">↩ Revenir au début</button>
   </div>
 </section>
 
@@ -398,7 +397,6 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
   });
   document.getElementById('bSuivante').addEventListener('click', suivante);
   document.getElementById('bChoisir').addEventListener('click', function () { montrer('menu'); });
-  document.getElementById('bMenu').addEventListener('click', function () { montrer('menu'); });
   document.getElementById('bRegles').addEventListener('click', function () { montrer('regles'); });
   ['bAccueil1', 'bAccueil2', 'bAccueil3'].forEach(function (id) {
     document.getElementById(id).addEventListener('click', function () { montrer('accueil'); });

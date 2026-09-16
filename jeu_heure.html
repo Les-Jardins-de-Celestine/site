@@ -21,8 +21,8 @@
 :root {
   --cream:#f7f3ea; --parchment:#eee8d5; --ink:#1c1208;
   --sepia:#5c3d1e; --gold:#c8922a; --green:#2d6a4f;
-  --red:#8b2020; --blue:#1a3d6e; --shadow:rgba(28,18,8,0.13);
-  --hour-color:#1a3d6e; --min-color:#8b2020;
+  --red:#6b4c2a; --blue:#1a3d6e; --shadow:rgba(28,18,8,0.13);
+  --hour-color:#1a3d6e; --min-color:#6b4c2a;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
@@ -81,7 +81,7 @@ header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:va
 /* HUD */
 .hud{display:flex;gap:10px;justify-content:center;margin-bottom:12px;flex-wrap:wrap;}
 .hb{background:var(--cream);border:1px solid rgba(200,146,42,.4);border-radius:6px;padding:5px 16px;text-align:center;box-shadow:0 2px 6px var(--shadow);min-width:78px;}
-.hb .l{font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;color:var(--sepia);opacity:.6;display:block;}
+.hb .l{font-size:0.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--sepia);opacity:.6;display:block;}
 .hb .v{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;font-weight:700;color:var(--gold);line-height:1.1;}
 .hb.c{cursor:pointer;} .hb.c:hover{border-color:var(--gold);}
 
@@ -202,7 +202,7 @@ header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:va
 .srow{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(200,146,42,.14);}
 .srow:last-child{border-bottom:none;}
 .sval{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.88rem;font-weight:700;color:var(--gold);text-align:right;}
-.slbl{font-size:.52rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.1em;text-align:right;}
+.slbl{font-size:0.72rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.1em;text-align:right;}
 .sbar-w{grid-column:1/-1;height:4px;background:rgba(200,146,42,.15);border-radius:2px;}
 .sbar{height:100%;background:var(--gold);border-radius:2px;transition:width .5s ease;}
 .sa{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;}
@@ -257,6 +257,16 @@ header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:va
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
+<style id="trame-btn-menu">
+/* Le retour était une boîte identique aux jauges : rien ne le distinguait sur
+   un écran tactile, où le curseur de souris n'existe pas. */
+.btn-menu{background:none;border:1.5px solid rgba(200,146,42,.5);
+  border-radius:8px;padding:5px 12px;font-family:inherit;font-size:.78rem;
+  font-weight:700;color:inherit;cursor:pointer;white-space:nowrap}
+.btn-menu:active{background:rgba(200,146,42,.12)}
+</style>
 </head>
 <body>
 
@@ -266,7 +276,6 @@ header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:va
   <h1 id="mainTitle">Jeu de l'<em>Heure</em></h1>
   <p>Lecture de l'heure</p>
   <div class="divider"></div>
-  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
 </header>
 
 <!-- START SCREEN -->
@@ -319,9 +328,7 @@ header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:va
 <div id="gameScreen">
   <div class="hud">
     <div class="hb"><span class="l">Question</span><span class="v" id="hQ">1/10</span></div>
-    <div class="hb"><span class="l">Score</span><span class="v" id="hScore">0</span></div>
-    <div class="hb"><span class="l">Temps</span><span class="v" id="hTimer">0:00</span></div>
-    <div class="hb c" onclick="backToStart()"><span class="l">Menu</span><span class="v" style="font-size:.9rem;">↩</span></div>
+    <button type="button" class="btn-menu" onclick="backToStart()">↩ Revenir au début</button>
   </div>
 
   <div class="score-row" id="scoreRow"></div>
@@ -340,7 +347,7 @@ header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:va
       <div class="clock-wrap">
         <div class="clock-instruction">
           🔵 Faites glisser l'aiguille des <strong>heures</strong><br>
-          🔴 Faites glisser l'aiguille des <strong>minutes</strong>
+          🟤 Faites glisser l'aiguille des <strong>minutes</strong>
         </div>
         <canvas id="clockCanvas" width="280" height="280"></canvas>
         <div class="legend">
@@ -375,12 +382,12 @@ header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:va
 <!-- RESULT -->
 <div id="resultOv">
   <div id="resultBox">
-    <span class="ico" id="resultIco">🏆</span>
-    <h2>Résultats</h2>
+    <span class="ico" id="resultIco">🎉</span>
+    <h2>Bravo !</h2>
     <div class="result-score" id="resultScore"></div>
     <p id="resultMsg"></p>
     <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-      <button class="btn btn-ol btn-sm" onclick="backToStart()">Changer de mode</button>
+      <button class="btn btn-ol btn-sm" onclick="backToStart()">↩ Revenir au début</button>
       <button class="btn btn-sm" onclick="startGame()">Rejouer</button>
     </div>
   </div>
@@ -417,7 +424,7 @@ const STATS_KEY = 'heure_stats_v1';
 let _tc=0,_tct=null;
 document.getElementById('mainTitle').addEventListener('click',()=>{
   _tc++;clearTimeout(_tct);_tct=setTimeout(()=>_tc=0,800);
-  if(_tc>=3){_tc=0;document.getElementById('statsBtn').style.display='block';toast('Mode admin','ok');}
+  if(_tc>=3){_tc=0;}
 });
 function loadStats(){try{return JSON.parse(localStorage.getItem(STATS_KEY))||{};}catch(e){return{};}}
 function saveStats(s){try{localStorage.setItem(STATS_KEY,JSON.stringify(s));}catch(e){}}
@@ -490,7 +497,7 @@ function startGame(){
   document.getElementById('resultOv').classList.remove('show');
   G.qIndex=0;G.score=0;G.results=[];
   clearInterval(G.timerInt);G.timerSec=0;
-  G.timerInt=setInterval(()=>{G.timerSec++;updateTimer();},1000);
+  G.timerInt=setInterval(()=>{G.timerSec++;},1000);  // compté pour le carnet, jamais montré
   buildScorePips();
   nextQuestion();
 }
@@ -533,7 +540,6 @@ function nextQuestion(){
   G.playerMinDeg=60;     // 10min → 60°
 
   document.getElementById('hQ').textContent=(G.qIndex+1)+'/'+G.totalQ;
-  document.getElementById('hScore').textContent=G.score;
 
   // Hide feedbacks
   hideFeedback('feedbackDigital');
@@ -628,7 +634,7 @@ function drawClock(canvasId, hourDeg, minDeg, interactive){
 
   // Minute hand
   const mLen=r*.72;
-  drawHand(ctx,cx,cy,mRad,mLen,r*.028,getComputedStyle(document.documentElement).getPropertyValue('--min-color').trim()||'#8b2020',interactive);
+  drawHand(ctx,cx,cy,mRad,mLen,r*.028,getComputedStyle(document.documentElement).getPropertyValue('--min-color').trim()||'#6b4c2a',interactive);
 
   // Center dot
   ctx.fillStyle='#2a2a2a';ctx.beginPath();ctx.arc(cx,cy,7,0,Math.PI*2);ctx.fill();
@@ -836,17 +842,14 @@ function showResult(){
     JDC.enregistrer('heure', niv, reussi, {duree:G.timerSec, erreurs:G.totalQ-G.score, variante:G.mode});
   }
 
-  const pct=Math.round(G.score/G.totalQ*100);
-  let ico='📚',msg='Continuez à vous entraîner, vous progresserez !';
-  if(pct>=90){ico='🏆';msg='Excellent ! Vous maîtrisez parfaitement la lecture de l\'heure.';}
-  else if(pct>=70){ico='🥇';msg='Très bien ! Quelques erreurs mais vous êtes sur la bonne voie.';}
-  else if(pct>=50){ico='🥈';msg='Bien joué ! Encore un peu de pratique et vous y serez.';}
-
-  document.getElementById('resultIco').textContent=ico;
-  document.getElementById('resultScore').textContent=G.score+' / '+G.totalQ;
-  document.getElementById('resultMsg').textContent=msg;
+  // Plus de note, plus de palier, plus de confettis
+  // réservés à 70 % : une partie finie est une partie
+  // réussie, et elle se fête.
+  document.getElementById('resultIco').textContent = '🎉';
+  document.getElementById('resultScore').textContent = '';
+  document.getElementById('resultMsg').textContent = 'Toutes les heures sont lues.';
   document.getElementById('resultOv').classList.add('show');
-  if(pct>=70)confetti();
+  confetti();
 }
 
 // ═══════════════════════════════════════════
@@ -866,10 +869,9 @@ function showFeedback(id,msg,type){
 function hideFeedback(id){
   const el=document.getElementById(id);if(el)el.className='feedback';
 }
-function updateTimer(){const m=0|G.timerSec/60,s=G.timerSec%60;document.getElementById('hTimer').textContent=m+':'+(s<10?'0':'')+s;}
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];}return b;}
 let _tt;function toast(msg,type='ok'){const t=document.getElementById('toast');t.textContent=msg;t.style.background=type==='err'?'var(--red)':'var(--green)';t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),2400);}
-function confetti(){const cols=['#c8922a','#2d6a4f','#8b2020','#1a3d6e','#FDD835','#E91E63'];for(let i=0;i<50;i++){const p=document.createElement('div');p.className='cp';p.style.left=Math.random()*100+'vw';p.style.background=cols[0|Math.random()*cols.length];p.style.animationDelay=Math.random()*1.2+'s';p.style.animationDuration=(2+Math.random()*1.3)+'s';p.style.transform=`rotate(${Math.random()*360}deg)`;document.body.appendChild(p);setTimeout(()=>p.remove(),4000);}}
+function confetti(){const cols=['#c8922a','#2d6a4f','#6b4c2a','#1a3d6e','#FDD835','#E91E63'];for(let i=0;i<50;i++){const p=document.createElement('div');p.className='cp';p.style.left=Math.random()*100+'vw';p.style.background=cols[0|Math.random()*cols.length];p.style.animationDelay=Math.random()*1.2+'s';p.style.animationDuration=(2+Math.random()*1.3)+'s';p.style.transform=`rotate(${Math.random()*360}deg)`;document.body.appendChild(p);setTimeout(()=>p.remove(),4000);}}
 afficherConseil();
 </script>
 
@@ -880,6 +882,7 @@ afficherConseil();
 <summary>À propos de ce jeu</summary>
 <div class="corps">
 <p><strong>Le Jeu de l'Heure</strong> — Une horloge à aiguilles, et l'heure à retrouver en chiffres. Ou l'inverse : l'heure donnée, et les aiguilles à placer.</p>
+<p data-famille="1">C'est un <strong>jeu de lecture de l'heure</strong>, dans la famille des jeux de repérage dans le temps : le cadran à aiguilles et l'heure en chiffres se répondent.</p>
 <h2>Pour qui</h2>
 <p>Aux personnes vivant avec une désorientation dans le temps. Lire une horloge à aiguilles est un savoir ancien, que ce jeu vient reprendre doucement et sans rien exiger.</p>
 <h2>Comment y jouer</h2>

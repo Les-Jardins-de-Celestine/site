@@ -13,7 +13,7 @@
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>L'Œil et le Mot — jeu en ligne gratuit · Les Jardins de Célestine</title>
-<meta name="description" content="Lire le mot, pas la couleur : un exercice de contrôle bien connu. Jeu en ligne gratuit pour senior, sans inscription.">
+<meta name="description" content="Nommer la couleur de l'encre, pas le mot écrit. Jeu de discrimination visuelle et de contrôle. Jeu en ligne gratuit pour senior, sans inscription.">
 <link rel="canonical" href="https://jardinsdecelestine.com/jeu_oeil_et_mot">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="jdc-parcours.js"></script>
@@ -123,6 +123,8 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
 </head>
 <body>
 
@@ -132,7 +134,6 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
   <h1 id="mainTitle">L'Œil et le <em>Mot</em></h1>
   <p>Faire confiance à ses yeux</p>
   <div class="divider"></div>
-  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
 </header>
 
 <div id="intro">
@@ -178,7 +179,7 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
     <h2 id="finTitre">Terminé !</h2>
     <p id="finTexte"></p>
     <button class="btn-g" onclick="rejouer()">Rejouer</button>
-    <button class="btn-o" onclick="retourIntro()">Changer de parcours</button>
+    <button class="btn-o" onclick="retourIntro()">↩ Revenir au début</button>
   </div>
 </div>
 
@@ -200,7 +201,7 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
 //   COULEURS
 // ═══════════════════════════════
 const COULEURS = [
-  { id:'rouge', nom:'Rouge', mot:'ROUGE', hex:'#c0392b' },
+  { id:'rouge', nom:'Rouge', mot:'ROUGE', hex:'#6b4c2a' },
   { id:'bleu',  nom:'Bleu',  mot:'BLEU',  hex:'#2c6fa8' },
   { id:'vert',  nom:'Vert',  mot:'VERT',  hex:'#2d6a4f' },
   { id:'jaune', nom:'Jaune', mot:'JAUNE', hex:'#c99a10' }
@@ -223,7 +224,7 @@ const STATS_KEY='oeilmot_stats_v1';
 let _tc=0,_tct=null;
 document.getElementById('mainTitle').addEventListener('click',()=>{
   _tc++;clearTimeout(_tct);_tct=setTimeout(()=>_tc=0,800);
-  if(_tc>=3){_tc=0;document.getElementById('statsBtn').style.display='block';toast('Mode admin activé');}
+  if(_tc>=3){_tc=0;toast('Mode admin activé');}
 });
 function loadStats(){try{return JSON.parse(localStorage.getItem(STATS_KEY))||{};}catch(e){return{};}}
 function saveStats(x){try{localStorage.setItem(STATS_KEY,JSON.stringify(x));}catch(e){}}
@@ -373,7 +374,7 @@ window.addEventListener('beforeunload', function(){
 });
 
 function confetti(){
-  const colors=['#c8922a','#2d6a4f','#c96f4a','#3a6ea5','#b33a2b'];
+  const colors=['#c8922a','#2d6a4f','#6b4c2a','#3a6ea5','#6b4c2a'];
   for(let i=0;i<50;i++){
     const c=document.createElement('div');
     c.className='confetti';
@@ -394,6 +395,7 @@ function confetti(){
 <summary>À propos de ce jeu</summary>
 <div class="corps">
 <p><strong>L'Œil et le Mot</strong> — Le mot « rouge » écrit en vert : il faut dire la couleur, pas le mot. L'œil et la lecture se contredisent, et il faut choisir.</p>
+<p data-famille="1">C'est un <strong>jeu de discrimination visuelle et d'inhibition</strong> : nommer la couleur de l'encre en retenant la lecture du mot.</p>
 <h2>Pour qui</h2>
 <p>Aux personnes âgées lisant confortablement et ayant une bonne autonomie. C'est, avec le Sudoku, le jeu le plus exigeant du catalogue. Retenir la lecture automatique met en jeu le contrôle de soi, l'un des domaines touchés tôt dans la dégénérescence frontotemporale.</p>
 <h2>Comment y jouer</h2>

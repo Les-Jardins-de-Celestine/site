@@ -24,7 +24,7 @@
   --ink: #1a1208;
   --sepia: #6b4c2a;
   --gold: #c9963a;
-  --red: #8b2020;
+  --red: #6b4c2a;
   --green: #2a5c3f;
   --shadow: rgba(26,18,8,0.15);
   --flash: 6s;
@@ -70,7 +70,7 @@ header p { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase
 .instruction { text-align: center; margin-bottom: 14px; max-width: 560px; padding: 0 8px; }
 .instruction h2 { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: clamp(1rem,4vw,1.2rem); color: var(--sepia); margin-bottom: 4px; }
 .instruction p { font-size: clamp(0.82rem,3vw,0.9rem); color: var(--sepia); opacity: 0.72; font-style: italic; line-height: 1.5; }
-.hint-legend { display: inline-block; margin-top: 8px; font-size: clamp(0.7rem,2.5vw,0.78rem); color: var(--sepia); background: rgba(201,150,58,0.1); border: 1px solid rgba(201,150,58,0.3); border-radius: 4px; padding: 4px 10px; }
+.hint-legend { display: inline-block; margin-top: 8px; font-size: clamp(0.72rem,2.5vw,0.78rem); color: var(--sepia); background: rgba(201,150,58,0.1); border: 1px solid rgba(201,150,58,0.3); border-radius: 4px; padding: 4px 10px; }
 
 /* ══════════════════════════════════════
    STEP 1 — LAYOUT
@@ -359,6 +359,16 @@ header p { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
+<style id="trame-retour-mgp">
+/* Ce jeu était le seul du site sans aucune sortie vers son propre menu :
+   pendant la partie, on ne pouvait que sortir du jeu entier. */
+.btn-retour-jeu{background:none;border:1.5px solid rgba(200,146,42,.45);
+  border-radius:8px;padding:5px 12px;font-family:inherit;font-size:.8rem;
+  font-weight:700;color:inherit;cursor:pointer;margin:12px auto 0;display:block}
+.btn-retour-jeu:active{background:rgba(200,146,42,.12)}
+</style>
 </head>
 <body>
 
@@ -366,8 +376,7 @@ header p { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase
 <a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
 <header>
   <h1>Mémoire des <em>Grands</em></h1>
-  <button id="statsBtn" onclick="openStats()" style="display:none;position:absolute;top:14px;right:16px;background:none;border:1.5px solid rgba(200,146,42,.4);border-radius:6px;padding:4px 10px;font-family:inherit;font-size: 0.75rem;font-weight:700;color:var(--sepia);cursor:pointer">📊 Stats</button>
-  <p>Jeu de culture historique</p>
+<p>Jeu de culture historique</p>
   <div class="divider"></div>
 </header>
 
@@ -416,6 +425,7 @@ header p { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase
   <div class="categories-row" id="zones"></div>
   <div class="btn-center">
     <button class="btn" id="btnV1" disabled onclick="validateStep1()">Valider →</button>
+    <button type="button" class="btn-retour-jeu" onclick="revenirAuDebut()">↩ Revenir au début</button>
   </div>
 </div>
 
@@ -435,7 +445,7 @@ header p { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase
 
 <!-- ═══ RÉSULTAT ═══ -->
 <div id="result">
-  <span class="trophy-icon" id="trophy">🏆</span>
+  <span class="trophy-icon" id="trophy">🎉</span>
   <h2 id="rTitle"></h2>
   <div class="score-display" id="rScore"></div>
   <div class="score-bd" id="rBreak"></div>
@@ -444,7 +454,7 @@ header p { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase
     <div class="fact-lbl">Le saviez-vous ?</div>
     <p id="rFact"></p>
   </div>
-  <button class="btn" onclick="restart()" style="margin-top:8px;">Rejouer ✦</button>
+  <button class="btn" onclick="restart()" style="margin-top:8px;">↩ Revenir au début</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -1070,14 +1080,14 @@ function showResult() {
   hide('step2'); show('result');
   const max=S.figures.length*25, pct=S.score/max;
   let trophy,title,msg;
-  if(pct>=0.9){trophy='🏆';title='Excellent !';msg='Vous êtes un véritable érudit de l\'histoire. Votre mémoire est remarquable.';}
-  else if(pct>=0.7){trophy='🥇';title='Très bien !';msg='Belle maîtrise de l\'histoire. Quelques époques ont résisté, mais votre culture est solide.';}
-  else if(pct>=0.5){trophy='🥈';title='Bien joué !';msg='Un bon début ! Avec un peu de révision sur les époques, vous progresserez encore.';}
+  if(pct>=0.9){trophy='🎉';title='Excellent !';msg='Vous êtes un véritable érudit de l\'histoire. Votre mémoire est remarquable.';}
+  else if(pct>=0.7){trophy='🎉';title='Très bien !';msg='Belle maîtrise de l\'histoire. Quelques époques ont résisté, mais votre culture est solide.';}
+  else if(pct>=0.5){trophy='🎉';title='Bien joué !';msg='Un bon début ! Avec un peu de révision sur les époques, vous progresserez encore.';}
   else{trophy='📚';title='À réviser !';msg='L\'histoire recèle encore bien des surprises — rejouez pour progresser !';}
   $('trophy').textContent=trophy; $('rTitle').textContent=title;
   $('rScore').textContent=S.score+' pts'; $('rMsg').textContent=msg;
   const pc=Object.values(S.hintClicks).filter(v=>v>=2).length;
-  $('rBreak').textContent=pc>0?`Score brut ${S.score+S.penalty} pts — ${pc} indice(s) permanent(s) (−${S.penalty} pts)`:'Aucun indice permanent utilisé — félicitations !';
+  $('rBreak').textContent=pc>0?`Score brut ${S.score+S.penalty} pts – ${pc} indice(s) permanent(s) (−${S.penalty} pts)`:'Aucun indice permanent utilisé – félicitations !';
   trackPartie(S.score, max, S.penalty, 0);
   if(typeof JDC!=='undefined'){
     const niv = NIVEAU;
@@ -1149,6 +1159,15 @@ function hide(id){ $(id).style.display='none'; }
 function setDot(id,cls,txt){ const d=$(id); d.className='step-dot '+cls; d.textContent=txt; }
 function updateHUD(){ $('hScore').textContent=S.score; $('hHints').textContent='−'+S.penalty+' pts'; $('hStreak').textContent=S.streak>=3?S.streak+'🔥':S.streak; }
 let _tt; function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>t.classList.remove('show'),3400); }
+function revenirAuDebut(){
+  // restart() ne cache pas les étapes : appelé depuis la partie,
+  // il laisserait l'étape en cours affichée SOUS le menu.
+  hide('step1'); hide('step2'); hide('result');
+  var c = document.getElementById('corrPanel');
+  if (c) c.style.display = 'none';
+  restart();
+}
+
 function restart(){ setDot('dot1','active','1'); setDot('dot2','','2'); hide('result'); initStats();
 show('niveauScreen');
 hide('step1');

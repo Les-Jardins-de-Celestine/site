@@ -20,7 +20,7 @@
 :root {
   --cream:#f7f3ea; --parchment:#eee8d5; --ink:#1c1208;
   --sepia:#5c3d1e; --gold:#c8922a; --green:#2d6a4f;
-  --red:#8b2020; --shadow:rgba(28,18,8,0.13);
+  --red:#6b4c2a; --shadow:rgba(28,18,8,0.13);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{
@@ -103,7 +103,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 #winBox p{font-size:.95rem;color:var(--sepia);opacity:.8;margin-bottom:18px;}
 #winBox .wstats{display:flex;justify-content:center;gap:26px;margin-bottom:20px;}
 #winBox .wcol{text-align:center;}
-#winBox .wlbl{font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;color:var(--sepia);opacity:.55;}
+#winBox .wlbl{font-size:0.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--sepia);opacity:.55;}
 #winBox .wval{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.3rem;font-weight:700;color:var(--gold);}
 .btn-replay{background:var(--gold);color:#fff;border:none;border-radius:10px;padding:12px 28px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;}
 .btn-replay:hover{background:#b07820;}
@@ -113,13 +113,13 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 #statsPanel.show{display:flex;animation:fadeIn .3s ease;}
 #statsBox{background:var(--cream);border:2px solid var(--gold);border-radius:14px;padding:26px 30px;max-width:440px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.4);}
 #statsBox h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;font-weight:700;color:var(--sepia);margin-bottom:4px;}
-.s-sub{font-size:.7rem;color:var(--sepia);opacity:.55;margin-bottom:14px;display:block;}
+.s-sub{font-size:0.72rem;color:var(--sepia);opacity:.55;margin-bottom:14px;display:block;}
 .srow{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(200,146,42,.14);}
 .srow:last-child{border-bottom:none;}
 .srow-name{font-size:.82rem;font-weight:700;color:var(--sepia);}
-.srow-sub{font-size:.62rem;color:var(--sepia);opacity:.55;font-weight:400;}
+.srow-sub{font-size:0.72rem;color:var(--sepia);opacity:.55;font-weight:400;}
 .scol{text-align:center;}
-.slbl{font-size:.52rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.08em;}
+.slbl{font-size:0.72rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.08em;}
 .sval{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.9rem;font-weight:700;color:var(--gold);}
 .sval.green{color:var(--green);}
 .sa{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;}
@@ -230,6 +230,16 @@ body.ensemble #timer{display:none;}
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
+<style id="trame-retour-ct">
+/* Discret, à droite du compte « Trouvés », là où se tenait le chronomètre
+   retiré en août. Il ne doit pas concurrencer le jeu du regard. */
+#hud .btn-retour{background:none;border:1.5px solid rgba(200,146,42,.45);
+  border-radius:8px;padding:4px 10px;font-family:inherit;font-size:.78rem;
+  font-weight:700;color:inherit;cursor:pointer;white-space:nowrap}
+#hud .btn-retour:active{background:rgba(200,146,42,.12)}
+</style>
 </head>
 <body>
 
@@ -239,7 +249,6 @@ body.ensemble #timer{display:none;}
   <h1 id="mainTitle">Cherche et <em>Trouve</em></h1>
   <p>Le jardin</p>
   <div class="divider"></div>
-  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
 </header>
 
 <!-- INTRO -->
@@ -291,7 +300,7 @@ body.ensemble #timer{display:none;}
   <div id="hud">
     <span>Trouvés : <span class="found" id="foundCount">0</span> / <span id="totalCount">5</span></span>
     <span id="serieBar"></span>
-    <span id="timer">0:00</span>
+    <button type="button" class="btn-retour" onclick="replay()">↩ Revenir au début</button>
   </div>
 
   <div id="tourBar">
@@ -326,11 +335,8 @@ body.ensemble #timer{display:none;}
     <div class="big">🌿</div>
     <h2>Tout est retrouvé, bravo !</h2>
     <p>Rien n'échappe à votre œil.</p>
-    <div class="wstats">
-      <div class="wcol"><div class="wlbl">Temps</div><div class="wval" id="winTime">-</div></div>
-      <div class="wcol"><div class="wlbl">Clics à côté</div><div class="wval" id="winMiss">-</div></div>
-    </div>
-    <button class="btn-replay" onclick="replay()">Rejouer</button>
+    <button class="btn-replay" onclick="rejouerPareil()">Rejouer</button>
+    <button class="btn-replay" onclick="replay()" style="background:none;border:1.5px solid rgba(200,146,42,.5);color:inherit">↩ Revenir au début</button>
   </div>
 </div>
 
@@ -406,7 +412,7 @@ let _tc = 0, _tct = null;
 document.getElementById('mainTitle').addEventListener('click', () => {
   _tc++; clearTimeout(_tct);
   _tct = setTimeout(() => _tc = 0, 800);
-  if(_tc >= 3){ _tc = 0; document.getElementById('statsBtn').style.display = 'block'; toast('Mode admin activé'); }
+  if(_tc >= 3){ _tc = 0;  toast('Mode admin activé'); }
 });
 
 function loadStats(){ try{ return JSON.parse(localStorage.getItem(STATS_KEY)) || {}; }catch(e){ return {}; } }
@@ -442,7 +448,7 @@ function openStats(){
         '<div class="scol"><div class="slbl">Parties</div><div class="sval">' + s.plays + '</div></div>' +
         '<div class="scol"><div class="slbl">Réussite</div><div class="sval green">' + pct + '%</div></div>' +
         '<div class="scol"><div class="slbl">Meilleur</div><div class="sval">' + bestM + '</div></div>' +
-        '<div style="grid-column:1/-1;font-size:.68rem;color:var(--sepia);opacity:.5;">Clics à côté (moy.) : ' + avgMiss + ' par partie réussie</div>' +
+        '<div style="grid-column:1/-1;font-size:0.72rem;color:var(--sepia);opacity:.5;">Clics à côté (moy.) : ' + avgMiss + ' par partie réussie</div>' +
         '</div>';
     }).join('');
   }
@@ -468,10 +474,9 @@ function toast(msg){
 // ═══════════════════════════════
 //   JEU
 // ═══════════════════════════════
-function updateTimer(){
-  const s = Math.floor((Date.now() - startTime) / 1000);
-  document.getElementById('timer').textContent = Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
-}
+// Plus de chronomètre à l'écran : la fonction qui
+// l'écrivait est retirée, ainsi que l'intervalle qui
+// l'appelait. La durée reste calculée pour le carnet.
 
 function melange(a){
   const r = a.slice();
@@ -553,8 +558,6 @@ function startGame(niv){
   document.getElementById('game').style.display = 'block';
   startTime = Date.now();
   clearInterval(timerInt);
-  timerInt = setInterval(updateTimer, 500);
-  updateTimer();
   lancerSerie();
 }
 
@@ -611,8 +614,10 @@ function win(){
     wt.textContent = phraseDeFin();
     document.getElementById('tourBar').classList.remove('on');
   }
-  document.getElementById('winTime').textContent = Math.floor(sec/60) + 'm' + String(sec%60).padStart(2,'0') + 's';
-  document.getElementById('winMiss').textContent = misses;
+  var _winTime = document.getElementById('winTime');
+  if (_winTime) _winTime.textContent = Math.floor(sec/60) + 'm' + String(sec%60).padStart(2,'0') + 's';
+  var _winMiss = document.getElementById('winMiss');
+  if (_winMiss) _winMiss.textContent = misses;
   trackGame(SCENE + '_n' + niveau, true, sec, misses);
   if(typeof JDC!=='undefined'){
     JDC.enregistrer('cherchetrouve', niveau, true, {duree:sec, erreurs:misses, variante:SCENE});
@@ -620,6 +625,14 @@ function win(){
   }
   confetti();
   setTimeout(() => document.getElementById('winOverlay').classList.add('show'), 900);
+}
+
+function rejouerPareil(){
+  // Relance le MÊME niveau, sans repasser par le choix. C'est ce
+  // que « Rejouer » promettait sans le faire : l'ancien bouton
+  // appelait replay(), qui ramène au menu.
+  document.getElementById('winOverlay').classList.remove('show');
+  startGame(niveau);
 }
 
 function replay(){
@@ -642,7 +655,7 @@ window.addEventListener('beforeunload', function(){
 //   CONFETTI
 // ═══════════════════════════════
 function confettiPetit(){
-  const colors = ['#c8922a','#2d6a4f','#c96f4a'];
+  const colors = ['#c8922a','#2d6a4f','#6b4c2a'];
   for(let i = 0; i < 25; i++){
     const c = document.createElement('div');
     c.className = 'confetti';
@@ -655,7 +668,7 @@ function confettiPetit(){
 }
 
 function confetti(){
-  const colors = ['#c8922a','#2d6a4f','#c96f4a','#3a6ea5','#b33a2b'];
+  const colors = ['#c8922a','#2d6a4f','#6b4c2a','#3a6ea5','#6b4c2a'];
   for(let i = 0; i < 60; i++){
     const c = document.createElement('div');
     c.className = 'confetti';

@@ -13,7 +13,7 @@
 :root{
   --cream:#f7f3ea;--parchment:#ede8d5;--ink:#1c1208;
   --sepia:#5c3d1e;--gold:#c8922a;--green:#2d6a4f;
-  --red:#8b2020;--blue:#1a3d6e;--shadow:rgba(28,18,8,.13);
+  --red:#6b4c2a;--blue:#1a3d6e;--shadow:rgba(28,18,8,.13);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--parchment);font-family:'Nunito',sans-serif;color:var(--ink);min-height:100vh;user-select:none;-webkit-user-select:none;}
@@ -108,7 +108,7 @@ header h1 em{color:var(--gold);font-style:normal;}
   draggable:true;
 }
 .pkey:hover{background:rgba(200,146,42,.15);border-color:var(--gold);}
-.pkey.erase{font-size:clamp(.7rem,2vw,1rem);color:var(--red);border-color:rgba(139,32,32,.3);}
+.pkey.erase{font-size:clamp(0.72rem,2vw,1rem);color:var(--red);border-color:rgba(139,32,32,.3);}
 .pkey.note-mode{background:rgba(26,61,110,.1);border-color:var(--blue);color:var(--blue);}
 .pkey.note-mode.active-mode{background:var(--blue);color:white;}
 
@@ -207,6 +207,16 @@ header h1 em{color:var(--gold);font-style:normal;}
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
+<style id="trame-btn-menu">
+/* Le retour était une boîte identique aux jauges : rien ne le distinguait sur
+   un écran tactile, où le curseur de souris n'existe pas. */
+.btn-menu{background:none;border:1.5px solid rgba(200,146,42,.5);
+  border-radius:8px;padding:5px 12px;font-family:inherit;font-size:.78rem;
+  font-weight:700;color:inherit;cursor:pointer;white-space:nowrap}
+.btn-menu:active{background:rgba(200,146,42,.12)}
+</style>
 </head>
 <body>
 
@@ -215,7 +225,6 @@ header h1 em{color:var(--gold);font-style:normal;}
 <header>
   <h1 id="mainTitle">Le <em>Sudoku</em></h1>
   <div class="divider"></div>
-  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
 </header>
 
 <!-- START -->
@@ -247,14 +256,6 @@ header h1 em{color:var(--gold);font-style:normal;}
     </div>
   </div>
 
-  <div class="opt-group">
-    <div class="opt-label">Chronomètre</div>
-    <div class="btn-row">
-      <button class="ob active" data-chrono="off" onclick="selOb(this,'chrono')">😌 Sans chrono</button>
-      <button class="ob" data-chrono="on" onclick="selOb(this,'chrono')">⏱️ Avec chrono</button>
-    </div>
-  </div>
-
   <button class="btn-start" onclick="startGame()">▶ Jouer !</button>
 </div>
 
@@ -262,10 +263,8 @@ header h1 em{color:var(--gold);font-style:normal;}
 <div id="gameScreen">
   <div class="hud">
     <div class="hb"><span class="l">Niveau</span><span class="v" id="hLvl">—</span></div>
-    <div class="hb" id="hChronoBox"><span class="l">Temps</span><span class="v" id="hChrono">00:00</span></div>
-    <div class="hb"><span class="l">Erreurs</span><span class="v" id="hErr">0</span></div>
     <div class="hb"><span class="l">Aides</span><span class="v" id="hHints">3</span></div>
-    <div class="hb c" onclick="backToStart()"><span class="l">Menu</span><span class="v">↩</span></div>
+    <button type="button" class="btn-menu" onclick="backToStart()">↩ Revenir au début</button>
   </div>
 
   <div class="feedback" id="feedback"></div>
@@ -277,7 +276,7 @@ header h1 em{color:var(--gold);font-style:normal;}
       <button class="abtn" onclick="toggleNoteMode()" id="btnNote">✏️ Notes</button>
       <button class="abtn" onclick="useHint()" id="btnHint">💡 Indice</button>
       <button class="abtn" onclick="checkGrid()">✓ Vérifier</button>
-      <button class="abtn danger" onclick="confirmReset()">↺ Recommencer</button>
+      <button class="abtn danger" onclick="confirmReset()">Rejouer</button>
     </div>
   </div>
 </div>
@@ -285,12 +284,12 @@ header h1 em{color:var(--gold);font-style:normal;}
 <!-- WIN -->
 <div id="winOv">
   <div id="winBox">
-    <span class="ico">🏆</span>
-    <h2>Grille complète !</h2>
+    <span class="ico">🎉</span>
+    <h2>Bravo !</h2>
     <div class="wtime" id="wtime"></div>
     <p id="wmsg"></p>
     <div class="wbtns">
-      <button class="wbtn wbtn-ol" onclick="backToStart()">Menu</button>
+      <button class="wbtn wbtn-ol" onclick="backToStart()">↩ Revenir au début</button>
       <button class="wbtn" onclick="startGame()">Nouvelle grille</button>
     </div>
   </div>
@@ -453,14 +452,11 @@ function startGame(){
   G.notes=Array(G.size*G.size).fill(null).map(function(){return [];});
 
   document.getElementById('hLvl').textContent=lvl.label;
-  document.getElementById('hErr').textContent='0';
   document.getElementById('hHints').textContent='3';
   document.getElementById('btnNote').classList.remove('active-mode');
   document.getElementById('feedback').className='feedback';
 
-  var cb=document.getElementById('hChronoBox');
-  if(G.chrono==='on'){cb.style.display='block';startTimer();}
-  else{cb.style.display='none';}
+  G.debut = Date.now();   // pour le carnet, jamais affiché
 
   buildGrid();
   buildPalette();
@@ -663,7 +659,6 @@ function placeValue(val){
 
   if(val!==0&&val!==G.solution[i]){
     G.errors++;
-    document.getElementById('hErr').textContent=G.errors;
     showFb('Incorrect — vérifiez cette case !','ko');
     var cell=document.querySelector('[data-idx="'+i+'"]');
     if(cell) cell.classList.add('error');
@@ -685,9 +680,9 @@ function checkComplete(){
   if(typeof JDC!=='undefined'){
     JDC.enregistrer('sudoku', Math.min(3,parseInt(G.lvl)||1), true, {duree:G.timerSec, erreurs:G.errors});
   }
-  var m=0|G.timerSec/60, s=G.timerSec%60;
-  document.getElementById('wtime').textContent=G.chrono==='on'?(String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')):'✓';
-  document.getElementById('wmsg').textContent='Grille résolue avec '+G.errors+' erreur'+(G.errors!==1?'s':'')+' !';
+  G.timerSec = secoulees();
+  document.getElementById('wtime').textContent = '';
+  document.getElementById('wmsg').textContent = 'La grille est complète.';
   document.getElementById('winOv').classList.add('show');
   confetti();
 }
@@ -770,17 +765,8 @@ function clearHighlight(){
 // ═══════════════════════════════════════════
 // TIMER
 // ═══════════════════════════════════════════
-function startTimer(){
-  stopTimer();
-  G.timerSec=0;
-  renderTimer();
-  G.timerInt=setInterval(function(){G.timerSec++;renderTimer();},1000);
-}
-function stopTimer(){clearInterval(G.timerInt);G.timerInt=null;}
-function renderTimer(){
-  var m=0|G.timerSec/60,s=G.timerSec%60;
-  document.getElementById('hChrono').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-}
+function secoulees(){ return Math.floor((Date.now()-(G.debut||Date.now()))/1000); }
+function stopTimer(){}   // il n'y a plus rien à arrêter
 
 // ═══════════════════════════════════════════
 // STATS
@@ -789,7 +775,7 @@ var STATS_KEY='sudoku_stats_v1';
 var _tc=0,_tt=null;
 document.getElementById('mainTitle').addEventListener('click',function(){
   _tc++;clearTimeout(_tt);_tt=setTimeout(function(){_tc=0;},800);
-  if(_tc>=3){_tc=0;document.getElementById('statsBtn').style.display='block';openStats();}
+  if(_tc>=3){_tc=0;}
 });
 function lsLoad(k){try{return JSON.parse(localStorage.getItem(k))||null;}catch(e){return null;}}
 function lsSave(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
@@ -851,12 +837,12 @@ function showFb(msg,type){
 var _tt2;
 function toast(msg,type){
   var t=document.getElementById('toast');
-  t.textContent=msg;t.style.background=type==='ok'?'#2d6a4f':'#8b2020';
+  t.textContent=msg;t.style.background=type==='ok'?'#2d6a4f':'#6b4c2a';
   t.classList.add('show');clearTimeout(_tt2);
   _tt2=setTimeout(function(){t.classList.remove('show');},2400);
 }
 function confetti(){
-  var cols=['#c8922a','#2d6a4f','#8b2020','#1a3d6e','#FDD835','#E91E63'];
+  var cols=['#c8922a','#2d6a4f','#6b4c2a','#1a3d6e','#FDD835','#E91E63'];
   for(var i=0;i<55;i++){
     var p=document.createElement('div');p.className='cp';
     p.style.left=Math.random()*100+'vw';

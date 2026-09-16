@@ -18,7 +18,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="jdc-parcours.js"></script>
 <style>
-:root{--cream:#f7f3ea;--parchment:#eee8d5;--ink:#1c1208;--sepia:#5c3d1e;--gold:#c8922a;--green:#2d6a4f;--red:#8b2020;--shadow:rgba(28,18,8,0.13);}
+:root{--cream:#f7f3ea;--parchment:#eee8d5;--ink:#1c1208;--sepia:#5c3d1e;--gold:#c8922a;--green:#2d6a4f;--red:#6b4c2a;--shadow:rgba(28,18,8,0.13);}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{background:var(--parchment);background-image:radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.08) 0%,transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(45,106,79,.06) 0%,transparent 55%);min-height:100vh;font-family:'Nunito',sans-serif;color:var(--ink);user-select:none;-webkit-user-select:none;}
 
@@ -66,13 +66,13 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 
 /* CARNET */
 #carnet{background:var(--cream);border:2px solid rgba(200,146,42,.4);border-radius:14px;padding:16px 18px;box-shadow:0 8px 26px var(--shadow);}
-.carnet-t{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-bottom:8px;}
+.carnet-t{font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-bottom:8px;}
 #question{background:#fff;border:2px solid var(--gold);border-radius:10px;padding:13px 15px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;line-height:1.5;color:var(--ink);margin-bottom:6px;}
 #etapeNum{font-size:.72rem;color:var(--sepia);opacity:.6;text-align:right;margin-bottom:14px;}
 #decouvertes{list-style:none;}
 #decouvertes li{background:#e9f2ec;border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:9px 12px;margin-bottom:8px;font-size:.9rem;line-height:1.45;color:var(--ink);animation:slideIn .35s ease;}
 @keyframes slideIn{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:translateX(0);}}
-#decouvertes li .n{display:inline-block;background:var(--green);color:#fff;font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;font-size:.68rem;width:19px;height:19px;border-radius:50%;text-align:center;line-height:19px;margin-right:7px;}
+#decouvertes li .n{display:inline-block;background:var(--green);color:#fff;font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;font-size:0.72rem;width:19px;height:19px;border-radius:50%;text-align:center;line-height:19px;margin-right:7px;}
 .vide{font-size:.86rem;color:var(--sepia);opacity:.5;font-style:italic;padding:6px 0;}
 #qcm{display:none;margin-top:12px;}
 .qcm-opt{display:flex;align-items:center;gap:12px;width:100%;background:#fff;border:2px solid rgba(200,146,42,.4);border-radius:12px;padding:10px 12px;margin-bottom:10px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .18s;text-align:left;}
@@ -154,6 +154,8 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
 </head>
 <body>
 
@@ -163,7 +165,6 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
   <h1 id="mainTitle">L'<em>Enquête</em></h1>
   <p>Observez, réfléchissez, résolvez</p>
   <div class="divider"></div>
-  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
 </header>
 
 <div id="intro">
@@ -210,7 +211,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
         <div id="qcm"></div>
         <button id="aideBtn" onclick="demanderAide()">Un petit coup de pouce ?</button>
         <div id="aideTxt"></div>
-        <button id="retour" onclick="retourIntro()">← Recommencer l'enquête</button>
+        <button id="retour" onclick="retourIntro()">↩ Revenir au début</button>
       </div>
     </div>
   </div>
@@ -221,7 +222,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
     <div class="big">🔍</div>
     <h2>Affaire résolue !</h2>
     <p id="winTxt"></p>
-    <button class="btn-g2" onclick="retourIntro()">Refaire l'enquête</button>
+    <button class="btn-g2" onclick="retourIntro()">↩ Revenir au début</button>
   </div>
 </div>
 
@@ -309,7 +310,7 @@ let _tc = 0, _tct = null;
 document.getElementById('mainTitle').addEventListener('click', () => {
   _tc++; clearTimeout(_tct);
   _tct = setTimeout(() => _tc = 0, 800);
-  if(_tc >= 3){ _tc = 0; document.getElementById('statsBtn').style.display = 'block'; toast('Mode admin activé'); }
+  if(_tc >= 3){ _tc = 0;  toast('Mode admin activé'); }
 });
 function loadStats(){ try{ return JSON.parse(localStorage.getItem(STATS_KEY)) || {}; }catch(e){ return {}; } }
 function saveStats(s){ try{ localStorage.setItem(STATS_KEY, JSON.stringify(s)); }catch(e){} }
@@ -490,11 +491,9 @@ function resolu(){
 }
 
 function retourIntro(){
-  if(playing && startTime){
-    const sec = Math.floor((Date.now() - startTime) / 1000);
-    trackLocal(niveau, false, sec, aides, erreurs);
-    if(typeof JDC !== 'undefined') JDC.enregistrer('enquete', niveau, false, { duree: sec, erreurs: erreurs, variante: ENQUETE.id });
-  }
+  // Revenir au début n'est pas échouer : changer de
+  // niveau, ou être interrompu, n'a pas à s'inscrire au
+  // carnet du côté des échecs.
   playing = false;
   document.getElementById('winOverlay').classList.remove('show');
   document.getElementById('game').style.display = 'none';
@@ -516,14 +515,13 @@ document.getElementById('sceneBox').addEventListener('click', function(ev){
 });
 
 window.addEventListener('beforeunload', function(){
-  if(playing && startTime){
-    const sec = Math.floor((Date.now() - startTime) / 1000);
-    if(typeof JDC !== 'undefined') JDC.enregistrer('enquete', niveau, false, { duree: sec, erreurs: erreurs, variante: ENQUETE.id });
-  }
+  // Revenir au début n'est pas échouer : changer de
+  // niveau, ou être interrompu, n'a pas à s'inscrire au
+  // carnet du côté des échecs.
 });
 
 function confetti(){
-  const colors = ['#c8922a','#2d6a4f','#c96f4a','#3a6ea5','#b33a2b'];
+  const colors = ['#c8922a','#2d6a4f','#6b4c2a','#3a6ea5','#6b4c2a'];
   for(let i = 0; i < 55; i++){
     const c = document.createElement('div');
     c.className = 'confetti';

@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Qu'est-ce qui vient après ? — jeu gratuit · Les Jardins de Célestine</title>
 <link rel="canonical" href="https://jardinsdecelestine.com/jeu_apres">
-<meta name="description" content="Deviner la suite d'une série d'images. Jeu de logique en ligne gratuit pour personne âgée, sans inscription et sans mise en échec.">
+<meta name="description" content="Deviner la suite d'une série d'images. Jeu de chronologie et de suites logiques en ligne gratuit pour personne âgée, sans inscription et sans mise en échec.">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="jdc-parcours.js"></script>
 <style>
@@ -74,8 +74,8 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
 @media (max-width:620px){
   header{padding:9px 20px 6px;}
   header h1{font-size:1.2rem;}
-  header p{font-size:0.68rem;margin-top:1px;}
-  .retour{padding:5px;font-size:.68rem;}
+  header p{font-size:0.72rem;margin-top:1px;}
+  .retour{padding:5px;font-size:0.72rem;}
   #game{padding:8px 12px 20px;}
   .suite{padding:12px 9px;gap:7px;}
   .suite{gap:5px;padding:10px 7px;}
@@ -136,6 +136,8 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
 </head>
 <body>
 
@@ -145,7 +147,6 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
   <h1 id="mainTitle">Qu'est-ce qui vient <em>après ?</em></h1>
   <p>Trouver la suite</p>
   <div class="divider"></div>
-  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
 </header>
 
 <div id="accueil">
@@ -172,7 +173,7 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
 
 <div id="game">
   <div id="barre">
-    <button class="lien" onclick="retourAccueil()">← Changer de parcours</button>
+    <button class="lien" onclick="retourAccueil()">↩ Revenir au début</button>
     <span id="compteur"></span>
   </div>
 
@@ -189,8 +190,8 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
   <div class="modale">
     <h2 id="finTitre">C'est terminé</h2>
     <p id="finTexte"></p>
-    <button class="btn-g" onclick="rejouer()">Recommencer</button>
-    <button class="btn-o" onclick="retourAccueil()">Changer de parcours</button>
+    <button class="btn-g" onclick="rejouer()">Rejouer</button>
+    <button class="btn-o" onclick="retourAccueil()">↩ Revenir au début</button>
   </div>
 </div>
 
@@ -321,7 +322,7 @@ document.getElementById('mainTitle').addEventListener('click', function(){
   var m = Date.now();
   clics = (m - dernierClic < 600) ? clics + 1 : 1;
   dernierClic = m;
-  if(clics >= 3){ clics = 0; document.getElementById('statsBtn').style.display = 'block'; openStats(); }
+  if(clics >= 3){ clics = 0;   }
 });
 function loadStats(){ try{ return JSON.parse(localStorage.getItem(STATS_KEY)) || {}; }catch(e){ return {}; } }
 function saveStats(x){ try{ localStorage.setItem(STATS_KEY, JSON.stringify(x)); }catch(e){} }
@@ -549,6 +550,7 @@ afficherSuggestion();
 <summary>À propos de ce jeu</summary>
 <div class="corps">
 <p><strong>Qu'est-ce qui vient après ?</strong> — Une suite d'images qui obéit à une règle, et la suite à deviner. Rond, carré, rond, carré, et ensuite ? Les règles restent simples et visibles.</p>
+<p data-famille="1">C'est un <strong>jeu de suites logiques</strong>, cousin des jeux de chronologie : la règle reste visible à l'écran, il n'y a rien à mémoriser.</p>
 <h2>Pour qui</h2>
 <p>Aux personnes âgées. Repérer une régularité est une opération de logique de base, qui ne demande ni lecture ni calcul.</p>
 <h2>Comment y jouer</h2>

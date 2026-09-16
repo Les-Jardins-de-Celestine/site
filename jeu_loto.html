@@ -13,7 +13,7 @@
 :root{
   --cream:#f7f3ea; --parchment:#eee8d5; --ink:#1c1208;
   --sepia:#5c3d1e; --gold:#c8922a; --green:#2d6a4f;
-  --red:#8b2020; --blue:#1a3d6e; --shadow:rgba(28,18,8,0.13);
+  --red:#6b4c2a; --blue:#1a3d6e; --shadow:rgba(28,18,8,0.13);
   --radius:12px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -42,14 +42,6 @@ header h1{
 header h1 em{color:var(--gold);font-style:normal;}
 header p{font-size:0.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-top:3px;}
 .divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:7px auto 0;}
-#homeBtn{
-  position:absolute;top:16px;left:18px;
-  background:none;border:1.5px solid rgba(200,146,42,.4);
-  border-radius:6px;padding:4px 10px;
-  font-family:'Nunito',sans-serif;font-size:0.75rem;font-weight:700;
-  color:var(--sepia);cursor:pointer;text-decoration:none;display:inline-block;
-}
-#homeBtn:hover{background:rgba(200,146,42,.1);}
 #statsBtn{
   display:none;position:absolute;top:16px;right:18px;
   background:none;border:1.5px solid rgba(200,146,42,.4);
@@ -392,17 +384,28 @@ header p{font-size:0.75rem;letter-spacing:.15em;text-transform:uppercase;color:v
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
+<style id="trame-tirage">
+/* La zone de tirage se repliait quand le nom était long, et le bouton
+   « Tirer » sautait de 73 px vers le bas et de 87 vers la gauche. En
+   colonne, avec la place du nom réservée d'avance, il ne bouge plus. */
+.tirage-zone{flex-direction:column!important;flex-wrap:nowrap!important;
+  gap:10px!important}
+#drawnArea{width:100%;min-height:86px;display:flex;align-items:center;
+  justify-content:center}
+.drawn-card{max-width:100%}
+.drawn-card .d-name{overflow-wrap:anywhere}
+</style>
 </head>
 <body>
 
 
 <a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
 <header>
-  <a id="homeBtn" href="index.html">← Accueil</a>
-  <h1 id="mainTitle">Loto des <em>Images</em></h1>
+<h1 id="mainTitle">Loto des <em>Images</em></h1>
   <p>Jeu de reconnaissance visuelle</p>
   <div class="divider"></div>
-  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
 </header>
 
 <!-- ═══════ START SCREEN ═══════ -->
@@ -526,13 +529,13 @@ header p{font-size:0.75rem;letter-spacing:.15em;text-transform:uppercase;color:v
 <!-- WIN OVERLAY -->
 <div id="winOv">
   <div id="winBox">
-    <span class="ico">🏆</span>
+    <span class="ico">🎉</span>
     <h2>Bravo !</h2>
     <div class="win-type" id="winType">Carton plein !</div>
     <div class="win-draws" id="winDraws">— tirages</div>
     <p id="winMsg">Félicitations, vous avez gagné !</p>
-    <button class="btn-wn" onclick="resetGame()">↩ Menu</button>
-    <button class="btn-wn sec" onclick="startGame()">🔄 Rejouer</button>
+    <button class="btn-wn" onclick="resetGame()">↩ Revenir au début</button>
+    <button class="btn-wn sec" onclick="startGame()">Rejouer</button>
   </div>
 </div>
 
@@ -659,7 +662,7 @@ const STATS_KEY = 'loto_v1_stats';
 let _tc=0, _tct=null;
 document.getElementById('mainTitle').addEventListener('click',()=>{
   _tc++; clearTimeout(_tct); _tct=setTimeout(()=>_tc=0,800);
-  if(_tc>=3){ _tc=0; document.getElementById('statsBtn').style.display='block'; toast('Mode admin activé','ok'); }
+  if(_tc>=3){ _tc=0;  toast('Mode admin activé','ok'); }
 });
 
 function loadStats(){ try{ return JSON.parse(localStorage.getItem(STATS_KEY))||{}; }catch(e){ return{}; } }
@@ -741,6 +744,11 @@ function selWin(el){ document.querySelectorAll('.mode-btn').forEach(b=>b.classLi
    START
 ══════════════════════════════════════════ */
 function startGame(){
+  // Rejouer appelle cette fonction : sans ces deux lignes, le
+  // panneau de victoire reste affiché pendant que la grille se
+  // recharge dessous. Relevé par Flo le 16 septembre.
+  document.getElementById('winOv').classList.remove('show');
+  document.getElementById('quineOv').classList.remove('show');
   const pool = shuffle([...THEMES[cfg.theme]]);
   const cellCount = cfg.sz * cfg.sz;
   // On a besoin de cellCount cases uniques par carton (avec case libre centrale)
@@ -975,13 +983,17 @@ function winGame(type){
   trackGame(G.theme, G.winMode, G.sz, G.drawCount, true);
   const labels={quine:'Quine !',double:'Double Quine !',carton:'Carton Plein !'};
   document.getElementById('winType').textContent=labels[type]||'Gagné !';
-  document.getElementById('winDraws').textContent=G.drawCount+' tirage'+(G.drawCount>1?'s':'');
+  // Plus de compte de tirages : ce n'est pas une note.
+  document.getElementById('winDraws').textContent = '';
+  // Ce qui vient d'être fait, et rien de plus : ni jugement de
+  // performance, ni tiret cadratin.
   const msgs={
-    quine:'Vous avez complété une ligne — félicitations !',
-    double:'Deux lignes complètes, excellent travail !',
-    carton:'Tout le carton est coché, performance parfaite !'
+    quine:'Une ligne est complète.',
+    double:'Deux lignes sont complètes.',
+    carton:'Tout le carton est coché.'
   };
-  document.getElementById('winMsg').textContent=msgs[type]||'Bravo !';
+  document.getElementById('winMsg').textContent =
+    (msgs[type] || '') + ' Rien ne vous échappe.';
   document.getElementById('winOv').classList.add('show');
   confetti();setTimeout(confetti,700);
 }
@@ -1026,7 +1038,7 @@ function toast(msg,type='ok'){
 }
 
 function confetti(){
-  const cols=['#c8922a','#2d6a4f','#8b2020','#1a3d6e','#FDD835','#E91E63'];
+  const cols=['#c8922a','#2d6a4f','#6b4c2a','#1a3d6e','#FDD835','#E91E63'];
   for(let i=0;i<60;i++){
     const p=document.createElement('div');p.className='cp';
     p.style.left=Math.random()*100+'vw';

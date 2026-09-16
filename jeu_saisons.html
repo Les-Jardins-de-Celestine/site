@@ -8,7 +8,7 @@
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Au fil des Saisons — jeu en ligne gratuit · Les Jardins de Célestine</title>
-<meta name="description" content="Reconnaître la saison à ce que montre l'image. Jeu de repérage dans le temps en ligne gratuit pour personne âgée, sans inscription.">
+<meta name="description" content="Reconnaître la saison à ce que montre l'image. Jeu de chronologie et de repérage dans le temps en ligne gratuit pour personne âgée, sans inscription.">
 <link rel="canonical" href="https://jardinsdecelestine.com/jeu_saisons">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="jdc-parcours.js"></script>
@@ -56,7 +56,7 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
 .bac-contenu{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;}
 .mini{background:#fff;border:2px solid rgba(200,146,42,.35);border-radius:8px;padding:4px;width:62px;text-align:center;cursor:grab;}
 .mini img{width:100%;aspect-ratio:1;object-fit:contain;display:block;border-radius:4px;}
-.mini .n{font-size:0.6rem;font-weight:700;color:var(--sepia);line-height:1.1;margin-top:2px;}
+.mini .n{font-size:0.72rem;font-weight:700;color:var(--sepia);line-height:1.1;margin-top:2px;}
 .mini.ok{border-color:var(--green);background:#e9f2ec;}
 .mini.revoir{border-color:var(--gold);background:#fdf6e6;opacity:.8;}
 
@@ -121,6 +121,8 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
 </head>
 <body>
 
@@ -130,7 +132,6 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
   <h1 id="mainTitle">Au fil des <em>Saisons</em></h1>
   <p>Classer ce qui appartient à chaque saison</p>
   <div class="divider"></div>
-  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
 </header>
 
 <div id="accueil">
@@ -161,7 +162,7 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
   <div class="bacs" id="bacs"></div>
   <div class="actions">
     <button class="btn-g" id="btnValider" onclick="valider()" disabled>Vérifier mes réponses</button>
-    <button class="btn-o" onclick="retourAccueil()">← Changer de parcours</button>
+    <button class="btn-o" onclick="retourAccueil()">↩ Revenir au début</button>
   </div>
 </div>
 
@@ -181,7 +182,7 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
     <h2 id="finTitre">Terminé !</h2>
     <p id="finTexte"></p>
     <button class="btn-g" onclick="rejouer()">Rejouer</button>
-    <button class="btn-o" onclick="retourAccueil()">Changer de parcours</button>
+    <button class="btn-o" onclick="retourAccueil()">↩ Revenir au début</button>
   </div>
 </div>
 
@@ -265,7 +266,7 @@ const STATS_KEY='saisons_stats_v1';
 let _tc=0,_tct=null;
 document.getElementById('mainTitle').addEventListener('click',()=>{
   _tc++;clearTimeout(_tct);_tct=setTimeout(()=>_tc=0,800);
-  if(_tc>=3){_tc=0;document.getElementById('statsBtn').style.display='block';toast('Mode admin activé');}
+  if(_tc>=3){_tc=0;toast('Mode admin activé');}
 });
 function loadStats(){try{return JSON.parse(localStorage.getItem(STATS_KEY))||{};}catch(e){return{};}}
 function saveStats(x){try{localStorage.setItem(STATS_KEY,JSON.stringify(x));}catch(e){}}
@@ -523,7 +524,7 @@ window.addEventListener('beforeunload',function(){
 });
 
 function confetti(){
-  const colors=['#c8922a','#2d6a4f','#c96f4a','#3a6ea5','#b33a2b'];
+  const colors=['#c8922a','#2d6a4f','#6b4c2a','#3a6ea5','#6b4c2a'];
   for(let i=0;i<50;i++){
     const c=document.createElement('div');
     c.className='confetti';
@@ -544,6 +545,7 @@ function confetti(){
 <summary>À propos de ce jeu</summary>
 <div class="corps">
 <p><strong>Au fil des Saisons</strong> — Une image, et la saison à reconnaître : les blés mûrs, les feuilles rousses, le givre sur la haie, les premiers bourgeons.</p>
+<p data-famille="1">C'est un <strong>jeu de chronologie de l'année</strong> : les quatre saisons, reconnues à ce qu'on voit dehors plutôt qu'à leur date.</p>
 <h2>Pour qui</h2>
 <p>Aux personnes vivant avec une désorientation dans le temps. Les saisons sont un repère plus large et plus stable que les dates, et elles parlent à qui a vécu au rythme de la campagne.</p>
 <h2>Comment y jouer</h2>

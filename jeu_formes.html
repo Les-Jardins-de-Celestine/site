@@ -6,14 +6,14 @@
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Jeu des Formes — jeu en ligne gratuit · Les Jardins de Célestine</title>
-<meta name="description" content="Reconnaître et retrouver les formes, en couleurs franches et en grand. Jeu d'attention en ligne gratuit, sans inscription.">
+<meta name="description" content="Reconnaître et retrouver les formes, en couleurs franches et en grand. Jeu de discrimination visuelle en ligne gratuit, sans inscription.">
 <link rel="canonical" href="https://jardinsdecelestine.com/jeu_formes">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --cream:#f7f3ea;--parchment:#ede8d5;--ink:#1c1208;
   --sepia:#5c3d1e;--gold:#c8922a;--green:#2d6a4f;
-  --red:#8b2020;--blue:#1a3d6e;--shadow:rgba(28,18,8,.13);
+  --red:#6b4c2a;--blue:#1a3d6e;--shadow:rgba(28,18,8,.13);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
@@ -247,6 +247,8 @@ body{
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
 </head>
 <body>
 
@@ -257,8 +259,7 @@ body{
   <a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
   <h1>Jeu des <em>Formes</em></h1>
   <div class="divider"></div>
-  <button id="statsBtn" onclick="openStats()" style="display:none;position:absolute;top:14px;right:16px;background:none;border:1.5px solid rgba(200,146,42,.4);border-radius:6px;padding:4px 10px;font-size:0.72rem;font-weight:700;color:#5c3d1e;cursor:pointer;font-family:'Atkinson Hyperlegible',sans-serif;">📊 Stats</button>
-  <div class="how-box">
+<div class="how-box">
     <p>🎯 Une forme ou un objet s'affiche en haut. Cliquez vite sur <strong>la même forme</strong> qui apparaît à l'écran. Ignorez les autres !</p>
   </div>
 
@@ -313,21 +314,19 @@ body{
 </div>
 <div id="gameArea"></div>
 <div id="bottomBar">
-  <div class="hb"><span class="l">Score</span><span class="v" id="scoreV">0/20</span></div>
-  <div class="hb"><span class="l">Temps</span><span class="v" id="timerV">03:00</span></div>
-  <div class="hb"><span class="l">Erreurs</span><span class="v" id="errV">0</span></div>
-  <button class="btn-reset" onclick="showStart()">↩ Menu</button>
+  <div class="hb"><span class="l">Formes</span><span class="v" id="hProg">0/20</span></div>
+  <button class="btn-reset" onclick="showStart()">↩ Revenir au début</button>
 </div>
 
 <!-- WIN -->
 <div id="winScreen">
   <div id="winBox">
-    <span class="wico" id="wico">🏆</span>
+    <span class="wico" id="wico">🎉</span>
     <h2 id="wtitle">Bravo !</h2>
     <div class="wstat" id="wstat"></div>
     <p id="wmsg"></p>
     <div class="wbtns">
-      <button class="wbtn wbtn-ol" onclick="showStart()">Menu</button>
+      <button class="wbtn wbtn-ol" onclick="showStart()">↩ Revenir au début</button>
       <button class="wbtn" onclick="launchGame()">Rejouer</button>
     </div>
   </div>
@@ -397,7 +396,7 @@ var LEVELS = {
 var G = {
   theme:'formes', lvl:'easy', total:20,
   queue:[], score:0, errors:0,
-  timerLeft:180, timerInt:null, gameOn:false,
+  debut:null, gameOn:false,
   waveTimeout:null, waveActive:false,
 };
 
@@ -528,7 +527,7 @@ function onCorrect(){
 
   G.score++;
   G.queue.shift();
-  document.getElementById('scoreV').textContent=G.score+'/'+G.total;
+  document.getElementById('hProg').textContent=G.score+'/'+G.total;
   advanceQueue();
 
   // Flash green briefly then next wave
@@ -546,7 +545,6 @@ function onCorrect(){
 
 function onWrong(){
   G.errors++;
-  document.getElementById('errV').textContent=G.errors;
   var ef=document.getElementById('errorFlash');
   ef.style.borderWidth='14px';
   setTimeout(function(){ef.style.borderWidth='0';},140);
@@ -558,22 +556,11 @@ function onWrong(){
   });
 }
 
-// ── Timer ──
-function startTimer(){
-  clearInterval(G.timerInt);
-  G.timerLeft=180;
-  renderTimer();
-  G.timerInt=setInterval(function(){
-    G.timerLeft--;
-    renderTimer();
-    var tv=document.getElementById('timerV');
-    if(G.timerLeft<=0){clearInterval(G.timerInt);endGame(false);}
-  },1000);
-}
-function renderTimer(){
-  var m=0|G.timerLeft/60,s=G.timerLeft%60;
-  document.getElementById('timerV').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-}
+// Le compte à rebours de trois minutes est retiré : il arrêtait la
+// partie et affichait « Fin de la partie ». On ne perd plus au
+// chronomètre, on termine quand les formes sont trouvées.
+function debutPartie(){ G.debut = Date.now(); }
+function secoulees(){ return Math.floor((Date.now()-(G.debut||Date.now()))/1000); }
 
 // ── Game control ──
 function launchGame(){
@@ -582,40 +569,33 @@ function launchGame(){
   document.getElementById('winScreen').classList.remove('show');
   document.getElementById('gameArea').innerHTML='';
   G.score=0;G.errors=0;G.gameOn=true;G.waveActive=false;
-  document.getElementById('scoreV').textContent='0/'+G.total;
-  document.getElementById('errV').textContent='0';
+  document.getElementById('hProg').textContent='0/'+G.total;
   document.getElementById('errorFlash').style.borderWidth='0';
-  document.getElementById('timerV').classList.remove('danger');
   buildQueue();
-  startTimer();
+  debutPartie();
   spawnWave();
 }
 
 function stopGame(){
   G.gameOn=false;
   G.waveActive=false;
-  clearInterval(G.timerInt);
   clearTimeout(G.waveTimeout);
   document.getElementById('gameArea').innerHTML='';
 }
 
 function endGame(win){
   stopGame();
-  var elapsed=180-G.timerLeft;
-  var m=0|elapsed/60,s=elapsed%60;
-  document.getElementById('wico').textContent=win?'🏆':'⏱️';
-  document.getElementById('wtitle').textContent=win?'Bravo !':'Fin de la partie';
-  document.getElementById('wstat').textContent=G.score+' / '+G.total;
-  var pct=Math.round(G.score/G.total*100);
-  var msg=win
-    ?'Terminé en '+m+'m'+String(s).padStart(2,'0')+'s · '+G.errors+' erreur'+(G.errors!==1?'s':'')+'.'
-    :G.score+' forme'+(G.score!==1?'s':'')+' trouvée'+(G.score!==1?'s':'')+' sur '+G.total+'. Belle attention, vous pouvez reprendre quand vous voulez.';
-  if(win&&pct>=90) msg+=' Concentration excellente !';
-  else if(win&&pct>=70) msg+=' Très bien joué !';
-  document.getElementById('wmsg').textContent=msg;
-  trackGame(G.theme,G.lvl,G.total,G.score,G.errors,180-G.timerLeft);
+  // Plus de note en gros, plus de durée, plus de compte de
+  // fautes, plus de mention selon le pourcentage : la même fin
+  // que sur les autres jeux.
+  var elapsed = secoulees();
+  document.getElementById('wico').textContent = '🎉';
+  document.getElementById('wtitle').textContent = 'Bravo !';
+  document.getElementById('wstat').textContent = '';
+  document.getElementById('wmsg').textContent = 'Toutes les formes sont rangées.';
+  trackGame(G.theme,G.lvl,G.total,G.score,G.errors,elapsed);
   document.getElementById('winScreen').classList.add('show');
-  if(win) confetti();
+  confetti();   // une seule fin désormais, et on la fête
 }
 
 
@@ -626,7 +606,7 @@ var _stc=0,_stt=null;
 document.querySelector('#startScreen h1').addEventListener('click',function(){
   _stc++;clearTimeout(_stt);
   _stt=setTimeout(function(){_stc=0;},800);
-  if(_stc>=3){_stc=0;document.getElementById('statsBtn').style.display='block';openStats();}
+  if(_stc>=3){_stc=0;}
 });
 
 function lsLoad(k){try{return JSON.parse(localStorage.getItem(k))||null;}catch(e){return null;}}
@@ -688,7 +668,7 @@ function resetStats(){
 }
 
 function confetti(){
-  var cols=['#c8922a','#2d6a4f','#8b2020','#1a3d6e','#FDD835','#E91E63','#3498db'];
+  var cols=['#c8922a','#2d6a4f','#6b4c2a','#1a3d6e','#FDD835','#E91E63','#3498db'];
   for(var i=0;i<55;i++){
     var p=document.createElement('div');p.className='cp';
     p.style.left=Math.random()*100+'vw';
@@ -709,6 +689,7 @@ function confetti(){
 <summary>À propos de ce jeu</summary>
 <div class="corps">
 <p><strong>Le Jeu des Formes</strong> — Des formes en couleurs franches, à reconnaître et à retrouver. Ronds, carrés, triangles, en grand et bien séparés les uns des autres.</p>
+<p data-famille="1">C'est un <strong>jeu de discrimination visuelle</strong> : la forme et la couleur portent seules l'information, il n'y a aucun mot à lire.</p>
 <h2>Pour qui</h2>
 <p>Aux personnes âgées, y compris à un stade avancé, et aux personnes dont la vue baisse. C'est le jeu le plus accessible du catalogue : aucune lecture, aucun chiffre, aucune connaissance. Les formes sont grandes et bien séparées, ce qui convient aussi quand le repérage visuel est difficile, comme dans la maladie à corps de Lewy.</p>
 <h2>Comment y jouer</h2>

@@ -20,7 +20,7 @@
 <style>
 :root {
   --cream:#f5f0e8; --parchment:#ede5d0; --ink:#1a1208;
-  --sepia:#6b4c2a; --gold:#c9963a; --red:#8b2020; --green:#2a6b45;
+  --sepia:#6b4c2a; --gold:#c9963a; --red:#6b4c2a; --green:#2a6b45;
   --shadow:rgba(26,18,8,0.15);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -292,6 +292,8 @@ body.enjeu #accueil{display:none;}
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
 </head>
 <body>
 
@@ -300,7 +302,6 @@ body.enjeu #accueil{display:none;}
 <header>
   <h1>Le <em>Puzzle</em></h1>
   <div class="device-badge" id="badgeDevice">🖥️ Tablette &amp; Ordinateur uniquement</div>
-  <button id="statsBtn" onclick="openStats()">📊 Statistiques</button>
 </header>
 
 <!-- ÉCRAN D'ACCUEIL -->
@@ -328,16 +329,14 @@ body.enjeu #accueil{display:none;}
 
 <!-- BARRE DE JEU -->
 <div class="barre-jeu" id="barreJeu">
-  <button class="mini-btn" onclick="retourAccueil()">← Changer d'image</button>
+  <button class="mini-btn" onclick="retourAccueil()">↩ Revenir au début</button>
   <span class="barre-titre" id="barreTitre">—</span>
-  <button class="mini-btn go" onclick="startGame()">▶ Recommencer</button>
+  <button class="mini-btn go" onclick="startGame()">Rejouer</button>
 </div>
 
 <!-- HUD -->
 <div class="hud">
-  <div class="hb"><div class="l">Temps</div><div class="v" id="hTimer">0:00</div></div>
   <div class="hb"><div class="l">Placées</div><div class="v" id="hPlaced">0/0</div></div>
-  <div class="hb"><div class="l">Erreurs</div><div class="v" id="hErr">0</div></div>
 </div>
 
 <!-- GAME AREA -->
@@ -368,6 +367,7 @@ body.enjeu #accueil{display:none;}
     <div class="win-time" id="winTime"></div>
     <p id="winErr"></p>
     <button class="btn" onclick="nextGame()">Prochain puzzle →</button>
+    <button class="btn" onclick="retourAccueil()" style="background:none;border:1.5px solid rgba(200,146,42,.5);color:inherit">↩ Revenir au début</button>
   </div>
 </div>
 
@@ -604,8 +604,8 @@ function majBarre(){
 function startGame(){
   G.N=G.diff; G.cell=computeCell(G.N);
   G.errors=0; G.placed=0;
-  clearInterval(G.timerInt); G.timerSec=0; updateTimer();
-  G.timerInt=setInterval(()=>{G.timerSec++;updateTimer();},1000);
+  clearInterval(G.timerInt); G.timerSec=0;
+  G.timerInt=setInterval(()=>{G.timerSec++;},1000);  // compté pour le carnet, jamais montré
 
   // Track session
   trackSessionStart(SCENES[G.sceneIdx].name, G.N);
@@ -701,10 +701,10 @@ function win(){
   }
   clearInterval(G.timerInt);
   trackSessionEnd(true);
-  const m=0|G.timerSec/60,s=G.timerSec%60;
-  document.getElementById('winTime').textContent=m+':'+(s<10?'0':'')+s;
-  document.getElementById('winErr').textContent=G.errors===0?'Aucune erreur — parfait !':G.errors+' erreur(s)';
-  document.getElementById('winIco').textContent=G.errors===0?'🏆':G.errors<3?'🥇':'🥈';
+  // Ni durée, ni compte de fautes : l'image est faite.
+  document.getElementById('winTime').textContent = '';
+  document.getElementById('winErr').textContent = 'L\'image est reconstituée.';
+  document.getElementById('winIco').textContent = '🎉';
   document.getElementById('winOv').classList.add('show');
   confetti();
 }
@@ -717,12 +717,11 @@ function nextGame(){
 
 // ── UTILS ──
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];}return b;}
-function updateTimer(){const m=0|G.timerSec/60,s=G.timerSec%60;document.getElementById('hTimer').textContent=m+':'+(s<10?'0':'')+s;}
-function updateHUD(){document.getElementById('hPlaced').textContent=G.placed+'/'+(G.N*G.N);document.getElementById('hErr').textContent=G.errors;}
+function updateHUD(){document.getElementById('hPlaced').textContent=G.placed+'/'+(G.N*G.N);}
 function toggleNums(){document.querySelectorAll('.piece').forEach(p=>p.classList.toggle('show-nums',document.getElementById('togNum').checked));}
 function toggleGrid(){document.getElementById('refGrid').style.display=document.getElementById('togGrid').checked?'grid':'none';}
 let _tt;function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),2500);}
-function confetti(){const cols=['#c9963a','#2a6b45','#8b2020','#2a4a7a','#FDD835','#E91E63','#4CAF50'];for(let i=0;i<45;i++){const p=document.createElement('div');p.className='cp';p.style.left=Math.random()*100+'vw';p.style.background=cols[0|Math.random()*cols.length];p.style.animationDelay=Math.random()*1+'s';p.style.animationDuration=(2+Math.random()*1.2)+'s';p.style.transform=`rotate(${Math.random()*360}deg)`;document.body.appendChild(p);setTimeout(()=>p.remove(),3500);}}
+function confetti(){const cols=['#c9963a','#2a6b45','#6b4c2a','#2a4a7a','#FDD835','#E91E63','#4CAF50'];for(let i=0;i<45;i++){const p=document.createElement('div');p.className='cp';p.style.left=Math.random()*100+'vw';p.style.background=cols[0|Math.random()*cols.length];p.style.animationDelay=Math.random()*1+'s';p.style.animationDuration=(2+Math.random()*1.2)+'s';p.style.transform=`rotate(${Math.random()*360}deg)`;document.body.appendChild(p);setTimeout(()=>p.remove(),3500);}}
 
 // Track time if user closes/navigates away
 window.addEventListener('beforeunload',()=>trackSessionEnd(false));
