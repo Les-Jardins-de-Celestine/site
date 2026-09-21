@@ -182,11 +182,27 @@ canvas{display:block;touch-action:none;}
 </style>
 <style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
 #statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "Game",
+ "name": "Labyrinthe",
+ "description": "Trouver le chemin, sans se presser et sans jamais se perdre pour de bon. Jeu de repérage en ligne gratuit pour senior, sans inscription.",
+ "url": "https://jardinsdecelestine.com/jeu_labyrinthe",
+ "inLanguage": "fr",
+ "isAccessibleForFree": true,
+ "publisher": {
+  "@type": "Organization",
+  "name": "Les Jardins de Célestine",
+  "url": "https://jardinsdecelestine.com"
+ }
+}
+</script>
 </head>
 <body>
 
 <header>
-  <button class="back-btn" onclick="goBack()">← Jeux</button>
+  <button class="back-btn" onclick="goBack()">← Retour aux jeux</button>
   <h1 id="mainTitle">Jeu du <em>Labyrinthe</em></h1>
   <p>Navigation &amp; orientation spatiale</p>
   <div class="divider"></div>

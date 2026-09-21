@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Un lieu à faire vivre — Les Jardins de Célestine</title>
-<meta name="description" content="Nous cherchons le lieu qui accueillera Les Jardins de Célestine, dans l'Hérault : un terrain constructible ou un bien à réhabiliter, avec un extérieur et de la place pour grandir.">
+<meta name="description" content="Nous cherchons le lieu qui accueillera Les Jardins de Célestine, dans l'Hérault, autour de Montpellier : un terrain constructible ou un bien à réhabiliter, avec un extérieur et de la place pour grandir.">
 <meta name="keywords" content="terrain habitat partagé Hérault, bien immobilier projet senior, terrain constructible Hérault, vendre terrain projet social, habitat inclusif foncier">
 <meta property="og:title" content="Un lieu à faire vivre — Les Jardins de Célestine">
 <meta property="og:description" content="Vous connaissez un terrain ou un bien disponible dans l'Hérault ? Chaque piste compte.">
@@ -81,6 +81,18 @@ footer{text-align:center;padding:1.6rem;font-size:12px;color:var(--t3);border-to
 #totop.show{display:flex}
 #totop:hover{background:#14403e}
 </style>
+<style id="bandeau">
+/* Un paysage sous l'en-tête, le même sur toutes les pages du projet.
+   Décoratif : alt vide, pour que les lecteurs d'écran le sautent. Aucun texte
+   posé dessus, illisible pour un œil âgé sur une photo chargée. */
+.bandeau{margin:0;padding:0;border:0;border-radius:0;box-shadow:none;
+  line-height:0;background:#e8dfcc}
+/* La page pourquoi habille tous ses <figure> d'un cadre, pour ses
+   graphiques : sans cette remise à zéro, son bandeau sortait encadré et
+   rentré, seul des cinq. Uniformité d'abord. */
+.bandeau img{display:block;width:100%;height:clamp(170px,40vw,360px);
+  object-fit:cover;object-position:center}
+</style>
 </head>
 <body>
 
@@ -100,6 +112,7 @@ footer{text-align:center;padding:1.6rem;font-size:12px;color:var(--t3);border-to
   <p>Le projet est prêt. Il ne lui manque que son lieu, quelque part dans l'Hérault. Et ces lieux-là se trouvent souvent par un mot, une piste, une rencontre.</p>
 </header>
 
+<figure class="bandeau"><img src="bandeau-lieu.jpg" alt="" width="1600" height="800" decoding="async"></figure>
 <main class="pg" id="contenu">
 
   <p class="intro">Nous recherchons l'endroit qui accueillera Les Jardins de Célestine : une maison à taille humaine où huit seniors vivront entourés, avec un accompagnement au quotidien et des chambres de répit pour soulager les aidants.</p>

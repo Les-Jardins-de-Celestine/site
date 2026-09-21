@@ -194,6 +194,22 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 </style>
 <style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
 #statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "Game",
+ "name": "Le Fil de l'Année",
+ "description": "Remettre des images de saison dans l'ordre de l'année, sans rien avoir à lire. Jeu de chronologie en images, en ligne, gratuit et sans inscription.",
+ "url": "https://jardinsdecelestine.com/jeu_fil_annee",
+ "inLanguage": "fr",
+ "isAccessibleForFree": true,
+ "publisher": {
+  "@type": "Organization",
+  "name": "Les Jardins de Célestine",
+  "url": "https://jardinsdecelestine.com"
+ }
+}
+</script>
 </head>
 <body>
 
@@ -223,7 +239,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 
 <div id="game">
   <div id="hud">
-    <button id="backBtn" onclick="backMenu()">← Retour</button>
+    <button id="backBtn" onclick="backMenu()">↩ Revenir au début</button>
     <span class="prog"><span id="progNow">0</span> / <span id="progTot">0</span> images</span>
   </div>
 

@@ -182,7 +182,7 @@ h2{font-family:var(--disp);font-size:1.55em;font-weight:600;color:var(--c1);line
 .hero p{color:rgba(255,255,255,.88);font-size:.95em}
 .tag{border:1px solid rgba(201,162,75,.55);background:#fbf6ef;color:var(--teal-deep);font-weight:700;letter-spacing:1.5px;border-radius:30px;padding:6px 16px}
 .hero-flower{position:absolute;right:-30px;top:-34px;width:200px;opacity:.15;pointer-events:none}
-.hero-flower svg{width:100%;height:auto;display:block}
+.hero-flower img{width:100%;height:auto;display:block}
 .hero>.tag,.hero>h1,.hero>p,.hero>.hbtns{position:relative;z-index:1}
 .hbtns{position:relative;z-index:1}
 
@@ -243,6 +243,18 @@ h2{font-family:var(--disp);font-size:1.55em;font-weight:600;color:var(--c1);line
 <meta property="og:image" content="https://jardinsdecelestine.com/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://jardinsdecelestine.com/og-image.png">
+<style id="bandeau">
+/* Un paysage sous l'en-tête, le même sur toutes les pages du projet.
+   Décoratif : alt vide, pour que les lecteurs d'écran le sautent. Aucun texte
+   posé dessus, illisible pour un œil âgé sur une photo chargée. */
+.bandeau{margin:0;padding:0;border:0;border-radius:0;box-shadow:none;
+  line-height:0;background:#e8dfcc}
+/* La page pourquoi habille tous ses <figure> d'un cadre, pour ses
+   graphiques : sans cette remise à zéro, son bandeau sortait encadré et
+   rentré, seul des cinq. Uniformité d'abord. */
+.bandeau img{display:block;width:100%;height:clamp(170px,40vw,360px);
+  object-fit:cover;object-position:center}
+</style>
 </head>
 <body>
 
@@ -259,7 +271,7 @@ h2{font-family:var(--disp);font-size:1.55em;font-weight:600;color:var(--c1);line
 
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-flower" aria-hidden="true"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><g fill="#c9a24b"><ellipse cx="50" cy="30" rx="13" ry="22"/><ellipse cx="50" cy="30" rx="13" ry="22" transform="rotate(72 50 55)"/><ellipse cx="50" cy="30" rx="13" ry="22" transform="rotate(144 50 55)"/><ellipse cx="50" cy="30" rx="13" ry="22" transform="rotate(216 50 55)"/><ellipse cx="50" cy="30" rx="13" ry="22" transform="rotate(288 50 55)"/></g><circle cx="50" cy="55" r="8.5" fill="#b5532e"/><line x1="50" y1="55" x2="50" y2="20" stroke="#b5532e" stroke-width="2.4" stroke-linecap="round"/><circle cx="50" cy="20" r="3" fill="#b5532e"/></svg></div>
+  <div class="hero-flower" aria-hidden="true"><img src="logo-jdc.png" alt="" width="465" height="495"></div>
   <div class="tag">On vous répond personnellement</div>
   <h1>Contact</h1>
   <p>Une question, une piste de terrain, une envie de participer au projet ? Écrivez-nous.</p>
@@ -273,6 +285,7 @@ h2{font-family:var(--disp);font-size:1.55em;font-weight:600;color:var(--c1);line
   
   <button class="nb on" id="nb-contact" style="cursor:default">Contact</button>
 </nav>
+<figure class="bandeau"><img src="bandeau-contact.jpg" alt="" width="1600" height="800" decoding="async"></figure>
 
 <!-- ===================== PAGE CONTACT ===================== -->
 <div class="pg on" id="pg-contact" role="main">

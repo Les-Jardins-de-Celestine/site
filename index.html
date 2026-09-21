@@ -48,7 +48,10 @@ body{font-family:var(--sans);background:var(--bg0);color:var(--t1);font-size:16p
 .sz-btn:hover{background:var(--teal-deep);color:#fff;border-color:var(--teal-deep)}
 
 .hero{background:linear-gradient(160deg,#e8f1ef 0%,#fbf6ef 72%);padding:2.8rem 1.5rem 2.2rem;text-align:center;border-bottom:1px solid var(--bd)}
-.emblem{width:96px;height:96px;margin:0 auto .9rem}
+.logo{width:230px;margin:0 auto 1rem}.logo img{display:block;width:100%;height:auto}
+/* Le nom est dans le logo : le titre reste pour Google et les
+   lecteurs d'écran, masqué à l'œil seulement. */
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .brand{font-family:var(--disp);font-size:clamp(28px,7vw,38px);font-weight:600;color:var(--teal-deep);line-height:1.05;margin-bottom:.5rem}
 .kick{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:#9a6a2a;font-weight:700;margin-bottom:1rem}
 .hero p{font-size:15px;color:var(--t2);max-width:480px;margin:0 auto;line-height:1.7}
@@ -77,6 +80,18 @@ footer{text-align:center;padding:1.6rem;font-size:12px;color:var(--t3)}
 #sib-container .input{max-width:340px;width:100%;padding:11px 14px;border:1px solid var(--bd);border-radius:10px;font-family:var(--sans);font-size:15px}
 #sib-container .sib-form-block__button{cursor:pointer}
 </style>
+<style id="bandeau">
+/* Un paysage sous l'en-tête, le même sur toutes les pages du projet.
+   Décoratif : alt vide, pour que les lecteurs d'écran le sautent. Aucun texte
+   posé dessus, illisible pour un œil âgé sur une photo chargée. */
+.bandeau{margin:0;padding:0;border:0;border-radius:0;box-shadow:none;
+  line-height:0;background:#e8dfcc}
+/* La page pourquoi habille tous ses <figure> d'un cadre, pour ses
+   graphiques : sans cette remise à zéro, son bandeau sortait encadré et
+   rentré, seul des cinq. Uniformité d'abord. */
+.bandeau img{display:block;width:100%;height:clamp(170px,40vw,360px);
+  object-fit:cover;object-position:center}
+</style>
 </head>
 <body>
 
@@ -90,23 +105,13 @@ footer{text-align:center;padding:1.6rem;font-size:12px;color:var(--t3)}
 </div>
 
 <header class="hero">
-  <div class="emblem" aria-hidden="true">
-    <svg viewBox="0 0 100 100">
-      <g fill="var(--teal)">
-        <ellipse cx="50" cy="27" rx="11" ry="20"/>
-        <ellipse cx="50" cy="27" rx="11" ry="20" transform="rotate(72 50 50)"/>
-        <ellipse cx="50" cy="27" rx="11" ry="20" transform="rotate(144 50 50)"/>
-        <ellipse cx="50" cy="27" rx="11" ry="20" transform="rotate(216 50 50)"/>
-        <ellipse cx="50" cy="27" rx="11" ry="20" transform="rotate(288 50 50)"/>
-      </g>
-      <circle cx="50" cy="50" r="9" fill="var(--gold)"/>
-    </svg>
-  </div>
+  <div class="logo"><img src="logo-jdc.png" alt="" width="465" height="495"></div>
   <div class="kick">Bienvenue</div>
-  <h1 class="brand">Les Jardins de Célestine</h1>
+  <h1 class="brand vh">Les Jardins de Célestine</h1>
   <p>Un habitat partagé pour seniors, une association au côté des aidants, et des jeux pour stimuler la mémoire.</p>
 </header>
 
+<figure class="bandeau"><img src="bandeau-accueil.jpg" alt="" width="1600" height="800" decoding="async"></figure>
 <main class="portes" id="contenu">
   <p class="portes-lbl">Choisissez votre espace</p>
 

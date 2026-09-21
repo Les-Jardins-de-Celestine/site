@@ -12,7 +12,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Habitat partagé senior - Alternative à l'EHPAD pour aidants et familles</title>
-<meta name="description" content="Projet de lieu de vie partagé pour seniors en perte d'autonomie et personnes atteintes d'Alzheimer ou maladies neurodégénératives. Solutions de répit et relais pour les aidants épuisés. Alternative humaine à l'EHPAD et à la résidence seniors.">
+<meta name="description" content="Lieu de vie partagé près de Montpellier pour seniors en perte d'autonomie et personnes atteintes d'Alzheimer ou de maladies neurodégénératives. Solutions de répit et relais pour les aidants épuisés. Alternative humaine à l'EHPAD et à la résidence seniors.">
 <meta name="keywords" content="habitat partagé senior, alternative EHPAD, résidence senior, Alzheimer, maladie à corps de Lewy, maladie neurodégénérative, démence vasculaire, démence frontotemporale, aidant, aidance, répit aidant, relais aidant, burnout aidant, charge mentale aidant, maison partagée senior, lieu de vie senior, seniors autonomie, perte autonomie, âgisme, accompagnement senior, hébergement temporaire senior, accueil de jour, accueil de jour Alzheimer, accueil de jour senior, accueil de jour dépendance, maison Alzheimer, habitat inclusif senior, vieillissement, dépendance, GIR, SAAD, aide à domicile, perte de mémoire, troubles de la mémoire, troubles cognitifs, hallucinations, aphasie, agnosie, apraxie, déambulation, troubles du comportement, agressivité, confusion, désorientation, troubles du sommeil, incontinence, dysphagie, rigidité musculaire, tremblements, troubles de léquilibre, chutes, anxiété, dépression, isolement social, épuisement aidant, proche aidant, aidant familial, conjoint aidant, enfant aidant, maintien à domicile, placement EHPAD, rupture domicile, crise aidant, hospitalisation, urgence aidant, répit urgence, accueil temporaire, maison de vie, colocation senior, cohabitation senior, maison de retraite alternative, petite unité de vie, unité Alzheimer, PASA, UHR, logement adapté, vieillir autrement">
 <meta property="og:title" content="Habitat partagé senior - Alternative humaine à l'EHPAD">
 <meta property="og:description" content="Un lieu de vie à taille humaine pour seniors en perte d'autonomie. Répit et relais pour les aidants. Participez à notre enquête préparatoire.">
@@ -181,7 +181,7 @@ h2{font-family:var(--disp);font-size:1.55em;font-weight:600;color:var(--c1);line
 .hero p{color:rgba(255,255,255,.88);font-size:.95em}
 .tag{border:1px solid rgba(201,162,75,.55);background:#fbf6ef;color:var(--teal-deep);font-weight:700;letter-spacing:1.5px;border-radius:30px;padding:6px 16px}
 .hero-flower{position:absolute;right:-30px;top:-34px;width:200px;opacity:.15;pointer-events:none}
-.hero-flower svg{width:100%;height:auto;display:block}
+.hero-flower img{width:100%;height:auto;display:block}
 .hero>.tag,.hero>h1,.hero>p,.hero>.hbtns{position:relative;z-index:1}
 .hbtns{position:relative;z-index:1}
 
@@ -242,6 +242,18 @@ h2{font-family:var(--disp);font-size:1.55em;font-weight:600;color:var(--c1);line
 <meta property="og:image" content="https://jardinsdecelestine.com/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://jardinsdecelestine.com/og-image.png">
+<style id="bandeau">
+/* Un paysage sous l'en-tête, le même sur toutes les pages du projet.
+   Décoratif : alt vide, pour que les lecteurs d'écran le sautent. Aucun texte
+   posé dessus, illisible pour un œil âgé sur une photo chargée. */
+.bandeau{margin:0;padding:0;border:0;border-radius:0;box-shadow:none;
+  line-height:0;background:#e8dfcc}
+/* La page pourquoi habille tous ses <figure> d'un cadre, pour ses
+   graphiques : sans cette remise à zéro, son bandeau sortait encadré et
+   rentré, seul des cinq. Uniformité d'abord. */
+.bandeau img{display:block;width:100%;height:clamp(170px,40vw,360px);
+  object-fit:cover;object-position:center}
+</style>
 </head>
 <body>
 
@@ -258,7 +270,7 @@ h2{font-family:var(--disp);font-size:1.55em;font-weight:600;color:var(--c1);line
 
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-flower" aria-hidden="true"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><g fill="#c9a24b"><ellipse cx="50" cy="30" rx="13" ry="22"/><ellipse cx="50" cy="30" rx="13" ry="22" transform="rotate(72 50 55)"/><ellipse cx="50" cy="30" rx="13" ry="22" transform="rotate(144 50 55)"/><ellipse cx="50" cy="30" rx="13" ry="22" transform="rotate(216 50 55)"/><ellipse cx="50" cy="30" rx="13" ry="22" transform="rotate(288 50 55)"/></g><circle cx="50" cy="55" r="8.5" fill="#b5532e"/><line x1="50" y1="55" x2="50" y2="20" stroke="#b5532e" stroke-width="2.4" stroke-linecap="round"/><circle cx="50" cy="20" r="3" fill="#b5532e"/></svg></div>
+  <div class="hero-flower" aria-hidden="true"><img src="logo-jdc.png" alt="" width="465" height="495"></div>
   <div class="tag">Étude préparatoire - votre avis est précieux</div>
   <h1>Un nouveau lieu de vie<br>pour les seniors</h1>
   <p>Nous concevons un projet de lieu de vie adapté pour des personnes ayant besoin d'accompagnement au quotidien. Avant toute chose, nous souhaitons comprendre vos besoins réels.</p>
@@ -268,6 +280,7 @@ h2{font-family:var(--disp);font-size:1.55em;font-weight:600;color:var(--c1);line
 <nav class="nav" role="navigation" aria-label="Sections">
   <a class="nb" href="index.html" style="text-decoration:none">← Accueil</a>
 </nav>
+<figure class="bandeau"><img src="bandeau-projet.jpg" alt="" width="1600" height="800" decoding="async"></figure>
 
 <!-- ===================== PAGE PROJET ===================== -->
 <div class="pg on" id="pg-projet" role="main">
