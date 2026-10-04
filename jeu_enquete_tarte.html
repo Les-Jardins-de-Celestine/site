@@ -10,15 +10,11 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>L'Enquête — La part de tarte — jeu gratuit · Les Jardins de Célestine</title>
-<link rel="canonical" href="https://jardinsdecelestine.com/jeu_enquete_tarte">
-<meta name="description" content="Une petite enquête à mener en observant les indices. Jeu de raisonnement en ligne gratuit pour personne âgée, sans inscription.">
+<title>L'Enquête · La part de tarte · Les Jardins de Célestine</title>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="jdc-parcours.js"></script>
 <style>
-:root{--cream:#f7f3ea;--parchment:#eee8d5;--ink:#1c1208;--sepia:#5c3d1e;--gold:#c8922a;--green:#2d6a4f;--red:#6b4c2a;--shadow:rgba(28,18,8,0.13);}
+:root{--cream:#f7f3ea;--parchment:#eee8d5;--ink:#1c1208;--sepia:#5c3d1e;--gold:#c8922a;--green:#2d6a4f;--red:#8b2020;--shadow:rgba(28,18,8,0.13);}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{background:var(--parchment);background-image:radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.08) 0%,transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(45,106,79,.06) 0%,transparent 55%);min-height:100vh;font-family:'Nunito',sans-serif;color:var(--ink);user-select:none;-webkit-user-select:none;}
 
@@ -66,13 +62,13 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 
 /* CARNET */
 #carnet{background:var(--cream);border:2px solid rgba(200,146,42,.4);border-radius:14px;padding:16px 18px;box-shadow:0 8px 26px var(--shadow);}
-.carnet-t{font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-bottom:8px;}
+.carnet-t{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-bottom:8px;}
 #question{background:#fff;border:2px solid var(--gold);border-radius:10px;padding:13px 15px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;line-height:1.5;color:var(--ink);margin-bottom:6px;}
 #etapeNum{font-size:.72rem;color:var(--sepia);opacity:.6;text-align:right;margin-bottom:14px;}
 #decouvertes{list-style:none;}
 #decouvertes li{background:#e9f2ec;border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:9px 12px;margin-bottom:8px;font-size:.9rem;line-height:1.45;color:var(--ink);animation:slideIn .35s ease;}
 @keyframes slideIn{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:translateX(0);}}
-#decouvertes li .n{display:inline-block;background:var(--green);color:#fff;font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;font-size:0.72rem;width:19px;height:19px;border-radius:50%;text-align:center;line-height:19px;margin-right:7px;}
+#decouvertes li .n{display:inline-block;background:var(--green);color:#fff;font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;font-size:.68rem;width:19px;height:19px;border-radius:50%;text-align:center;line-height:19px;margin-right:7px;}
 .vide{font-size:.86rem;color:var(--sepia);opacity:.5;font-style:italic;padding:6px 0;}
 #qcm{display:none;margin-top:12px;}
 .qcm-opt{display:flex;align-items:center;gap:12px;width:100%;background:#fff;border:2px solid rgba(200,146,42,.4);border-radius:12px;padding:10px 12px;margin-bottom:10px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .18s;text-align:left;}
@@ -115,72 +111,23 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 #toast.rate{background:#8b6b20;}
 .confetti{position:fixed;top:-14px;width:10px;height:14px;z-index:70;pointer-events:none;animation:cfall linear forwards;}
 @keyframes cfall{to{transform:translateY(105vh) rotate(720deg);opacity:.9;}}
-
-/* Sortie de secours : toujours un moyen de revenir au catalogue. */
 .jdc-retour{display:block;text-align:center;padding:8px;font-size:.74rem;
   color:#5c3d1e;opacity:.55;text-decoration:none;letter-spacing:.1em;
   text-transform:uppercase;font-family:'Nunito',sans-serif;}
 .jdc-retour:hover{opacity:1;}
-@media print{.jdc-retour{display:none;}}
-
-/* Pied discret : le lien légal doit exister sur chaque page du site. */
 .jdc-legal{text-align:center;padding:16px 14px 22px;font-size:.78rem;line-height:1.6;
   color:#5c3d1e;opacity:.6;font-family:'Nunito',sans-serif;}
 .jdc-legal a{color:inherit;}
-@media print{.jdc-legal{display:none;}}
 </style>
-<style id="jdc-apropos-style">
-/* Bloc « À propos » : replié par défaut, lu en entier par les moteurs.
-   Couleurs écrites en dur — chaque jeu a ses propres variables CSS. */
-.jdc-apropos{max-width:680px;margin:28px auto 8px;padding:0 16px;
-  font-family:'Nunito',system-ui,-apple-system,sans-serif;color:#5c3d1e;}
-.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;
-  letter-spacing:.02em;opacity:.62;padding:9px 0;text-align:center;
-  border-top:1px solid rgba(92,61,30,.16);}
-.jdc-apropos>summary::-webkit-details-marker{display:none}
-.jdc-apropos>summary::after{content:' \203A';display:inline-block;
-  transform:rotate(90deg);margin-left:5px;opacity:.7}
-.jdc-apropos[open]>summary::after{transform:rotate(-90deg)}
-.jdc-apropos>summary:hover,.jdc-apropos>summary:focus-visible{opacity:.95}
-.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;
-  text-align:left;opacity:.9}
-.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:#5c3d1e;
-  font-weight:700}
-.jdc-apropos p{margin:0 0 10px}
-.jdc-apropos ul{margin:0 0 10px;padding-left:20px}
-.jdc-apropos li{margin-bottom:5px}
-.jdc-apropos a{color:#2d6a4f}
-.hc .jdc-apropos{color:#000}
-.hc .jdc-apropos h2{color:#000}
-.hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
-</style>
-<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
-#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
-<script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@type": "Game",
- "name": "L'Enquête",
- "description": "Une petite enquête à mener en observant les indices. Jeu de raisonnement en ligne gratuit pour personne âgée, sans inscription.",
- "url": "https://jardinsdecelestine.com/jeu_enquete_tarte",
- "inLanguage": "fr",
- "isAccessibleForFree": true,
- "publisher": {
-  "@type": "Organization",
-  "name": "Les Jardins de Célestine",
-  "url": "https://jardinsdecelestine.com"
- }
-}
-</script>
 </head>
 <body>
+<a class="jdc-retour" href="les-enquetes.html">← Retour aux enquêtes</a>
 
-
-<a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
 <header>
   <h1 id="mainTitle">L'<em>Enquête</em></h1>
   <p>Observez, réfléchissez, résolvez</p>
   <div class="divider"></div>
+  <button id="statsBtn" onclick="openStats()">📊 Stats</button>
 </header>
 
 <div id="intro">
@@ -220,14 +167,14 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
     <div id="colCarnet">
       <div id="carnet">
         <div class="carnet-t">Votre enquête</div>
-        <div id="question">—</div>
+        <div id="question">·</div>
         <div id="etapeNum"></div>
         <div class="carnet-t">Ce que vous avez découvert</div>
         <ul id="decouvertes"><li class="vide" style="background:none;border:none;padding:0">Rien pour l'instant. Cherchez dans l'image.</li></ul>
         <div id="qcm"></div>
         <button id="aideBtn" onclick="demanderAide()">Un petit coup de pouce ?</button>
         <div id="aideTxt"></div>
-        <button id="retour" onclick="retourIntro()">↩ Revenir au début</button>
+        <button id="retour" onclick="retourIntro()">← Recommencer l'enquête</button>
       </div>
     </div>
   </div>
@@ -238,7 +185,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
     <div class="big">🔍</div>
     <h2>Affaire résolue !</h2>
     <p id="winTxt"></p>
-    <button class="btn-g2" onclick="retourIntro()">↩ Revenir au début</button>
+    <button class="btn-g2" onclick="retourIntro()">Refaire l'enquête</button>
   </div>
 </div>
 
@@ -326,7 +273,7 @@ let _tc = 0, _tct = null;
 document.getElementById('mainTitle').addEventListener('click', () => {
   _tc++; clearTimeout(_tct);
   _tct = setTimeout(() => _tc = 0, 800);
-  if(_tc >= 3){ _tc = 0;  toast('Mode admin activé'); }
+  if(_tc >= 3){ _tc = 0; document.getElementById('statsBtn').style.display = 'block'; toast('Mode admin activé'); }
 });
 function loadStats(){ try{ return JSON.parse(localStorage.getItem(STATS_KEY)) || {}; }catch(e){ return {}; } }
 function saveStats(s){ try{ localStorage.setItem(STATS_KEY, JSON.stringify(s)); }catch(e){} }
@@ -369,9 +316,9 @@ function toast(msg, type){
 function afficherSuggestion(){
   const el = document.getElementById('suggestion');
   if(typeof JDC === 'undefined'){ el.textContent = ''; return; }
-  const b = JDC.bilanJeu('enquete_tarte');
+  const b = JDC.bilanJeu('enquete');
   if(!b.parties){ el.textContent = ''; return; }
-  const c = JDC.niveauConseille('enquete_tarte');
+  const c = JDC.niveauConseille('enquete');
   const lbl = c === 1 ? 'Pas à pas' : c === 2 ? 'À deux temps' : 'Seul aux commandes';
   el.textContent = b.parties + ' enquête(s) menée(s). Niveau conseillé : ' + lbl + '.';
 }
@@ -498,8 +445,8 @@ function resolu(){
   const sec = Math.floor((Date.now() - startTime) / 1000);
   trackLocal(niveau, true, sec, aides, erreurs);
   if(typeof JDC !== 'undefined'){
-    JDC.enregistrer('enquete_tarte', niveau, true, { duree: sec, erreurs: erreurs, variante: ENQUETE.id });
-    JDC.marquerVu('enquete_tarte', ENQUETE.id);
+    JDC.enregistrer('enquete', niveau, true, { duree: sec, erreurs: erreurs, variante: ENQUETE.id });
+    JDC.marquerVu('enquete', ENQUETE.id);
   }
   document.getElementById('winTxt').textContent = ENQUETE.solution;
   confetti();
@@ -507,9 +454,11 @@ function resolu(){
 }
 
 function retourIntro(){
-  // Revenir au début n'est pas échouer : changer de
-  // niveau, ou être interrompu, n'a pas à s'inscrire au
-  // carnet du côté des échecs.
+  if(playing && startTime){
+    const sec = Math.floor((Date.now() - startTime) / 1000);
+    trackLocal(niveau, false, sec, aides, erreurs);
+    if(typeof JDC !== 'undefined') JDC.enregistrer('enquete', niveau, false, { duree: sec, erreurs: erreurs, variante: ENQUETE.id });
+  }
   playing = false;
   document.getElementById('winOverlay').classList.remove('show');
   document.getElementById('game').style.display = 'none';
@@ -531,13 +480,14 @@ document.getElementById('sceneBox').addEventListener('click', function(ev){
 });
 
 window.addEventListener('beforeunload', function(){
-  // Revenir au début n'est pas échouer : changer de
-  // niveau, ou être interrompu, n'a pas à s'inscrire au
-  // carnet du côté des échecs.
+  if(playing && startTime){
+    const sec = Math.floor((Date.now() - startTime) / 1000);
+    if(typeof JDC !== 'undefined') JDC.enregistrer('enquete', niveau, false, { duree: sec, erreurs: erreurs, variante: ENQUETE.id });
+  }
 });
 
 function confetti(){
-  const colors = ['#c8922a','#2d6a4f','#6b4c2a','#3a6ea5','#6b4c2a'];
+  const colors = ['#c8922a','#2d6a4f','#c96f4a','#3a6ea5','#b33a2b'];
   for(let i = 0; i < 55; i++){
     const c = document.createElement('div');
     c.className = 'confetti';
@@ -550,29 +500,6 @@ function confetti(){
   }
 }
 </script>
-
-
-
-
-<details class="jdc-apropos">
-<summary>À propos de ce jeu</summary>
-<div class="corps">
-<p><strong>L'Enquête — La part de tarte</strong> — Une scène dessinée, cinq questions, et un groupe qui doit se mettre d'accord. Une part de tarte disparue, et les indices laissés dans la cuisine. À chaque question, chacun donne son avis à voix haute, puis le groupe se concerte et valide une seule réponse commune.</p>
-<h2>Pour qui</h2>
-<p>Aux petits groupes : accueil de jour, EHPAD, atelier en établissement, ou simplement une famille autour d'une tablette. L'écran ne garde jamais trace de qui a dit quoi, et il n'y a ni points ni gagnant.</p>
-<h2>Comment y jouer</h2>
-<ul>
-<li><strong>En petit groupe</strong> : c'est son usage : trois ou quatre personnes autour de l'écran, une seule qui manipule pour tout le monde.</li>
-<li><strong>À deux, avec un proche ou un aidant</strong> : à deux avec un proche, en se concertant de la même façon.</li>
-</ul>
-<p>Une enquête courte, à mener en observant plutôt qu'en devinant. Aucune proposition n'est jamais déclarée fausse : celle qui n'est pas visible dans l'image reçoit un commentaire, pas une correction.</p>
-<h2>Ce que ce jeu n'est pas</h2>
-<p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
-<h2>Qui le propose</h2>
-<p>Les Jardins de Célestine, un projet d'habitat partagé pour seniors, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="jeux.html">Voir tous les jeux</a>.</p>
-</div>
-</details>
-
 <footer class="jdc-legal">
   <a href="mentions-legales.html">Mentions légales</a>
   <span aria-hidden="true"> · </span>
