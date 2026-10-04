@@ -63,7 +63,6 @@ body{font-family:var(--sans);background:var(--bg0);color:var(--t1);font-size:16p
 .jeu-d{font-size:12.5px;color:var(--t2);line-height:1.45}
 .jeu-badge-new{position:absolute;top:10px;right:10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;background:#e6f2ec;color:#1f5c42;border:1px solid #9fcbb5;border-radius:30px;padding:3px 8px}
 .jeu-badge{position:absolute;top:10px;right:10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;background:#f7ecd8;color:#9a6a2a;border:1px solid #e7cd9b;border-radius:30px;padding:3px 8px}
-.soon{margin-top:1.4rem;text-align:center;font-size:13px;color:var(--t3);line-height:1.6}
 .soon strong{color:var(--c2);font-weight:700}
 
 footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--t3);border-top:1px solid var(--bdl);background:var(--bg1);margin-top:1.5rem}
@@ -72,6 +71,19 @@ footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--t3);border-to
 .pros p{margin:.35rem 0;color:var(--t2);line-height:1.65;font-size:14.5px}
 .pros .pros-t{font-weight:700;color:var(--c1);font-size:15px}
 .pros a{color:var(--teal);font-weight:700}
+
+/* Rubriques repliables : on voit les huit titres d'un coup, sans dérouler toute la page. */
+.rubrique{border:1px solid var(--bdl);border-radius:12px;background:var(--bg1);margin-bottom:10px;overflow:hidden}
+.rubrique summary{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 16px;cursor:pointer;list-style:none;font-family:var(--disp);
+  font-size:19px;font-weight:600;color:var(--c1);transition:background .15s}
+.rubrique summary::-webkit-details-marker{display:none}
+.rubrique summary:hover{background:var(--bg2)}
+.rubrique summary::after{content:"\25BE";font-size:13px;color:var(--c2);transition:transform .2s;flex-shrink:0;order:3}
+.rubrique[open] summary::after{transform:rotate(180deg)}
+.rubrique .r-titre{flex:1}
+.rubrique .grid{padding:2px 14px 16px}
+@media(max-width:560px){.rubrique summary{font-size:17px;padding:13px 14px}}
 </style>
 <script src="jdc-parcours.js"></script>
 <script type="application/ld+json">
@@ -186,8 +198,8 @@ footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--t3);border-to
     <p>Ces jeux sont faits pour être utilisés en séance. Ils sont gratuits, sans compte à créer, et le resteront. Vous n'avez rien à nous demander : servez-vous. <a href="mentions-legales.html">Les conditions d'usage</a> tiennent en quelques lignes.</p>
   </div>
 
-  <div style="margin-bottom:.4rem">
-    <h2 id="memoire" style="font-family:var(--disp);font-size:22px;font-weight:600;color:var(--c1);margin:1.1rem 0 .7rem">Travailler la mémoire</h2>
+  <details class="rubrique" id="r-memoire" open>
+    <summary><span class="r-titre">Travailler la mémoire</span></summary>
     <div class="grid">
       <a class="jeu" href="jeu_memoire_historique.html" data-jeu="memoire" target="_blank" rel="noopener">
         <span class="jeu-ico" aria-hidden="true">🏛️</span>
@@ -215,9 +227,9 @@ footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--t3);border-to
         <span class="jeu-d">Empreintes et feuilles : retrouver ce qui va ensemble</span>
       </a>
     </div>
-  </div>
-  <div style="margin-bottom:.4rem">
-    <h2 id="langage" style="font-family:var(--disp);font-size:22px;font-weight:600;color:var(--c1);margin:1.4rem 0 .7rem">Les mots et le langage</h2>
+  </details>
+  <details class="rubrique" id="r-langage">
+    <summary><span class="r-titre">Les mots et le langage</span></summary>
     <div class="grid">
       <a class="jeu" href="jeu_mots_meles.html" data-jeu="motsmeles" target="_blank" rel="noopener">
         <span class="jeu-ico" aria-hidden="true">🔤</span>
@@ -241,9 +253,10 @@ footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--t3);border-to
         <span class="jeu-d">Trente devinettes d'autrefois, sans bonne réponse à trouver</span>
       </a>
     </div>
-  </div>
-  <div style="margin-bottom:.4rem">
-    <h2 id="nombres" style="font-family:var(--disp);font-size:22px;font-weight:600;color:var(--c1);margin:1.4rem 0 .7rem">Les nombres et le calcul</h2>
+  </details>
+
+  <details class="rubrique" id="r-nombres">
+    <summary><span class="r-titre">Les nombres et le calcul</span></summary>
     <div class="grid">
       <a class="jeu" href="jeu_calcul.html" data-jeu="calcul" target="_blank" rel="noopener">
         <span class="jeu-ico" aria-hidden="true">🔢</span>
@@ -275,9 +288,9 @@ footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--t3);border-to
         <span class="jeu-d">Retrouver une forme, puis la compter</span>
       </a>
     </div>
-  </div>
-  <div style="margin-bottom:.4rem">
-    <h2 id="logique" style="font-family:var(--disp);font-size:22px;font-weight:600;color:var(--c1);margin:1.4rem 0 .7rem">La logique et la déduction</h2>
+  </details>
+  <details class="rubrique" id="r-logique">
+    <summary><span class="r-titre">La logique et la déduction</span></summary>
     <div class="grid">
       <a class="jeu" href="jeu_sudoku.html" data-jeu="sudoku" target="_blank" rel="noopener">
         <span class="jeu-ico" aria-hidden="true">🧮</span>
@@ -287,7 +300,7 @@ footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--t3);border-to
       <a class="jeu" href="les-enquetes.html" data-jeu="enquetes" target="_blank" rel="noopener">
         <span class="jeu-ico" aria-hidden="true">🔍</span>
         <span class="jeu-h">Les Enquêtes</span>
-        <span class="jeu-d">Huit petites affaires, seul ou à plusieurs</span>
+        <span class="jeu-d">De petites affaires à résoudre, seul ou à plusieurs</span>
       </a>
       <a class="jeu" href="jeu_dans_lordre.html" data-jeu="danslordre" target="_blank" rel="noopener">
         <span class="jeu-ico" aria-hidden="true">🔢</span>
@@ -300,9 +313,10 @@ footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--t3);border-to
         <span class="jeu-d">Trier ce qui va ensemble et remplir le bon panier</span>
       </a>
     </div>
-  </div>
-  <div style="margin-bottom:.4rem">
-    <h2 id="attention" style="font-family:var(--disp);font-size:22px;font-weight:600;color:var(--c1);margin:1.4rem 0 .7rem">L'attention et l'observation</h2>
+  </details>
+
+  <details class="rubrique" id="r-attention">
+    <summary><span class="r-titre">L'attention et l'observation</span></summary>
     <div class="grid">
       <a class="jeu" href="jeu_intrus.html" data-jeu="intrus" target="_blank" rel="noopener">
         <span class="jeu-ico" aria-hidden="true">🔍</span>
@@ -323,12 +337,12 @@ footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--t3);border-to
         <span class="jeu-badge">Tablette &amp; PC</span>
         <span class="jeu-ico" aria-hidden="true">🧩</span>
         <span class="jeu-h">Puzzle</span>
-        <span class="jeu-d">8 scènes, 3 difficultés</span>
+        <span class="jeu-d">Des scènes à reconstituer, trois difficultés</span>
       </a>
       <a class="jeu" href="cherche-et-trouve.html" data-jeu="cherchetrouve" target="_blank" rel="noopener">
         <span class="jeu-ico" aria-hidden="true">🔎</span>
         <span class="jeu-h">Cherche et Trouve</span>
-        <span class="jeu-d">Douze lieux d autrefois, quinze objets dans chacun</span>
+        <span class="jeu-d">Des lieux d autrefois, et des objets à retrouver dans chacun</span>
       </a>
       <a class="jeu" href="jeu_ou_range.html" data-jeu="range" target="_blank" rel="noopener">
         <span class="jeu-ico" aria-hidden="true">🏡</span>
@@ -346,9 +360,9 @@ footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--t3);border-to
         <span class="jeu-d">Regarder la couleur de l'encre, pas le mot</span>
       </a>
     </div>
-  </div>
-  <div style="margin-bottom:.4rem">
-    <h2 id="reperes" style="font-family:var(--disp);font-size:22px;font-weight:600;color:var(--c1);margin:1.4rem 0 .7rem">Se repérer dans le temps et dans l'espace</h2>
+  </details>
+  <details class="rubrique" id="r-reperes">
+    <summary><span class="r-titre">Se repérer dans le temps et dans l'espace</span></summary>
     <div class="grid">
       <a class="jeu" href="jeu_heure.html" data-jeu="heure" target="_blank" rel="noopener">
         <span class="jeu-ico" aria-hidden="true">🕐</span>
@@ -385,32 +399,31 @@ footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--t3);border-to
         <span class="jeu-d">Remettre les images de saison dans l'ordre</span>
       </a>
     </div>
-  </div>
-  <div style="margin-bottom:.4rem">
-    <h2 id="quotidien" style="font-family:var(--disp);font-size:22px;font-weight:600;color:var(--c1);margin:1.1rem 0 .7rem">Les gestes du quotidien</h2>
+  </details>
+
+  <details class="rubrique" id="r-quotidien">
+    <summary><span class="r-titre">Les gestes du quotidien</span></summary>
     <div class="grid">
       <a class="jeu" href="jeu_gestes.html" data-jeu="gestes" target="_blank" rel="noopener">
         <span class="jeu-badge-new">Nouveau</span>
         <span class="jeu-ico" aria-hidden="true">🪥</span>
         <span class="jeu-h">Vous me montrez ?</span>
-        <span class="jeu-d">Se brosser les dents, prendre une douche : remettre les gestes dans l'ordre</span>
+        <span class="jeu-d">Remettre dans l'ordre les gestes d'un geste familier</span>
       </a>
     </div>
-  </div>
-
-
-  <div style="margin-bottom:.4rem">
-    <h2 id="souvenirs" style="font-family:var(--disp);font-size:22px;font-weight:600;color:var(--c1);margin:1.4rem 0 .7rem">Se souvenir et se raconter</h2>
+  </details>
+  <details class="rubrique" id="r-souvenirs">
+    <summary><span class="r-titre">Se souvenir et se raconter</span></summary>
     <div class="grid">
       <a class="jeu" href="racontez-moi.html" data-jeu="racontezmoi" target="_blank" rel="noopener">
         <span class="jeu-ico" aria-hidden="true">🖼️</span>
         <span class="jeu-h">Racontez-moi</span>
-        <span class="jeu-d">Vingt-quatre scènes d'autrefois, et ce qu'elles réveillent</span>
+        <span class="jeu-d">Des scènes d'autrefois, et ce qu'elles réveillent</span>
       </a>
       <a class="jeu" href="objets-autrefois.html" data-jeu="objets" target="_blank" rel="noopener">
         <span class="jeu-ico" aria-hidden="true">🕰️</span>
         <span class="jeu-h">Les Objets d'Autrefois</span>
-        <span class="jeu-d">Trente-deux objets, et ce qu'ils rappellent</span>
+        <span class="jeu-d">Des objets d'hier, et ce qu'ils rappellent</span>
       </a>
       <a class="jeu" href="jeu_racontemoi.html" data-jeu="racontemoi" target="_blank" rel="noopener">
         <span class="jeu-ico" aria-hidden="true">💭</span>
@@ -428,9 +441,7 @@ footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--t3);border-to
         <span class="jeu-d">Une lettre tirée, et tous les mots qui commencent par elle</span>
       </a>
     </div>
-  </div>
-
-  <p class="soon">Une nouvelle rubrique vient de s'ouvrir : <strong>les gestes du quotidien</strong>, pour remettre dans l'ordre les gestes de tous les jours.</p>
+  </details>
 </main>
 
 <footer>© 2025-2026 · Les jeux des Jardins de Célestine  <p style="margin-top:8px;font-size:.86rem;opacity:.75"><a href="mentions-legales.html">Mentions légales</a></p>
@@ -526,6 +537,45 @@ document.querySelectorAll('a[data-jeu]').forEach(function(a){
   nav.addEventListener('click',function(e){
     var a=e.target.closest?e.target.closest('a'):null; if(!a||a.className==='mm-marque') return;
     if(large.matches) sous.forEach(function(d){d.open=false;}); else tout.open=false;
+  });
+})();
+
+
+/* ── Pastille « Nouveau » ──
+   Elle disparaît dès que cette personne a ouvert le jeu, ou qu'une partie
+   figure dans son carnet. Rien n'est envoyé : tout reste dans son navigateur. */
+(function(){
+  var CLE = 'jdc_jeux_ouverts';
+
+  function ouverts(){
+    try { var l = JSON.parse(localStorage.getItem(CLE)); return Array.isArray(l) ? l : []; }
+    catch(e){ return []; }
+  }
+  function noter(id){
+    if(!id) return;
+    try {
+      var l = ouverts();
+      if(l.indexOf(id) === -1){ l.push(id); localStorage.setItem(CLE, JSON.stringify(l)); }
+    } catch(e){}
+  }
+  /* jeux déjà terminés au moins une fois, d'après le carnet */
+  function joues(){
+    try {
+      if(typeof JDC === 'undefined') return [];
+      return (JDC.lire().sessions || []).map(function(x){ return x.j; });
+    } catch(e){ return []; }
+  }
+
+  var connus = ouverts().concat(joues());
+
+  document.querySelectorAll('a.jeu').forEach(function(a){
+    var id = a.dataset.jeu;
+    var badge = a.querySelector('.jeu-badge-new');
+    if(badge && id && connus.indexOf(id) !== -1) badge.remove();
+    a.addEventListener('click', function(){
+      noter(id);
+      if(badge && badge.parentNode) badge.remove();
+    });
   });
 })();
 </script>
