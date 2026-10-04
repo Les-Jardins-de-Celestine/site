@@ -9,12 +9,13 @@
   gtag("config", "G-NT825E8XDT");
 </script>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>L'Enquête · jeu en ligne gratuit · Les Jardins de Célestine</title>
-<meta name="description" content="Une petite enquête à mener en observant les indices. Jeu de raisonnement en ligne gratuit pour personne âgée, sans inscription.">
-<link rel="canonical" href="https://jardinsdecelestine.com/jeu_enquete">
+<title>L'Enquête à deux · Les Jardins de Célestine</title>
+<meta name="robots" content="index, follow">>
+<meta name="description" content="La même enquête, menée à deux : l'un observe et raconte, l'autre lit les questions et relance la conversation.">
+<link rel="canonical" href="https://jardinsdecelestine.com/jeu_enquete_a_deux">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="jdc-parcours.js"></script>
 <style>
@@ -68,6 +69,17 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 #carnet{background:var(--cream);border:2px solid rgba(200,146,42,.4);border-radius:14px;padding:16px 18px;box-shadow:0 8px 26px var(--shadow);}
 .carnet-t{font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-bottom:8px;}
 #question{background:#fff;border:2px solid var(--gold);border-radius:10px;padding:13px 15px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;line-height:1.5;color:var(--ink);margin-bottom:6px;}
+#commentFaire{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.86rem;line-height:1.5;color:var(--sepia);opacity:.8;margin:0 0 8px;}
+.a-deux{background:#f6f2e7;border:1.5px solid rgba(107,76,42,.22);border-radius:13px;padding:16px 18px;margin:0 0 18px;text-align:left;}
+.a-deux-t{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--sepia);opacity:.75;margin:0 0 10px;}
+.a-deux ul{margin:0;padding-left:20px;}
+.a-deux li{font-size:1rem;line-height:1.6;color:var(--ink);margin:0 0 7px;}
+.a-deux li:last-child{margin-bottom:0;}
+.titre-relances{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--sepia);opacity:.6;margin:20px 0 10px;text-align:center;}
+.relances{display:flex;flex-direction:column;gap:10px;margin:0 0 6px;}
+.relance{background:#fff;border:1.5px solid rgba(45,106,79,.3);border-left:4px solid var(--green);border-radius:11px;padding:13px 15px;font-size:1.02rem;line-height:1.55;color:var(--ink);cursor:pointer;transition:all .16s;text-align:left;font-family:'Nunito',sans-serif;width:100%;min-height:44px;}
+.relance:hover{background:#f1f7f3;border-color:var(--green);}
+.relance.dite{background:#e9f2ec;opacity:.72;}
 #etapeNum{font-size:.72rem;color:var(--sepia);opacity:.6;text-align:right;margin-bottom:14px;}
 #decouvertes{list-style:none;}
 #decouvertes li{background:#e9f2ec;border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:9px 12px;margin-bottom:8px;font-size:.9rem;line-height:1.45;color:var(--ink);animation:slideIn .35s ease;}
@@ -160,9 +172,9 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 {
  "@context": "https://schema.org",
  "@type": "Game",
- "name": "L'Enquête",
- "description": "Une petite enquête à mener en observant les indices. Jeu de raisonnement en ligne gratuit pour personne âgée, sans inscription.",
- "url": "https://jardinsdecelestine.com/jeu_enquete",
+ "name": "L'Enquête à deux",
+ "description": "La même enquête, menée à deux : l'un observe et raconte, l'autre lit les questions et relance la conversation.",
+ "url": "https://jardinsdecelestine.com/jeu_enquete_a_deux",
  "inLanguage": "fr",
  "isAccessibleForFree": true,
  "publisher": {
@@ -178,8 +190,8 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 
 <a class="jdc-retour" href="les-enquetes.html">← Retour aux enquêtes</a>
 <header>
-  <h1 id="mainTitle">L'<em>Enquête</em></h1>
-  <p>Observez, réfléchissez, résolvez</p>
+  <h1 id="mainTitle">L'<em>Enquête</em> à deux</h1>
+  <p>L'un raconte, l'autre relance</p>
   <div class="divider"></div>
 </header>
 
@@ -187,18 +199,21 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
   <div class="card">
     <h2 id="introTitre">Le potager piétiné</h2>
     <p id="introTxt">Quelqu'un a marché dans le potager de la maison et abîmé les salades. Trois personnes se trouvaient dans le jardin cet après-midi-là. À vous de découvrir qui est passé par là.</p>
+    <div class="a-deux">
+      <div class="a-deux-t">Comment on joue à deux</div>
+      <ul>
+        <li>Installez-vous côte à côte, l'image bien en face de la personne.</li>
+        <li>Lisez la question à voix haute, puis laissez le temps de regarder.</li>
+        <li>Si le silence dure, trois phrases sont là pour relancer.
+            Touchez-en une pour l'entendre.</li>
+        <li>Ce qui compte, c'est ce qui se dit. Vous pouvez toucher l'image à sa
+            place, et une réponse à côté est une réponse quand même.</li>
+      </ul>
+    </div>
     <div class="niveaux">
       <button class="niv" onclick="commencer(1)">
-        <span class="niv-t">Pas à pas</span>
-        <span class="niv-d">L'enquête vous guide, question après question</span>
-      </button>
-      <button class="niv niv-mid" onclick="commencer(2)">
-        <span class="niv-t">À deux temps</span>
-        <span class="niv-d">Moins de questions, plus de réflexion</span>
-      </button>
-      <button class="niv" onclick="commencer(3)">
-        <span class="niv-t">Seul aux commandes</span>
-        <span class="niv-d">Une seule question : qui est le coupable ?</span>
+        <span class="niv-t">Commencer l'enquête</span>
+        <span class="niv-d">Quatre questions, dans l'ordre</span>
       </button>
     </div>
     <div id="suggestion"></div>
@@ -221,9 +236,12 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
       <div id="carnet">
         <div class="carnet-t">Votre enquête</div>
         <div id="question">·</div>
+        <p id="commentFaire"></p>
         <div id="etapeNum"></div>
+        <div class="titre-relances">Pour relancer la conversation</div>
+        <div class="relances" id="relances"></div>
         <div class="carnet-t">Ce que vous avez découvert</div>
-        <ul id="decouvertes"><li class="vide" style="background:none;border:none;padding:0">Rien pour l'instant. Cherchez dans l'image.</li></ul>
+        <ul id="decouvertes"><li class="vide" style="background:none;border:none;padding:0">Ce que vous trouverez s'écrira ici.</li></ul>
         <div id="qcm"></div>
         <button id="aideBtn" onclick="demanderAide()">Un petit coup de pouce ?</button>
         <div id="aideTxt"></div>
@@ -236,7 +254,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 <div id="winOverlay">
   <div id="winBox">
     <div class="big">🔍</div>
-    <h2>Affaire résolue !</h2>
+    <h2>Affaire résolue, à deux !</h2>
     <p id="winTxt"></p>
     <button class="btn-g2" onclick="retourIntro()">↩ Revenir au début</button>
   </div>
@@ -306,10 +324,10 @@ const ENQUETE = {
 };
 
 // Niveaux : quelles étapes sont demandées
+/* à deux, on entre directement dans la version guidée : choisir une
+   difficulté avant d'avoir vu le jeu demande justement ce qui est fragile. */
 const NIVEAUX = {
-  1: ['degats','traces','semelle','coupable'],
-  2: ['traces','coupable'],
-  3: ['coupable']
+  1: ['degats','traces','semelle','coupable']
 };
 
 // ═══════════════════════════════
@@ -321,7 +339,7 @@ let startTime = null, playing = false;
 // ═══════════════════════════════
 //   STATS (triple-clic)
 // ═══════════════════════════════
-const STATS_KEY = 'enquete_stats_v1';
+const STATS_KEY = 'enquete_a_deux_stats_v1';
 let _tc = 0, _tct = null;
 document.getElementById('mainTitle').addEventListener('click', () => {
   _tc++; clearTimeout(_tct);
@@ -339,7 +357,7 @@ function trackLocal(niv, reussi, sec, aid, err){
 }
 function openStats(){
   const st = loadStats(), keys = Object.keys(st), c = document.getElementById('statsContent');
-  const lbl = { niv1:'Pas à pas', niv2:'À deux temps', niv3:'Seul aux commandes' };
+  const lbl = { niv1:'À deux' };
   if(!keys.length){ c.innerHTML = '<p class="vide">Aucune enquête encore menée.</p>'; }
   else {
     c.innerHTML = keys.map(k => {
@@ -367,13 +385,9 @@ function toast(msg, type){
 //   JEU
 // ═══════════════════════════════
 function afficherSuggestion(){
+  /* une seule façon de jouer : rien à conseiller, rien à compter. */
   const el = document.getElementById('suggestion');
-  if(typeof JDC === 'undefined'){ el.textContent = ''; return; }
-  const b = JDC.bilanJeu('enquete');
-  if(!b.parties){ el.textContent = ''; return; }
-  const c = JDC.niveauConseille('enquete');
-  const lbl = c === 1 ? 'Pas à pas' : c === 2 ? 'À deux temps' : 'Seul aux commandes';
-  el.textContent = b.parties + ' enquête(s) menée(s). Niveau conseillé : ' + lbl + '.';
+  if(el) el.textContent = '';
 }
 afficherSuggestion();
 
@@ -386,13 +400,72 @@ function commencer(niv){
   document.getElementById('intro').style.display = 'none';
   document.getElementById('game').style.display = 'block';
   document.getElementById('decouvertes').innerHTML =
-    '<li class="vide" style="background:none;border:none;padding:0">Rien pour l\'instant. Cherchez dans l\'image.</li>';
+    '<li class="vide" style="background:none;border:none;padding:0">Ce que vous trouverez s\'écrira ici.</li>';
   afficherEtape();
+}
+
+
+/* ═══════════════════════════════
+     RELANCES · à dire à voix haute
+   Elles ne donnent pas la réponse : elles rouvrent la conversation quand le
+   silence dure. Phrases courtes, une seule information, pas de correction.
+   (HAS, fiche « Communiquer avec une personne ayant des troubles de mémoire
+   ou de langage ».)
+   ═══════════════════════════════ */
+const RELANCES = {
+  degats: [
+    "Qu'est-ce que vous voyez, dans ce jardin ?",
+    "Est-ce qu'il y a quelque chose qui ne va pas, quelque part ?",
+    "Ça vous rappelle un jardin que vous avez connu ?"
+  ],
+  traces: [
+    "Par où est-on entré dans le potager, à votre avis ?",
+    "Regardez la terre, entre les rangs. Qu'est-ce qui s'y dessine ?",
+    "Vous en avez déjà vu, des traces comme celles-là ?"
+  ],
+  semelle: [
+    "Voici trois paires de chaussures. Décrivez-les-moi.",
+    "Laquelle laisserait des marques comme celles de la terre ?",
+    "Qu'est-ce qui vous fait écarter les deux autres ?"
+  ],
+  coupable: [
+    "Regardons les pieds de chacun. Que portent-ils ?",
+    "Alors, qui est passé par le potager ?",
+    "Racontez-moi ce qui a pu se passer, cet après-midi-là."
+  ]
+};
+
+function afficherRelances(e){
+  const box = document.getElementById('relances');
+  const liste = RELANCES[e.id] || [];
+  box.innerHTML = liste.map(function(r, k){
+    return '<button class="relance" onclick="direRelance(this,' + k + ')">' + r + '</button>';
+  }).join('');
+  box.dataset.etape = e.id;
+}
+
+function direRelance(btn, k){
+  btn.classList.add('dite');
+  const liste = RELANCES[document.getElementById('relances').dataset.etape] || [];
+  if('speechSynthesis' in window && liste[k]){
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(liste[k]);
+    u.lang = 'fr-FR'; u.rate = 0.9;
+    window.speechSynthesis.speak(u);
+  }
 }
 
 function afficherEtape(){
   const e = etapes[idx];
   document.getElementById('question').textContent = e.question;
+  /* Comment on répond : le geste change selon l'étape, et la parole passe
+     devant. Phrase courte, une seule information. */
+  /* à deux, la consigne s'adresse aux deux : celui qui raconte, et celui
+     qui touche. Rien n'oblige à ce que ce soit la même personne. */
+  document.getElementById('commentFaire').textContent = e.qcm
+    ? "Parlez-en ensemble, puis choisissez une image."
+    : "Racontez ce que vous voyez, puis montrez-le. L'autre peut le faire à votre place.";
+  afficherRelances(e);
   document.getElementById('etapeNum').textContent =
     etapes.length > 1 ? 'Question ' + (idx + 1) + ' sur ' + etapes.length : '';
   document.getElementById('aideTxt').style.display = 'none';
@@ -498,8 +571,8 @@ function resolu(){
   const sec = Math.floor((Date.now() - startTime) / 1000);
   trackLocal(niveau, true, sec, aides, erreurs);
   if(typeof JDC !== 'undefined'){
-    JDC.enregistrer('enquete', niveau, true, { duree: sec, erreurs: erreurs, variante: ENQUETE.id });
-    JDC.marquerVu('enquete', ENQUETE.id);
+    JDC.enregistrer('enquete_a_deux', niveau, true, { duree: sec, erreurs: erreurs, variante: ENQUETE.id });
+    JDC.marquerVu('enquete_a_deux', ENQUETE.id);
   }
   document.getElementById('winTxt').textContent = ENQUETE.solution;
   confetti();
@@ -557,20 +630,21 @@ function confetti(){
 <details class="jdc-apropos">
 <summary>À propos de ce jeu</summary>
 <div class="corps">
-<p><strong>L'Enquête</strong> · Une petite affaire à résoudre en observant les indices d'une scène. On regarde, on rapproche, on conclut.</p>
+<p><strong>L'Enquête à deux</strong> · La même petite affaire à résoudre, mais menée à deux : l'un observe et raconte, l'autre lit les questions et relance la conversation.</p>
 <h2>Pour qui</h2>
 <p>Aux personnes âgées qui aiment raisonner. Le jeu ne demande ni mémoire, ni calcul : tout ce qu'il faut est sous les yeux.</p>
 <h2>Comment y jouer</h2>
 <ul>
-<li><strong>Seul</strong> : en prenant le temps d'examiner la scène.</li>
-<li><strong>À deux, avec un proche ou un aidant</strong> : en se disant ce qu'on remarque, à voix haute.</li>
+<li><strong>Côte à côte</strong> : l'image bien en face de la personne qui observe.</li>
+<li><strong>À voix haute</strong> : celui qui accompagne lit la question, puis laisse le temps de regarder.</li>
+<li><strong>Avec les relances</strong> : trois phrases sont proposées à chaque question, à dire si le silence dure. Elles ne donnent jamais la réponse.</li>
 <li><strong>En petit groupe</strong> : les regards se complètent, et personne ne voit la même chose.</li>
 </ul>
-<p>Commencez par nommer tout ce qu'on voit, sans chercher à conclure. La solution vient presque toujours de l'inventaire, pas de l'intuition.</p>
+<p>Commencez par nommer tout ce qu'on voit, sans chercher à conclure. La solution vient presque toujours de l'inventaire, pas de l'intuition. Ce qui compte ici, c'est ce qui se dit : une réponse à côté est une réponse quand même, et celui qui accompagne peut toucher l'image à la place de l'autre.</p>
 <h2>Ce que ce jeu n'est pas</h2>
 <p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
 <h2>Qui le propose</h2>
-<p>Les Jardins de Célestine, un projet d'habitat partagé pour seniors, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="jeux.html">Voir tous les jeux</a>.</p>
+<p>Les Jardins de Célestine, un projet d'habitat partagé pour seniors, mettent leurs jeux de mémoire et de réflexion à disposition gratuitement. Le site ne vend rien. <a href="jeux.html">Voir tous les jeux</a>.</p>
 </div>
 </details>
 
@@ -578,6 +652,8 @@ function confetti(){
   <a href="mentions-legales.html">Mentions légales</a>
   <span aria-hidden="true"> · </span>
   <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+  <span aria-hidden="true"> · </span>
+  <a href="signaler.html?jeu=L%27Enqu%C3%AAte%20%C3%A0%20deux&amp;p=jeu_enquete_a_deux" target="_blank" rel="noopener">Signaler un problème</a>
 </footer>
 </body>
 </html>
