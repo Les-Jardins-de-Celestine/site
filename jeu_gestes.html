@@ -141,6 +141,8 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
   box-shadow:0 2px 6px rgba(0,0,0,.3);}
 
 /* Le nom de la séquence en cours : on doit savoir ce qu'on est en train de montrer. */
+.imprimer{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.86rem;line-height:1.5;color:var(--sepia);opacity:.8;text-align:center;margin:14px 0 0;}
+.imprimer a{color:var(--sepia);text-underline-offset:3px;display:inline-block;padding:15px 16px;}.imprimer-note{display:inline-block;margin-top:-6px;}
 .titre-hist{text-align:center;font-weight:700;font-size:1.06rem;color:#5c3d1e;margin:2px 0 10px;}
 </style>
 <style id="jdc-apropos-style">
@@ -207,6 +209,10 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
      feriez les choses. Plusieurs ordres sont possibles&nbsp;: il n'y a pas
      une seule bonne façon.</p>
   <div id="histList"></div>
+  <p class="imprimer"><a href="vous-me-montrez.pdf" download target="_blank"
+     rel="noopener">Imprimer les cartes (PDF)</a><br>
+     <span class="imprimer-note">Les séquences à découper, pour jouer
+     sur une table</span></p>
   <div id="suggestion"></div>
 </div>
 
@@ -393,10 +399,13 @@ function toast(msg){
 //   MENU
 // ═══════════════════════════════
 function buildMenu(){
+  /* Les classes .h-card / .ht / .hs sont celles de « Dans l'Ordre », déjà
+     définies plus haut dans cette page. Le <br> sépare le titre du
+     sous-titre : sans lui les deux se collent. */
   document.getElementById('histList').innerHTML = SEQUENCES.map(function(q, i){
-    return '<button class="hist" onclick="startHist(' + i + ')">'
-         + '<span class="h-t">' + q.titre + '</span>'
-         + '<span class="h-d">' + q.sous + '</span></button>';
+    return '<button class="h-card" onclick="startHist(' + i + ')">'
+         + '<span class="ht">' + q.titre + '</span><br>'
+         + '<span class="hs">' + q.sous + '</span></button>';
   }).join('');
 }
 

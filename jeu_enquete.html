@@ -9,7 +9,7 @@
   gtag("config", "G-NT825E8XDT");
 </script>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>L'Enquête · jeu en ligne gratuit · Les Jardins de Célestine</title>
@@ -68,6 +68,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 #carnet{background:var(--cream);border:2px solid rgba(200,146,42,.4);border-radius:14px;padding:16px 18px;box-shadow:0 8px 26px var(--shadow);}
 .carnet-t{font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-bottom:8px;}
 #question{background:#fff;border:2px solid var(--gold);border-radius:10px;padding:13px 15px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;line-height:1.5;color:var(--ink);margin-bottom:6px;}
+#commentFaire{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.86rem;line-height:1.5;color:var(--sepia);opacity:.8;margin:0 0 8px;}
 #etapeNum{font-size:.72rem;color:var(--sepia);opacity:.6;text-align:right;margin-bottom:14px;}
 #decouvertes{list-style:none;}
 #decouvertes li{background:#e9f2ec;border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:9px 12px;margin-bottom:8px;font-size:.9rem;line-height:1.45;color:var(--ink);animation:slideIn .35s ease;}
@@ -221,9 +222,10 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
       <div id="carnet">
         <div class="carnet-t">Votre enquête</div>
         <div id="question">·</div>
+        <p id="commentFaire"></p>
         <div id="etapeNum"></div>
         <div class="carnet-t">Ce que vous avez découvert</div>
-        <ul id="decouvertes"><li class="vide" style="background:none;border:none;padding:0">Rien pour l'instant. Cherchez dans l'image.</li></ul>
+        <ul id="decouvertes"><li class="vide" style="background:none;border:none;padding:0">Ce que vous trouverez s'écrira ici.</li></ul>
         <div id="qcm"></div>
         <button id="aideBtn" onclick="demanderAide()">Un petit coup de pouce ?</button>
         <div id="aideTxt"></div>
@@ -386,13 +388,18 @@ function commencer(niv){
   document.getElementById('intro').style.display = 'none';
   document.getElementById('game').style.display = 'block';
   document.getElementById('decouvertes').innerHTML =
-    '<li class="vide" style="background:none;border:none;padding:0">Rien pour l\'instant. Cherchez dans l\'image.</li>';
+    '<li class="vide" style="background:none;border:none;padding:0">Ce que vous trouverez s\'écrira ici.</li>';
   afficherEtape();
 }
 
 function afficherEtape(){
   const e = etapes[idx];
   document.getElementById('question').textContent = e.question;
+  /* Comment on répond : le geste change selon l'étape, et la parole passe
+     devant. Phrase courte, une seule information. */
+  document.getElementById('commentFaire').textContent = e.qcm
+    ? "Dites ce que vous en pensez, puis choisissez une image."
+    : "Dites ce que vous voyez, puis montrez-le sur l'image.";
   document.getElementById('etapeNum').textContent =
     etapes.length > 1 ? 'Question ' + (idx + 1) + ' sur ' + etapes.length : '';
   document.getElementById('aideTxt').style.display = 'none';
@@ -578,6 +585,8 @@ function confetti(){
   <a href="mentions-legales.html">Mentions légales</a>
   <span aria-hidden="true"> · </span>
   <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+  <span aria-hidden="true"> · </span>
+  <a href="signaler.html?jeu=L%27Enqu%C3%AAte&amp;p=jeu_enquete" target="_blank" rel="noopener">Signaler un problème</a>
 </footer>
 </body>
 </html>

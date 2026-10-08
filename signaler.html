@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signaler un problème · Les Jardins de Célestine</title>
+<meta name="description" content="Signaler un problème sur un jeu des Jardins de Célestine : ce qui ne marche pas, et sur quel jeu.">
+<meta property="og:title" content="Signaler un problème · Les Jardins de Célestine">
+<meta property="og:description" content="Dire ce qui ne marche pas sur un jeu des Jardins de Célestine.">
+<meta property="og:type" content="article">
+<meta name="robots" content="noindex, follow">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-NT825E8XDT');</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:image" content="https://jardinsdecelestine.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://jardinsdecelestine.com/og-image.png">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c1:#8a3d18;--c2:#b5532e;--teal:#1f6b68;--teal-deep:#14403e;--gold:#c9a24b;
+  --bg0:#fbf6ef;--bg1:#fff;--bg2:#f3e7d8;--t1:#34291f;--t2:#4a3a2c;--t3:#8a7a64;
+  --bd:#e3cdb0;--bdl:#efe1cc;
+  --disp:'Cormorant Garamond',Georgia,serif;--sans:'Mulish','Segoe UI',Arial,sans-serif;
+}
+.hc{--c1:#000;--c2:#000;--teal:#000;--teal-deep:#000;--gold:#222;--bg0:#fff;--bg1:#fff;--bg2:#f0f0f0;--t1:#000;--t2:#000;--t3:#222;--bd:#000;--bdl:#444}
+html{background:var(--bg0)}
+body{font-family:var(--sans);background:var(--bg0);color:var(--t1);font-size:16px;line-height:1.6;max-width:680px;margin:0 auto}
+*:focus-visible{outline:3px solid var(--teal-deep);outline-offset:3px;border-radius:4px}
+
+.a11y{display:flex;align-items:center;gap:8px;padding:6px 14px;background:var(--teal);flex-wrap:wrap}
+.a11y a.home{color:#fff;font-size:13px;font-weight:700;text-decoration:none;margin-right:4px}
+.a11y a.home:hover{text-decoration:underline}
+.a11y-btn{background:#fbf6ef;color:var(--teal-deep);border:1px solid rgba(201,162,75,.55);padding:5px 12px;border-radius:30px;font-size:14px;font-weight:600;cursor:pointer;min-height:36px}
+.a11y-btn:hover,.a11y-btn.on{background:var(--teal-deep);color:#fff;border-color:var(--teal-deep)}
+.sz{display:flex;gap:5px;margin-left:auto}
+.sz-btn{background:#fbf6ef;color:var(--teal-deep);border:1px solid rgba(201,162,75,.55);width:36px;height:36px;border-radius:30px;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.sz-btn:hover{background:var(--teal-deep);color:#fff;border-color:var(--teal-deep)}
+
+.hero{background:linear-gradient(160deg,#e8f1ef 0%,#fbf6ef 72%);padding:2.4rem 1.5rem 2rem;text-align:center;border-bottom:1px solid var(--bd)}
+.tag{display:inline-block;border:1px solid rgba(201,162,75,.55);background:#fffdf9;color:var(--teal-deep);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border-radius:30px;padding:6px 16px;margin-bottom:1rem}
+.hero h1{font-family:var(--disp);font-size:clamp(26px,6vw,36px);font-weight:600;color:var(--teal-deep);margin-bottom:.7rem;line-height:1.12}
+.hero p{font-size:15px;color:var(--t2);max-width:500px;margin:0 auto;line-height:1.7}
+
+.pg{padding:1.7rem 1.3rem}
+.intro{font-size:15px;color:var(--t2);line-height:1.7;margin-bottom:1.5rem}
+
+.sol{background:var(--bg1);border:1px solid var(--bdl);border-radius:16px;padding:1.3rem 1.2rem;margin-bottom:16px;box-shadow:0 1px 2px rgba(52,41,31,.04)}
+.sol h2{font-family:var(--disp);font-size:1.45em;font-weight:600;color:var(--c1);line-height:1.15;margin-bottom:.15rem}
+.sol .pourqui{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#9a6a2a;margin-bottom:.6rem}
+.sol p{font-size:14.5px;color:var(--t2);line-height:1.65;margin-bottom:.5rem}
+.sol .pm{display:grid;gap:6px;margin-top:.6rem}
+.sol .plus,.sol .moins{font-size:13.5px;line-height:1.55;padding:.55rem .8rem;border-radius:10px}
+.sol .plus{background:#eaf3ec;color:#274b33}
+.sol .moins{background:#f7ecdd;color:#6b4a22}
+
+.sol-ljdc{background:linear-gradient(160deg,#e8f1ef,#f3ece0);border:2px solid var(--teal)}
+.sol-ljdc h2{color:var(--teal-deep)}
+
+.note{background:#fffdf9;border:1px dashed var(--bd);border-radius:12px;padding:1rem 1.1rem;font-size:13.5px;color:var(--t2);line-height:1.65;margin:1.4rem 0;text-align:center}
+
+.cta-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:1.4rem}
+.bw{display:inline-flex;align-items:center;background:var(--gold);color:#3a2a12;border:2px solid var(--gold);border-radius:30px;padding:11px 22px;font-size:14px;font-weight:700;text-decoration:none;min-height:46px}
+.bw:hover{background:#d6b25f}
+.bt{display:inline-flex;align-items:center;background:transparent;color:var(--teal-deep);border:2px solid var(--teal-deep);border-radius:30px;padding:11px 22px;font-size:14px;font-weight:700;text-decoration:none;min-height:46px}
+.bt:hover{background:rgba(31,107,104,.1)}
+
+footer{text-align:center;padding:1.6rem;font-size:12px;color:var(--t3);border-top:1px solid var(--bdl);background:var(--bg1);margin-top:1.6rem}
+#totop{position:fixed;right:16px;bottom:16px;width:46px;height:46px;border-radius:50%;background:#1f6b68;color:#fff;border:none;font-size:22px;line-height:1;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(0,0,0,.2);z-index:60}
+#totop.show{display:flex}
+#totop:hover{background:#14403e}
+
+.f-champ{margin-bottom:1.1rem}
+.f-champ label{display:block;font-weight:700;color:var(--teal-deep);margin-bottom:.35rem}
+.f-champ input,.f-champ textarea{width:100%;font-family:var(--sans);font-size:1em;
+  color:var(--t1);background:var(--bg1);border:1px solid var(--bd);border-radius:10px;
+  padding:.7rem .8rem;min-height:48px}
+.f-champ textarea{min-height:130px;line-height:1.6;resize:vertical}
+.f-champ input:focus-visible,.f-champ textarea:focus-visible{outline:3px solid var(--gold);
+  outline-offset:2px}
+.f-aide{font-size:.86em;color:var(--t3);margin-top:.3rem}
+/* le piège à robots : invisible à l'œil, sans sortir de l'écran (un
+   left:-9999px faisait crier le filet de débordement, à juste titre) */
+.f-cache{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+#merci{background:#eaf3ec;border:1px solid #bcd8c4;border-radius:14px;padding:1.2rem 1.1rem;
+  font-size:1.02em;line-height:1.7;color:#274b33}
+</style>
+</head>
+<body>
+
+<div class="a11y" role="toolbar" aria-label="Accessibilité">
+  <button class="a11y-btn" id="hcbtn" onclick="toggleHC()" aria-pressed="false">Contraste élevé</button>
+  <button class="a11y-btn" id="audiobtn" onclick="toggleAudio()" aria-pressed="false">🔊 Écouter</button>
+  <div class="sz">
+    <button class="sz-btn" onclick="chgSz(-1)" aria-label="Réduire le texte">A−</button>
+    <button class="sz-btn" onclick="chgSz(1)" aria-label="Agrandir le texte">A+</button>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="tag">Un problème ?</div>
+  <h1>Signaler un problème</h1>
+  <p>Un jeu qui ne s'ouvre pas, un bouton qui ne répond pas, un texte trop petit&nbsp;: dites-le, c'est la seule façon de le savoir.</p>
+</header>
+
+<main class="pg" id="contenu">
+
+  <form id="form-signal" action="https://formspree.io/f/xyklpzzw" method="POST" onsubmit="envoyer(event)">
+    <input type="hidden" name="_subject" id="h-sujet" value="Problème signalé sur le site">
+    <input type="hidden" name="page" id="h-page" value="">
+    <div class="f-cache" aria-hidden="true">
+      <label for="_gotcha">Laissez ce champ vide</label>
+      <input type="text" name="_gotcha" id="_gotcha" tabindex="-1" autocomplete="off">
+    </div>
+
+    <div class="f-champ">
+      <label for="jeu">De quel jeu s'agit-il&nbsp;?</label>
+      <input type="text" id="jeu" name="jeu" autocomplete="off">
+      <p class="f-aide">Rempli tout seul si vous venez d'un jeu. Sinon, écrivez son nom, ou laissez vide.</p>
+    </div>
+
+    <div class="f-champ">
+      <label for="probleme">Qu'est-ce qui s'est passé&nbsp;?</label>
+      <textarea id="probleme" name="probleme" required></textarea>
+      <p class="f-aide">Quelques mots suffisent. Par exemple&nbsp;: «&nbsp;les images ne s'affichent pas&nbsp;», «&nbsp;impossible de revenir en arrière&nbsp;», «&nbsp;je n'ai pas compris ce qu'il fallait faire&nbsp;».</p>
+    </div>
+
+    <div class="f-champ">
+      <label for="email">Votre adresse e-mail, si vous voulez une réponse</label>
+      <input type="email" id="email" name="email" autocomplete="email">
+      <p class="f-aide">Facultatif.</p>
+    </div>
+
+    <button class="bw" type="submit">Envoyer</button>
+  </form>
+
+  <div id="merci" hidden>
+    <strong>Merci, c'est envoyé.</strong><br>
+    Ce que vous venez d'écrire arrive directement aux Jardins de Célestine. Si vous avez laissé votre adresse, vous aurez une réponse.
+  </div>
+
+  <p class="note">Pour tout le reste, la page <a href="contact.html" style="color:var(--teal);font-weight:700">Contact</a> est là.</p>
+
+</main>
+
+<script>
+/* Le nom du jeu arrive dans l'adresse (?jeu=…&p=…) : on le pose dans le champ
+   et dans l'objet du message, pour ne pas avoir à le demander. */
+(function(){
+  var p = new URLSearchParams(location.search);
+  var jeu = (p.get('jeu') || '').slice(0, 80);
+  if (jeu) {
+    document.getElementById('jeu').value = jeu;
+    document.getElementById('h-sujet').value = 'Problème sur ' + jeu;
+  }
+  document.getElementById('h-page').value = (p.get('p') || '').slice(0, 60);
+})();
+function envoyer(e){
+  e.preventDefault();
+  var f = document.getElementById('form-signal');
+  var b = f.querySelector('button[type="submit"]');
+  b.disabled = true; b.textContent = 'Envoi…';
+  function fini(){
+    f.hidden = true;
+    document.getElementById('merci').hidden = false;
+    window.scrollTo(0, 0);
+  }
+  fetch(f.action, {method:'POST', body:new FormData(f), headers:{'Accept':'application/json'}})
+    .then(fini).catch(fini);
+}
+</script>
+
+<footer>
+  <p>© 2025-2026 · Projet Les Jardins de Célestine</p>
+  <p style="margin-top:4px">Informations générales données à titre de repère, chaque situation étant unique.</p>
+  <p style="margin-top:8px;font-size:.86rem;opacity:.75"><a href="mentions-legales.html">Mentions légales</a></p>
+</footer>
+
+<button id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Revenir en haut de la page">↑</button>
+
+<script>
+var curSz=16;
+function chgSz(d){curSz=Math.min(22,Math.max(13,curSz+d));document.body.style.fontSize=curSz+'px';}
+function toggleHC(){var b=document.getElementById('hcbtn');var on=b.getAttribute('aria-pressed')==='true';b.setAttribute('aria-pressed',String(!on));b.classList.toggle('on',!on);document.body.classList.toggle('hc',!on);}
+var _speaking=false;
+function toggleAudio(){
+  var btn=document.getElementById('audiobtn');
+  if(!('speechSynthesis' in window)){btn.textContent='Audio indisponible';btn.disabled=true;return;}
+  if(_speaking){window.speechSynthesis.cancel();_speaking=false;btn.setAttribute('aria-pressed','false');btn.classList.remove('on');btn.textContent='🔊 Écouter';return;}
+  var u=new SpeechSynthesisUtterance(document.getElementById('contenu').innerText);
+  u.lang='fr-FR';u.rate=0.95;
+  u.onend=function(){_speaking=false;btn.setAttribute('aria-pressed','false');btn.classList.remove('on');btn.textContent='🔊 Écouter';};
+  window.speechSynthesis.cancel();window.speechSynthesis.speak(u);_speaking=true;
+  btn.setAttribute('aria-pressed','true');btn.classList.add('on');btn.textContent='⏹ Arrêter';
+}
+window.addEventListener('scroll',function(){var t=document.getElementById('totop');if(t)t.classList.toggle('show',(window.scrollY||document.documentElement.scrollTop)>300);});
+</script>
+</body>
+</html>
