@@ -14,7 +14,7 @@
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Rendre la monnaie · jeu de calcul en ligne gratuit pour senior · Les Jardins de Célestine</title>
-<meta name="description" content="On donne un billet, on rend la monnaie, en francs ou en euros au choix. Le calcul le plus pratiqué d'une vie, en trois niveaux. Gratuit, sans inscription.">
+<meta name="description" content="On donne un billet, on rend la monnaie, en francs ou en euros au choix. Le calcul le plus pratiqué d'une vie. Gratuit, sans inscription.">
 <link rel="canonical" href="https://jardinsdecelestine.com/jeu_monnaie">
 <!-- LIGNE À SUPPRIMER LE JOUR DE LA PUBLICATION -->
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -172,13 +172,39 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
   .btn-start,.btn{width:100%}
   .plateau{padding:30px 18px}
 }
+
+/* les confettis de la trame commune */
+.cp{position:fixed;top:-10px;width:9px;height:9px;border-radius:2px;z-index:60;pointer-events:none;animation:fall 2.6s ease-in forwards;}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+
+.jdc-apropos{max-width:680px;margin:28px auto 8px;padding:0 16px;
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;color:#5c3d1e;}
+.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;
+  letter-spacing:.02em;opacity:.62;padding:9px 0;text-align:center;
+  border-top:1px solid rgba(92,61,30,.16);}
+.jdc-apropos>summary::-webkit-details-marker{display:none}
+.jdc-apropos>summary::after{content:' \203A';display:inline-block;
+  transform:rotate(90deg);margin-left:5px;opacity:.7}
+.jdc-apropos[open]>summary::after{transform:rotate(-90deg)}
+.jdc-apropos>summary:hover,.jdc-apropos>summary:focus-visible{opacity:.95}
+.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;
+  text-align:left;opacity:.9}
+.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:#5c3d1e;
+  font-weight:700}
+.jdc-apropos p{margin:0 0 10px}
+.jdc-apropos ul{margin:0 0 10px;padding-left:20px}
+.jdc-apropos li{margin-bottom:5px}
+.jdc-apropos a{color:#2d6a4f}
+.hc .jdc-apropos{color:#000}
+.hc .jdc-apropos h2{color:#000}
+.hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
  "@type": "Game",
  "name": "Rendre la monnaie",
- "description": "On donne un billet, on rend la monnaie, en francs ou en euros au choix. Le calcul le plus pratiqué d'une vie, en trois niveaux. Gratuit, sans inscription.",
+ "description": "On donne un billet, on rend la monnaie, en francs ou en euros au choix. Le calcul le plus pratiqué d'une vie. Gratuit, sans inscription.",
  "url": "https://jardinsdecelestine.com/jeu_monnaie",
  "inLanguage": "fr",
  "isAccessibleForFree": true,
@@ -255,6 +281,19 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
   </div>
 </section>
 
+<section class="ecran" id="fin" hidden>
+  <div class="plateau" style="text-align:center">
+    <div class="jdc-fete" style="font-size:2.4rem;line-height:1">🎉</div>
+    <h2 style="margin:10px 0 6px">Bravo !</h2>
+    <p id="finTexte" style="margin:0 0 18px">Le tour est fait : la monnaie est rendue à chaque fois.</p>
+    <p style="margin:0 0 18px;opacity:.8">Rien ne vous échappe.</p>
+    <div class="props">
+      <button type="button" class="btn" id="bRejouer">Rejouer</button>
+      <button type="button" class="discret" id="bAccueil3">↩ Revenir au début</button>
+    </div>
+  </div>
+</section>
+
 <section class="ecran" id="regles" hidden>
   <h2>Comment s'en servir</h2>
   <ul>
@@ -275,7 +314,7 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
       Le franc est celle dans laquelle on a compté quarante ans, l'euro
       celle du magasin d'aujourd'hui.</li>
   </ul>
-  <p class="avert">Ce n'est pas un soin et ça ne remplace rien. C'est une activité de loisir. Cette page ne collecte rien, ne conserve rien et ne transmet rien.</p>
+  <p class="avert">Ce n'est pas un soin et ça ne remplace rien. C'est une activité de loisir. Cette page ne demande aucune information personnelle. Seul un signal anonyme, quel jeu a été joué, est compté, jamais le résultat.</p>
   <div class="bas">
     <button type="button" class="btn-start" id="bAccueil2">↩ Revenir au début</button>
   </div>
@@ -283,6 +322,17 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
 
 </main>
 
+
+<details class="jdc-apropos">
+<summary>À propos de ce jeu</summary>
+<div class="corps">
+<p><strong>Rendre la monnaie</strong> · On paie, on rend : les pièces et les billets qu’on a manipulés toute une vie.</p>
+<h2>Ce que ce jeu n'est pas</h2>
+<p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
+<h2>Qui le propose</h2>
+<p>Les Jardins de Célestine, un projet d’habitat partagé pour personnes atteintes de maladies neurodégénératives, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="projet.html">Découvrir le projet</a> · <a href="jeux.html">Voir tous les jeux</a>.</p>
+</div>
+</details>
 <footer class="jdc-legal">
   <a href="mentions-legales.html">Mentions légales</a>
   <span aria-hidden="true"> · </span>
@@ -290,6 +340,7 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
   <span aria-hidden="true"> · </span>
   <a href="signaler.html?jeu=Rendre%20la%20monnaie&amp;p=jeu_monnaie" target="_blank" rel="noopener">Signaler un problème</a>
 </footer>
+<script src="jdc-parcours.js"></script>
 
 <script>
 (function () {
@@ -435,8 +486,23 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
   var ecrans = {
     accueil: document.getElementById('accueil'),
     jeu:     document.getElementById('jeu'),
-    regles:  document.getElementById('regles')
+    regles:  document.getElementById('regles'),
+    fin:     document.getElementById('fin')
   };
+  function finir() {
+    annuler();
+    if (typeof JDC !== 'undefined') {
+      JDC.enregistrer('monnaie', Math.min(3, niveau || 1), true, { variante: 'niveau' + niveau });
+    }
+    montrer('fin');
+    confetti();
+  }
+  document.getElementById('bRejouer').addEventListener('click', function () {
+    brasser(); poser(); montrer('jeu');
+  });
+  document.getElementById('bAccueil3').addEventListener('click', function () {
+    montrer('accueil');
+  });
   function montrer(nom) {
     Object.keys(ecrans).forEach(function (k) { ecrans[k].hidden = (k !== nom); });
     window.scrollTo(0, 0);
@@ -488,7 +554,10 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
 
   function poser() {
     annuler();
-    if (pose >= paquet.length) { brasser(); }
+    /* LA FIN EXISTE. Avant, le paquet épuisé était rebrassé et ça
+       repartait pour toujours : pas de partie, donc rien à fêter. Un
+       tour complet du niveau, c'est une partie. */
+    if (pose >= paquet.length) { finir(); return; }
     var c = paquet[pose++];
     elC.textContent = u(c.c || '');
     elC.hidden = !c.c;
@@ -557,6 +626,23 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
   });
   document.getElementById('bAccueil2').addEventListener('click', function () { montrer('accueil'); });
 })();
+
+/* Les confettis de la trame commune, couleurs de la charte. */
+function confetti(){
+  var colors = ['#c9963a','#2a5c3f','#6b4c2a','#ede5d0','#c8922a'];
+  for (var i = 0; i < 36; i++) {
+    var el = document.createElement('div');
+    el.className = 'cp';
+    el.style.cssText = 'left:' + (10 + Math.random() * 80) + '%;'
+      + 'background:' + colors[0 | Math.random() * colors.length] + ';'
+      + 'animation-delay:' + (Math.random() * 0.8) + 's;'
+      + 'animation-duration:' + (2 + Math.random() * 1.5) + 's;'
+      + 'width:' + (6 + Math.random() * 8) + 'px;height:' + (6 + Math.random() * 8) + 'px;'
+      + 'border-radius:' + (Math.random() > 0.5 ? '50%' : '2px') + ';';
+    document.body.appendChild(el);
+    (function (e) { setTimeout(function () { e.remove(); }, 4000); })(el);
+  }
+}
 </script>
 
 </body>

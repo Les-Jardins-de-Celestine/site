@@ -13,7 +13,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>Mémoire des Grands — jeu en ligne gratuit · Les Jardins de Célestine</title>
+<title>Mémoire des Grands · jeu en ligne gratuit · Les Jardins de Célestine</title>
 <meta name="description" content="Reconnaître des personnages historiques, en deux étapes. Jeu de mémoire en ligne gratuit pour personne âgée, sans inscription et sans chronomètre.">
 <link rel="canonical" href="https://jardinsdecelestine.com/jeu_memoire_historique">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -133,6 +133,9 @@ header p { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase
 .person-card.revelable:hover{box-shadow:0 3px 12px rgba(200,146,42,.35);}
 .btn-histoire{position:absolute;top:-7px;right:-7px;width:22px;height:22px;border-radius:50%;background:#c8922a;color:#fff;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.8rem;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.25);}
 .niv-row{display:flex;flex-direction:column;gap:10px;max-width:460px;margin:0 auto;}
+.imprimer{font-family:'Nunito',sans-serif;font-size:.86rem;line-height:1.5;color:#6b4c2a;opacity:.85;text-align:center;margin:16px 0 0;}
+.imprimer a{color:#6b4c2a;text-underline-offset:3px;display:inline-block;padding:15px 16px;}
+.imprimer-note{display:inline-block;margin-top:-6px;}
 .niv-card{background:#fff;border:2px solid rgba(200,146,42,.45);border-radius:12px;padding:14px 18px;cursor:pointer;font-family:'Nunito',sans-serif;text-align:center;transition:all .18s;}
 .niv-card:hover{border-color:#c8922a;background:rgba(200,146,42,.08);transform:translateY(-2px);}
 .niv-mid{border-color:#c8922a;background:rgba(200,146,42,.06);}
@@ -368,6 +371,10 @@ header p { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase
   border-radius:8px;padding:5px 12px;font-family:inherit;font-size:.8rem;
   font-weight:700;color:inherit;cursor:pointer;margin:12px auto 0;display:block}
 .btn-retour-jeu:active{background:rgba(200,146,42,.12)}
+
+/* les confettis de la trame commune */
+.cp{position:fixed;top:-10px;width:9px;height:9px;border-radius:2px;z-index:60;pointer-events:none;animation:fall 2.6s ease-in forwards;}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 </style>
 <script type="application/ld+json">
 {
@@ -396,11 +403,8 @@ header p { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase
   <div class="divider"></div>
 </header>
 
-<div class="hud">
-  <div class="hud-box"><div class="lbl">Score</div><div class="val" id="hScore">0</div></div>
-  <div class="hud-box"><div class="lbl">Indices</div><div class="val red" id="hHints">−0 pts</div></div>
-  <div class="hud-box"><div class="lbl">Série</div><div class="val" id="hStreak">0</div></div>
-</div>
+<!-- Le bandeau « Score · Indices · Série » est retiré : rien ne se
+     mesure ici. Les deux pastilles d'étape disent où l'on en est. -->
 
 <div class="step-indicator">
   <div class="step-dot active" id="dot1">1</div>
@@ -429,13 +433,20 @@ header p { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase
     </button>
   </div>
   <div id="conseilMem" style="text-align:center;font-size:0.86rem;font-style:italic;opacity:.75;margin-top:14px;min-height:1.2em"></div>
+  <!-- La version papier. Sur une table, les dates sont écrites sur la
+       carte et l'accompagnant retire ce qui ne parle pas : ce n'est plus
+       le même jeu, et c'est voulu. -->
+  <p class="imprimer"><a href="grands-personnages.pdf" download target="_blank"
+     rel="noopener">Imprimer les cartes (PDF)</a><br>
+     <span class="imprimer-note">Les personnages à découper, pour jouer
+     sur une table. Les dates sont sur la carte.</span></p>
 </div>
 
 <div id="step1">
   <div class="instruction">
-    <h2>Étape 1 — Classer les personnages</h2>
+    <h2>Étape 1 · Classer les personnages</h2>
     <p>Glissez chaque nom dans la bonne catégorie.</p>
-    <span class="hint-legend">💡 1er appui : indice visible 6 s · 2e appui : permanent (−3 pts)</span>
+    <span class="hint-legend">💡 Touchez pour voir l’indice. Il reste affiché.</span>
   </div>
   <div id="pool" class="cards-pool"></div>
   <div class="categories-row" id="zones"></div>
@@ -448,9 +459,9 @@ header p { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase
 <!-- ═══ ÉTAPE 2 ═══ -->
 <div id="step2">
   <div class="instruction">
-    <h2>Étape 2 — Associer à une époque</h2>
+    <h2>Étape 2 · Associer à une époque</h2>
     <p>Glissez chaque personne dans sa grande période.</p>
-    <span class="hint-legend">💡 1er appui : dates visibles 6 s · 2e appui : permanent (−3 pts)</span>
+    <span class="hint-legend">💡 Touchez pour voir les dates. Elles restent affichées.</span>
   </div>
   <div id="pool2" class="cards-pool"></div>
   <div class="categories-row" id="zones2"></div>
@@ -488,12 +499,12 @@ const FIGURES = [
   {id:'beethoven',  name:'Ludwig van Beethoven',   hint:'Compositeur',                 cat:'Arts',        eraIdx:5, lifespan:'1770 – 1827', fact:'Beethoven composa sa 9ème symphonie en étant totalement sourd.'},
   {id:'monet',      name:'Claude Monet',           hint:'Peintre impressionniste',     cat:'Arts',        eraIdx:5, lifespan:'1840 – 1926', fact:'Monet peignit ses Nymphéas malgré une cataracte avancée.'},
   {id:'hugo',       name:'Victor Hugo',            hint:'Romancier & poète',           cat:'Arts',        eraIdx:5, lifespan:'1802 – 1885', fact:'Hugo écrivit "Les Misérables" en exil sur l\'île de Guernesey.'},
-  {id:'napoleon',   name:'Napoléon Bonaparte',     hint:'Général & Empereur',          cat:'Politique',   eraIdx:4, lifespan:'1769 – 1821', fact:'Napoléon mesurait 1m69 — sa petite taille est une légende issue de caricatures anglaises.'},
+  {id:'napoleon',   name:'Napoléon Bonaparte',     hint:'Général & Empereur',          cat:'Politique',   eraIdx:4, lifespan:'1769 – 1821', fact:'Napoléon mesurait 1m69 : sa petite taille est une légende issue de caricatures anglaises.'},
   {id:'jeanned',    name:'Jeanne d\'Arc',          hint:'Héroïne nationale',           cat:'Politique',   eraIdx:2, lifespan:'1412 – 1431', fact:'Jeanne d\'Arc fut canonisée 489 ans après avoir été brûlée comme hérétique.'},
   {id:'charlemagne',name:'Charlemagne',            hint:'Roi des Francs & Empereur',   cat:'Politique',   eraIdx:1, lifespan:'742 – 814',   fact:'Charlemagne ne savait pas lire mais dormait avec une tablette pour apprendre à écrire.'},
   {id:'degaulle',   name:'Charles de Gaulle',      hint:'Général & Président',         cat:'Politique',   eraIdx:6, lifespan:'1890 – 1970', fact:'De Gaulle (1m96) refusa d\'utiliser un micro pour ne pas sembler "diminué".'},
   {id:'richelieu',  name:'Cardinal de Richelieu',  hint:'Homme d\'État',               cat:'Politique',   eraIdx:3, lifespan:'1585 – 1642', fact:'Richelieu fonda l\'Académie française en 1635.'},
-  {id:'magellan',   name:'Ferdinand Magellan',     hint:'Navigateur',                  cat:'Exploration', eraIdx:2, lifespan:'1480 – 1521', fact:'Magellan fut tué aux Philippines — son équipage finit le tour du monde sans lui.'},
+  {id:'magellan',   name:'Ferdinand Magellan',     hint:'Navigateur',                  cat:'Exploration', eraIdx:2, lifespan:'1480 – 1521', fact:'Magellan fut tué aux Philippines, son équipage finit le tour du monde sans lui.'},
   {id:'colomb',     name:'Christophe Colomb',      hint:'Navigateur & explorateur',    cat:'Exploration', eraIdx:2, lifespan:'1451 – 1506', fact:'Colomb mourut convaincu d\'avoir atteint l\'Asie.'},
   {id:'marco',      name:'Marco Polo',             hint:'Voyageur & marchand',         cat:'Exploration', eraIdx:1, lifespan:'1254 – 1324', fact:'Marco Polo dicta son récit depuis sa cellule de prison à Gênes.'},
   {id:'champlain',  name:'Samuel de Champlain',    hint:'Explorateur & fondateur',     cat:'Exploration', eraIdx:3, lifespan:'1574 – 1635', fact:'Champlain fonda Québec en 1608 et dressa les premières cartes du Canada.'},
@@ -637,23 +648,16 @@ function triggerHint(key, txtEl, btnEl, barEl) {
   const n = (S.hintClicks[key]||0) + 1;
   S.hintClicks[key] = n;
   if (n === 1) {
-    txtEl.classList.remove('permanent','flashing');
+    /* L'INDICE RESTE. Il clignotait six secondes puis s'effaçait, et le
+       garder coûtait trois points : il fallait lire vite, ou payer.
+       Une limite de temps et une sanction pour avoir demandé de
+       l'aide. Maintenant il s'affiche et il ne bouge plus. */
+    txtEl.classList.remove('flashing');
     void txtEl.offsetWidth;
-    txtEl.classList.add('flashing');
-    if (barEl) {
-      barEl.style.display = 'block';
-      const bar = barEl.querySelector('.hint-bar');
-      bar.classList.remove('draining'); void bar.offsetWidth; bar.classList.add('draining');
-      setTimeout(()=>{ barEl.style.display='none'; }, 6400);
-    }
-    btnEl.textContent = '💡 Revoir';
-    btnEl.classList.add('charged');
-    toast('Lisez bien — l\'indice disparaît dans 6 secondes');
+    txtEl.classList.add('permanent');
+    if (barEl) barEl.style.display = 'none';
+    btnEl.classList.add('gone');
   } else {
-    if (n === 2) {
-      S.penalty += 3; S.score = Math.max(0, S.score - 3);
-      updateHUD(); toast('Indice affiché en permanence (−3 pts)');
-    }
     txtEl.classList.remove('flashing'); void txtEl.offsetWidth; txtEl.classList.add('permanent');
     if (barEl) barEl.style.display = 'none';
     btnEl.classList.add('gone');
@@ -905,16 +909,21 @@ function validateStep1() {
       if(S.placed[f.id]===f.cat) mini.classList.add('mini-ok');
       else mini.classList.add('mini-revoir');
     });
-    $('corrTexte').textContent = ok + ' sur ' + total + ' sont bien classés. '
-      + (fautes.length>1 ? fautes.length+' cartes sont à revoir.' : 'Une carte est à revoir.');
+    /* Sans compter : les cartes à revoir sont déjà marquées juste
+       au-dessus, c'est là l'information utile. Un décompte est une note. */
+    $('corrTexte').textContent = fautes.length > 1
+      ? 'Les cartes marquées sont à revoir. Vous pouvez les déplacer.'
+      : 'La carte marquée est à revoir. Vous pouvez la déplacer.';
     $('corrPanel').style.display = 'flex';
     return;
   }
 
   // validation définitive
-  const pts = ok*10; S.score += pts;
-  if(ok===total){ S.streak++; toast('✓ Parfait ! '+ok+'/'+total+' — +'+pts+' pts'); }
-  else { S.streak=0; toast(ok+'/'+total+' correct — +'+pts+' pts'); }
+  /* Les points ne s'affichent plus. S.score continue d'être calculé en
+     coulisses : le carnet de parcours s'en sert pour savoir si la partie
+     est allée au bout, et il est commun aux 58 pages de jeu. */
+  S.score += ok*10;
+  toast(ok===total ? 'Tout est en place.' : 'Les cartes à revoir sont marquées.');
   updateHUD();
   setTimeout(()=>{
     setDot('dot1','done','✓'); setDot('dot2','active','2');
@@ -1071,9 +1080,8 @@ function validateStep2() {
     card.addEventListener('click', ()=>ouvrirHistoire(f.id));
   });
 
-  const pts = ok*15; S.score += pts;
-  if(ok === total){ S.streak++; toast('✓ Parfait ! '+ok+'/'+total+' — +'+pts+' pts'); }
-  else { toast(ok+'/'+total+' correct — +'+pts+' pts'); }
+  S.score += ok*15;
+  toast(ok===total ? 'Tout est en place.' : 'Les cartes à revoir sont marquées.');
   updateHUD();
   toast('Touchez une carte pour découvrir son histoire');
   setTimeout(showResult, 2600);
@@ -1095,16 +1103,18 @@ function fermerHistoire(){ $('histoirePanel').style.display='none'; }
 function showResult() {
   hide('step2'); show('result');
   const max=S.figures.length*25, pct=S.score/max;
-  let trophy,title,msg;
-  if(pct>=0.9){trophy='🎉';title='Excellent !';msg='Vous êtes un véritable érudit de l\'histoire. Votre mémoire est remarquable.';}
-  else if(pct>=0.7){trophy='🎉';title='Très bien !';msg='Belle maîtrise de l\'histoire. Quelques époques ont résisté, mais votre culture est solide.';}
-  else if(pct>=0.5){trophy='🎉';title='Bien joué !';msg='Un bon début ! Avec un peu de révision sur les époques, vous progresserez encore.';}
-  else{trophy='📚';title='À réviser !';msg='L\'histoire recèle encore bien des surprises — rejouez pour progresser !';}
-  $('trophy').textContent=trophy; $('rTitle').textContent=title;
-  $('rScore').textContent=S.score+' pts'; $('rMsg').textContent=msg;
-  const pc=Object.values(S.hintClicks).filter(v=>v>=2).length;
-  $('rBreak').textContent=pc>0?`Score brut ${S.score+S.penalty} pts – ${pc} indice(s) permanent(s) (−${S.penalty} pts)`:'Aucun indice permanent utilisé – félicitations !';
-  trackPartie(S.score, max, S.penalty, 0);
+  /* UN SEUL ÉCRAN DE FIN, LE MÊME POUR TOUT LE MONDE.
+     Il y en avait quatre, choisis selon le pourcentage : « Excellent ! »,
+     « Très bien ! », « Bien joué ! », et « 📚 À réviser ! » pour les
+     derniers. Plus un total en points et le détail des pénalités. Un
+     classement en quatre barreaux est une note, même habillée. */
+  $('trophy').textContent='🎉';
+  $('rTitle').textContent='Bravo !';
+  $('rScore').textContent='';
+  $('rBreak').textContent='';
+  $('rMsg').textContent='Les personnages sont tous à leur place. Vous pouvez relancer une partie quand vous voulez : '
+    + 'les figures changent à chaque fois.';
+  confetti();
   if(typeof JDC!=='undefined'){
     const niv = NIVEAU;
     JDC.enregistrer('memoire', niv, pct>=0.5, {erreurs:S.penalty});
@@ -1118,20 +1128,7 @@ function showResult() {
 // ════════════════════════════════════════
 //  STATISTIQUES (triple-clic sur le titre)
 // ════════════════════════════════════════
-const STATS_KEY='memoire_stats_v1';
 let _tc=0,_tct=null;
-function afficherConseil(){
-  if(typeof JDC==='undefined')return;
-  const b=JDC.bilanJeu('memoire');
-  if(!b.parties)return;
-  const el=document.getElementById('conseilMem');
-  if(el){
-    const st=loadStats();
-    const moy=st.global&&st.global.parties?Math.round(st.global.totalScore/st.global.parties):0;
-    el.textContent=b.parties+' partie(s) jouée(s), score moyen '+moy+' pts.';
-  }
-}
-
 function initStats(){
   const h=document.querySelector('h1');
   if(!h)return;
@@ -1141,31 +1138,6 @@ function initStats(){
     if(_tc>=3){_tc=0;const b=$('statsBtn');if(b)b.style.display='block';toast('Mode admin activé');}
   });
 }
-function loadStats(){try{return JSON.parse(localStorage.getItem(STATS_KEY))||{};}catch(e){return{};}}
-function saveStats(x){try{localStorage.setItem(STATS_KEY,JSON.stringify(x));}catch(e){}}
-function trackPartie(score,max,penalty,sec){
-  const st=loadStats();
-  if(!st.global)st.global={parties:0,totalScore:0,meilleur:0,totalSec:0,totalPenalty:0};
-  const g=st.global;
-  g.parties++;g.totalScore+=score;g.totalSec+=sec;g.totalPenalty+=penalty;
-  if(score>g.meilleur)g.meilleur=score;
-  saveStats(st);
-}
-function openStats(){
-  const st=loadStats(),c=$('statsContent');
-  if(!st.global||!st.global.parties){c.innerHTML='<p style="font-style:italic;opacity:.6;text-align:center;padding:14px 0">Aucune partie encore jouée.</p>';}
-  else{
-    const g=st.global,moy=Math.round(g.totalScore/g.parties);
-    c.innerHTML='<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(200,146,42,.15)"><span>Parties jouées</span><strong>'+g.parties+'</strong></div>'
-      +'<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(200,146,42,.15)"><span>Score moyen</span><strong>'+moy+' pts</strong></div>'
-      +'<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(200,146,42,.15)"><span>Meilleur score</span><strong>'+g.meilleur+' pts</strong></div>'
-      +'<div style="display:flex;justify-content:space-between;padding:7px 0"><span>Indices utilisés (moy.)</span><strong>'+Math.round(g.totalPenalty/g.parties)+' pts</strong></div>';
-  }
-  $('statsPanel').style.display='flex';
-}
-function closeStats(){ $('statsPanel').style.display='none'; }
-function resetStats(){ if(confirm('Effacer les statistiques ?')){localStorage.removeItem(STATS_KEY);closeStats();toast('Statistiques effacées');} }
-
 // ════════════════════════════════════════
 //  UTILS
 // ════════════════════════════════════════
@@ -1173,7 +1145,10 @@ function $(id){ return document.getElementById(id); }
 function show(id){ $(id).style.display='block'; }
 function hide(id){ $(id).style.display='none'; }
 function setDot(id,cls,txt){ const d=$(id); d.className='step-dot '+cls; d.textContent=txt; }
-function updateHUD(){ $('hScore').textContent=S.score; $('hHints').textContent='−'+S.penalty+' pts'; $('hStreak').textContent=S.streak>=3?S.streak+'🔥':S.streak; }
+/* Le bandeau n'existe plus. La fonction reste, vide, parce qu'elle est
+   appelée de plusieurs endroits et qu'un appel orphelin casserait la
+   partie au milieu. */
+function updateHUD(){}
 let _tt; function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>t.classList.remove('show'),3400); }
 function revenirAuDebut(){
   // restart() ne cache pas les étapes : appelé depuis la partie,
@@ -1192,17 +1167,25 @@ hide('result');
 afficherConseil(); }
 
 initStep1();
+
+/* Les confettis de la trame commune, couleurs de la charte. */
+function confetti(){
+  var colors = ['#c9963a','#2a5c3f','#6b4c2a','#ede5d0','#c8922a'];
+  for (var i = 0; i < 36; i++) {
+    var el = document.createElement('div');
+    el.className = 'cp';
+    el.style.cssText = 'left:' + (10 + Math.random() * 80) + '%;'
+      + 'background:' + colors[0 | Math.random() * colors.length] + ';'
+      + 'animation-delay:' + (Math.random() * 0.8) + 's;'
+      + 'animation-duration:' + (2 + Math.random() * 1.5) + 's;'
+      + 'width:' + (6 + Math.random() * 8) + 'px;height:' + (6 + Math.random() * 8) + 'px;'
+      + 'border-radius:' + (Math.random() > 0.5 ? '50%' : '2px') + ';';
+    document.body.appendChild(el);
+    (function (e) { setTimeout(function () { e.remove(); }, 4000); })(el);
+  }
+}
 </script>
-<div id="statsPanel" style="display:none;position:fixed;inset:0;background:rgba(28,18,8,.75);z-index:200;align-items:center;justify-content:center" onclick="if(event.target===this)closeStats()">
-  <div style="background:var(--cream,#f7f3ea);border:2px solid var(--gold,#c8922a);border-radius:14px;padding:24px 28px;max-width:400px;width:92%">
-    <h2 style="font-size: 1.15rem;margin-bottom:12px;color:var(--sepia,#5c3d1e)">📊 Statistiques</h2>
-    <div id="statsContent"></div>
-    <div style="display:flex;gap:10px;margin-top:14px;justify-content:flex-end">
-      <button onclick="resetStats()" style="padding:6px 14px;border-radius:6px;background:none;border:1.5px solid rgba(200,146,42,.5);font-family:inherit;font-weight:700;font-size: 0.78rem;cursor:pointer">Réinitialiser</button>
-      <button onclick="closeStats()" style="padding:6px 14px;border-radius:6px;background:var(--gold,#c8922a);color:#fff;border:none;font-family:inherit;font-weight:700;font-size: 0.78rem;cursor:pointer">Fermer</button>
-    </div>
-  </div>
-</div>
+
 <div id="corrPanel" style="display:none;position:fixed;inset:0;background:rgba(28,18,8,.72);z-index:205;align-items:center;justify-content:center;padding:16px">
   <div style="background:#f7f3ea;border:2px solid #c8922a;border-radius:16px;padding:26px 28px;max-width:430px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4)">
     <div style="font-size:2.2rem">🔎</div>
@@ -1231,7 +1214,7 @@ initStep1();
 <details class="jdc-apropos">
 <summary>À propos de ce jeu</summary>
 <div class="corps">
-<p><strong>Mémoire des Grands</strong> — Des personnages qui ont marqué le siècle, à reconnaître puis à situer. Le jeu se fait en deux étapes : d'abord on regarde, ensuite on retrouve.</p>
+<p><strong>Mémoire des Grands</strong> · Des personnages qui ont marqué le siècle, à reconnaître puis à situer. Le jeu se fait en deux étapes : d'abord on regarde, ensuite on retrouve.</p>
 <h2>Pour qui</h2>
 <p>Aux personnes âgées. Il s'appuie sur la mémoire ancienne, celle des visages et des noms appris il y a longtemps, qui reste souvent disponible bien après que la mémoire des derniers jours se soit effacée.</p>
 <h2>Comment y jouer</h2>
@@ -1244,7 +1227,7 @@ initStep1();
 <h2>Ce que ce jeu n'est pas</h2>
 <p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
 <h2>Qui le propose</h2>
-<p>Les Jardins de Célestine, un projet d'habitat partagé pour seniors, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="jeux.html">Voir tous les jeux</a>.</p>
+<p>Les Jardins de Célestine, un projet d’habitat partagé pour personnes atteintes de maladies neurodégénératives, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="projet.html">Découvrir le projet</a> · <a href="jeux.html">Voir tous les jeux</a>.</p>
 </div>
 </details>
 

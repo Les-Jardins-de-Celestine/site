@@ -11,10 +11,10 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Racontez-moi — cartes de souvenirs · Les Jardins de Célestine</title>
+<title>Racontez-moi · cartes de souvenirs · Les Jardins de Célestine</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="description" content="Vingt-quatre scènes d'autrefois à regarder ensemble. Pas de question, pas de bonne réponse : on parle si on veut. Gratuit, sans inscription, et imprimable.">
+<meta name="description" content="Des scènes d'autrefois à regarder ensemble. Pas de question, pas de bonne réponse : on parle si on veut. Gratuit, sans inscription, et imprimable.">
 <link rel="canonical" href="https://jardinsdecelestine.com/racontez-moi">
 <link rel="preload" as="image" href="images/recit/carte01.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -200,13 +200,35 @@ details.aide>summary:hover{opacity:1}
   .dessous{padding:16px 17px 18px}
 }
 @media print{ .jdc-retour,.rangee,.bas,.discret,header p,.divider{display:none} }
+
+.jdc-apropos{max-width:680px;margin:28px auto 8px;padding:0 16px;
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;color:#5c3d1e;}
+.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;
+  letter-spacing:.02em;opacity:.62;padding:9px 0;text-align:center;
+  border-top:1px solid rgba(92,61,30,.16);}
+.jdc-apropos>summary::-webkit-details-marker{display:none}
+.jdc-apropos>summary::after{content:' \203A';display:inline-block;
+  transform:rotate(90deg);margin-left:5px;opacity:.7}
+.jdc-apropos[open]>summary::after{transform:rotate(-90deg)}
+.jdc-apropos>summary:hover,.jdc-apropos>summary:focus-visible{opacity:.95}
+.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;
+  text-align:left;opacity:.9}
+.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:#5c3d1e;
+  font-weight:700}
+.jdc-apropos p{margin:0 0 10px}
+.jdc-apropos ul{margin:0 0 10px;padding-left:20px}
+.jdc-apropos li{margin-bottom:5px}
+.jdc-apropos a{color:#2d6a4f}
+.hc .jdc-apropos{color:#000}
+.hc .jdc-apropos h2{color:#000}
+.hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
  "@type": "Game",
  "name": "Racontez-moi",
- "description": "Vingt-quatre scènes d'autrefois à regarder ensemble. Pas de question, pas de bonne réponse : on parle si on veut. Gratuit, sans inscription, et imprimable.",
+ "description": "Des scènes d'autrefois à regarder ensemble. Pas de question, pas de bonne réponse : on parle si on veut. Gratuit, sans inscription, et imprimable.",
  "url": "https://jardinsdecelestine.com/racontez-moi",
  "inLanguage": "fr",
  "isAccessibleForFree": true,
@@ -223,7 +245,7 @@ details.aide>summary:hover{opacity:1}
 <a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
 <header>
   <h1>Racontez-<em>moi</em></h1>
-  <p>Vingt-quatre scènes d'autrefois</p>
+  <p>Des scènes d'autrefois</p>
   <div class="divider"></div>
 </header>
 
@@ -275,99 +297,99 @@ details.aide>summary:hover{opacity:1}
 <section class="ecran" id="menu" hidden>
   <div class="grille">
     <button type="button" class="vign" data-n="1">
-      <img src="images/recit/vign/carte01.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte01.jpg" alt="" loading="lazy" width="344" height="192">
       <span>La salle de classe</span>
     </button>
     <button type="button" class="vign" data-n="2">
-      <img src="images/recit/vign/carte02.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte02.jpg" alt="" loading="lazy" width="344" height="192">
       <span>La cour de récréation</span>
     </button>
     <button type="button" class="vign" data-n="3">
-      <img src="images/recit/vign/carte03.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte03.jpg" alt="" loading="lazy" width="344" height="192">
       <span>Le lavoir</span>
     </button>
     <button type="button" class="vign" data-n="4">
-      <img src="images/recit/vign/carte04.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte04.jpg" alt="" loading="lazy" width="344" height="192">
       <span>La cuisine</span>
     </button>
     <button type="button" class="vign" data-n="5">
-      <img src="images/recit/vign/carte05.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte05.jpg" alt="" loading="lazy" width="344" height="192">
       <span>L'épicerie</span>
     </button>
     <button type="button" class="vign" data-n="6">
-      <img src="images/recit/vign/carte06.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte06.jpg" alt="" loading="lazy" width="344" height="192">
       <span>La cour de ferme</span>
     </button>
     <button type="button" class="vign" data-n="7">
-      <img src="images/recit/vign/carte07.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte07.jpg" alt="" loading="lazy" width="344" height="192">
       <span>L'établi</span>
     </button>
     <button type="button" class="vign" data-n="8">
-      <img src="images/recit/vign/carte08.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte08.jpg" alt="" loading="lazy" width="344" height="192">
       <span>L'atelier de couture</span>
     </button>
     <button type="button" class="vign" data-n="9">
-      <img src="images/recit/vign/carte09.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte09.jpg" alt="" loading="lazy" width="344" height="192">
       <span>Le bal</span>
     </button>
     <button type="button" class="vign" data-n="10">
-      <img src="images/recit/vign/carte10.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte10.jpg" alt="" loading="lazy" width="344" height="192">
       <span>La table du dimanche</span>
     </button>
     <button type="button" class="vign" data-n="11">
-      <img src="images/recit/vign/carte11.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte11.jpg" alt="" loading="lazy" width="344" height="192">
       <span>Le départ en vacances</span>
     </button>
     <button type="button" class="vign" data-n="12">
-      <img src="images/recit/vign/carte12.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte12.jpg" alt="" loading="lazy" width="344" height="192">
       <span>Le quai de gare</span>
     </button>
     <button type="button" class="vign" data-n="13">
-      <img src="images/recit/vign/carte13.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte13.jpg" alt="" loading="lazy" width="344" height="192">
       <span>Les halles du marché</span>
     </button>
     <button type="button" class="vign" data-n="14">
-      <img src="images/recit/vign/carte14.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte14.jpg" alt="" loading="lazy" width="344" height="192">
       <span>Le fournil</span>
     </button>
     <button type="button" class="vign" data-n="15">
-      <img src="images/recit/vign/carte15.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte15.jpg" alt="" loading="lazy" width="344" height="192">
       <span>La vigne aux vendanges</span>
     </button>
     <button type="button" class="vign" data-n="16">
-      <img src="images/recit/vign/carte16.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte16.jpg" alt="" loading="lazy" width="344" height="192">
       <span>Le potager</span>
     </button>
     <button type="button" class="vign" data-n="17">
-      <img src="images/recit/vign/carte17.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte17.jpg" alt="" loading="lazy" width="344" height="192">
       <span>La moisson</span>
     </button>
     <button type="button" class="vign" data-n="18">
-      <img src="images/recit/vign/carte18.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte18.jpg" alt="" loading="lazy" width="344" height="192">
       <span>La veillée</span>
     </button>
     <button type="button" class="vign" data-n="19">
-      <img src="images/recit/vign/carte19.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte19.jpg" alt="" loading="lazy" width="344" height="192">
       <span>Le cinéma</span>
     </button>
     <button type="button" class="vign" data-n="20">
-      <img src="images/recit/vign/carte20.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte20.jpg" alt="" loading="lazy" width="344" height="192">
       <span>La mercerie</span>
     </button>
     <button type="button" class="vign" data-n="21">
-      <img src="images/recit/vign/carte21.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte21.jpg" alt="" loading="lazy" width="344" height="192">
       <span>La plage</span>
     </button>
     <button type="button" class="vign" data-n="22">
-      <img src="images/recit/vign/carte22.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte22.jpg" alt="" loading="lazy" width="344" height="192">
       <span>Le grenier</span>
     </button>
     <button type="button" class="vign" data-n="23">
-      <img src="images/recit/vign/carte23.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte23.jpg" alt="" loading="lazy" width="344" height="192">
       <span>La forge</span>
     </button>
     <button type="button" class="vign" data-n="24">
-      <img src="images/recit/vign/carte24.jpg" alt="" loading="lazy" width="344" height="192">
+      <img src="images/recit/mini-carte24.jpg" alt="" loading="lazy" width="344" height="192">
       <span>Le café</span>
     </button>
   </div>
@@ -406,6 +428,17 @@ details.aide>summary:hover{opacity:1}
 
 </main>
 
+
+<details class="jdc-apropos">
+<summary>À propos de ce jeu</summary>
+<div class="corps">
+<p><strong>Racontez-moi</strong> · Des scènes d’autrefois à regarder ensemble. On parle si on veut, on tourne la carte quand on a fini.</p>
+<h2>Ce que ce jeu n'est pas</h2>
+<p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
+<h2>Qui le propose</h2>
+<p>Les Jardins de Célestine, un projet d’habitat partagé pour personnes atteintes de maladies neurodégénératives, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="projet.html">Découvrir le projet</a> · <a href="jeux.html">Voir tous les jeux</a>.</p>
+</div>
+</details>
 <footer class="jdc-legal">
   <a href="mentions-legales.html">Mentions légales</a>
   <span aria-hidden="true"> · </span>
@@ -413,6 +446,7 @@ details.aide>summary:hover{opacity:1}
   <span aria-hidden="true"> · </span>
   <a href="signaler.html?jeu=Racontez-moi&amp;p=racontez-moi" target="_blank" rel="noopener">Signaler un problème</a>
 </footer>
+<script src="jdc-parcours.js"></script>
 
 <script>
 (function () {

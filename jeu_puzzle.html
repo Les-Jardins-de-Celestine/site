@@ -13,8 +13,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>Puzzle — jeu en ligne gratuit · Les Jardins de Célestine</title>
-<meta name="description" content="Huit scènes à reconstituer, à trois niveaux, sur tablette ou ordinateur. Puzzle en ligne gratuit pour personne âgée, sans inscription.">
+<title>Puzzle · jeu en ligne gratuit · Les Jardins de Célestine</title>
+<meta name="description" content="Des scènes à reconstituer, sur tablette ou ordinateur. Puzzle en ligne gratuit pour personne âgée, sans inscription.">
 <link rel="canonical" href="https://jardinsdecelestine.com/jeu_puzzle">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -299,7 +299,7 @@ body.enjeu #accueil{display:none;}
  "@context": "https://schema.org",
  "@type": "Game",
  "name": "Puzzle",
- "description": "Huit scènes à reconstituer, à trois niveaux, sur tablette ou ordinateur. Puzzle en ligne gratuit pour personne âgée, sans inscription.",
+ "description": "Des scènes à reconstituer, sur tablette ou ordinateur. Puzzle en ligne gratuit pour personne âgée, sans inscription.",
  "url": "https://jardinsdecelestine.com/jeu_puzzle",
  "inLanguage": "fr",
  "isAccessibleForFree": true,
@@ -346,7 +346,7 @@ body.enjeu #accueil{display:none;}
 <!-- BARRE DE JEU -->
 <div class="barre-jeu" id="barreJeu">
   <button class="mini-btn" onclick="retourAccueil()">↩ Revenir au début</button>
-  <span class="barre-titre" id="barreTitre">—</span>
+  <span class="barre-titre" id="barreTitre">·</span>
   <button class="mini-btn go" onclick="startGame()">Rejouer</button>
 </div>
 
@@ -388,17 +388,7 @@ body.enjeu #accueil{display:none;}
 </div>
 
 <!-- STATS PANEL -->
-<div id="statsPanel">
-  <div id="statsBox">
-    <h2>📊 Statistiques d'utilisation</h2>
-    <p class="sub">Données enregistrées localement sur cet appareil</p>
-    <div id="statsContent"></div>
-    <div class="actions">
-      <button class="btn btn-outline" onclick="resetStats()">Réinitialiser</button>
-      <button class="btn" onclick="closeStats()">Fermer</button>
-    </div>
-  </div>
-</div>
+
 
 <div id="toast"></div>
 
@@ -406,79 +396,12 @@ body.enjeu #accueil{display:none;}
 // ═══════════════════════════════════════════
 //  USAGE TRACKING
 // ═══════════════════════════════════════════
-const STATS_KEY = 'puzzle_stats_v1';
-
-function loadStats() {
-  try { return JSON.parse(localStorage.getItem(STATS_KEY)) || {}; }
-  catch(e) { return {}; }
-}
-
-function saveStats(s) {
-  try { localStorage.setItem(STATS_KEY, JSON.stringify(s)); } catch(e) {}
-}
 
 function trackSessionStart(sceneName, diff) {
   // Record start time and params
   window._sessionStart = Date.now();
   window._sessionScene = sceneName;
   window._sessionDiff  = diff;
-}
-
-function trackSessionEnd(completed) {
-  if (!window._sessionStart) return;
-  const elapsed = Math.round((Date.now() - window._sessionStart) / 1000);
-  const key = window._sessionScene + '_' + window._sessionDiff;
-  const stats = loadStats();
-  if (!stats[key]) stats[key] = { scene:window._sessionScene, diff:window._sessionDiff, plays:0, completions:0, totalSec:0 };
-  stats[key].plays++;
-  stats[key].totalSec += elapsed;
-  if (completed) stats[key].completions++;
-  saveStats(stats);
-  window._sessionStart = null;
-}
-
-function openStats() {
-  const stats = loadStats();
-  const keys  = Object.keys(stats);
-  const content = document.getElementById('statsContent');
-
-  if (keys.length === 0) {
-    content.innerHTML = '<p style="color:var(--sepia);font-style:italic;text-align:center;padding:20px 0;">Aucune partie jouée pour l\'instant.</p>';
-  } else {
-    // Sort by total time descending
-    keys.sort((a,b) => stats[b].totalSec - stats[a].totalSec);
-    const maxSec = stats[keys[0]].totalSec || 1;
-
-    content.innerHTML = keys.map(k => {
-      const s = stats[k];
-      const mins  = Math.floor(s.totalSec/60);
-      const pct   = Math.round((s.completions / s.plays) * 100);
-      const avg   = s.plays > 0 ? Math.round(s.totalSec / s.plays) : 0;
-      const avgM  = Math.floor(avg/60), avgS = avg%60;
-      const barW  = Math.round((s.totalSec / maxSec) * 100);
-      const diffLabel = {3:'Facile',4:'Moyen',5:'Expert'}[s.diff]||s.diff+'×'+s.diff;
-      return `
-        <div class="stat-row">
-          <div class="stat-name">${s.scene} <span style="font-size:0.72rem;opacity:.6">${diffLabel}</span></div>
-          <div><div class="stat-lbl">Parties</div><div class="stat-val">${s.plays}</div></div>
-          <div><div class="stat-lbl">Réussies</div><div class="stat-val">${pct}%</div></div>
-          <div><div class="stat-lbl">Temps total</div><div class="stat-val">${mins}m${String(s.totalSec%60).padStart(2,'0')}s</div></div>
-          <div class="stat-bar-wrap"><div class="stat-bar" style="width:${barW}%"></div></div>
-          <div style="grid-column:1/-1;font-size:0.72rem;color:var(--sepia);opacity:.55;">Durée moyenne par partie : ${avgM}m${String(avgS).padStart(2,'0')}s</div>
-        </div>`;
-    }).join('');
-  }
-  document.getElementById('statsPanel').classList.add('show');
-}
-
-function closeStats() { document.getElementById('statsPanel').classList.remove('show'); }
-
-function resetStats() {
-  if (confirm('Effacer toutes les statistiques ?')) {
-    localStorage.removeItem(STATS_KEY);
-    closeStats();
-    toast('Statistiques effacées');
-  }
 }
 
 // ═══════════════════════════════════════════
@@ -705,7 +628,7 @@ function dropOnCell(r,c){
     if(G.placed===G.N*G.N)setTimeout(win,350);
   }else{
     G.errors++;ce.classList.add('bad');setTimeout(()=>ce.classList.remove('bad'),380);
-    updateHUD();toast('Pas cette case — continuez !');
+    updateHUD();toast('Pas cette case, continuez !');
   }
 }
 
@@ -716,7 +639,6 @@ function win(){
     JDC.marquerVu('puzzle', String(G.sceneIdx));
   }
   clearInterval(G.timerInt);
-  trackSessionEnd(true);
   // Ni durée, ni compte de fautes : l'image est faite.
   document.getElementById('winTime').textContent = '';
   document.getElementById('winErr').textContent = 'L\'image est reconstituée.';
@@ -756,7 +678,7 @@ afficherConseil();
 <details class="jdc-apropos">
 <summary>À propos de ce jeu</summary>
 <div class="corps">
-<p><strong>Le Puzzle</strong> — Une scène à reconstituer morceau par morceau. Huit images au choix et trois niveaux de découpe, du très gros morceau au plus fin.</p>
+<p><strong>Le Puzzle</strong> · Une scène à reconstituer morceau par morceau. Plusieurs images au choix et plusieurs niveaux de découpe, du très gros morceau au plus fin.</p>
 <h2>Pour qui</h2>
 <p>Aux personnes âgées, sur tablette ou sur ordinateur : les pièces se déplacent au doigt ou à la souris, ce qui demande un geste précis. Sur un petit téléphone, c'est inconfortable. Situer une pièce par rapport aux autres relève du repérage dans l'espace, souvent en difficulté dans la maladie à corps de Lewy.</p>
 <h2>Comment y jouer</h2>
@@ -769,7 +691,7 @@ afficherConseil();
 <h2>Ce que ce jeu n'est pas</h2>
 <p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
 <h2>Qui le propose</h2>
-<p>Les Jardins de Célestine, un projet d'habitat partagé pour seniors, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="jeux.html">Voir tous les jeux</a>.</p>
+<p>Les Jardins de Célestine, un projet d’habitat partagé pour personnes atteintes de maladies neurodégénératives, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="projet.html">Découvrir le projet</a> · <a href="jeux.html">Voir tous les jeux</a>.</p>
 </div>
 </details>
 

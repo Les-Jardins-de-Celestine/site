@@ -12,7 +12,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>Où est-ce rangé ? — jeu en ligne gratuit · Les Jardins de Célestine</title>
+<title>Où est-ce rangé ? · jeu en ligne gratuit · Les Jardins de Célestine</title>
 <meta name="description" content="Remettre chaque objet dans la pièce où il se range. Jeu du quotidien en ligne gratuit pour personne âgée, sans inscription.">
 <link rel="canonical" href="https://jardinsdecelestine.com/jeu_ou_range">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -170,7 +170,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 <div id="intro">
   <div class="card">
     <h2>Le salon a été rangé</h2>
-    <p id="introTxt">—</p>
+    <p id="introTxt">·</p>
     <div class="niveaux">
       <button class="niv" onclick="commencer(1)">
         <span class="niv-t">Un objet</span>
@@ -203,7 +203,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
     <div id="colCarnet">
       <div id="carnet">
         <div class="carnet-t">Vous cherchez</div>
-        <div id="recherche"><span class="txt">—</span></div>
+        <div id="recherche"><span class="txt">·</span></div>
         <div id="progTxt"></div>
         <div class="carnet-t">Déjà retrouvé</div>
         <ul id="trouves"><li class="vide" style="background:none;border:none;padding:0">Rien pour l'instant.</li></ul>
@@ -217,23 +217,16 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 
 <div id="winOverlay">
   <div id="winBox">
-    <div class="big">🏡</div>
-    <h2>Tout est retrouvé !</h2>
+    <div class="big">🎉</div>
+    <h2>Bravo !</h2>
+    <p class="jdc-sous">Tout est retrouvé.</p>
     <p id="winTxt"></p>
-    <button class="btn-g2" onclick="retourIntro()">Rejouer</button>
+    <button class="btn-g2" onclick="commencer(niveau)">Rejouer</button>
+    <button class="btn-g2" onclick="retourIntro()" style="background:none;border:1.5px solid rgba(200,146,42,.5);color:inherit">↩ Revenir au début</button>
   </div>
 </div>
 
-<div id="statsPanel">
-  <div id="statsBox">
-    <h2>📊 Statistiques</h2>
-    <div id="statsContent"></div>
-    <div class="sa">
-      <button class="btn-sm btn-ol" onclick="resetStats()">Réinitialiser</button>
-      <button class="btn-sm btn-g" onclick="closeStats()">Fermer</button>
-    </div>
-  </div>
-</div>
+
 
 <div id="toast"></div>
 
@@ -278,37 +271,11 @@ const NB = { 1:1, 2:2, 3:4 };
 let niveau = 1, aChercher = [], idx = 0, aides = 0, startTime = null, playing = false, personne = null;
 
 // ── STATS ──
-const STATS_KEY = 'range_stats_v1';
 let _tc = 0, _tct = null;
 document.getElementById('mainTitle').addEventListener('click', () => {
   _tc++; clearTimeout(_tct); _tct = setTimeout(() => _tc = 0, 800);
   if(_tc >= 3){ _tc = 0;  toast('Mode admin activé'); }
 });
-function loadStats(){ try{ return JSON.parse(localStorage.getItem(STATS_KEY)) || {}; }catch(e){ return {}; } }
-function saveStats(s){ try{ localStorage.setItem(STATS_KEY, JSON.stringify(s)); }catch(e){} }
-function trackLocal(niv, reussi, sec, aid){
-  const st = loadStats(), k = 'niv' + niv;
-  if(!st[k]) st[k] = { parties:0, reussies:0, totalSec:0, totalAides:0 };
-  st[k].parties++; st[k].totalSec += sec; st[k].totalAides += aid;
-  if(reussi) st[k].reussies++;
-  saveStats(st);
-}
-function openStats(){
-  const st = loadStats(), keys = Object.keys(st), c = document.getElementById('statsContent');
-  const lbl = { niv1:'Un objet', niv2:'Deux objets', niv3:'Quatre objets' };
-  if(!keys.length){ c.innerHTML = '<p class="vide">Aucune partie encore jouée.</p>'; }
-  else {
-    c.innerHTML = keys.map(k => {
-      const s = st[k], moy = s.parties ? (s.totalAides / s.parties).toFixed(1) : 0;
-      return '<div class="srow"><span>' + (lbl[k] || k) + '</span><span>' + s.reussies + '/' + s.parties + ' · ' + moy + ' aide(s)</span></div>';
-    }).join('');
-  }
-  document.getElementById('statsPanel').classList.add('show');
-}
-function closeStats(){ document.getElementById('statsPanel').classList.remove('show'); }
-function resetStats(){ if(confirm('Effacer les statistiques ?')){ localStorage.removeItem(STATS_KEY); closeStats(); toast('Statistiques effacées'); } }
-document.getElementById('statsPanel').addEventListener('click', function(e){ if(e.target === this) closeStats(); });
-
 function toast(msg, type){
   const t = document.getElementById('toast');
   t.textContent = msg; t.className = type === 'doux' ? 'doux show' : 'show';
@@ -347,6 +314,7 @@ majIntro();
 
 function commencer(niv){
   niveau = niv;
+  var wo = document.getElementById('winOverlay'); if(wo) wo.classList.remove('show');
   aChercher = melange(OBJETS).slice(0, NB[niv]);
   idx = 0; aides = 0; playing = true; startTime = Date.now();
   document.getElementById('intro').style.display = 'none';
@@ -409,7 +377,6 @@ function demanderAide(){
 function fini(){
   playing = false;
   const sec = Math.floor((Date.now() - startTime) / 1000);
-  trackLocal(niveau, true, sec, aides);
   if(typeof JDC !== 'undefined'){
     JDC.enregistrer('range', niveau, true, { duree: sec, erreurs: 0, variante: 'salon' });
     JDC.marquerVu('range', 'salon');
@@ -424,7 +391,6 @@ function fini(){
 function retourIntro(){
   if(playing && startTime){
     const sec = Math.floor((Date.now() - startTime) / 1000);
-    trackLocal(niveau, false, sec, aides);
     if(typeof JDC !== 'undefined') JDC.enregistrer('range', niveau, false, { duree: sec, erreurs: 0, variante: 'salon' });
   }
   playing = false;
@@ -472,7 +438,7 @@ function confetti(){
 <details class="jdc-apropos">
 <summary>À propos de ce jeu</summary>
 <div class="corps">
-<p><strong>Où est-ce rangé ?</strong> — Une casserole, un oreiller, un râteau : dans quelle pièce chaque objet se range-t-il ? On remet le quotidien à sa place.</p>
+<p><strong>Où est-ce rangé ?</strong> · Une casserole, un oreiller, un râteau : dans quelle pièce chaque objet se range-t-il ? On remet le quotidien à sa place.</p>
 <h2>Pour qui</h2>
 <p>Aux personnes vivant avec des troubles du repérage dans le logement, fréquents dans la maladie d'Alzheimer. Le jeu reprend les gestes de la maison, ceux qu'on a faits toute sa vie.</p>
 <h2>Comment y jouer</h2>
@@ -485,7 +451,7 @@ function confetti(){
 <h2>Ce que ce jeu n'est pas</h2>
 <p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
 <h2>Qui le propose</h2>
-<p>Les Jardins de Célestine, un projet d'habitat partagé pour seniors, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="jeux.html">Voir tous les jeux</a>.</p>
+<p>Les Jardins de Célestine, un projet d’habitat partagé pour personnes atteintes de maladies neurodégénératives, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="projet.html">Découvrir le projet</a> · <a href="jeux.html">Voir tous les jeux</a>.</p>
 </div>
 </details>
 

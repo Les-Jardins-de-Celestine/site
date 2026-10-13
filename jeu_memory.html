@@ -13,7 +13,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>Memory — jeu en ligne gratuit · Les Jardins de Célestine</title>
+<title>Memory · jeu en ligne gratuit · Les Jardins de Célestine</title>
 <meta name="description" content="Le memory des paires à retrouver, en 4, 6 ou 9 paires au choix. Gratuit, sans inscription, gros caractères, pensé pour une personne âgée.">
 <link rel="canonical" href="https://jardinsdecelestine.com/jeu_memory">
 
@@ -354,8 +354,11 @@ header p { font-size:0.78rem; letter-spacing: 0.18em; text-transform: uppercase;
 <div id="resultScreen">
   <span class="trophy" id="trophy">🎉</span>
   <h2 id="resultTitle">Bravo !</h2>
-  <div class="score-big" id="resultScore">100</div>
-  <div class="score-sub" id="resultSub">points</div>
+  <!-- Vides : le script écrit ici avant de montrer l'écran. Le gabarit
+       portait « 100 » et « points », que personne ne voyait mais qu'un
+       lecteur d'écran et un aperçu lisaient. -->
+  <div class="score-big" id="resultScore"></div>
+  <div class="score-sub" id="resultSub"></div>
   <p class="result-msg" id="resultMsg"></p>
   <div class="result-btns">
     <button class="btn" onclick="restartSame()">Rejouer</button>
@@ -367,17 +370,7 @@ header p { font-size:0.78rem; letter-spacing: 0.18em; text-transform: uppercase;
 <div class="toast" id="toast"></div>
 
 <!-- STATS PANEL -->
-<div id="statsPanel">
-  <div id="statsBox">
-    <h2>📊 Statistiques</h2>
-    <span class="sub">Enregistrées localement sur cet appareil</span>
-    <div id="statsContent"></div>
-    <div class="sa">
-      <button class="btn-sm-ol" onclick="resetStats()">Réinitialiser</button>
-      <button class="btn" onclick="closeStats()">Fermer</button>
-    </div>
-  </div>
-</div>
+
 
 <script>
 // ════════════════════════════════════════
@@ -696,7 +689,6 @@ function endGame() {
   }
   // Le panneau de notes ne garde que le nombre de parties : on lui passe
   // ce qu'il attend, rien de tout cela ne va à l'écran.
-  recordGame(S.nPairs, S.seconds, S.tentatives, S.score);
 
   hide('gameBoard');
   document.getElementById('hud').style.display = 'none';
@@ -771,77 +763,6 @@ function confetti() {
   }
 }
 
-// ════════════════════════════════════════
-//  STATS
-// ════════════════════════════════════════
-const STATS_KEY = 'memory_stats';
-
-function loadStats() {
-  try { return JSON.parse(localStorage.getItem(STATS_KEY)) || {}; } catch(e) { return {}; }
-}
-function saveStats(st) {
-  try { localStorage.setItem(STATS_KEY, JSON.stringify(st)); } catch(e) {}
-}
-
-function recordGame(nPairs, seconds, tentatives, score) {
-  const st = loadStats();
-  st.parties = (st.parties || 0) + 1;
-  st.totalPaires = (st.totalPaires || 0) + nPairs;
-  st.totalTentatives = (st.totalTentatives || 0) + tentatives;
-  st.totalSecondes = (st.totalSecondes || 0) + seconds;
-  st.meilleurScore = Math.max(st.meilleurScore || 0, score);
-  if (!st.meilleurTemps || seconds < st.meilleurTemps) st.meilleurTemps = seconds;
-  // Historique (10 dernières parties)
-  if (!st.historique) st.historique = [];
-  st.historique.unshift({ date: new Date().toLocaleDateString('fr-FR'), nPairs, seconds, tentatives, score });
-  if (st.historique.length > 10) st.historique.pop();
-  saveStats(st);
-}
-
-function openStats() {
-  const st = loadStats();
-  const panel = document.getElementById('statsPanel');
-  let html = '';
-
-  if (!st.parties) {
-    html = '<p style="color:var(--sepia);opacity:.6;text-align:center;padding:20px 0;">Aucune partie jouée pour le moment.</p>';
-  } else {
-    const avgTentatives = Math.round(st.totalTentatives / st.parties);
-    const avgTemps = Math.round(st.totalSecondes / st.parties);
-    html += '<div class="stats-section">Résumé global</div>';
-    html += `<div class="srow"><span>Parties jouées</span><span class="sval">${st.parties}</span></div>`;
-    html += `<div class="srow"><span>Paires trouvées au total</span><span class="sval">${st.totalPaires}</span></div>`;
-    html += `<div class="srow"><span>Meilleur score</span><span class="sval">${st.meilleurScore} pts</span></div>`;
-    html += `<div class="srow"><span>Meilleur temps</span><span class="sval">${fmtTime(st.meilleurTemps)}</span></div>`;
-    html += `<div class="srow"><span>Tentatives moy. / partie</span><span class="sval">${avgTentatives}</span></div>`;
-    html += `<div class="srow"><span>Temps moyen / partie</span><span class="sval">${fmtTime(avgTemps)}</span></div>`;
-
-    if (st.historique && st.historique.length) {
-      html += '<div class="stats-section">10 dernières parties</div>';
-      st.historique.forEach(h => {
-        html += `<div class="history-row">
-          <span>${h.date} · ${h.nPairs} paires</span>
-          <span>${fmtTime(h.seconds)} · ${h.tentatives} essais</span>
-          <span class="history-badge">${h.score} pts</span>
-        </div>`;
-      });
-    }
-  }
-
-  document.getElementById('statsContent').innerHTML = html;
-  panel.classList.add('show');
-}
-
-function closeStats() {
-  document.getElementById('statsPanel').classList.remove('show');
-}
-
-function resetStats() {
-  if (confirm('Effacer toutes les statistiques ?')) {
-    localStorage.removeItem(STATS_KEY);
-    closeStats();
-  }
-}
 
 // ════════════════════════════════════════
 //  INIT
@@ -879,7 +800,7 @@ window.addEventListener('resize', ajusterPlateau);
 <details class="jdc-apropos">
 <summary>À propos de ce jeu</summary>
 <div class="corps">
-<p><strong>Le Memory</strong> — Les cartes sont posées face cachée. On en retourne deux à chaque tour, et on tâche de se rappeler où se trouvent celles qui vont ensemble. Trois tailles de plateau, quatre, six ou neuf paires, et plusieurs thèmes d'images à choisir.</p>
+<p><strong>Le Memory</strong> · Les cartes sont posées face cachée. On en retourne deux à chaque tour, et on tâche de se rappeler où se trouvent celles qui vont ensemble. Des plateaux de quatre, six ou neuf paires, et plusieurs thèmes d'images à choisir.</p>
 <h2>Pour qui</h2>
 <p>Aux personnes âgées, et en particulier aux personnes vivant avec une maladie d'Alzheimer. C'est un jeu de mémoire à court terme et de repérage dans l'espace : se souvenir de ce qu'on a vu, et de l'endroit où on l'a vu.</p>
 <h2>Comment y jouer</h2>
@@ -892,7 +813,7 @@ window.addEventListener('resize', ajusterPlateau);
 <h2>Ce que ce jeu n'est pas</h2>
 <p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
 <h2>Qui le propose</h2>
-<p>Les Jardins de Célestine, un projet d'habitat partagé pour seniors, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="jeux.html">Voir tous les jeux</a>.</p>
+<p>Les Jardins de Célestine, un projet d’habitat partagé pour personnes atteintes de maladies neurodégénératives, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="projet.html">Découvrir le projet</a> · <a href="jeux.html">Voir tous les jeux</a>.</p>
 </div>
 </details>
 

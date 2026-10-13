@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Les lettres mêlées · jeu gratuit · Les Jardins de Célestine</title>
+<meta name="robots" content="index, follow">
+<meta name="description" content="Retrouver un mot dont les lettres sont mélangées, avec sa devinette. Des mots du quotidien d'autrefois. Jeu de langage gratuit, sans inscription.">
+<link rel="canonical" href="https://jardinsdecelestine.com/jeu_lettres">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="jdc-parcours.js"></script>
+<style>
+:root {
+  --cream:#f7f3ea; --parchment:#eee8d5; --ink:#1c1208;
+  --sepia:#5c3d1e; --gold:#c8922a; --green:#2d6a4f;
+  --red:#6b4c2a; --shadow:rgba(28,18,8,0.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{
+  background:var(--parchment);
+  background-image:
+    radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.08) 0%,transparent 55%),
+    radial-gradient(ellipse at 85% 90%,rgba(45,106,79,.06) 0%,transparent 55%);
+  min-height:100vh; font-family:'Nunito',sans-serif;
+  color:var(--ink); user-select:none; -webkit-user-select:none;
+}
+
+header{text-align:center;padding:16px 20px 10px;border-bottom:1px solid rgba(200,146,42,.2);position:relative;}
+header h1{font-family:'Atkinson Hyperlegible',sans-serif;font-size:clamp(1.3rem,3vw,1.9rem);font-weight:700;color:var(--sepia);cursor:default;}
+header h1 em{color:var(--gold);font-style:normal;}
+header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-top:3px;}
+.divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:6px auto 0;}
+#statsBtn{display:none;position:absolute;top:14px;right:16px;background:none;border:1.5px solid rgba(200,146,42,.4);border-radius:6px;padding:4px 10px;font-family:'Nunito',sans-serif;font-size:.75rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+#statsBtn:hover{background:rgba(200,146,42,.1);}
+
+/* ── MENU ── */
+#menu{max-width:600px;margin:34px auto;padding:0 20px;}
+#menu h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.15rem;color:var(--sepia);text-align:center;margin-bottom:8px;}
+#menu .hint{text-align:center;font-size:.92rem;color:var(--sepia);opacity:.75;margin-bottom:20px;}
+.h-card{display:block;width:100%;text-align:left;background:var(--cream);border:1.5px solid rgba(200,146,42,.35);border-radius:14px;padding:18px 22px;margin-bottom:14px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s;}
+.h-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 22px var(--shadow);}
+.h-card .ht{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.08rem;font-weight:700;color:var(--sepia);}
+.h-card .hs{font-size:.82rem;color:var(--sepia);opacity:.65;margin-top:2px;}
+.badge-new{display:inline-block;background:var(--green);color:#fff;font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;}
+.badge-vu{display:inline-block;background:rgba(92,61,30,.12);color:var(--sepia);font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;}
+#suggestion{margin-top:14px;font-size:.86rem;color:var(--sepia);opacity:.8;font-style:italic;text-align:center;}
+
+/* ── JEU ── */
+#game{display:none;max-width:680px;margin:0 auto;padding:14px 18px 40px;}
+#hud{display:flex;justify-content:space-between;align-items:center;padding:4px 2px 12px;font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;color:var(--sepia);font-size:.92rem;}
+#hud .prog{color:var(--green);}
+#backBtn{background:none;border:1.5px solid rgba(200,146,42,.45);border-radius:8px;padding:5px 12px;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+#backBtn:hover{background:rgba(200,146,42,.1);}
+
+.zone-titre{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--sepia);opacity:.6;margin:10px 0 8px;}
+
+#histoire{background:var(--cream);border:1.5px solid rgba(45,106,79,.35);border-radius:14px;padding:14px 16px;min-height:70px;box-shadow:0 6px 20px var(--shadow);}
+#histoire .placed{background:#e9f2ec;border:1.5px solid rgba(45,106,79,.4);border-radius:10px;padding:11px 14px;margin-bottom:9px;font-size:1rem;line-height:1.55;color:var(--ink);animation:pop .3s ease;}
+#histoire .placed:last-child{margin-bottom:0;}
+#histoire .placed .num{display:inline-block;background:var(--green);color:#fff;font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;font-size:.75rem;width:22px;height:22px;border-radius:50%;text-align:center;line-height:22px;margin-right:8px;}
+#histoire .vide{font-size:.9rem;color:var(--sepia);opacity:.5;font-style:italic;text-align:center;padding:10px 0;}
+@keyframes pop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+
+#blocs{margin-top:6px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.demande{background:var(--cream);border-left:4px solid var(--green);border-radius:12px;padding:14px 16px;margin:0 0 14px;}
+.demande .dit{font-size:1.04rem;line-height:1.6;color:var(--ink);margin:0;font-style:italic;}
+.bloc img{width:100%;display:block;border-radius:8px;margin-bottom:8px;}
+.bloc .lib{display:block;font-size:.95rem;line-height:1.4;text-align:center;}
+#histoire .placed img{width:100%;display:block;border-radius:8px;margin:6px 0 0;}
+#histoire .placed{display:block;}
+@media (min-width:620px){#blocs{grid-template-columns:repeat(3,1fr);}
+  #histoire{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;align-items:start;}
+  #histoire .vide{grid-column:1/-1;}}
+.bloc{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid rgba(200,146,42,.45);border-radius:10px;padding:12px 15px;margin-bottom:10px;font-family:'Nunito',sans-serif;font-size:1rem;line-height:1.55;color:var(--ink);cursor:pointer;transition:all .18s;}
+.bloc:hover{border-color:var(--gold);background:rgba(200,146,42,.06);}
+.bloc.used{display:none;}
+.bloc.shake{animation:shk .35s;border-color:var(--red);}
+@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+#doneBox{display:none;margin-top:18px;text-align:center;}
+#doneBox .msg{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.1rem;font-weight:700;color:var(--green);margin-bottom:12px;}
+.btn-g2{background:var(--gold);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;margin:0 5px;}
+.btn-g2:hover{background:#b07820;}
+.btn-o2{background:none;border:1.5px solid rgba(200,146,42,.5);color:var(--sepia);border-radius:10px;padding:12px 24px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;margin:0 5px;}
+.btn-o2:hover{background:rgba(200,146,42,.1);}
+
+/* ── STATS ── */
+#statsPanel{display:none;position:fixed;inset:0;background:rgba(28,18,8,.75);z-index:60;align-items:center;justify-content:center;}
+#statsPanel.show{display:flex;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+#statsBox{background:var(--cream);border:2px solid var(--gold);border-radius:14px;padding:26px 30px;max-width:440px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+#statsBox h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;font-weight:700;color:var(--sepia);margin-bottom:4px;}
+.s-sub{font-size:0.72rem;color:var(--sepia);opacity:.55;margin-bottom:14px;display:block;}
+.srow{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(200,146,42,.14);}
+.srow:last-child{border-bottom:none;}
+.srow-name{font-size:.82rem;font-weight:700;color:var(--sepia);}
+.scol{text-align:center;}
+.slbl{font-size:0.72rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.08em;}
+.sval{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.9rem;font-weight:700;color:var(--gold);}
+.sval.green{color:var(--green);}
+.sa{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;}
+.btn-sm{padding:6px 14px;border-radius:6px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;}
+.btn-ol{background:none;border:1.5px solid rgba(200,146,42,.5);color:var(--sepia);}
+.btn-g{background:var(--gold);color:white;border:none;}
+.no-stats{font-size:.85rem;color:var(--sepia);opacity:.6;font-style:italic;text-align:center;padding:14px 0;}
+
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(10px);color:white;background:#2d6a4f;padding:10px 22px;border-radius:8px;font-size:.86rem;font-weight:700;opacity:0;transition:all .25s;z-index:300;pointer-events:none;font-family:'Atkinson Hyperlegible',sans-serif;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+.confetti{position:fixed;top:-14px;width:10px;height:14px;z-index:70;pointer-events:none;animation:cfall linear forwards;}
+@keyframes cfall{to{transform:translateY(105vh) rotate(720deg);opacity:.9;}}
+
+/* Sortie de secours : toujours un moyen de revenir au catalogue. */
+.jdc-retour{display:block;text-align:center;padding:8px;font-size:.74rem;
+  color:#5c3d1e;opacity:.55;text-decoration:none;letter-spacing:.1em;
+  text-transform:uppercase;font-family:'Nunito',sans-serif;}
+.jdc-retour:hover{opacity:1;}
+@media print{.jdc-retour{display:none;}}
+
+/* Pied discret : le lien légal doit exister sur chaque page du site. */
+.jdc-legal{text-align:center;padding:16px 14px 22px;font-size:.78rem;line-height:1.6;
+  color:#5c3d1e;opacity:.6;font-family:'Nunito',sans-serif;}
+.jdc-legal a{color:inherit;}
+@media print{.jdc-legal{display:none;}}
+
+/* Une image posée peut être reprise : seule la dernière, pour ne pas casser l'ordre. */
+.placed.reprenable{cursor:pointer;position:relative;}
+.placed.reprenable:hover,.placed.reprenable:focus{outline:2px solid var(--gold,#c8922a);outline-offset:2px;}
+.placed .retirer{position:absolute;top:-7px;right:-7px;width:24px;height:24px;border-radius:50%;
+  background:#5c3d1e;color:#fff;font-size:15px;font-weight:700;line-height:24px;text-align:center;
+  box-shadow:0 2px 6px rgba(0,0,0,.3);}
+
+/* Le nom de la séquence en cours : on doit savoir ce qu'on est en train de montrer. */
+.imprimer{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.86rem;line-height:1.5;color:var(--sepia);opacity:.8;text-align:center;margin:14px 0 0;}
+.imprimer a{color:var(--sepia);text-underline-offset:3px;display:inline-block;padding:15px 16px;}.imprimer-note{display:inline-block;margin-top:-6px;}
+.titre-hist{text-align:center;font-weight:700;font-size:1.06rem;color:#5c3d1e;margin:2px 0 10px;}
+</style>
+<style id="jdc-apropos-style">
+/* Bloc « À propos » : replié par défaut, lu en entier par les moteurs.
+   Couleurs écrites en dur · chaque jeu a ses propres variables CSS. */
+.jdc-apropos{max-width:680px;margin:28px auto 8px;padding:0 16px;
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;color:#5c3d1e;}
+.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;
+  letter-spacing:.02em;opacity:.62;padding:9px 0;text-align:center;
+  border-top:1px solid rgba(92,61,30,.16);}
+.jdc-apropos>summary::-webkit-details-marker{display:none}
+.jdc-apropos>summary::after{content:' \203A';display:inline-block;
+  transform:rotate(90deg);margin-left:5px;opacity:.7}
+.jdc-apropos[open]>summary::after{transform:rotate(-90deg)}
+.jdc-apropos>summary:hover,.jdc-apropos>summary:focus-visible{opacity:.95}
+.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;
+  text-align:left;opacity:.9}
+.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:#5c3d1e;
+  font-weight:700}
+.jdc-apropos p{margin:0 0 10px}
+.jdc-apropos ul{margin:0 0 10px;padding-left:20px}
+.jdc-apropos li{margin-bottom:5px}
+.jdc-apropos a{color:#2d6a4f}
+.hc .jdc-apropos{color:#000}
+.hc .jdc-apropos h2{color:#000}
+.hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
+</style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Game",
+  "name": "Les lettres mêlées",
+  "url": "https://jardinsdecelestine.com/jeu_lettres",
+  "description": "Retrouver un mot dont les lettres sont mélangées, avec sa devinette. Des mots du quotidien d'autrefois. Jeu de langage gratuit, sans inscription.",
+  "inLanguage": "fr",
+  "isAccessibleForFree": true,
+  "genre": "Jeu de langage",
+  "audience": {
+    "@type": "Audience",
+    "audienceType": "Personnes âgées, aidants, orthophonistes, accueils de jour"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Les Jardins de Célestine",
+    "url": "https://jardinsdecelestine.com"
+  }
+}
+</script>
+
+<style id="jeux-du-livre">
+.et{background:var(--cream);border:2px solid rgba(92,61,30,.3);
+  border-radius:999px;padding:12px 20px;font:inherit;font-size:1.05rem;
+  color:var(--ink);cursor:pointer;min-height:48px;}
+.et:hover{border-color:var(--gold);}
+.et.tenu{border-color:var(--gold);background:#fff;
+  box-shadow:0 0 0 3px rgba(200,146,42,.45);}
+.et.pose{opacity:.28;cursor:default;box-shadow:none;}
+.zone-titre{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.74rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--sepia);
+  opacity:.7;margin:18px 0 8px;text-align:center;}
+
+/* LE PIED DE PAGE NE DOIT PAS S'INVITER AU MILIEU DU JEU.
+   Ces trois pages ont un contenu court : sans plancher, « Mentions
+   légales » remonte et se retrouve entre le jeu et la bande du bas,
+   là où l'œil cherche la suite. Le plancher le renvoie sous la ligne
+   de flottaison, où on ne le voit qu'en faisant défiler. */
+/* Le plancher est calculé pour que le pied passe SOUS la ligne de
+   flottaison, en-tête comprise. 68vh ne suffisait pas quand le jeu
+   tient peu de place : « Mentions légales » remontait entre les cases
+   et la bande du bas. Un filet du banc d'essai le vérifie maintenant,
+   page par page. */
+#game{min-height:calc(100vh - 100px);}
+/* Le titre de partie ne répète pas celui de la page : il ne sert
+   qu'aux jeux qui ont des thèmes. */
+.titre-hist:empty{display:none;}
+
+/* La bande du bas, celle qui garde les étiquettes sous la main. */
+#bande{position:fixed;left:0;right:0;bottom:0;z-index:50;
+  display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
+  background:var(--parchment);border-top:2px solid var(--gold);
+  box-shadow:0 -3px 12px var(--shadow);
+  padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));
+  max-height:30vh;overflow-y:auto;}
+#bande:empty{display:none;}
+#bande .titre-vrac{flex:0 0 100%;text-align:center;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:.72rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--sepia);
+  opacity:.7;margin-bottom:2px;}
+
+/* Les mots coupés en deux : la liste de ce qui est retrouvé. */
+#trouves{display:flex;flex-direction:column;gap:3px;}
+.lgn{display:flex;align-items:baseline;gap:10px;min-height:46px;
+  padding:7px 8px;border-bottom:1px dotted rgba(92,61,30,.3);
+  font-size:1.08rem;line-height:1.5;}
+.lgn .n{flex:0 0 22px;font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:.78rem;color:var(--sepia);opacity:.65;}
+.lgn .vide{flex:1 1 auto;border-bottom:2px dotted var(--sepia);
+  min-height:20px;}
+.lgn.fait{background:rgba(45,106,79,.08);border-radius:8px;}
+.lgn.fait .mot{flex:1 1 auto;font-weight:700;color:var(--green);}
+
+/* Les lettres mêlées : la définition, puis les cases.
+   LA LARGEUR DES CASES SUIT LA LONGUEUR DU MOT. À sept lettres, des
+   cases fixes de 46 px débordent d'un écran de 390 et la dernière
+   tombe seule sur une deuxième ligne, ce qui donne un mot bancal.
+   La variable --n est posée en JavaScript au moment où le mot
+   s'affiche, et la case se calcule : plus le mot est long, plus la
+   case est étroite, avec un plancher de 30 px pour rester lisible. */
+.defi{background:var(--cream);border:2px solid rgba(200,146,42,.5);
+  border-radius:14px;padding:16px 18px;font-size:1.12rem;line-height:1.5;
+  text-align:center;}
+#cases{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;
+  margin:18px 0 4px;--n:6;}
+.cas{width:max(30px,min(46px,calc((100vw - 42px - (var(--n) - 1) * 6px)
+  / var(--n))));height:auto;aspect-ratio:3 / 4;min-height:44px;
+  max-height:58px;border:2px solid rgba(92,61,30,.3);
+  border-radius:10px;background:var(--cream);display:flex;
+  align-items:center;justify-content:center;
+  font-size:clamp(1.05rem,4.4vw,1.5rem);
+  font-weight:700;color:var(--ink);}
+.cas.pleine{border-color:var(--green);background:rgba(45,106,79,.1);
+  color:var(--green);}
+.cas.attend{border-color:var(--gold);box-shadow:0 0 0 3px
+  rgba(200,146,42,.25);}
+
+/* Le mot de trop : quatre grandes tuiles. */
+#quatre{display:flex;flex-direction:column;gap:12px;margin-top:6px;}
+.tui{width:100%;min-height:62px;padding:16px 18px;background:var(--cream);
+  border:2px solid rgba(92,61,30,.3);border-radius:14px;font:inherit;
+  font-size:1.22rem;color:var(--ink);cursor:pointer;text-align:center;}
+.tui:hover{border-color:var(--gold);}
+.tui.parti{border-color:var(--green);background:rgba(45,106,79,.12);
+  color:var(--green);font-weight:700;}
+.raison{margin-top:14px;text-align:center;font-size:1.02rem;
+  color:var(--green);min-height:28px;}
+
+/* La commission : le papier, le rayon, le contenant.
+   LE PAPIER A L'AIR D'UN PAPIER, pas d'un énoncé : c'est ce qui dit
+   d'un coup d'œil que la liste appartient à quelqu'un d'autre. */
+.papier{background:#fffdf5;border:1px solid rgba(92,61,30,.25);
+  border-radius:4px;box-shadow:0 2px 10px var(--shadow);
+  padding:10px 18px;margin:2px auto 0;max-width:330px;
+  transform:rotate(-.6deg);}
+.papier ul{list-style:none;margin:0;padding:0;}
+.papier li{padding:9px 0 9px 26px;border-bottom:1px dotted
+  rgba(92,61,30,.25);font-size:1.12rem;position:relative;}
+.papier li:last-child{border-bottom:none;}
+.papier li::before{content:'·';position:absolute;left:8px;
+  color:var(--gold);font-weight:700;}
+.papier .entete{font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--sepia);opacity:.75;text-align:center;margin-bottom:4px;}
+#rayon{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
+  margin-top:6px;}
+.art{background:var(--cream);border:2px solid rgba(92,61,30,.3);
+  border-radius:999px;padding:10px 15px;font:inherit;font-size:.98rem;
+  color:var(--ink);cursor:pointer;min-height:46px;}
+.art:hover{border-color:var(--gold);}
+
+/* LA LISTE RESTE SOUS LES YEUX, À CREUX.
+   Flo, le 11 octobre : « garder la liste de départ, pas sous forme de
+   on ajoute dans un espace, mais bien garder la liste comme ça. Au
+   lieu d'avoir les 2 sur 6 : en fait les 2 sur 6 apparaissent
+   directement puisqu'on a la liste sous les yeux. »
+   C'est la forme des proverbes incomplets, appliquée ici : une liste
+   à trous qui se remplit, et le compte se lit à l'œil. */
+.lgn-l{display:flex;align-items:baseline;gap:10px;width:100%;
+  min-height:44px;padding:7px 4px 7px 8px;background:none;border:none;
+  border-bottom:1px dotted rgba(92,61,30,.25);font:inherit;
+  font-size:1.08rem;color:var(--ink);text-align:left;cursor:pointer;
+  border-radius:8px;}
+.lgn-l:last-of-type{border-bottom:none;}
+.lgn-l:hover{background:rgba(200,146,42,.10);}
+.lgn-l .pt{flex:0 0 10px;color:var(--gold);font-weight:700;}
+.lgn-l .txt{flex:1 1 auto;min-width:0;overflow-wrap:break-word;}
+.lgn-l .creux{display:inline-block;min-width:120px;
+  border-bottom:2px dotted var(--sepia);}
+.lgn-l.indice .txt{color:var(--sepia);}
+.lgn-l.montre .txt{color:var(--sepia);opacity:.75;font-style:italic;}
+.lgn-l.fait{background:rgba(45,106,79,.09);}
+.lgn-l.fait .txt{color:var(--green);font-weight:700;}
+
+/* Tout y est ? : le petit texte, les vignettes, et ce qu'on met de
+   côté. Le texte RESTE à l'écran du début à la fin : ici on ne
+   demande pas de retenir, on demande de comprendre. */
+.recit{background:#fffdf5;border:1px solid rgba(92,61,30,.25);
+  border-left:4px solid var(--gold);border-radius:4px;
+  box-shadow:0 2px 10px var(--shadow);padding:15px 17px;margin:2px 0 4px;
+  font-size:1.08rem;line-height:1.55;}
+#choses{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+  margin-top:6px;}
+.vig{padding:0;background:var(--cream);border:2px solid
+  rgba(92,61,30,.3);border-radius:14px;cursor:pointer;overflow:hidden;
+  aspect-ratio:1 / 1;}
+.vig img{width:100%;height:100%;object-fit:cover;display:block;}
+.vig:hover{border-color:var(--gold);}
+.vig.souffle{border-color:var(--gold);
+  box-shadow:0 0 0 4px rgba(200,146,42,.5);}
+#decote{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
+  min-height:58px;padding:8px;background:rgba(45,106,79,.07);
+  border:2px dashed rgba(45,106,79,.35);border-radius:12px;}
+#decote:empty::before{content:attr(data-vide);color:var(--sepia);
+  opacity:.65;font-size:.95rem;align-self:center;}
+#decote img{width:52px;height:52px;object-fit:cover;border-radius:9px;
+  border:2px solid rgba(45,106,79,.45);}
+
+/* Le message qui passe : la règle héritée tient sur une ligne, nos
+   messages sont des phrases entières. */
+#toast{white-space:normal;max-width:calc(100vw - 32px);text-align:center;
+  line-height:1.4;}
+</style>
+</head>
+<body>
+
+<a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
+<header>
+  <h1 id="mainTitle">Les lettres <em>mêlées</em></h1>
+  <p>Les lettres se sont mises en désordre</p>
+  <div class="divider"></div>
+</header>
+
+<div id="menu">
+  <div class="demande">
+    <p class="dit">«&nbsp;Je sais très bien ce que c’est. C’est l’écrire dans le bon ordre qui me joue des tours.&nbsp;»</p>
+  </div>
+  <p class="hint">Cinq mots par partie, chacun avec sa devinette. Le jeu ne vous les remontrera pas de sitôt.</p>
+  <div id="histList"></div>
+  <div id="suggestion"></div>
+</div>
+
+<div id="game">
+  <div id="hud">
+    <button id="backBtn" onclick="backMenu()">↩ Revenir au début</button>
+    <span class="prog"><span id="progNow">0</span> /
+      <span id="progTot">0</span> <span id="progQuoi"></span></span>
+  </div>
+
+  <p id="titreHist" class="titre-hist"></p>
+  <p class="hint" id="consigne"></p>
+
+
+  <p class="defi" id="defi"></p>
+  <div id="cases"></div>
+  <p style="text-align:center;margin-top:6px">
+    <button class="btn-o2" id="pouce" onclick="coupDePouce()">Un coup de
+      pouce</button></p>
+  <div id="bande"></div>
+
+
+  <div id="doneBox">
+    <p class="msg" id="doneMsg">🎉 Bravo&nbsp;!</p>
+    <p id="doneQuoi"></p>
+    <p id="doneMot"></p>
+    <p style="margin-top:14px">
+      <button class="btn-g2" onclick="rejouer()">Cinq autres mots</button>
+      <button class="btn-o2" onclick="backMenu()">↩ Revenir au début</button>
+    </p>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const NOM = 'Les lettres mêlées';
+const CONSIGNE = 'Les lettres sont en bas, mélangées. Touchez-les dans l’ordre pour écrire le mot que la phrase décrit. Si vous séchez, le bouton en pose une.';
+
+
+// ═══════════════════════════════
+//   LES LETTRES MÊLÉES
+// ═══════════════════════════════
+const VIVIER = [{"m": "TULIPE", "d": "Une fleur qui sort au printemps, en forme de verre"}, {"m": "MUGUET", "d": "On en offre un brin le premier mai"}, {"m": "COQUELICOT", "d": "La fleur rouge qui pousse dans les blés"}, {"m": "GLYCINE", "d": "Elle grimpe sur les murs et fleurit en grappes mauves"}, {"m": "NOISETTE", "d": "On la casse pour manger ce qu’il y a dedans"}, {"m": "CERISIER", "d": "L’arbre qu’on regarde fleurir avant d’y grimper"}, {"m": "POTAGER", "d": "Le coin du jardin où poussent les légumes"}, {"m": "ARROSOIR", "d": "On le remplit au robinet pour les tomates"}, {"m": "BRUYERE", "d": "Elle couvre les landes de violet à l’automne"}, {"m": "PLATANE", "d": "Le grand arbre des places de village"}, {"m": "GROSEILLE", "d": "Un petit fruit rouge en grappe, acide"}, {"m": "LAVANDE", "d": "On en met des sachets dans les armoires"}, {"m": "MARMITE", "d": "La grande casserole de la soupe du dimanche"}, {"m": "TORCHON", "d": "On s’en sert pour essuyer la vaisselle"}, {"m": "SALADIER", "d": "Le grand plat creux qu’on pose au milieu"}, {"m": "CAFETIERE", "d": "Elle siffle le matin"}, {"m": "BOUILLON", "d": "Ce qui reste quand le pot-au-feu a cuit"}, {"m": "CONFITURE", "d": "Des fruits et du sucre, en bocal"}, {"m": "PETRIR", "d": "Ce qu’on fait à la pâte avec les mains"}, {"m": "FOURCHETTE", "d": "À gauche de l’assiette"}, {"m": "TARTINE", "d": "Du pain, du beurre, et le café du matin"}, {"m": "GALETTE", "d": "On y cache une fève au mois de janvier"}, {"m": "POTAGE", "d": "La soupe du soir, en plus clair"}, {"m": "CHOCOLAT", "d": "On le casse en carrés, ou on le boit"}, {"m": "CHEMINEE", "d": "On s’y mettait tout près l’hiver"}, {"m": "PLACARD", "d": "On y range ce qui ne doit pas se voir"}, {"m": "ESCALIER", "d": "Il monte à l’étage, marche après marche"}, {"m": "VERROU", "d": "On le tire le soir avant de monter se coucher"}, {"m": "RIDEAU", "d": "On le tire aussi, mais devant la fenêtre"}, {"m": "GRENIER", "d": "La pièce du haut, celle des vieilles malles"}, {"m": "TABOURET", "d": "Une chaise sans dossier"}, {"m": "BUFFET", "d": "Le grand meuble de la salle à manger"}, {"m": "PENDULE", "d": "Elle sonne les heures dans le couloir"}, {"m": "LESSIVE", "d": "Le grand jour du linge, autrefois"}, {"m": "BALAI", "d": "Il va avec la pelle"}, {"m": "BOULANGER", "d": "Il se lève quand les autres dorment encore"}, {"m": "MENUISIER", "d": "Il travaille le bois et sent bon la sciure"}, {"m": "FACTEUR", "d": "On guettait son vélo au bout du chemin"}, {"m": "MARCHE", "d": "Le mardi matin, sur la place"}, {"m": "EPICERIE", "d": "La petite boutique où l’on trouvait de tout"}, {"m": "MOISSON", "d": "Le gros travail du mois d’août"}, {"m": "VENDANGE", "d": "Le gros travail du mois de septembre"}, {"m": "CHARRETTE", "d": "Le cheval devant, le foin dedans"}, {"m": "LAVOIR", "d": "On y battait le linge, et on y parlait"}, {"m": "CLOCHER", "d": "On le voit de loin quand on rentre"}, {"m": "FORGERON", "d": "Il ferrait les chevaux"}, {"m": "COUTURIERE", "d": "Elle avait toujours des épingles à la bouche"}, {"m": "BOUILLOTTE", "d": "On la glissait au fond du lit"}, {"m": "LAMPION", "d": "On en accrochait pour le bal du village"}, {"m": "BRODERIE", "d": "De l’aiguille, du fil, et de la patience"}, {"m": "ARDOISE", "d": "On y écrivait à la craie, à l’école"}, {"m": "ENCRIER", "d": "Il était creusé dans le pupitre"}, {"m": "CARTABLE", "d": "On le portait sur le dos pour aller en classe"}, {"m": "BILLE", "d": "On y jouait dans la cour, à genoux"}, {"m": "TOUPIE", "d": "Elle tourne tant qu’elle tient debout"}, {"m": "MOULIN", "d": "Ses ailes tournent avec le vent"}, {"m": "BERCEAU", "d": "Le premier lit"}, {"m": "PARAPLUIE", "d": "On l’oublie toujours quelque part"}, {"m": "BRETELLES", "d": "Elles tiennent le pantalon"}, {"m": "ORAGE", "d": "Le ciel gronde et la pluie arrive"}, {"m": "BROUILLARD", "d": "On ne voit pas le bout du pré"}, {"m": "GELEE", "d": "Le matin, l’herbe est blanche"}, {"m": "AVERSE", "d": "Une pluie qui tombe fort et s’arrête"}, {"m": "DIMANCHE", "d": "Le jour du rôti et de la promenade"}, {"m": "PRINTEMPS", "d": "La saison des bourgeons"}, {"m": "AUTOMNE", "d": "La saison des feuilles et des champignons"}, {"m": "TOUSSAINT", "d": "On va fleurir les tombes"}, {"m": "NOEL", "d": "La messe de minuit et la bûche"}];
+const PAR_PARTIE = 5;
+
+/* LA TOURNÉE, comme pour les proverbes. Le vivier est mélangé une
+   fois, rangé dans le navigateur avec un curseur, et chaque partie
+   avance le curseur : on voit tous les mots avant d'en revoir un. Un
+   navigateur qui refuse son stockage joue quand même, au hasard. */
+const CLE = 'jdc-lettres-tournee-v1';
+
+function melange(a){
+  const d = a.slice();
+  for (let i = d.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    const g = d[i]; d[i] = d[j]; d[j] = g;
+  }
+  return d;
+}
+
+function litTournee(){
+  try {
+    const brut = localStorage.getItem(CLE);
+    if (brut) {
+      const t = JSON.parse(brut);
+      if (t && Array.isArray(t.ordre) && t.ordre.length === VIVIER.length
+          && typeof t.i === 'number') return t;
+    }
+  } catch(e){}
+  return {ordre: melange(VIVIER.map(function(_, i){ return i; })), i: 0};
+}
+
+function ecritTournee(t){
+  try { localStorage.setItem(CLE, JSON.stringify(t)); } catch(e){}
+}
+
+function prochains(n){
+  let t = litTournee();
+  if (t.i + n > t.ordre.length) {
+    t = {ordre: melange(VIVIER.map(function(_, i){ return i; })), i: 0};
+  }
+  const pris = t.ordre.slice(t.i, t.i + n).map(function(k){
+    return VIVIER[k]; });
+  t.i += n;
+  ecritTournee(t);
+  return pris;
+}
+
+/* LA CASSE AIDE À DÉMARRER.
+   Flo, le 11 octobre : « je serais d'accord de le simplifier en
+   mettant la première lettre du mot en majuscule et en laissant les
+   autres en minuscule, pour savoir déjà par quelle lettre on commence
+   quand on sait pas quel mot on cherche. »
+
+   Tout était en capitales, donc rien ne disait par où commencer. Les
+   données restent en capitales (c'est sur elles qu'on compare, et
+   rien ne doit bouger de ce côté) : SEUL L'AFFICHAGE change.
+
+   Quand l'initiale revient ailleurs dans le mot, les deux pastilles
+   sont en majuscule : avec TOUSSAINT on voit deux T, et on sait que
+   le mot commence par l'un des deux. Douze mots sur soixante-huit
+   sont dans ce cas. */
+function casse(lettre, mot){
+  return lettre === mot[0] ? lettre : lettre.toLowerCase();
+}
+
+function joli(mot){
+  return mot[0] + mot.slice(1).toLowerCase();
+}
+
+let jeu = [];       // les mots de la partie
+let courant = 0;    // le mot en cours
+let posees = [];    // les lettres déjà placées, dans l'ordre
+let vrac = [];      // les lettres encore en vrac
+let faits = 0;
+
+function buildMenu(){
+  document.getElementById('histList').innerHTML =
+      '<button class="h-card" onclick="start()">'
+    + '<span class="ht">Commencer</span><br>'
+    + '<span class="hs">une devinette, des lettres mélangées</span></button>';
+}
+
+function start(){
+  jeu = prochains(PAR_PARTIE);
+  courant = 0; faits = 0;
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('game').style.display = 'block';
+  document.getElementById('doneBox').style.display = 'none';
+  document.getElementById('titreHist').textContent = '';
+  document.getElementById('consigne').textContent = CONSIGNE;
+  document.getElementById('progTot').textContent = jeu.length;
+  document.getElementById('progQuoi').textContent = 'mots';
+  prepare();
+  dessiner();
+  window.scrollTo(0, 0);
+}
+
+/* Le mélange doit MÉLANGER : si le hasard rend les lettres dans
+   l'ordre du mot, il n'y a plus de jeu. On retire tant que c'est le
+   cas, et on s'arrête au bout de quelques essais pour les mots dont
+   toutes les lettres sont identiques (il n'y en a pas, mais une
+   boucle sans sortie est une boucle qui tourne un jour). */
+function prepare(){
+  const lettres = jeu[courant].m.split('');
+  let d = lettres, n = 0;
+  do { d = melange(lettres); n++; }
+  while (n < 40 && d.join('') === lettres.join(''));
+  vrac = d; posees = [];
+}
+
+function dessiner(){
+  const mot = jeu[courant].m;
+  document.getElementById('defi').textContent = jeu[courant].d;
+  /* La largeur d'une case se calcule à partir du nombre de lettres :
+     sept cases fixes de 46 px débordent d'un écran de 390. */
+  const boite = document.getElementById('cases');
+  boite.style.setProperty('--n', mot.length);
+  boite.innerHTML = mot.split('')
+    .map(function(_, i){
+      const l = posees[i];
+      return '<span class="cas' + (l ? ' pleine' : '')
+           + (i === posees.length ? ' attend' : '') + '">'
+           + (l ? (i === 0 ? l : l.toLowerCase()) : '') + '</span>';
+    }).join('');
+
+  const b = document.getElementById('bande');
+  b.innerHTML = vrac.length
+    ? '<span class="titre-vrac">Les lettres, en vrac</span>'
+      + vrac.map(function(l, k){
+          return '<button class="et" onclick="clicLettre(' + k + ')">'
+               + casse(l, mot) + '</button>';
+        }).join('')
+    : '';
+  document.body.style.paddingBottom =
+    (b.offsetHeight ? b.offsetHeight + 18 : 0) + 'px';
+  document.getElementById('progNow').textContent = faits;
+}
+
+/* ON COMPARE LA LETTRE, PAS SA PLACE DANS LE VRAC.
+   « ASSIETTE » a trois E et deux S : prendre le bon caractère dans la
+   mauvaise pastille doit marcher. */
+function clicLettre(k){
+  const mot = jeu[courant].m;
+  const attendue = mot[posees.length];
+  if (vrac[k] === attendue) {
+    posees.push(vrac[k]);
+    vrac.splice(k, 1);
+    if (posees.length === mot.length) {
+      faits++;
+      if (faits === jeu.length) { dessiner(); win(); return; }
+      courant++;
+      prepare();
+      toast('C’est bien ' + mot.toLowerCase() + '. Au suivant.');
+    }
+    dessiner();
+    return;
+  }
+  toast(posees.length
+        ? 'Pas encore celle-là. Quelle lettre vient après « '
+          + posees[posees.length - 1] + ' » ?'
+        : 'Ce n’est pas la première lettre du mot.');
+}
+
+/* Le coup de pouce du livre : la première lettre est donnée. Ici il
+   pose la prochaine lettre attendue, à la demande et sans compter. */
+function coupDePouce(){
+  const mot = jeu[courant].m;
+  const attendue = mot[posees.length];
+  const k = vrac.indexOf(attendue);
+  if (k < 0) return;
+  clicLettre(k);
+}
+
+function win(){
+  document.getElementById('doneQuoi').textContent =
+    'Toutes les lettres ont retrouvé leur place.';
+  document.getElementById('doneMot').textContent =
+    jeu.map(function(x){ return joli(x.m); }).join(' · ');
+  document.getElementById('doneBox').style.display = 'block';
+  try {
+    JDC.enregistrer('lettres', 1, true, {});
+    JDC.marquerVu('lettres', 'tournee');
+  } catch(e){}
+  confetti();
+  document.getElementById('doneBox').scrollIntoView({behavior: 'smooth'});
+}
+
+
+/* ─────────────────────────────────────────────────────────────────
+   LES DEUX BOUTONS DE LA TRAME, OUBLIÉS À LA PREMIÈRE ÉCRITURE
+   ─────────────────────────────────────────────────────────────────
+   Le gabarit du corps appelle backMenu() dans le bandeau et
+   rejouer() sous le Bravo, sur les cinq pages. Je ne les avais
+   définis nulle part : « Revenir au début » et « Une autre page »
+   lançaient une erreur et ne faisaient rien.
+
+   Le banc d'essai ne l'a pas vu parce qu'il jouait les parties
+   jusqu'au bout sans jamais toucher ces deux boutons-là. Flo l'a
+   trouvé en cinq minutes, en local. Deux filets sont nés de là : le
+   script refuse maintenant une page dont un onclick appelle une
+   fonction qui n'existe pas, et l'essai clique sur les deux boutons.
+
+   rejouer() appelle start() sans argument, et les deux jeux à thèmes
+   savent reprendre le thème en cours dans ce cas. */
+function backMenu(){
+  document.getElementById('game').style.display = 'none';
+  document.getElementById('menu').style.display = 'block';
+  document.getElementById('doneBox').style.display = 'none';
+  document.body.style.paddingBottom = '';
+  const prog = document.querySelector('#hud .prog');
+  if (prog) prog.style.display = '';
+  window.scrollTo(0, 0);
+}
+
+function rejouer(){ start(); }
+
+buildMenu();
+
+// ═══════════════════════════════
+//   REPRIS MOT POUR MOT DE « VOUS ME MONTREZ ? »
+// ═══════════════════════════════
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function confetti(){
+  const colors = ['#c8922a','#2d6a4f','#6b4c2a','#3a6ea5','#6b4c2a'];
+  for(let i = 0; i < 60; i++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDuration = (2 + Math.random() * 2) + 's';
+    c.style.animationDelay = (Math.random() * .8) + 's';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 5000);
+  }
+}
+</script>
+
+<details class="jdc-apropos">
+<summary>À propos de ce jeu</summary>
+<div class="corps">
+<p><strong>Les lettres mêlées</strong> · Les lettres d’un mot se sont mises en désordre : on les remet dans l’ordre, avec une devinette pour aider.</p>
+<h2>Ce que ce jeu n’est pas</h2>
+<p>Il n’y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne se compte et rien ne se ferme : on peut recommencer autant de fois qu’on veut. Ce jeu est une activité de loisir. Ce n’est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
+<h2>Qui le propose</h2>
+<p>Les Jardins de Célestine, un projet d’habitat partagé pour personnes atteintes de maladies neurodégénératives, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="projet.html">Découvrir le projet</a> · <a href="jeux.html">Voir tous les jeux</a>.</p>
+</div>
+</details>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+  <span aria-hidden="true"> · </span>
+  <a href="signaler.html?jeu=Les%20lettres%20mêlées&amp;p=jeu_lettres" target="_blank" rel="noopener">Signaler un problème</a>
+</footer>
+</body>
+</html>

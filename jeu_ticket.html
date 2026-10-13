@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Le ticket effacé · retrouver le poids, le prix ou la somme · Les Jardins de Célestine</title>
+<meta name="robots" content="index, follow">
+<meta name="description" content="Des tickets de marché dont une case a pâli : retrouver la somme payée, le poids ou le prix du kilo. Un calcul concret. Jeu gratuit, sans inscription, et la fiche à imprimer.">
+<link rel="canonical" href="https://jardinsdecelestine.com/jeu_ticket">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="jdc-parcours.js"></script>
+<style>
+:root {
+  --cream:#f7f3ea; --parchment:#eee8d5; --ink:#1c1208;
+  --sepia:#5c3d1e; --gold:#c8922a; --green:#2d6a4f;
+  --red:#6b4c2a; --shadow:rgba(28,18,8,0.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{
+  background:var(--parchment);
+  background-image:
+    radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.08) 0%,transparent 55%),
+    radial-gradient(ellipse at 85% 90%,rgba(45,106,79,.06) 0%,transparent 55%);
+  min-height:100vh; font-family:'Nunito',sans-serif;
+  color:var(--ink); user-select:none; -webkit-user-select:none;
+}
+
+header{text-align:center;padding:16px 20px 10px;border-bottom:1px solid rgba(200,146,42,.2);position:relative;}
+header h1{font-family:'Atkinson Hyperlegible',sans-serif;font-size:clamp(1.3rem,3vw,1.9rem);font-weight:700;color:var(--sepia);cursor:default;}
+header h1 em{color:var(--gold);font-style:normal;}
+header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-top:3px;}
+.divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:6px auto 0;}
+#statsBtn{display:none;position:absolute;top:14px;right:16px;background:none;border:1.5px solid rgba(200,146,42,.4);border-radius:6px;padding:4px 10px;font-family:'Nunito',sans-serif;font-size:.75rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+#statsBtn:hover{background:rgba(200,146,42,.1);}
+
+/* ── MENU ── */
+#menu{max-width:600px;margin:34px auto;padding:0 20px;}
+#menu h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.15rem;color:var(--sepia);text-align:center;margin-bottom:8px;}
+#menu .hint{text-align:center;font-size:.92rem;color:var(--sepia);opacity:.75;margin-bottom:20px;}
+.h-card{display:block;width:100%;text-align:left;background:var(--cream);border:1.5px solid rgba(200,146,42,.35);border-radius:14px;padding:18px 22px;margin-bottom:14px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s;}
+.h-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 22px var(--shadow);}
+.h-card .ht{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.08rem;font-weight:700;color:var(--sepia);}
+.h-card .hs{font-size:.82rem;color:var(--sepia);opacity:.65;margin-top:2px;}
+.badge-new{display:inline-block;background:var(--green);color:#fff;font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;}
+.badge-vu{display:inline-block;background:rgba(92,61,30,.12);color:var(--sepia);font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;}
+#suggestion{margin-top:14px;font-size:.86rem;color:var(--sepia);opacity:.8;font-style:italic;text-align:center;}
+
+/* ── JEU ── */
+#game{display:none;max-width:680px;margin:0 auto;padding:14px 18px 40px;}
+#hud{display:flex;justify-content:space-between;align-items:center;padding:4px 2px 12px;font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;color:var(--sepia);font-size:.92rem;}
+#hud .prog{color:var(--green);}
+#backBtn{background:none;border:1.5px solid rgba(200,146,42,.45);border-radius:8px;padding:5px 12px;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+#backBtn:hover{background:rgba(200,146,42,.1);}
+
+.zone-titre{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--sepia);opacity:.6;margin:10px 0 8px;}
+
+#histoire{background:var(--cream);border:1.5px solid rgba(45,106,79,.35);border-radius:14px;padding:14px 16px;min-height:70px;box-shadow:0 6px 20px var(--shadow);}
+#histoire .placed{background:#e9f2ec;border:1.5px solid rgba(45,106,79,.4);border-radius:10px;padding:11px 14px;margin-bottom:9px;font-size:1rem;line-height:1.55;color:var(--ink);animation:pop .3s ease;}
+#histoire .placed:last-child{margin-bottom:0;}
+#histoire .placed .num{display:inline-block;background:var(--green);color:#fff;font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;font-size:.75rem;width:22px;height:22px;border-radius:50%;text-align:center;line-height:22px;margin-right:8px;}
+#histoire .vide{font-size:.9rem;color:var(--sepia);opacity:.5;font-style:italic;text-align:center;padding:10px 0;}
+@keyframes pop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+
+#blocs{margin-top:6px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.demande{background:var(--cream);border-left:4px solid var(--green);border-radius:12px;padding:14px 16px;margin:0 0 14px;}
+.demande .dit{font-size:1.04rem;line-height:1.6;color:var(--ink);margin:0;font-style:italic;}
+.bloc img{width:100%;display:block;border-radius:8px;margin-bottom:8px;}
+.bloc .lib{display:block;font-size:.95rem;line-height:1.4;text-align:center;}
+#histoire .placed img{width:100%;display:block;border-radius:8px;margin:6px 0 0;}
+#histoire .placed{display:block;}
+@media (min-width:620px){#blocs{grid-template-columns:repeat(3,1fr);}
+  #histoire{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;align-items:start;}
+  #histoire .vide{grid-column:1/-1;}}
+.bloc{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid rgba(200,146,42,.45);border-radius:10px;padding:12px 15px;margin-bottom:10px;font-family:'Nunito',sans-serif;font-size:1rem;line-height:1.55;color:var(--ink);cursor:pointer;transition:all .18s;}
+.bloc:hover{border-color:var(--gold);background:rgba(200,146,42,.06);}
+.bloc.used{display:none;}
+.bloc.shake{animation:shk .35s;border-color:var(--red);}
+@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+#doneBox{display:none;margin-top:18px;text-align:center;}
+#doneBox .msg{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.1rem;font-weight:700;color:var(--green);margin-bottom:12px;}
+.btn-g2{background:var(--gold);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;margin:0 5px;}
+.btn-g2:hover{background:#b07820;}
+.btn-o2{background:none;border:1.5px solid rgba(200,146,42,.5);color:var(--sepia);border-radius:10px;padding:12px 24px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;margin:0 5px;}
+.btn-o2:hover{background:rgba(200,146,42,.1);}
+
+/* ── STATS ── */
+#statsPanel{display:none;position:fixed;inset:0;background:rgba(28,18,8,.75);z-index:60;align-items:center;justify-content:center;}
+#statsPanel.show{display:flex;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+#statsBox{background:var(--cream);border:2px solid var(--gold);border-radius:14px;padding:26px 30px;max-width:440px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+#statsBox h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;font-weight:700;color:var(--sepia);margin-bottom:4px;}
+.s-sub{font-size:0.72rem;color:var(--sepia);opacity:.55;margin-bottom:14px;display:block;}
+.srow{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(200,146,42,.14);}
+.srow:last-child{border-bottom:none;}
+.srow-name{font-size:.82rem;font-weight:700;color:var(--sepia);}
+.scol{text-align:center;}
+.slbl{font-size:0.72rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.08em;}
+.sval{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.9rem;font-weight:700;color:var(--gold);}
+.sval.green{color:var(--green);}
+.sa{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;}
+.btn-sm{padding:6px 14px;border-radius:6px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;}
+.btn-ol{background:none;border:1.5px solid rgba(200,146,42,.5);color:var(--sepia);}
+.btn-g{background:var(--gold);color:white;border:none;}
+.no-stats{font-size:.85rem;color:var(--sepia);opacity:.6;font-style:italic;text-align:center;padding:14px 0;}
+
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(10px);color:white;background:#2d6a4f;padding:10px 22px;border-radius:8px;font-size:.86rem;font-weight:700;opacity:0;transition:all .25s;z-index:300;pointer-events:none;font-family:'Atkinson Hyperlegible',sans-serif;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+.confetti{position:fixed;top:-14px;width:10px;height:14px;z-index:70;pointer-events:none;animation:cfall linear forwards;}
+@keyframes cfall{to{transform:translateY(105vh) rotate(720deg);opacity:.9;}}
+
+/* Sortie de secours : toujours un moyen de revenir au catalogue. */
+.jdc-retour{display:block;text-align:center;padding:8px;font-size:.74rem;
+  color:#5c3d1e;opacity:.55;text-decoration:none;letter-spacing:.1em;
+  text-transform:uppercase;font-family:'Nunito',sans-serif;}
+.jdc-retour:hover{opacity:1;}
+@media print{.jdc-retour{display:none;}}
+
+/* Pied discret : le lien légal doit exister sur chaque page du site. */
+.jdc-legal{text-align:center;padding:16px 14px 22px;font-size:.78rem;line-height:1.6;
+  color:#5c3d1e;opacity:.6;font-family:'Nunito',sans-serif;}
+.jdc-legal a{color:inherit;}
+@media print{.jdc-legal{display:none;}}
+
+/* Une image posée peut être reprise : seule la dernière, pour ne pas casser l'ordre. */
+.placed.reprenable{cursor:pointer;position:relative;}
+.placed.reprenable:hover,.placed.reprenable:focus{outline:2px solid var(--gold,#c8922a);outline-offset:2px;}
+.placed .retirer{position:absolute;top:-7px;right:-7px;width:24px;height:24px;border-radius:50%;
+  background:#5c3d1e;color:#fff;font-size:15px;font-weight:700;line-height:24px;text-align:center;
+  box-shadow:0 2px 6px rgba(0,0,0,.3);}
+
+/* Le nom de la séquence en cours : on doit savoir ce qu'on est en train de montrer. */
+.imprimer{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.86rem;line-height:1.5;color:var(--sepia);opacity:.8;text-align:center;margin:14px 0 0;}
+.imprimer a{color:var(--sepia);text-underline-offset:3px;display:inline-block;padding:15px 16px;}.imprimer-note{display:inline-block;margin-top:-6px;}
+.titre-hist{text-align:center;font-weight:700;font-size:1.06rem;color:#5c3d1e;margin:2px 0 10px;}
+</style>
+<style id="jdc-apropos-style">
+/* Bloc « À propos » : replié par défaut, lu en entier par les moteurs.
+   Couleurs écrites en dur · chaque jeu a ses propres variables CSS. */
+.jdc-apropos{max-width:680px;margin:28px auto 8px;padding:0 16px;
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;color:#5c3d1e;}
+.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;
+  letter-spacing:.02em;opacity:.62;padding:9px 0;text-align:center;
+  border-top:1px solid rgba(92,61,30,.16);}
+.jdc-apropos>summary::-webkit-details-marker{display:none}
+.jdc-apropos>summary::after{content:' \203A';display:inline-block;
+  transform:rotate(90deg);margin-left:5px;opacity:.7}
+.jdc-apropos[open]>summary::after{transform:rotate(-90deg)}
+.jdc-apropos>summary:hover,.jdc-apropos>summary:focus-visible{opacity:.95}
+.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;
+  text-align:left;opacity:.9}
+.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:#5c3d1e;
+  font-weight:700}
+.jdc-apropos p{margin:0 0 10px}
+.jdc-apropos ul{margin:0 0 10px;padding-left:20px}
+.jdc-apropos li{margin-bottom:5px}
+.jdc-apropos a{color:#2d6a4f}
+.hc .jdc-apropos{color:#000}
+.hc .jdc-apropos h2{color:#000}
+.hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
+</style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Game",
+  "name": "Le ticket effacé",
+  "url": "https://jardinsdecelestine.com/jeu_ticket",
+  "description": "Des tickets de marché dont une case a pâli. On retrouve la somme payée, le poids ou le prix du kilo à partir des deux autres.",
+  "inLanguage": "fr",
+  "isAccessibleForFree": true,
+  "genre": "Jeu de calcul du quotidien",
+  "audience": {
+    "@type": "Audience",
+    "audienceType": "Personnes âgées, aidants, orthophonistes, accueils de jour"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Les Jardins de Célestine",
+    "url": "https://jardinsdecelestine.com"
+  }
+}
+</script>
+
+<style id="ticket">
+#tickets{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;}
+.tk{width:168px;background:#faf8f4;border:1px solid rgba(92,61,30,.45);
+  border-radius:3px;padding:10px 11px 12px;font-family:'Courier New',
+  monospace;font-size:.82rem;line-height:1.7;color:var(--ink);
+  cursor:pointer;text-align:left;box-shadow:0 1px 3px var(--shadow);}
+.tk .ens{display:block;font-size:.72rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--sepia);opacity:.75;}
+.tk .ou{display:block;font-weight:700;font-size:.86rem;
+  text-transform:uppercase;margin:1px 0 5px;}
+.tk .pes{display:block;margin-bottom:3px;}
+.tk .tt{display:flex;justify-content:space-between;font-weight:700;
+  border-top:1px dashed rgba(92,61,30,.5);padding-top:5px;margin-top:4px;
+  font-size:.9rem;}
+.tk.fait{background:rgba(45,106,79,.07);border-color:var(--green);}
+/* La case pâle : l'encre a bavé, elle n'a pas été découpée aux ciseaux. */
+.pale{display:inline-block;min-width:62px;background:#e9e2d5;
+  border-bottom:1px dotted var(--sepia);border-radius:3px;
+  text-align:center;color:#b3a692;}
+.tk.fait .pale{background:none;border-bottom:none;color:var(--green);
+  font-weight:700;}
+
+/* LES ÉTIQUETTES SONT COLLÉES EN BAS DE L'ÉCRAN.
+   Même raison que sur la page des proverbes, et c'est Flo qui l'a
+   signalée le 10 octobre : « c'est chiant de naviguer entre le jeu et
+   les réponses ». Le bandeau rétrécit à mesure qu'on pose, sa hauteur
+   est plafonnée, et le corps reçoit un creux de sa hauteur mesurée. */
+#etiquettes{position:fixed;left:0;right:0;bottom:0;z-index:50;
+  display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
+  background:var(--parchment);border-top:2px solid var(--gold);
+  box-shadow:0 -3px 12px var(--shadow);
+  padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));
+  max-height:34vh;overflow-y:auto;}
+#etiquettes:empty{display:none;}
+#etiquettes .titre-vrac{flex:0 0 100%;text-align:center;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:.72rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--sepia);
+  opacity:.7;margin-bottom:2px;}
+.et{background:var(--cream);border:2px solid rgba(92,61,30,.3);
+  border-radius:999px;padding:11px 18px;font:inherit;
+  font-family:'Courier New',monospace;font-size:.95rem;color:var(--ink);
+  cursor:pointer;min-height:46px;}
+.et:hover{border-color:var(--gold);}
+.et.tenu{border-color:var(--gold);background:#fff;
+  box-shadow:0 0 0 3px rgba(200,146,42,.45);}
+.et.pose{opacity:.3;cursor:default;box-shadow:none;}
+.zone-titre{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.74rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--sepia);
+  opacity:.7;margin:18px 0 8px;text-align:center;}
+/* La règle héritée met le message sur une seule ligne sans largeur
+   maximale : nos messages sont des phrases entières. */
+#toast{white-space:normal;max-width:calc(100vw - 32px);text-align:center;
+  line-height:1.4;}
+@media (max-width:420px){.tk{width:calc(50% - 6px);}}
+</style>
+</head>
+<body>
+
+<a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
+<header>
+  <h1 id="mainTitle">Le ticket <em>effacé</em></h1>
+  <p>Une case a pâli, les deux autres suffisent</p>
+  <div class="divider"></div>
+</header>
+
+<div id="menu">
+  <div class="demande">
+    <p class="dit">«&nbsp;J'ai laissé mes tickets dans la poche de mon
+       manteau, et le manteau est passé à la machine. L'encre a pâli par
+       endroits. Vous m'aidez à les relire&nbsp;?&nbsp;»</p>
+  </div>
+  <p class="hint">Sur chaque ticket, une case manque&nbsp;: tantôt la
+     somme payée, tantôt le poids, tantôt le prix du kilo. Les deux
+     autres suffisent à la retrouver.</p>
+  <div id="histList"></div>
+  <p class="imprimer"><a id="lienPdf" href="ticket-decouverte.pdf" download
+     target="_blank" rel="noopener">Imprimer la fiche (PDF)</a><br>
+     <span class="imprimer-note">Six tickets sur une feuille, avec les
+     réponses sur une seconde page. Sur le papier, les tickets sont
+     toujours les mêmes&nbsp;; à l'écran, ils changent à chaque
+     partie.</span></p>
+  <div id="suggestion"></div>
+</div>
+
+<div id="game">
+  <div id="hud">
+    <button id="backBtn" onclick="backMenu()">↩ Revenir au début</button>
+    <span class="prog"><span id="progNow">0</span> /
+      <span id="progTot">0</span> tickets relus</span>
+  </div>
+
+  <p id="titreHist" class="titre-hist"></p>
+  <p class="hint" id="consigne">Prenez une étiquette en bas, puis touchez
+     le ticket où elle va. Si vous séchez, touchez un ticket sans avoir
+     d'étiquette en main&nbsp;: il vous souffle un indice.</p>
+
+  <div id="tickets"></div>
+  <div id="etiquettes"></div>
+
+  <div id="doneBox">
+    <p class="msg" id="doneMsg">🎉 Bravo&nbsp;!</p>
+    <p id="doneQuoi"></p>
+    <p id="doneMot"></p>
+    <p style="margin-top:14px">
+      <button class="btn-g2" onclick="rejouer()">D'autres tickets</button>
+      <button class="btn-o2" onclick="backMenu()">↩ Revenir au début</button>
+    </p>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════
+//   LE TICKET EFFACÉ
+// ═══════════════════════════════
+const ARTICLES = [{"nom": "Carottes", "min": 100, "max": 250, "kmax": 5000}, {"nom": "Oignons jaunes", "min": 100, "max": 250, "kmax": 5000}, {"nom": "Poireaux", "min": 150, "max": 300, "kmax": 4000}, {"nom": "Navets", "min": 100, "max": 250, "kmax": 4000}, {"nom": "Courgettes", "min": 150, "max": 350, "kmax": 4000}, {"nom": "Pommes golden", "min": 150, "max": 350, "kmax": 4000}, {"nom": "Poires williams", "min": 200, "max": 400, "kmax": 3000}, {"nom": "Tomates grappe", "min": 200, "max": 450, "kmax": 4000}, {"nom": "Melon", "min": 150, "max": 400, "kmax": 3000}, {"nom": "Clémentines", "min": 200, "max": 400, "kmax": 3000}, {"nom": "Pêches jaunes", "min": 250, "max": 500, "kmax": 3000}, {"nom": "Prunes", "min": 250, "max": 500, "kmax": 3000}, {"nom": "Abricots", "min": 300, "max": 600, "kmax": 2500}, {"nom": "Raisin muscat", "min": 300, "max": 600, "kmax": 2500}, {"nom": "Haricots verts", "min": 300, "max": 650, "kmax": 2000}, {"nom": "Champignons de Paris", "min": 350, "max": 700, "kmax": 1500}, {"nom": "Cerises", "min": 600, "max": 1200, "kmax": 1500}, {"nom": "Fraises", "min": 600, "max": 1200, "kmax": 1500}];
+const NIVEAUX  = [{"cle": "decouverte", "nom": "Découverte", "dit": "des kilos entiers, et une seule fois le poids à retrouver", "pasPoids": 1000, "minPoids": 1000, "maxPoids": 5000, "pasPrix": 100, "minPrix": 100, "maxPrix": 1200, "dosage": {"total": 5, "poids": 1, "prix": 0}}, {"cle": "promenade", "nom": "Promenade", "dit": "des demi-kilos, et les trois cases qui tournent", "pasPoids": 500, "minPoids": 500, "maxPoids": 3000, "pasPrix": 50, "minPrix": 100, "maxPrix": 1200, "dosage": {"total": 3, "prix": 2, "poids": 1}}, {"cle": "grand-tour", "nom": "Grand tour", "dit": "deux de chaque, et des sommes avec des centimes", "pasPoids": 500, "minPoids": 500, "maxPoids": 4000, "pasPrix": 50, "minPrix": 150, "maxPrix": 1200, "dosage": {"total": 2, "prix": 2, "poids": 2}}];
+const ETAL     = 'Primeur du marché';
+
+let niv = null, jeu = [], faits = [], tenu = null, etiquettes = [];
+let posees = [];   // étiquettes déjà consommées
+
+function euros(c, kilo){
+  const s = Math.floor(c / 100) + ',' + String(c % 100).padStart(2, '0')
+          + ' €';
+  return kilo ? s + '/kg' : s;
+}
+function poids(g){
+  return (g % 1000 === 0) ? (g / 1000) + ' kg'
+       : Math.floor(g / 1000) + ',' + Math.floor((g % 1000) / 100) + ' kg';
+}
+function totalDe(g, pk){ return g * pk / 1000; }
+
+/* LA CONDITION QUI REND UN TICKET LISIBLE DANS LES TROIS SENS.
+   grammes × centimes multiple de 1000 : le total tombe sur un nombre
+   entier de centimes, et les deux divisions retombent exactement sur
+   les deux autres cases. Tout le reste est refusé. */
+function ticketJuste(g, pk){ return (g * pk) % 1000 === 0; }
+
+function hasard(a){ return a[Math.floor(Math.random() * a.length)]; }
+
+function pas(min, max, p){
+  const n = Math.floor((max - min) / p) + 1;
+  return min + p * Math.floor(Math.random() * n);
+}
+
+/* Tire six tickets du niveau, avec son dosage de cases effacées, sans
+   deux fois le même article ni deux fois la même réponse. */
+function tirerTickets(n){
+  const cases = [];
+  for (const q of ['total', 'prix', 'poids'])
+    for (let k = 0; k < (n.dosage[q] || 0); k++) cases.push(q);
+  for (let i = cases.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    const g = cases[i]; cases[i] = cases[j]; cases[j] = g;
+  }
+  const arts = ARTICLES.slice();   // des objets, pas des noms
+  for (let i = arts.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    const g = arts[i]; arts[i] = arts[j]; arts[j] = g;
+  }
+  const pris = [], vus = {};
+  for (let i = 0; i < cases.length; i++){
+    const a = arts[i];
+    /* Les bornes du niveau ET celles de l'article : un prix de niveau
+       Grand tour reste un prix de carotte si c'est une carotte. */
+    const pmin = Math.max(n.minPrix, a.min);
+    const pmax = Math.min(n.maxPrix, a.max);
+    const gmax = Math.min(n.maxPoids, a.kmax);
+    let t = null;
+    for (let essai = 0; essai < 600 && !t; essai++){
+      const g = pas(n.minPoids, gmax, n.pasPoids);
+      const pk = pas(pmin, Math.max(pmin, pmax), n.pasPrix);
+      if (!ticketJuste(g, pk)) continue;
+      const cle = cases[i] + ':' + (cases[i] === 'total' ? totalDe(g, pk)
+                : cases[i] === 'prix' ? pk : g);
+      if (vus[cle]) continue;
+      vus[cle] = true;
+      t = {article: a.nom, g: g, pk: pk, quoi: cases[i]};
+    }
+    /* Si le tirage s'obstine, on ne boucle pas à l'infini : on prend le
+       premier ticket juste venu dans les bornes de l'article, quitte à
+       répéter une réponse. Une partie qui ne démarre pas serait pire. */
+    /* Dernier recours, si les bornes de cet article sont trop
+       étroites pour sortir une valeur neuve : on balaie méthodiquement
+       au lieu de tirer au sort, et on prend la première combinaison
+       juste ET inédite. Un doublon n'est plus bloquant depuis qu'on
+       compare les valeurs, mais deux fois la même étiquette reste
+       moche. */
+    if (!t) {
+      for (let g = n.minPoids; g <= gmax && !t; g += n.pasPoids)
+        for (let pk = pmin; pk <= pmax && !t; pk += n.pasPrix){
+          if (!ticketJuste(g, pk)) continue;
+          const cle = cases[i] + ':' + (cases[i] === 'total'
+                    ? totalDe(g, pk) : cases[i] === 'prix' ? pk : g);
+          if (vus[cle]) continue;
+          vus[cle] = true;
+          t = {article: a.nom, g: g, pk: pk, quoi: cases[i]};
+        }
+    }
+    if (!t) t = {article: a.nom, g: n.minPoids,
+                 pk: Math.round(pmin / 100) * 100, quoi: cases[i]};
+    pris.push(t);
+  }
+  return pris;
+}
+
+function valeurCachee(t){
+  if (t.quoi === 'total') return euros(totalDe(t.g, t.pk));
+  if (t.quoi === 'prix')  return euros(t.pk, true);
+  return poids(t.g);
+}
+
+function indiceDe(t){
+  const tot = totalDe(t.g, t.pk);
+  if (t.quoi === 'total')
+    return (t.g % 1000 === 0)
+      ? (t.g / 1000) + ' fois ' + euros(t.pk) + '.'
+      : Math.floor(t.g / 1000) + ' fois ' + euros(t.pk) + ', plus la '
+        + 'moitié de ' + euros(t.pk) + '.';
+  if (t.quoi === 'prix')
+    return euros(tot) + ' pour ' + poids(t.g) + ' : que coûte un kilo '
+         + 'entier ?';
+  /* « Combien de fois X tiennent dans Y », MÊME QUAND X ET Y SONT LE
+     MÊME NOMBRE.
+     J'avais voulu remplacer ce cas par « comparez le prix d'un kilo et
+     la somme payée », le trouvant absurde. Flo, le 11 octobre : « non,
+     garde combien de fois 8,50 tiennent dans 8,50, parce que c'est la
+     formulation qu'on apprend à l'école pour les divisions ». Elle a
+     raison : la formule déclenche le geste appris, et la casser pile
+     sur le cas le plus facile retire l'appui là où il sert le plus.
+     NE PAS LA « CORRIGER » À NOUVEAU. */
+  return 'Combien de fois ' + euros(t.pk) + ' tiennent dans ' + euros(tot)
+       + ' ?';
+}
+
+// ── le menu ────────────────────────────────────────────────────────
+function buildMenu(){
+  document.getElementById('histList').innerHTML = NIVEAUX.map(function(n, i){
+    return '<button class="h-card" onclick="start(' + i + ')">'
+         + '<span class="ht">' + n.nom + '</span><br>'
+         + '<span class="hs">' + n.dit + '</span></button>';
+  }).join('');
+}
+
+function backMenu(){
+  if (niv && faits.length < jeu.length) {
+    try { JDC.enregistrer('ticket', 1, false, {niveau: niv.cle}); } catch(e){}
+  }
+  niv = null; tenu = null;
+  document.body.style.paddingBottom = '';
+  document.getElementById('game').style.display = 'none';
+  document.getElementById('menu').style.display = 'block';
+  document.getElementById('doneBox').style.display = 'none';
+  window.scrollTo(0, 0);
+}
+
+function rejouer(){ start(NIVEAUX.indexOf(niv)); }
+
+function start(i){
+  niv = NIVEAUX[i];
+  jeu = tirerTickets(niv);
+  faits = []; posees = []; tenu = null;
+  etiquettes = jeu.map(function(_, k){ return k; });
+  for (let k = etiquettes.length - 1; k > 0; k--){
+    const j = Math.floor(Math.random() * (k + 1));
+    const g = etiquettes[k]; etiquettes[k] = etiquettes[j]; etiquettes[j] = g;
+  }
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('game').style.display = 'block';
+  document.getElementById('doneBox').style.display = 'none';
+  document.getElementById('titreHist').textContent =
+    niv.nom + ' · ' + niv.dit;
+  document.getElementById('progTot').textContent = jeu.length;
+  document.getElementById('lienPdf').setAttribute(
+    'href', 'ticket-' + niv.cle + '.pdf');
+  dessiner();
+  window.scrollTo(0, 0);
+}
+
+function dessiner(){
+  document.getElementById('tickets').innerHTML = jeu.map(function(t, i){
+    const fait = faits.indexOf(i) >= 0;
+    const pale = function(v){
+      return fait ? '<span class="pale">' + v + '</span>'
+                  : '<span class="pale">?</span>';
+    };
+    const vp = (t.quoi === 'poids') ? pale(poids(t.g)) : poids(t.g);
+    const vx = (t.quoi === 'prix') ? pale(euros(t.pk, true))
+                                   : euros(t.pk, true);
+    const vt = (t.quoi === 'total') ? pale(euros(totalDe(t.g, t.pk)))
+                                    : euros(totalDe(t.g, t.pk));
+    return '<button class="tk' + (fait ? ' fait' : '') + '"'
+         + ' onclick="clicTicket(' + i + ')">'
+         + '<span class="ens">' + ETAL + '</span>'
+         + '<span class="ou">' + t.article + '</span>'
+         + '<span class="pes">' + vp + ' x ' + vx + '</span>'
+         + '<span class="tt"><span>à payer</span><span>' + vt
+         + '</span></span></button>';
+  }).join('');
+
+  /* Une étiquette posée QUITTE le bandeau : elle est déjà lisible sur
+     son ticket, et le bandeau rétrécit d'autant. */
+  const restantes = etiquettes.filter(function(k){
+    return posees.indexOf(k) < 0; });
+  const b = document.getElementById('etiquettes');
+  b.innerHTML = restantes.length
+    ? '<span class="titre-vrac">Les cases effacées, en vrac</span>'
+      + restantes.map(function(k){
+          return '<button class="et' + (tenu === k ? ' tenu' : '')
+               + '" onclick="clicEtiquette(' + k + ')" aria-pressed="'
+               + (tenu === k ? 'true' : 'false') + '">'
+               + valeurCachee(jeu[k]) + '</button>';
+        }).join('')
+    : '';
+  document.body.style.paddingBottom =
+    (b.offsetHeight ? b.offsetHeight + 18 : 0) + 'px';
+
+  document.getElementById('progNow').textContent = faits.length;
+}
+
+function clicEtiquette(k){
+  if (posees.indexOf(k) >= 0) { toast('Celle-là est déjà posée.'); return; }
+  tenu = (tenu === k) ? null : k;
+  dessiner();
+}
+
+function clicTicket(i){
+  if (faits.indexOf(i) >= 0) { toast('Ce ticket est complet.'); return; }
+  /* Les mains vides, c'est une demande de coup de pouce. Même
+     convention que sur la page des proverbes. */
+  if (tenu === null) { toast(indiceDe(jeu[i])); return; }
+  /* ON COMPARE LA VALEUR, PAS LE NUMÉRO DE L'ÉTIQUETTE.
+     Bug signalé par Flo le 11 octobre : « quand t'as deux fois le même
+     chiffre en résultat, le chiffre est conditionné à un ticket, ce qui
+     fait que même si t'as la bonne réponse, le jeu te le compte faux ».
+     Exactement juste. Deux tickets peuvent valoir 6,00 € : la personne
+     prenait la bonne somme dans la mauvaise pastille et se voyait
+     refuser une réponse juste. C'est la mise en échec qu'on s'interdit,
+     et c'était la même faute que sur la page des proverbes. */
+  if (valeurCachee(jeu[tenu]) === valeurCachee(jeu[i])) {
+    faits.push(i); posees.push(tenu); tenu = null; dessiner();
+    if (faits.length === jeu.length) win();
+    return;
+  }
+  /* Ni rouge, ni décompte : on dit ce qui ne colle pas, pas que c'est
+     raté. L'unité suffit souvent à comprendre. */
+  const a = jeu[tenu], b = jeu[i];
+  toast(a.quoi !== b.quoi
+    ? 'Sur ce ticket-là, c’est ' + (b.quoi === 'total' ? 'la somme'
+      : b.quoi === 'prix' ? 'le prix du kilo' : 'le poids')
+      + ' qui manque.'
+    : 'Pas celui-ci : refaites le compte du ' + b.article.toLowerCase()
+      + '.');
+}
+
+function win(){
+  document.getElementById('doneQuoi').textContent =
+    'Les six tickets sont relus, et chaque case retrouvée.';
+  document.getElementById('doneMot').textContent =
+    'Vous avez l’œil du marché.';
+  document.getElementById('doneBox').style.display = 'block';
+  try {
+    JDC.enregistrer('ticket', 1, true, {niveau: niv.cle});
+    JDC.marquerVu('ticket', niv.cle);
+  } catch(e){}
+  confetti();
+  document.getElementById('doneBox').scrollIntoView({behavior: 'smooth'});
+}
+
+buildMenu();
+
+// ═══════════════════════════════
+//   REPRIS MOT POUR MOT DE « VOUS ME MONTREZ ? »
+// ═══════════════════════════════
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function confetti(){
+  const colors = ['#c8922a','#2d6a4f','#6b4c2a','#3a6ea5','#6b4c2a'];
+  for(let i = 0; i < 60; i++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDuration = (2 + Math.random() * 2) + 's';
+    c.style.animationDelay = (Math.random() * .8) + 's';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 5000);
+  }
+}
+</script>
+
+<details class="jdc-apropos">
+<summary>À propos de ce jeu</summary>
+<div class="corps">
+<p><strong>Le ticket effacé</strong> · Des tickets de marché dont une case a pâli : on retrouve la somme payée, le poids ou le prix du kilo.</p>
+<h2>Ce que ce jeu n’est pas</h2>
+<p>Il n’y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne se compte et rien ne se ferme : on peut recommencer autant de fois qu’on veut. Ce jeu est une activité de loisir. Ce n’est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
+<h2>Qui le propose</h2>
+<p>Les Jardins de Célestine, un projet d’habitat partagé pour personnes atteintes de maladies neurodégénératives, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="projet.html">Découvrir le projet</a> · <a href="jeux.html">Voir tous les jeux</a>.</p>
+</div>
+</details>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+  <span aria-hidden="true"> · </span>
+  <a href="signaler.html?jeu=Le%20ticket%20effac%C3%A9&amp;p=jeu_ticket" target="_blank" rel="noopener">Signaler un problème</a>
+</footer>
+</body>
+</html>

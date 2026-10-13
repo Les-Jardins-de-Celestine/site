@@ -11,6 +11,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Le bon panier · jeu en ligne gratuit · Les Jardins de Célestine</title>
+<link rel="canonical" href="https://jardinsdecelestine.com/jeu_panier">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="description" content="Trier ce qui va ensemble et remplir le bon panier. Jeu du quotidien en ligne gratuit pour personne âgée, sans inscription.">
@@ -208,6 +209,8 @@ header p{font-size:.74rem;letter-spacing:.15em;text-transform:uppercase;color:va
   <div id="choix"></div>
 
   <div id="fin">
+    <div class="jdc-fete" style="font-size:2.4rem;line-height:1">🎉</div>
+    <p class="msg jdc-bravo">Bravo !</p>
     <p class="msg" id="finMsg">Le panier est plein !</p>
     <button class="btn-or" onclick="manche()">Une autre consigne →</button>
     <button class="btn-vide" onclick="retourAccueil()">↩ Revenir au début</button>
@@ -435,9 +438,6 @@ var LBL = { 1:'Découverte', 2:'Promenade', 3:'Grand tour' };
 // ═══════════════════════════════
 var niveau = 2, cons = null, aTrouver = [], trouves = 0, erreurs = 0, debut = null, enCours = false;
 
-// ═══════════════════════════════
-//   STATS LOCALES
-// ═══════════════════════════════
 var CLE = 'panier_stats_v1';
 var _tc = 0, _tct = null;
 document.getElementById('titre').addEventListener('click', function(){
@@ -663,8 +663,9 @@ function gagne(){
     JDC.enregistrer('panier', niveau, true, { duree: sec, erreurs: erreurs, variante: cons.id });
     JDC.marquerVu('panier', cons.id);
   }
-  document.getElementById('finMsg').textContent =
-    erreurs === 0 ? 'Le panier est plein, sans une hésitation !' : 'Le panier est plein !';
+  /* Le même message pour tout le monde : « sans une hésitation » était
+     réservé au zéro faute, donc celui qui avait hésité le lisait aussi. */
+  document.getElementById('finMsg').textContent = 'Le panier est plein !';
   document.getElementById('fin').style.display = 'block';
   confetti();
 }

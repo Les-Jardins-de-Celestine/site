@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<title>Qui a fait quoi ? · jeu gratuit · Les Jardins de Célestine</title>
+<meta name="robots" content="index, follow">
+<meta name="description" content="Relier un grand nom à ce qui l’a rendu célèbre : une œuvre, une chanson, une découverte, un voyage. Jeu de culture gratuit, sans inscription.">
+<link rel="canonical" href="https://jardinsdecelestine.com/jeu_qui_a_fait_quoi">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="jdc-parcours.js"></script>
+<style>
+:root {
+  --cream:#f7f3ea; --parchment:#eee8d5; --ink:#1c1208;
+  --sepia:#5c3d1e; --gold:#c8922a; --green:#2d6a4f;
+  --red:#6b4c2a; --shadow:rgba(28,18,8,0.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{
+  background:var(--parchment);
+  background-image:
+    radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.08) 0%,transparent 55%),
+    radial-gradient(ellipse at 85% 90%,rgba(45,106,79,.06) 0%,transparent 55%);
+  min-height:100vh; font-family:'Nunito',sans-serif;
+  color:var(--ink); user-select:none; -webkit-user-select:none;
+}
+
+header{text-align:center;padding:16px 20px 10px;border-bottom:1px solid rgba(200,146,42,.2);position:relative;}
+header h1{font-family:'Atkinson Hyperlegible',sans-serif;font-size:clamp(1.3rem,3vw,1.9rem);font-weight:700;color:var(--sepia);cursor:default;}
+header h1 em{color:var(--gold);font-style:normal;}
+header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-top:3px;}
+.divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:6px auto 0;}
+#statsBtn{display:none;position:absolute;top:14px;right:16px;background:none;border:1.5px solid rgba(200,146,42,.4);border-radius:6px;padding:4px 10px;font-family:'Nunito',sans-serif;font-size:.75rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+#statsBtn:hover{background:rgba(200,146,42,.1);}
+
+/* ── MENU ── */
+#menu{max-width:600px;margin:34px auto;padding:0 20px;}
+#menu h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.15rem;color:var(--sepia);text-align:center;margin-bottom:8px;}
+#menu .hint{text-align:center;font-size:.92rem;color:var(--sepia);opacity:.75;margin-bottom:20px;}
+.h-card{display:block;width:100%;text-align:left;background:var(--cream);border:1.5px solid rgba(200,146,42,.35);border-radius:14px;padding:18px 22px;margin-bottom:14px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s;}
+.h-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 22px var(--shadow);}
+.h-card .ht{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.08rem;font-weight:700;color:var(--sepia);}
+.h-card .hs{font-size:.82rem;color:var(--sepia);opacity:.65;margin-top:2px;}
+.badge-new{display:inline-block;background:var(--green);color:#fff;font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;}
+.badge-vu{display:inline-block;background:rgba(92,61,30,.12);color:var(--sepia);font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;}
+#suggestion{margin-top:14px;font-size:.86rem;color:var(--sepia);opacity:.8;font-style:italic;text-align:center;}
+
+/* ── JEU ── */
+#game{display:none;max-width:680px;margin:0 auto;padding:14px 18px 40px;}
+#hud{display:flex;justify-content:space-between;align-items:center;padding:4px 2px 12px;font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;color:var(--sepia);font-size:.92rem;}
+#hud .prog{color:var(--green);}
+#backBtn{background:none;border:1.5px solid rgba(200,146,42,.45);border-radius:8px;padding:5px 12px;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+#backBtn:hover{background:rgba(200,146,42,.1);}
+
+.zone-titre{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--sepia);opacity:.6;margin:10px 0 8px;}
+
+#histoire{background:var(--cream);border:1.5px solid rgba(45,106,79,.35);border-radius:14px;padding:14px 16px;min-height:70px;box-shadow:0 6px 20px var(--shadow);}
+#histoire .placed{background:#e9f2ec;border:1.5px solid rgba(45,106,79,.4);border-radius:10px;padding:11px 14px;margin-bottom:9px;font-size:1rem;line-height:1.55;color:var(--ink);animation:pop .3s ease;}
+#histoire .placed:last-child{margin-bottom:0;}
+#histoire .placed .num{display:inline-block;background:var(--green);color:#fff;font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;font-size:.75rem;width:22px;height:22px;border-radius:50%;text-align:center;line-height:22px;margin-right:8px;}
+#histoire .vide{font-size:.9rem;color:var(--sepia);opacity:.5;font-style:italic;text-align:center;padding:10px 0;}
+@keyframes pop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+
+#blocs{margin-top:6px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.demande{background:var(--cream);border-left:4px solid var(--green);border-radius:12px;padding:14px 16px;margin:0 0 14px;}
+.demande .dit{font-size:1.04rem;line-height:1.6;color:var(--ink);margin:0;font-style:italic;}
+.bloc img{width:100%;display:block;border-radius:8px;margin-bottom:8px;}
+.bloc .lib{display:block;font-size:.95rem;line-height:1.4;text-align:center;}
+#histoire .placed img{width:100%;display:block;border-radius:8px;margin:6px 0 0;}
+#histoire .placed{display:block;}
+@media (min-width:620px){#blocs{grid-template-columns:repeat(3,1fr);}
+  #histoire{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;align-items:start;}
+  #histoire .vide{grid-column:1/-1;}}
+.bloc{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid rgba(200,146,42,.45);border-radius:10px;padding:12px 15px;margin-bottom:10px;font-family:'Nunito',sans-serif;font-size:1rem;line-height:1.55;color:var(--ink);cursor:pointer;transition:all .18s;}
+.bloc:hover{border-color:var(--gold);background:rgba(200,146,42,.06);}
+.bloc.used{display:none;}
+.bloc.shake{animation:shk .35s;border-color:var(--red);}
+@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+#doneBox{display:none;margin-top:18px;text-align:center;}
+#doneBox .msg{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.1rem;font-weight:700;color:var(--green);margin-bottom:12px;}
+.btn-g2{background:var(--gold);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;margin:0 5px;}
+.btn-g2:hover{background:#b07820;}
+.btn-o2{background:none;border:1.5px solid rgba(200,146,42,.5);color:var(--sepia);border-radius:10px;padding:12px 24px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;margin:0 5px;}
+.btn-o2:hover{background:rgba(200,146,42,.1);}
+
+/* ── STATS ── */
+#statsPanel{display:none;position:fixed;inset:0;background:rgba(28,18,8,.75);z-index:60;align-items:center;justify-content:center;}
+#statsPanel.show{display:flex;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+#statsBox{background:var(--cream);border:2px solid var(--gold);border-radius:14px;padding:26px 30px;max-width:440px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+#statsBox h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;font-weight:700;color:var(--sepia);margin-bottom:4px;}
+.s-sub{font-size:0.72rem;color:var(--sepia);opacity:.55;margin-bottom:14px;display:block;}
+.srow{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(200,146,42,.14);}
+.srow:last-child{border-bottom:none;}
+.srow-name{font-size:.82rem;font-weight:700;color:var(--sepia);}
+.scol{text-align:center;}
+.slbl{font-size:0.72rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.08em;}
+.sval{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.9rem;font-weight:700;color:var(--gold);}
+.sval.green{color:var(--green);}
+.sa{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;}
+.btn-sm{padding:6px 14px;border-radius:6px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;}
+.btn-ol{background:none;border:1.5px solid rgba(200,146,42,.5);color:var(--sepia);}
+.btn-g{background:var(--gold);color:white;border:none;}
+.no-stats{font-size:.85rem;color:var(--sepia);opacity:.6;font-style:italic;text-align:center;padding:14px 0;}
+
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(10px);color:white;background:#2d6a4f;padding:10px 22px;border-radius:8px;font-size:.86rem;font-weight:700;opacity:0;transition:all .25s;z-index:300;pointer-events:none;font-family:'Atkinson Hyperlegible',sans-serif;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+.confetti{position:fixed;top:-14px;width:10px;height:14px;z-index:70;pointer-events:none;animation:cfall linear forwards;}
+@keyframes cfall{to{transform:translateY(105vh) rotate(720deg);opacity:.9;}}
+
+/* Sortie de secours : toujours un moyen de revenir au catalogue. */
+.jdc-retour{display:block;text-align:center;padding:8px;font-size:.74rem;
+  color:#5c3d1e;opacity:.55;text-decoration:none;letter-spacing:.1em;
+  text-transform:uppercase;font-family:'Nunito',sans-serif;}
+.jdc-retour:hover{opacity:1;}
+@media print{.jdc-retour{display:none;}}
+
+/* Pied discret : le lien légal doit exister sur chaque page du site. */
+.jdc-legal{text-align:center;padding:16px 14px 22px;font-size:.78rem;line-height:1.6;
+  color:#5c3d1e;opacity:.6;font-family:'Nunito',sans-serif;}
+.jdc-legal a{color:inherit;}
+@media print{.jdc-legal{display:none;}}
+
+/* Une image posée peut être reprise : seule la dernière, pour ne pas casser l'ordre. */
+.placed.reprenable{cursor:pointer;position:relative;}
+.placed.reprenable:hover,.placed.reprenable:focus{outline:2px solid var(--gold,#c8922a);outline-offset:2px;}
+.placed .retirer{position:absolute;top:-7px;right:-7px;width:24px;height:24px;border-radius:50%;
+  background:#5c3d1e;color:#fff;font-size:15px;font-weight:700;line-height:24px;text-align:center;
+  box-shadow:0 2px 6px rgba(0,0,0,.3);}
+
+/* Le nom de la séquence en cours : on doit savoir ce qu'on est en train de montrer. */
+.imprimer{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.86rem;line-height:1.5;color:var(--sepia);opacity:.8;text-align:center;margin:14px 0 0;}
+.imprimer a{color:var(--sepia);text-underline-offset:3px;display:inline-block;padding:15px 16px;}.imprimer-note{display:inline-block;margin-top:-6px;}
+.titre-hist{text-align:center;font-weight:700;font-size:1.06rem;color:#5c3d1e;margin:2px 0 10px;}
+</style>
+<style id="jdc-apropos-style">
+/* Bloc « À propos » : replié par défaut, lu en entier par les moteurs.
+   Couleurs écrites en dur · chaque jeu a ses propres variables CSS. */
+.jdc-apropos{max-width:680px;margin:28px auto 8px;padding:0 16px;
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;color:#5c3d1e;}
+.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;
+  letter-spacing:.02em;opacity:.62;padding:9px 0;text-align:center;
+  border-top:1px solid rgba(92,61,30,.16);}
+.jdc-apropos>summary::-webkit-details-marker{display:none}
+.jdc-apropos>summary::after{content:' \203A';display:inline-block;
+  transform:rotate(90deg);margin-left:5px;opacity:.7}
+.jdc-apropos[open]>summary::after{transform:rotate(-90deg)}
+.jdc-apropos>summary:hover,.jdc-apropos>summary:focus-visible{opacity:.95}
+.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;
+  text-align:left;opacity:.9}
+.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:#5c3d1e;
+  font-weight:700}
+.jdc-apropos p{margin:0 0 10px}
+.jdc-apropos ul{margin:0 0 10px;padding-left:20px}
+.jdc-apropos li{margin-bottom:5px}
+.jdc-apropos a{color:#2d6a4f}
+.hc .jdc-apropos{color:#000}
+.hc .jdc-apropos h2{color:#000}
+.hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
+</style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Game",
+  "name": "Qui a fait quoi ?",
+  "url": "https://jardinsdecelestine.com/jeu_qui_a_fait_quoi",
+  "description": "Relier un grand nom à ce qui l’a rendu célèbre : une œuvre, une chanson, une découverte, un voyage. Jeu de culture gratuit, sans inscription.",
+  "inLanguage": "fr",
+  "isAccessibleForFree": true,
+  "genre": "Jeu de culture générale",
+  "audience": {
+    "@type": "Audience",
+    "audienceType": "Personnes âgées, aidants, orthophonistes, accueils de jour"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Les Jardins de Célestine",
+    "url": "https://jardinsdecelestine.com"
+  }
+}
+</script>
+
+
+<style id="jeux-du-livre">
+.et{background:var(--cream);border:2px solid rgba(92,61,30,.3);
+  border-radius:999px;padding:12px 20px;font:inherit;font-size:1.05rem;
+  color:var(--ink);cursor:pointer;min-height:48px;}
+.et:hover{border-color:var(--gold);}
+.et.tenu{border-color:var(--gold);background:#fff;
+  box-shadow:0 0 0 3px rgba(200,146,42,.45);}
+.et.pose{opacity:.28;cursor:default;box-shadow:none;}
+.zone-titre{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.74rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--sepia);
+  opacity:.7;margin:18px 0 8px;text-align:center;}
+
+/* LE PIED DE PAGE NE DOIT PAS S'INVITER AU MILIEU DU JEU.
+   Ces trois pages ont un contenu court : sans plancher, « Mentions
+   légales » remonte et se retrouve entre le jeu et la bande du bas,
+   là où l'œil cherche la suite. Le plancher le renvoie sous la ligne
+   de flottaison, où on ne le voit qu'en faisant défiler. */
+/* Le plancher est calculé pour que le pied passe SOUS la ligne de
+   flottaison, en-tête comprise. 68vh ne suffisait pas quand le jeu
+   tient peu de place : « Mentions légales » remontait entre les cases
+   et la bande du bas. Un filet du banc d'essai le vérifie maintenant,
+   page par page. */
+#game{min-height:calc(100vh - 100px);}
+/* Le titre de partie ne répète pas celui de la page : il ne sert
+   qu'aux jeux qui ont des thèmes. */
+.titre-hist:empty{display:none;}
+
+/* La bande du bas, celle qui garde les étiquettes sous la main. */
+#bande{position:fixed;left:0;right:0;bottom:0;z-index:50;
+  display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
+  background:var(--parchment);border-top:2px solid var(--gold);
+  box-shadow:0 -3px 12px var(--shadow);
+  padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));
+  max-height:30vh;overflow-y:auto;}
+#bande:empty{display:none;}
+#bande .titre-vrac{flex:0 0 100%;text-align:center;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:.72rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--sepia);
+  opacity:.7;margin-bottom:2px;}
+
+/* Les mots coupés en deux : la liste de ce qui est retrouvé. */
+#trouves{display:flex;flex-direction:column;gap:3px;}
+.lgn{display:flex;align-items:baseline;gap:10px;min-height:46px;
+  padding:7px 8px;border-bottom:1px dotted rgba(92,61,30,.3);
+  font-size:1.08rem;line-height:1.5;}
+.lgn .n{flex:0 0 22px;font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:.78rem;color:var(--sepia);opacity:.65;}
+.lgn .vide{flex:1 1 auto;border-bottom:2px dotted var(--sepia);
+  min-height:20px;}
+.lgn.fait{background:rgba(45,106,79,.08);border-radius:8px;}
+.lgn.fait .mot{flex:1 1 auto;font-weight:700;color:var(--green);}
+
+/* Les lettres mêlées : la définition, puis les cases.
+   LA LARGEUR DES CASES SUIT LA LONGUEUR DU MOT. À sept lettres, des
+   cases fixes de 46 px débordent d'un écran de 390 et la dernière
+   tombe seule sur une deuxième ligne, ce qui donne un mot bancal.
+   La variable --n est posée en JavaScript au moment où le mot
+   s'affiche, et la case se calcule : plus le mot est long, plus la
+   case est étroite, avec un plancher de 30 px pour rester lisible. */
+.defi{background:var(--cream);border:2px solid rgba(200,146,42,.5);
+  border-radius:14px;padding:16px 18px;font-size:1.12rem;line-height:1.5;
+  text-align:center;}
+#cases{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;
+  margin:18px 0 4px;--n:6;}
+.cas{width:max(30px,min(46px,calc((100vw - 42px - (var(--n) - 1) * 6px)
+  / var(--n))));height:auto;aspect-ratio:3 / 4;min-height:44px;
+  max-height:58px;border:2px solid rgba(92,61,30,.3);
+  border-radius:10px;background:var(--cream);display:flex;
+  align-items:center;justify-content:center;
+  font-size:clamp(1.05rem,4.4vw,1.5rem);
+  font-weight:700;color:var(--ink);}
+.cas.pleine{border-color:var(--green);background:rgba(45,106,79,.1);
+  color:var(--green);}
+.cas.attend{border-color:var(--gold);box-shadow:0 0 0 3px
+  rgba(200,146,42,.25);}
+
+/* Le mot de trop : quatre grandes tuiles. */
+#quatre{display:flex;flex-direction:column;gap:12px;margin-top:6px;}
+.tui{width:100%;min-height:62px;padding:16px 18px;background:var(--cream);
+  border:2px solid rgba(92,61,30,.3);border-radius:14px;font:inherit;
+  font-size:1.22rem;color:var(--ink);cursor:pointer;text-align:center;}
+.tui:hover{border-color:var(--gold);}
+.tui.parti{border-color:var(--green);background:rgba(45,106,79,.12);
+  color:var(--green);font-weight:700;}
+.raison{margin-top:14px;text-align:center;font-size:1.02rem;
+  color:var(--green);min-height:28px;}
+
+/* La commission : le papier, le rayon, le contenant.
+   LE PAPIER A L'AIR D'UN PAPIER, pas d'un énoncé : c'est ce qui dit
+   d'un coup d'œil que la liste appartient à quelqu'un d'autre. */
+.papier{background:#fffdf5;border:1px solid rgba(92,61,30,.25);
+  border-radius:4px;box-shadow:0 2px 10px var(--shadow);
+  padding:10px 18px;margin:2px auto 0;max-width:330px;
+  transform:rotate(-.6deg);}
+.papier ul{list-style:none;margin:0;padding:0;}
+.papier li{padding:9px 0 9px 26px;border-bottom:1px dotted
+  rgba(92,61,30,.25);font-size:1.12rem;position:relative;}
+.papier li:last-child{border-bottom:none;}
+.papier li::before{content:'·';position:absolute;left:8px;
+  color:var(--gold);font-weight:700;}
+.papier .entete{font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--sepia);opacity:.75;text-align:center;margin-bottom:4px;}
+#rayon{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
+  margin-top:6px;}
+.art{background:var(--cream);border:2px solid rgba(92,61,30,.3);
+  border-radius:999px;padding:10px 15px;font:inherit;font-size:.98rem;
+  color:var(--ink);cursor:pointer;min-height:46px;}
+.art:hover{border-color:var(--gold);}
+
+/* LA LISTE RESTE SOUS LES YEUX, À CREUX.
+   Flo, le 11 octobre : « garder la liste de départ, pas sous forme de
+   on ajoute dans un espace, mais bien garder la liste comme ça. Au
+   lieu d'avoir les 2 sur 6 : en fait les 2 sur 6 apparaissent
+   directement puisqu'on a la liste sous les yeux. »
+   C'est la forme des proverbes incomplets, appliquée ici : une liste
+   à trous qui se remplit, et le compte se lit à l'œil. */
+.lgn-l{display:flex;align-items:baseline;gap:10px;width:100%;
+  min-height:44px;padding:7px 4px 7px 8px;background:none;border:none;
+  border-bottom:1px dotted rgba(92,61,30,.25);font:inherit;
+  font-size:1.08rem;color:var(--ink);text-align:left;cursor:pointer;
+  border-radius:8px;}
+.lgn-l:last-of-type{border-bottom:none;}
+.lgn-l:hover{background:rgba(200,146,42,.10);}
+.lgn-l .pt{flex:0 0 10px;color:var(--gold);font-weight:700;}
+.lgn-l .txt{flex:1 1 auto;min-width:0;overflow-wrap:break-word;}
+.lgn-l .creux{display:inline-block;min-width:120px;
+  border-bottom:2px dotted var(--sepia);}
+.lgn-l.indice .txt{color:var(--sepia);}
+.lgn-l.montre .txt{color:var(--sepia);opacity:.75;font-style:italic;}
+.lgn-l.fait{background:rgba(45,106,79,.09);}
+.lgn-l.fait .txt{color:var(--green);font-weight:700;}
+
+/* Tout y est ? : le petit texte, les vignettes, et ce qu'on met de
+   côté. Le texte RESTE à l'écran du début à la fin : ici on ne
+   demande pas de retenir, on demande de comprendre. */
+.recit{background:#fffdf5;border:1px solid rgba(92,61,30,.25);
+  border-left:4px solid var(--gold);border-radius:4px;
+  box-shadow:0 2px 10px var(--shadow);padding:15px 17px;margin:2px 0 4px;
+  font-size:1.08rem;line-height:1.55;}
+#choses{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+  margin-top:6px;}
+.vig{padding:0;background:var(--cream);border:2px solid
+  rgba(92,61,30,.3);border-radius:14px;cursor:pointer;overflow:hidden;
+  aspect-ratio:1 / 1;}
+.vig img{width:100%;height:100%;object-fit:cover;display:block;}
+.vig:hover{border-color:var(--gold);}
+.vig.souffle{border-color:var(--gold);
+  box-shadow:0 0 0 4px rgba(200,146,42,.5);}
+#decote{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
+  min-height:58px;padding:8px;background:rgba(45,106,79,.07);
+  border:2px dashed rgba(45,106,79,.35);border-radius:12px;}
+#decote:empty::before{content:attr(data-vide);color:var(--sepia);
+  opacity:.65;font-size:.95rem;align-self:center;}
+#decote img{width:52px;height:52px;object-fit:cover;border-radius:9px;
+  border:2px solid rgba(45,106,79,.45);}
+
+/* Le message qui passe : la règle héritée tient sur une ligne, nos
+   messages sont des phrases entières. */
+#toast{white-space:normal;max-width:calc(100vw - 32px);text-align:center;
+  line-height:1.4;}
+</style>
+
+<style id="qui-a-fait-quoi">
+/* Qui a fait quoi ? : deux colonnes de cartes, on touche l'une puis
+   l'autre. Les noms sont crème, ce qu'ils ont fait est blanc bordé de
+   vert : l'œil sait de quel côté il est sans lire. Pas de rouge nulle
+   part : une carte qui ne va pas bouge un peu et brunit. */
+#consigne{text-align:center;font-size:.95rem;line-height:1.5;
+  color:var(--sepia);opacity:.9;margin:0 0 8px;}
+#paires{display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  margin-top:2px;align-items:start;}
+#paires .zone-titre{margin:8px 0 8px;}
+.col{display:flex;flex-direction:column;gap:10px;}
+.qn,.qt{width:100%;min-height:76px;padding:12px 10px;border-radius:14px;
+  font:inherit;color:var(--ink);cursor:pointer;display:flex;
+  flex-direction:column;justify-content:center;align-items:center;
+  gap:3px;text-align:center;touch-action:manipulation;
+  overflow-wrap:break-word;hyphens:auto;}
+.qn{background:var(--cream);border:2px solid rgba(92,61,30,.32);}
+.qt{background:#fff;border:2px solid rgba(45,106,79,.38);
+  font-size:1rem;line-height:1.35;}
+.qn:hover,.qt:hover{border-color:var(--gold);}
+.qn .nm{font-weight:800;font-size:1.06rem;line-height:1.25;}
+.qn .mt{font-size:.82rem;line-height:1.3;color:var(--sepia);opacity:.78;}
+.qn.tenu,.qt.tenu{border-color:var(--gold);background:#fff;
+  box-shadow:0 0 0 3px rgba(200,146,42,.5);}
+.qn.rate,.qt.rate{border-color:var(--sepia);animation:qshk .35s;}
+@keyframes qshk{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}
+  75%{transform:translateX(5px)}}
+.qn.souffle,.qt.souffle{border-color:var(--gold);
+  box-shadow:0 0 0 4px rgba(200,146,42,.55);
+  animation:qsouffle 1.2s ease-in-out infinite;}
+@keyframes qsouffle{0%,100%{box-shadow:0 0 0 3px rgba(200,146,42,.35)}
+  50%{box-shadow:0 0 0 7px rgba(200,146,42,.6)}}
+@media (prefers-reduced-motion:reduce){
+  .qn.rate,.qt.rate,.qn.souffle,.qt.souffle{animation:none;}}
+.zone-titre:empty{display:none;}
+#trouvees{display:flex;flex-direction:column;gap:6px;margin-top:6px;}
+#trouvees .lgn{display:block;min-height:0;padding:9px 12px;
+  border:1.5px solid rgba(45,106,79,.35);border-radius:10px;
+  background:rgba(45,106,79,.09);font-size:1.02rem;line-height:1.45;}
+#trouvees .lgn .nm{font-weight:800;color:var(--green);}
+#trouvees .lgn .lien{color:var(--gold);font-weight:700;padding:0 4px;}
+#trouvees .lgn .tr{color:var(--ink);}
+#doneMot:empty{display:none;}
+</style>
+</head>
+<body>
+
+<a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
+<header>
+  <h1 id="mainTitle">Qui a <em>fait quoi ?</em></h1>
+  <p>Les grands noms, et ce qu’ils ont fait</p>
+  <div class="divider"></div>
+</header>
+
+<div id="menu">
+  <div class="demande">
+    <p class="dit">«&nbsp;Ces grands noms, on les connaît tous. Mais qui a fait quoi, ça se mélange dans ma tête. Vous m’aidez à y voir clair ?&nbsp;»</p>
+  </div>
+  <p class="hint">Choisissez un thème. Chaque partie tire cinq noms.</p>
+  <div id="histList"></div>
+  <div id="suggestion"></div>
+</div>
+
+<div id="game">
+  <div id="hud">
+    <button id="backBtn" onclick="backMenu()">↩ Revenir au début</button>
+    <span class="prog"><span id="progNow">0</span> /
+      <span id="progTot">0</span> <span id="progQuoi"></span></span>
+  </div>
+
+  <p id="titreHist" class="titre-hist"></p>
+  <p class="hint" id="consigne"></p>
+
+
+  <div id="paires">
+    <div>
+      <div class="zone-titre">Les noms</div>
+      <div class="col" id="colNoms"></div>
+    </div>
+    <div>
+      <div class="zone-titre">Ce qu’ils ont fait</div>
+      <div class="col" id="colTraces"></div>
+    </div>
+  </div>
+  <div class="zone-titre" id="titreTrouvees"></div>
+  <div id="trouvees"></div>
+
+
+  <div id="doneBox">
+    <p class="msg" id="doneMsg">🎉 Bravo&nbsp;!</p>
+    <p id="doneQuoi"></p>
+    <p id="doneMot"></p>
+    <p style="margin-top:14px">
+      <button class="btn-g2" onclick="rejouer()">Cinq autres noms</button>
+      <button class="btn-o2" onclick="backMenu()">↩ Revenir au début</button>
+    </p>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script>
+const NOM = 'Qui a fait quoi ?';
+const CONSIGNE = 'Les noms sont à gauche, ce qu’ils ont fait est à droite. Touchez un nom, puis ce qui va avec. Vous pouvez aussi commencer par la droite.';
+
+// ═══════════════════════════════
+//   QUI A FAIT QUOI ?
+// ═══════════════════════════════
+/* Les paires sont écrites par build_qui_a_fait_quoi.py à partir de
+   fiches/quifaitquoi.py. Chaque nom vient de Mémoire des Grands. */
+const PAIRES = [{"i": "newton", "n": "Isaac Newton", "h": "Physicien & mathématicien", "t": "La gravitation universelle"}, {"i": "curie", "n": "Marie Curie", "h": "Chimiste & physicienne", "t": "Le polonium et le radium"}, {"i": "darwin", "n": "Charles Darwin", "h": "Naturaliste", "t": "« L’Origine des espèces »"}, {"i": "einstein", "n": "Albert Einstein", "h": "Physicien théoricien", "t": "La théorie de la relativité"}, {"i": "pasteur", "n": "Louis Pasteur", "h": "Chimiste & microbiologiste", "t": "Le vaccin contre la rage"}, {"i": "archimede", "n": "Archimède", "h": "Mathématicien & inventeur", "t": "« Eurêka ! », la légende du bain"}, {"i": "galilee", "n": "Galilée", "h": "Astronome & physicien", "t": "La lunette tournée vers le ciel"}, {"i": "lavoisier", "n": "Antoine Lavoisier", "h": "Chimiste", "t": "Le principe : rien ne se perd, rien ne se crée"}, {"i": "laennec", "n": "René Laennec", "h": "Médecin", "t": "Le stéthoscope"}, {"i": "becquerel", "n": "Henri Becquerel", "h": "Physicien", "t": "La radioactivité"}, {"i": "ampere", "n": "André-Marie Ampère", "h": "Physicien", "t": "Une unité de mesure du courant électrique"}, {"i": "moliere", "n": "Molière", "h": "Dramaturge", "t": "« L’Avare »"}, {"i": "vinci", "n": "Léonard de Vinci", "h": "Artiste & inventeur", "t": "« La Joconde »"}, {"i": "beethoven", "n": "Ludwig van Beethoven", "h": "Compositeur", "t": "« L’Ode à la joie »"}, {"i": "monet", "n": "Claude Monet", "h": "Peintre impressionniste", "t": "« Les Nymphéas »"}, {"i": "hugo", "n": "Victor Hugo", "h": "Romancier & poète", "t": "« Les Misérables »"}, {"i": "laFontaine", "n": "Jean de La Fontaine", "h": "Fabuliste", "t": "« La Cigale et la Fourmi »"}, {"i": "mozart", "n": "Wolfgang Amadeus Mozart", "h": "Compositeur", "t": "« La Flûte enchantée »"}, {"i": "rodin", "n": "Auguste Rodin", "h": "Sculpteur", "t": "« Le Penseur »"}, {"i": "michelange", "n": "Michel-Ange", "h": "Sculpteur & peintre", "t": "Le plafond de la chapelle Sixtine"}, {"i": "cezanne", "n": "Paul Cézanne", "h": "Peintre", "t": "La montagne Sainte-Victoire"}, {"i": "sand", "n": "George Sand", "h": "Écrivaine", "t": "« La Petite Fadette »"}, {"i": "colette", "n": "Colette", "h": "Écrivaine", "t": "« Gigi »"}, {"i": "napoleon", "n": "Napoléon Bonaparte", "h": "Général & Empereur", "t": "Le Code civil"}, {"i": "jeanned", "n": "Jeanne d’Arc", "h": "Héroïne nationale", "t": "La délivrance d’Orléans"}, {"i": "charlemagne", "n": "Charlemagne", "h": "Roi des Francs & Empereur", "t": "Empereur couronné à Rome le jour de Noël"}, {"i": "degaulle", "n": "Charles de Gaulle", "h": "Général & Président", "t": "L’appel de Londres"}, {"i": "richelieu", "n": "Cardinal de Richelieu", "h": "Homme d’État", "t": "L’Académie française"}, {"i": "henri4", "n": "Henri IV", "h": "Roi de France", "t": "L’édit de Nantes"}, {"i": "louis14", "n": "Louis XIV", "h": "Roi de France", "t": "Le château de Versailles"}, {"i": "clemenceau", "n": "Georges Clemenceau", "h": "Homme d’État", "t": "« Père la Victoire »"}, {"i": "veil", "n": "Simone Veil", "h": "Femme d’État", "t": "Première femme présidente du Parlement européen"}, {"i": "alienor", "n": "Aliénor d’Aquitaine", "h": "Reine", "t": "Reine de France, puis reine d’Angleterre"}, {"i": "colomb", "n": "Christophe Colomb", "h": "Navigateur & explorateur", "t": "La découverte de l’Amérique"}, {"i": "magellan", "n": "Ferdinand Magellan", "h": "Navigateur", "t": "Le détroit qui porte son nom"}, {"i": "marco", "n": "Marco Polo", "h": "Voyageur & marchand", "t": "Le voyage jusqu’en Chine"}, {"i": "champlain", "n": "Samuel de Champlain", "h": "Explorateur & fondateur", "t": "La fondation de Québec"}, {"i": "cartier", "n": "Jacques Cartier", "h": "Navigateur", "t": "L’exploration du Saint-Laurent"}, {"i": "cook", "n": "James Cook", "h": "Explorateur", "t": "Les grands voyages dans le Pacifique"}, {"i": "charcot", "n": "Jean-Baptiste Charcot", "h": "Explorateur polaire", "t": "« Le Pourquoi-Pas ? »"}, {"i": "mermoz", "n": "Jean Mermoz", "h": "Aviateur", "t": "La traversée de l’Atlantique Sud en avion postal"}, {"i": "cousteau", "n": "Jacques-Yves Cousteau", "h": "Océanographe", "t": "« La Calypso »"}, {"i": "davidneel", "n": "Alexandra David-Néel", "h": "Exploratrice", "t": "Lhassa, la ville interdite"}, {"i": "piaf", "n": "Édith Piaf", "h": "Chanteuse", "t": "« La Vie en rose »"}, {"i": "trenet", "n": "Charles Trenet", "h": "Chanteur", "t": "« La Mer »"}, {"i": "brassens", "n": "Georges Brassens", "h": "Auteur-compositeur-interprète", "t": "« Les Copains d’abord »"}, {"i": "brel", "n": "Jacques Brel", "h": "Chanteur", "t": "« Ne me quitte pas »"}, {"i": "tinorossi", "n": "Tino Rossi", "h": "Chanteur", "t": "« Petit Papa Noël »"}, {"i": "chaplin", "n": "Charlie Chaplin", "h": "Acteur & réalisateur", "t": "« Les Temps modernes »"}, {"i": "fernandel", "n": "Fernandel", "h": "Acteur", "t": "« Le Petit Monde de Don Camillo »"}, {"i": "defunes", "n": "Louis de Funès", "h": "Acteur", "t": "« Le Gendarme de Saint-Tropez »"}, {"i": "tati", "n": "Jacques Tati", "h": "Réalisateur & acteur", "t": "« Les Vacances de monsieur Hulot »"}, {"i": "pagnol", "n": "Marcel Pagnol", "h": "Écrivain & cinéaste", "t": "« La Gloire de mon père »"}, {"i": "saintex", "n": "Antoine de Saint-Exupéry", "h": "Écrivain & aviateur", "t": "« Le Petit Prince »"}, {"i": "camus", "n": "Albert Camus", "h": "Écrivain", "t": "« L’Étranger »"}, {"i": "proust", "n": "Marcel Proust", "h": "Écrivain", "t": "« À la recherche du temps perdu »"}, {"i": "simenon", "n": "Georges Simenon", "h": "Écrivain", "t": "Le commissaire Maigret"}, {"i": "herge", "n": "Hergé", "h": "Dessinateur", "t": "« Les Aventures de Tintin »"}, {"i": "picasso", "n": "Pablo Picasso", "h": "Peintre", "t": "« Guernica »"}, {"i": "ravel", "n": "Maurice Ravel", "h": "Compositeur", "t": "« Le Boléro »"}, {"i": "fleming", "n": "Alexander Fleming", "h": "Bactériologiste", "t": "La pénicilline"}, {"i": "gagarin", "n": "Youri Gagarine", "h": "Cosmonaute", "t": "Premier homme dans l’espace"}, {"i": "armstrong", "n": "Neil Armstrong", "h": "Astronaute", "t": "Le premier pas sur la Lune"}, {"i": "bleriot", "n": "Louis Blériot", "h": "Aviateur", "t": "La traversée de la Manche en avion"}, {"i": "heyerdahl", "n": "Thor Heyerdahl", "h": "Explorateur", "t": "« Le Kon-Tiki », un radeau à travers le Pacifique"}, {"i": "hillary", "n": "Edmund Hillary", "h": "Alpiniste", "t": "Le sommet de l’Everest, avec le sherpa Tenzing"}, {"i": "herzog", "n": "Maurice Herzog", "h": "Alpiniste", "t": "« L’Annapurna », premier sommet de huit mille mètres"}, {"i": "amundsen", "n": "Roald Amundsen", "h": "Explorateur polaire", "t": "Le pôle Sud, atteint le premier"}, {"i": "gandhi", "n": "Mahatma Gandhi", "h": "Guide de l’Inde", "t": "« La marche du sel »"}, {"i": "mlk", "n": "Martin Luther King", "h": "Militant des droits civiques", "t": "Le discours « I have a dream »"}];
+const THEMES = [{"nom": "Un peu de tout", "cle": "tout", "sous": "cinq noms, tirés au hasard", "ids": ["newton", "curie", "darwin", "einstein", "pasteur", "archimede", "galilee", "lavoisier", "laennec", "becquerel", "ampere", "moliere", "vinci", "beethoven", "monet", "hugo", "laFontaine", "mozart", "rodin", "michelange", "cezanne", "sand", "colette", "napoleon", "jeanned", "charlemagne", "degaulle", "richelieu", "henri4", "louis14", "clemenceau", "veil", "alienor", "colomb", "magellan", "marco", "champlain", "cartier", "cook", "charcot", "mermoz", "cousteau", "davidneel"]}, {"nom": "Les sciences et les découvertes", "cle": "sciences", "sous": "cinq noms à relier", "ids": ["newton", "curie", "darwin", "einstein", "pasteur", "archimede", "galilee", "lavoisier", "laennec", "becquerel", "ampere"]}, {"nom": "Les arts et les lettres", "cle": "arts", "sous": "cinq noms à relier", "ids": ["moliere", "vinci", "beethoven", "monet", "hugo", "laFontaine", "mozart", "rodin", "michelange", "cezanne", "sand", "colette"]}, {"nom": "Les grands noms de l’histoire", "cle": "histoire", "sous": "cinq noms à relier", "ids": ["napoleon", "jeanned", "charlemagne", "degaulle", "richelieu", "henri4", "louis14", "clemenceau", "veil", "alienor"]}, {"nom": "Les grands voyages", "cle": "voyages", "sous": "cinq noms à relier", "ids": ["colomb", "magellan", "marco", "champlain", "cartier", "cook", "charcot", "mermoz", "cousteau", "davidneel"]}, {"nom": "Le XXe siècle", "cle": "xxe", "sous": "cinq noms à relier", "ids": ["einstein", "colette", "degaulle", "clemenceau", "veil", "charcot", "mermoz", "cousteau", "davidneel", "piaf", "trenet", "brassens", "brel", "tinorossi", "chaplin", "fernandel", "defunes", "tati", "pagnol", "saintex", "camus", "proust", "simenon", "herge", "picasso", "ravel", "fleming", "gagarin", "armstrong", "bleriot", "heyerdahl", "hillary", "herzog", "amundsen", "gandhi", "mlk"]}];
+const CONFLITS = [["curie", "becquerel"], ["newton", "galilee"], ["cartier", "champlain"], ["colomb", "cartier"], ["napoleon", "charlemagne"], ["bleriot", "mermoz"], ["gagarin", "armstrong"], ["saintex", "fernandel"], ["saintex", "tinorossi"], ["fernandel", "tinorossi"]];
+const PAR_PARTIE = 5;
+const MOTS = {3: 'trois', 4: 'quatre', 5: 'cinq', 6: 'six', 7: 'sept',
+              8: 'huit'};
+
+const PAR_ID = {};
+PAIRES.forEach(function(p){ PAR_ID[p.i] = p; });
+
+/* DEUX NOMS QUI SE DISCUTENT NE TOMBENT JAMAIS ENSEMBLE.
+   Une trace qui pourrait valoir pour deux noms de la même manche mettrait
+   en tort quelqu'un qui avait raison : c'est la règle de l'Intrus. */
+function enConflit(a, b){
+  return CONFLITS.some(function(c){
+    return (c[0] === a && c[1] === b) || (c[0] === b && c[1] === a);
+  });
+}
+
+/* LA TOURNÉE, PAR THÈME.
+   Chaque thème est mélangé une fois, et chaque partie en prend cinq
+   dans ce qui n'a pas encore été vu, sans jamais réunir deux noms en
+   conflit. Quand le thème est épuisé, on le mélange à nouveau. Un
+   navigateur qui refuse son stockage joue quand même, au hasard. */
+const CLE = 'jdc-qfq-tournee-v1';
+
+function litTournees(){
+  try {
+    const brut = localStorage.getItem(CLE);
+    if (brut) { const o = JSON.parse(brut); if (o && typeof o === 'object')
+      return o; }
+  } catch(e){}
+  return {};
+}
+
+function ecritTournees(o){
+  try { localStorage.setItem(CLE, JSON.stringify(o)); } catch(e){}
+}
+
+function melange(a){
+  const d = a.slice();
+  for (let i = d.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    const g = d[i]; d[i] = d[j]; d[j] = g;
+  }
+  return d;
+}
+
+function prochains(k, n){
+  const th = THEMES[k];
+  const tout = litTournees();
+  let reste = (tout[th.nom] && Array.isArray(tout[th.nom].reste))
+    ? tout[th.nom].reste.filter(function(id){
+        return th.ids.indexOf(id) >= 0; })
+    : [];
+  const pris = [];
+  let reprises = 0;
+  while (pris.length < n && reprises < 4){
+    let q = 0;
+    while (q < reste.length && pris.length < n){
+      const id = reste[q];
+      if (pris.every(function(p){ return !enConflit(p, id); })){
+        pris.push(id); reste.splice(q, 1);
+      } else { q++; }
+    }
+    if (pris.length < n){
+      reste = melange(th.ids.filter(function(id){
+        return pris.indexOf(id) < 0; }));
+      reprises++;
+    }
+  }
+  tout[th.nom] = {reste: reste};
+  ecritTournees(tout);
+  return pris.map(function(id){ return PAR_ID[id]; });
+}
+
+let theme = 0;       // l'indice du thème en cours
+let jeu = [];        // les paires de la partie
+let noms = [];       // colonne de gauche : {k, v, h, pose}
+let traces = [];     // colonne de droite : {k, v, pose}
+let tenu = null;     // la carte tenue en main : {col, j}
+let rate = null;     // la carte qui n'allait pas, pour une seule image
+let indice = null;   // la carte soufflée : {col, j}
+let faits = [];      // les paires reliées, dans l'ordre où elles l'ont été
+let secs = 0;        // essais à vide d'affilée, pour le coup de pouce
+
+function esc(s){
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+}
+
+function buildMenu(){
+  document.getElementById('histList').innerHTML =
+    THEMES.map(function(t, k){
+      return '<button class="h-card" onclick="start(' + k + ')">'
+           + '<span class="ht">' + esc(t.nom) + '</span><br>'
+           + '<span class="hs">' + esc(t.sous) + '</span></button>';
+    }).join('');
+}
+
+function start(k){
+  if (typeof k === 'number') theme = k;
+  jeu = prochains(theme, PAR_PARTIE);
+  noms = melange(jeu.map(function(p){
+    return {k: p.i, v: p.n, h: p.h, pose: false}; }));
+  traces = melange(jeu.map(function(p){
+    return {k: p.i, v: p.t, pose: false}; }));
+  faits = []; tenu = null; rate = null; indice = null; secs = 0;
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('game').style.display = 'block';
+  document.getElementById('doneBox').style.display = 'none';
+  document.getElementById('titreHist').textContent = THEMES[theme].nom;
+  JDC.mesure('quifaitquoi_theme_' + THEMES[theme].cle, {});
+  document.getElementById('consigne').textContent = CONSIGNE;
+  document.getElementById('progTot').textContent = jeu.length;
+  document.getElementById('progQuoi').textContent = 'paires';
+  dessiner();
+  window.scrollTo(0, 0);
+}
+
+function etat(col, j){
+  const t = (tenu && tenu.col === col && tenu.j === j);
+  const r = (rate && rate.col === col && rate.j === j);
+  const s = (indice && indice.col === col && indice.j === j);
+  return {cls: (t ? ' tenu' : '') + (r ? ' rate' : '') + (s ? ' souffle' : ''),
+          on: t ? 'true' : 'false'};
+}
+
+function dessiner(){
+  document.getElementById('colNoms').innerHTML = noms.map(function(c, j){
+    if (c.pose) return '';
+    const e = etat('n', j);
+    return '<button class="qn' + e.cls + '" onclick="clic(\'n\',' + j
+         + ')" aria-pressed="' + e.on + '"><span class="nm">' + esc(c.v)
+         + '</span><span class="mt">' + esc(c.h) + '</span></button>';
+  }).join('');
+  document.getElementById('colTraces').innerHTML = traces.map(function(c, j){
+    if (c.pose) return '';
+    const e = etat('t', j);
+    return '<button class="qt' + e.cls + '" onclick="clic(\'t\',' + j
+         + ')" aria-pressed="' + e.on + '">' + esc(c.v) + '</button>';
+  }).join('');
+  document.getElementById('titreTrouvees').textContent =
+    faits.length ? 'Déjà reliés' : '';
+  document.getElementById('trouvees').innerHTML = faits.map(function(id){
+    const p = PAR_ID[id];
+    return '<div class="lgn fait"><span class="nm">' + esc(p.n) + '</span>'
+         + '<span class="lien">·</span><span class="tr">' + esc(p.t)
+         + '</span></div>';
+  }).join('');
+  document.getElementById('progNow').textContent = faits.length;
+  // plus rien à relier : les deux colonnes et leurs titres s'effacent
+  document.getElementById('paires').style.display =
+    noms.every(function(c){ return c.pose; }) ? 'none' : '';
+  rate = null;   // l'image du faux geste ne dure qu'un dessin
+}
+
+/* ON COMPARE LES IDENTIFIANTS, JAMAIS LES POSITIONS.
+   La carte tenue peut être un nom ou une trace : la paire est bonne si
+   les deux cartes portent le même identifiant, dans l'ordre qu'on veut. */
+function clic(col, j){
+  const carte = (col === 'n' ? noms : traces)[j];
+  if (carte.pose) return;
+  indice = null;
+  if (tenu === null) { tenu = {col: col, j: j}; secs = 0; dessiner(); return; }
+  if (tenu.col === col) {
+    tenu = (tenu.j === j) ? null : {col: col, j: j};
+    secs = 0;
+    dessiner();
+    return;
+  }
+  const a = (tenu.col === 'n' ? noms : traces)[tenu.j];
+  if (a.k === carte.k) {
+    a.pose = true; carte.pose = true;
+    faits.push(a.k);
+    tenu = null; secs = 0;
+    dessiner();
+    if (faits.length === jeu.length) win();
+    return;
+  }
+  /* Pas de rouge et rien qui se compte : une phrase dit ce qu'on fait
+     (la carte reste choisie), et au bout de trois essais à vide, la bonne
+     carte s'entoure. */
+  secs++;
+  rate = {col: col, j: j};
+  if (secs >= 3) {
+    const autre = (tenu.col === 'n') ? traces : noms;
+    const colAutre = (tenu.col === 'n') ? 't' : 'n';
+    for (let q = 0; q < autre.length; q++) {
+      if (autre[q].k === a.k && !autre[q].pose) {
+        indice = {col: colAutre, j: q};
+        break;
+      }
+    }
+    secs = 0;
+    toast('Un coup de pouce : la carte qui va avec est entourée.');
+  } else {
+    toast('Pas celle-là. Votre carte reste choisie, essayez-en une autre.');
+  }
+  dessiner();
+}
+
+function win(){
+  document.getElementById('doneQuoi').textContent =
+    'Les ' + MOTS[jeu.length] + ' grands noms sont reliés à ce qu’ils ont fait.';
+  document.getElementById('doneMot').textContent = '';
+  document.getElementById('doneBox').style.display = 'block';
+  try {
+    JDC.enregistrer('quifaitquoi', 1, true, {variante: THEMES[theme].nom});
+    JDC.marquerVu('quifaitquoi', THEMES[theme].nom);
+  } catch(e){}
+  confetti();
+  document.getElementById('doneBox').scrollIntoView({behavior: 'smooth'});
+}
+
+/* Les deux boutons de la trame : « Revenir au début » et le bouton qui
+   relance. rejouer() reprend le thème en cours. */
+function backMenu(){
+  document.getElementById('game').style.display = 'none';
+  document.getElementById('menu').style.display = 'block';
+  document.getElementById('doneBox').style.display = 'none';
+  document.body.style.paddingBottom = '';
+  window.scrollTo(0, 0);
+}
+
+function rejouer(){ start(); }
+
+buildMenu();
+
+// ═══════════════════════════════
+//   REPRIS MOT POUR MOT DE « VOUS ME MONTREZ ? »
+// ═══════════════════════════════
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function confetti(){
+  const colors = ['#c8922a','#2d6a4f','#6b4c2a','#3a6ea5','#6b4c2a'];
+  for(let i = 0; i < 60; i++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDuration = (2 + Math.random() * 2) + 's';
+    c.style.animationDelay = (Math.random() * .8) + 's';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 5000);
+  }
+}
+</script>
+
+<details class="jdc-apropos">
+<summary>À propos de ce jeu</summary>
+<div class="corps">
+<p><strong>Qui a fait quoi ?</strong> · Un grand nom, une œuvre, une chanson, un film, une découverte ou un voyage, à relier deux à deux. Molière et « L’Avare », Édith Piaf et « La Vie en rose ».</p>
+<p data-famille="1">C’est un <strong>jeu de culture générale</strong> : on reconnaît ce qu’on a appris autrefois, et on en parle. Aucune date n’est demandée.</p>
+<h2>Pour qui</h2>
+<p>Pour celles et ceux qui aiment les grands noms de l’histoire, des sciences, des arts et des voyages, sans oublier ceux de la chanson, du cinéma et des livres. Tout le monde ne retrouvera pas tout, et ce n’est pas grave : quand un nom ne vient pas, on passe à une autre carte, ou à un autre jeu du site.</p>
+<h2>Comment y jouer</h2>
+<ul>
+<li><strong>Seul</strong> : à son rythme, en commençant par la colonne qu’on veut.</li>
+<li><strong>À deux, avec un proche ou un aidant</strong> : avant de relier, on dit ce qu’on sait de la personne. Un souvenir d’école, une pièce vue au théâtre, un livre lu : cela compte autant que la bonne paire.</li>
+<li><strong>En petit groupe</strong> : chacun propose, et on discute avant de toucher.</li>
+</ul>
+<h2>Ce que ce jeu n’est pas</h2>
+<p>Il n’y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne se compte et rien ne se ferme : on peut recommencer autant de fois qu’on veut. Ce jeu est une activité de loisir. Ce n’est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
+<h2>Qui le propose</h2>
+<p>Les Jardins de Célestine, un projet d’habitat partagé pour personnes atteintes de maladies neurodégénératives, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="projet.html">Découvrir le projet</a> · <a href="jeux.html">Voir tous les jeux</a>.</p>
+</div>
+</details>
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+  <span aria-hidden="true"> · </span>
+  <a href="signaler.html?jeu=Qui%20a%20fait%20quoi%20%3F&amp;p=jeu_qui_a_fait_quoi" target="_blank" rel="noopener">Signaler un problème</a>
+</footer>
+</body>
+</html>

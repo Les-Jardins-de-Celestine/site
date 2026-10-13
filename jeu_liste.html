@@ -5,7 +5,7 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-NT825E8XDT');</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>La grande liste — jeu en ligne gratuit · Les Jardins de Célestine</title>
+<title>La grande liste · jeu en ligne gratuit · Les Jardins de Célestine</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="description" content="Un thème, douze cases à ouvrir en citant ce qui vient. Jeu de langage à faire en groupe, gratuit pour personne âgée, sans inscription, pour animateur ou aidant.">
@@ -104,6 +104,10 @@ body{background:var(--parchment);background-image:radial-gradient(ellipse at 15%
 .hc .jdc-apropos{color:#000}
 .hc .jdc-apropos h2{color:#000}
 .hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
+
+/* les confettis de la trame commune */
+.cp{position:fixed;top:-10px;width:9px;height:9px;border-radius:2px;z-index:60;pointer-events:none;animation:fall 2.6s ease-in forwards;}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 </style>
 </head>
 <body>
@@ -130,7 +134,7 @@ body{background:var(--parchment);background-image:radial-gradient(ellipse at 15%
   <div id="compte"></div>
   <div class="grille" id="grille"></div>
 
-  <div id="bilan"><p id="bilanT"></p><small id="bilanS"></small></div>
+  <div id="bilan"><div class="jdc-fete" style="font-size:2.4rem;line-height:1">🎉</div><p class="jdc-bravo" style="font-weight:700;margin:6px 0">Bravo !</p><p id="bilanT"></p><small id="bilanS"></small></div>
 
   <div id="pupitre">
     <div class="pup-t">Pour la personne qui anime</div>
@@ -149,7 +153,7 @@ body{background:var(--parchment);background-image:radial-gradient(ellipse at 15%
 <details class="jdc-apropos">
 <summary>À propos de ce jeu</summary>
 <div class="corps">
-<p><strong>La grande liste</strong> — Un thème, douze cases masquées, et le groupe qui cite ce qui lui vient. Chaque mot trouvé ouvre une case. Ce qui n'a pas été trouvé se dévoile à la fin. Dix thèmes, aucune image : tout est dans les mots.</p>
+<p><strong>La grande liste</strong> · Un thème, douze cases masquées, et le groupe qui cite ce qui lui vient. Chaque mot trouvé ouvre une case. Ce qui n'a pas été trouvé se dévoile à la fin. Aucune image : tout est dans les mots.</p>
 <h2>Pour qui</h2>
 <p>Aux petits groupes, en accueil de jour, en EHPAD ou en famille. C'est un jeu d'animation avant d'être un jeu : il fait parler, et personne n'est mis en avant.</p>
 <h2>Comment y jouer</h2>
@@ -161,7 +165,7 @@ body{background:var(--parchment);background-image:radial-gradient(ellipse at 15%
 <h2>Ce que ce jeu n'est pas</h2>
 <p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
 <h2>Qui le propose</h2>
-<p>Les Jardins de Célestine, un projet d'habitat partagé pour seniors, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="jeux.html">Voir tous les jeux</a>.</p>
+<p>Les Jardins de Célestine, un projet d’habitat partagé pour personnes atteintes de maladies neurodégénératives, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="projet.html">Découvrir le projet</a> · <a href="jeux.html">Voir tous les jeux</a>.</p>
 </div>
 </details>
 
@@ -262,11 +266,14 @@ function devoiler(complet){
   document.getElementById('aide').textContent = '';
   var n = trouves.length, t = theme.mots.length;
   document.getElementById('bilan').style.display = 'block';
+  /* Le même écran pour tout le monde, sans « 7 sur 12 » : les cases
+     qui manquaient sont de toute façon révélées sous les yeux de tous. */
   document.getElementById('bilanT').textContent = complet
-    ? 'Le tableau est complet. Vous les avez tous trouvés.'
-    : 'À vous tous, vous en avez trouvé ' + n + ' sur ' + t + '.';
-  document.getElementById('bilanS').textContent = complet ? ''
-    : 'Les autres réponses sont maintenant affichées, en plus clair.';
+    ? 'Le tableau est complet.'
+    : 'Le tableau est dévoilé.';
+  document.getElementById('bilanS').textContent = complet ? 'Rien ne vous échappe.'
+    : 'Les réponses qui manquaient sont affichées en plus clair. Rien ne vous échappe.';
+  confetti();
 
   if(typeof JDC !== 'undefined'){
     JDC.enregistrer('grandeliste', 1, true,
@@ -281,6 +288,23 @@ function retourAccueil(){
 }
 
 construireAccueil();
+
+/* Les confettis de la trame commune, couleurs de la charte. */
+function confetti(){
+  var colors = ['#c9963a','#2a5c3f','#6b4c2a','#ede5d0','#c8922a'];
+  for (var i = 0; i < 36; i++) {
+    var el = document.createElement('div');
+    el.className = 'cp';
+    el.style.cssText = 'left:' + (10 + Math.random() * 80) + '%;'
+      + 'background:' + colors[0 | Math.random() * colors.length] + ';'
+      + 'animation-delay:' + (Math.random() * 0.8) + 's;'
+      + 'animation-duration:' + (2 + Math.random() * 1.5) + 's;'
+      + 'width:' + (6 + Math.random() * 8) + 'px;height:' + (6 + Math.random() * 8) + 'px;'
+      + 'border-radius:' + (Math.random() > 0.5 ? '50%' : '2px') + ';';
+    document.body.appendChild(el);
+    (function (e) { setTimeout(function () { e.remove(); }, 4000); })(el);
+  }
+}
 </script>
 </body>
 </html>

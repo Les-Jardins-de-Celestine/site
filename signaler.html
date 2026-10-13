@@ -142,6 +142,8 @@ footer{text-align:center;padding:1.6rem;font-size:12px;color:var(--t3);border-to
     <button class="bw" type="submit">Envoyer</button>
   </form>
 
+  <p id="echec" class="note" hidden role="alert"><strong>Le message n'est pas parti.</strong> Vous pouvez réessayer, ou écrire à <a href="mailto:jardinsdecelestine@gmail.com" style="color:var(--teal);font-weight:700">jardinsdecelestine@gmail.com</a>.</p>
+
   <div id="merci" hidden>
     <strong>Merci, c'est envoyé.</strong><br>
     Ce que vous venez d'écrire arrive directement aux Jardins de Célestine. Si vous avez laissé votre adresse, vous aurez une réponse.
@@ -168,13 +170,20 @@ function envoyer(e){
   var f = document.getElementById('form-signal');
   var b = f.querySelector('button[type="submit"]');
   b.disabled = true; b.textContent = 'Envoi…';
+  var m = document.getElementById('echec');
+  if (m) m.hidden = true;
   function fini(){
     f.hidden = true;
     document.getElementById('merci').hidden = false;
     window.scrollTo(0, 0);
   }
+  function echec(){
+    b.disabled = false; b.textContent = 'Envoyer';
+    if (m) m.hidden = false;
+  }
   fetch(f.action, {method:'POST', body:new FormData(f), headers:{'Accept':'application/json'}})
-    .then(fini).catch(fini);
+    .then(function (r) { if (r.ok) { fini(); } else { echec(); } })
+    .catch(echec);
 }
 </script>
 

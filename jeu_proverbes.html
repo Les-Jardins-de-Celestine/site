@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Proverbes incomplets · jeu gratuit · Les Jardins de Célestine</title>
+<meta name="robots" content="index, follow">
+<meta name="description" content="Retrouver le mot qui manque dans un proverbe. Des proverbes et des expressions d'autrefois. Jeu gratuit, sans inscription, et la fiche à imprimer.">
+<link rel="canonical" href="https://jardinsdecelestine.com/jeu_proverbes">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="jdc-parcours.js"></script>
+<style>
+:root {
+  --cream:#f7f3ea; --parchment:#eee8d5; --ink:#1c1208;
+  --sepia:#5c3d1e; --gold:#c8922a; --green:#2d6a4f;
+  --red:#6b4c2a; --shadow:rgba(28,18,8,0.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{
+  background:var(--parchment);
+  background-image:
+    radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.08) 0%,transparent 55%),
+    radial-gradient(ellipse at 85% 90%,rgba(45,106,79,.06) 0%,transparent 55%);
+  min-height:100vh; font-family:'Nunito',sans-serif;
+  color:var(--ink); user-select:none; -webkit-user-select:none;
+}
+
+header{text-align:center;padding:16px 20px 10px;border-bottom:1px solid rgba(200,146,42,.2);position:relative;}
+header h1{font-family:'Atkinson Hyperlegible',sans-serif;font-size:clamp(1.3rem,3vw,1.9rem);font-weight:700;color:var(--sepia);cursor:default;}
+header h1 em{color:var(--gold);font-style:normal;}
+header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-top:3px;}
+.divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:6px auto 0;}
+#statsBtn{display:none;position:absolute;top:14px;right:16px;background:none;border:1.5px solid rgba(200,146,42,.4);border-radius:6px;padding:4px 10px;font-family:'Nunito',sans-serif;font-size:.75rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+#statsBtn:hover{background:rgba(200,146,42,.1);}
+
+/* ── MENU ── */
+#menu{max-width:600px;margin:34px auto;padding:0 20px;}
+#menu h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.15rem;color:var(--sepia);text-align:center;margin-bottom:8px;}
+#menu .hint{text-align:center;font-size:.92rem;color:var(--sepia);opacity:.75;margin-bottom:20px;}
+.h-card{display:block;width:100%;text-align:left;background:var(--cream);border:1.5px solid rgba(200,146,42,.35);border-radius:14px;padding:18px 22px;margin-bottom:14px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s;}
+.h-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 22px var(--shadow);}
+.h-card .ht{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.08rem;font-weight:700;color:var(--sepia);}
+.h-card .hs{font-size:.82rem;color:var(--sepia);opacity:.65;margin-top:2px;}
+.badge-new{display:inline-block;background:var(--green);color:#fff;font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;}
+.badge-vu{display:inline-block;background:rgba(92,61,30,.12);color:var(--sepia);font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;}
+#suggestion{margin-top:14px;font-size:.86rem;color:var(--sepia);opacity:.8;font-style:italic;text-align:center;}
+
+/* ── JEU ── */
+#game{display:none;max-width:680px;margin:0 auto;padding:14px 18px 40px;}
+#hud{display:flex;justify-content:space-between;align-items:center;padding:4px 2px 12px;font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;color:var(--sepia);font-size:.92rem;}
+#hud .prog{color:var(--green);}
+#backBtn{background:none;border:1.5px solid rgba(200,146,42,.45);border-radius:8px;padding:5px 12px;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+#backBtn:hover{background:rgba(200,146,42,.1);}
+
+.zone-titre{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--sepia);opacity:.6;margin:10px 0 8px;}
+
+#histoire{background:var(--cream);border:1.5px solid rgba(45,106,79,.35);border-radius:14px;padding:14px 16px;min-height:70px;box-shadow:0 6px 20px var(--shadow);}
+#histoire .placed{background:#e9f2ec;border:1.5px solid rgba(45,106,79,.4);border-radius:10px;padding:11px 14px;margin-bottom:9px;font-size:1rem;line-height:1.55;color:var(--ink);animation:pop .3s ease;}
+#histoire .placed:last-child{margin-bottom:0;}
+#histoire .placed .num{display:inline-block;background:var(--green);color:#fff;font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;font-size:.75rem;width:22px;height:22px;border-radius:50%;text-align:center;line-height:22px;margin-right:8px;}
+#histoire .vide{font-size:.9rem;color:var(--sepia);opacity:.5;font-style:italic;text-align:center;padding:10px 0;}
+@keyframes pop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+
+#blocs{margin-top:6px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.demande{background:var(--cream);border-left:4px solid var(--green);border-radius:12px;padding:14px 16px;margin:0 0 14px;}
+.demande .dit{font-size:1.04rem;line-height:1.6;color:var(--ink);margin:0;font-style:italic;}
+.bloc img{width:100%;display:block;border-radius:8px;margin-bottom:8px;}
+.bloc .lib{display:block;font-size:.95rem;line-height:1.4;text-align:center;}
+#histoire .placed img{width:100%;display:block;border-radius:8px;margin:6px 0 0;}
+#histoire .placed{display:block;}
+@media (min-width:620px){#blocs{grid-template-columns:repeat(3,1fr);}
+  #histoire{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;align-items:start;}
+  #histoire .vide{grid-column:1/-1;}}
+.bloc{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid rgba(200,146,42,.45);border-radius:10px;padding:12px 15px;margin-bottom:10px;font-family:'Nunito',sans-serif;font-size:1rem;line-height:1.55;color:var(--ink);cursor:pointer;transition:all .18s;}
+.bloc:hover{border-color:var(--gold);background:rgba(200,146,42,.06);}
+.bloc.used{display:none;}
+.bloc.shake{animation:shk .35s;border-color:var(--red);}
+@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+#doneBox{display:none;margin-top:18px;text-align:center;}
+#doneBox .msg{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.1rem;font-weight:700;color:var(--green);margin-bottom:12px;}
+.btn-g2{background:var(--gold);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;margin:0 5px;}
+.btn-g2:hover{background:#b07820;}
+.btn-o2{background:none;border:1.5px solid rgba(200,146,42,.5);color:var(--sepia);border-radius:10px;padding:12px 24px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;margin:0 5px;}
+.btn-o2:hover{background:rgba(200,146,42,.1);}
+
+/* ── STATS ── */
+#statsPanel{display:none;position:fixed;inset:0;background:rgba(28,18,8,.75);z-index:60;align-items:center;justify-content:center;}
+#statsPanel.show{display:flex;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+#statsBox{background:var(--cream);border:2px solid var(--gold);border-radius:14px;padding:26px 30px;max-width:440px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+#statsBox h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;font-weight:700;color:var(--sepia);margin-bottom:4px;}
+.s-sub{font-size:0.72rem;color:var(--sepia);opacity:.55;margin-bottom:14px;display:block;}
+.srow{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(200,146,42,.14);}
+.srow:last-child{border-bottom:none;}
+.srow-name{font-size:.82rem;font-weight:700;color:var(--sepia);}
+.scol{text-align:center;}
+.slbl{font-size:0.72rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.08em;}
+.sval{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.9rem;font-weight:700;color:var(--gold);}
+.sval.green{color:var(--green);}
+.sa{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;}
+.btn-sm{padding:6px 14px;border-radius:6px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;}
+.btn-ol{background:none;border:1.5px solid rgba(200,146,42,.5);color:var(--sepia);}
+.btn-g{background:var(--gold);color:white;border:none;}
+.no-stats{font-size:.85rem;color:var(--sepia);opacity:.6;font-style:italic;text-align:center;padding:14px 0;}
+
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(10px);color:white;background:#2d6a4f;padding:10px 22px;border-radius:8px;font-size:.86rem;font-weight:700;opacity:0;transition:all .25s;z-index:300;pointer-events:none;font-family:'Atkinson Hyperlegible',sans-serif;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+.confetti{position:fixed;top:-14px;width:10px;height:14px;z-index:70;pointer-events:none;animation:cfall linear forwards;}
+@keyframes cfall{to{transform:translateY(105vh) rotate(720deg);opacity:.9;}}
+
+/* Sortie de secours : toujours un moyen de revenir au catalogue. */
+.jdc-retour{display:block;text-align:center;padding:8px;font-size:.74rem;
+  color:#5c3d1e;opacity:.55;text-decoration:none;letter-spacing:.1em;
+  text-transform:uppercase;font-family:'Nunito',sans-serif;}
+.jdc-retour:hover{opacity:1;}
+@media print{.jdc-retour{display:none;}}
+
+/* Pied discret : le lien légal doit exister sur chaque page du site. */
+.jdc-legal{text-align:center;padding:16px 14px 22px;font-size:.78rem;line-height:1.6;
+  color:#5c3d1e;opacity:.6;font-family:'Nunito',sans-serif;}
+.jdc-legal a{color:inherit;}
+@media print{.jdc-legal{display:none;}}
+
+/* Une image posée peut être reprise : seule la dernière, pour ne pas casser l'ordre. */
+.placed.reprenable{cursor:pointer;position:relative;}
+.placed.reprenable:hover,.placed.reprenable:focus{outline:2px solid var(--gold,#c8922a);outline-offset:2px;}
+.placed .retirer{position:absolute;top:-7px;right:-7px;width:24px;height:24px;border-radius:50%;
+  background:#5c3d1e;color:#fff;font-size:15px;font-weight:700;line-height:24px;text-align:center;
+  box-shadow:0 2px 6px rgba(0,0,0,.3);}
+
+/* Le nom de la séquence en cours : on doit savoir ce qu'on est en train de montrer. */
+.imprimer{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.86rem;line-height:1.5;color:var(--sepia);opacity:.8;text-align:center;margin:14px 0 0;}
+.imprimer a{color:var(--sepia);text-underline-offset:3px;display:inline-block;padding:15px 16px;}.imprimer-note{display:inline-block;margin-top:-6px;}
+.titre-hist{text-align:center;font-weight:700;font-size:1.06rem;color:#5c3d1e;margin:2px 0 10px;}
+</style>
+<style id="jdc-apropos-style">
+/* Bloc « À propos » : replié par défaut, lu en entier par les moteurs.
+   Couleurs écrites en dur · chaque jeu a ses propres variables CSS. */
+.jdc-apropos{max-width:680px;margin:28px auto 8px;padding:0 16px;
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;color:#5c3d1e;}
+.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;
+  letter-spacing:.02em;opacity:.62;padding:9px 0;text-align:center;
+  border-top:1px solid rgba(92,61,30,.16);}
+.jdc-apropos>summary::-webkit-details-marker{display:none}
+.jdc-apropos>summary::after{content:' \203A';display:inline-block;
+  transform:rotate(90deg);margin-left:5px;opacity:.7}
+.jdc-apropos[open]>summary::after{transform:rotate(-90deg)}
+.jdc-apropos>summary:hover,.jdc-apropos>summary:focus-visible{opacity:.95}
+.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;
+  text-align:left;opacity:.9}
+.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:#5c3d1e;
+  font-weight:700}
+.jdc-apropos p{margin:0 0 10px}
+.jdc-apropos ul{margin:0 0 10px;padding-left:20px}
+.jdc-apropos li{margin-bottom:5px}
+.jdc-apropos a{color:#2d6a4f}
+.hc .jdc-apropos{color:#000}
+.hc .jdc-apropos h2{color:#000}
+.hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
+</style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Game",
+  "name": "Proverbes incomplets",
+  "url": "https://jardinsdecelestine.com/jeu_proverbes",
+  "description": "Retrouver le mot qui manque dans un proverbe. Des proverbes et des expressions d'autrefois. Jeu gratuit, sans inscription, et la fiche à imprimer.",
+  "inLanguage": "fr",
+  "isAccessibleForFree": true,
+  "genre": "Jeu de langage et de mémoire ancienne",
+  "audience": {
+    "@type": "Audience",
+    "audienceType": "Personnes âgées, aidants, orthophonistes, accueils de jour"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Les Jardins de Célestine",
+    "url": "https://jardinsdecelestine.com"
+  }
+}
+</script>
+
+<style id="proverbes">
+/* ── Les proverbes à trou ───────────────────────────────────────── */
+#liste{display:flex;flex-direction:column;gap:2px;}
+.prv{display:flex;align-items:baseline;gap:9px;width:100%;min-height:52px;
+  padding:8px;background:none;border:none;border-bottom:1px dotted
+  rgba(92,61,30,.3);font:inherit;color:var(--ink);text-align:left;
+  cursor:pointer;border-radius:8px;font-size:1rem;line-height:1.55;}
+.prv:hover{background:rgba(200,146,42,.10);}
+.prv .n{flex:0 0 22px;font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:.78rem;color:var(--sepia);opacity:.65;}
+.prv .t{flex:1 1 auto;min-width:0;overflow-wrap:break-word;}
+.prv .creux{display:inline-block;min-width:92px;border-bottom:2px dotted
+  var(--sepia);vertical-align:baseline;}
+.prv.fait{background:rgba(45,106,79,.08);}
+.prv.fait .creux{border-bottom:none;font-weight:700;color:var(--green);}
+
+/* ── La banque de mots, COLLÉE EN BAS DE L'ÉCRAN ─────────────────
+   Flo, le 10 octobre : « les phrases sont écartées les unes des
+   autres, ce qui fait que tu es obligé de naviguer entre les phrases
+   et les mots à trouver. C'est un peu chiant. »
+   Elle a raison, et elle a donné la solution : un bandeau qui reste en
+   bas même quand on fait défiler. Les mots sont donc toujours sous la
+   main, quelle que soit la phrase qu'on regarde.
+   Trois précautions : le bandeau RÉTRÉCIT à mesure qu'on pose les
+   mots (un mot posé quitte le vrac, il est déjà lisible dans sa
+   phrase) ; sa hauteur est plafonnée pour ne pas manger l'écran d'un
+   téléphone ; et le corps de page reçoit un creux de sa hauteur,
+   mesuré en JavaScript, pour que la dernière phrase ne passe jamais
+   dessous. */
+#banque2{position:fixed;left:0;right:0;bottom:0;z-index:50;
+  display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
+  background:var(--parchment);border-top:2px solid var(--gold);
+  box-shadow:0 -3px 12px var(--shadow);
+  padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));
+  max-height:34vh;overflow-y:auto;}
+#banque2:empty{display:none;}
+#banque2 .titre-vrac{flex:0 0 100%;text-align:center;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:.72rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--sepia);
+  opacity:.7;margin-bottom:2px;}
+.mo{background:var(--cream);border:2px solid rgba(92,61,30,.3);
+  border-radius:999px;padding:11px 18px;font:inherit;font-size:1rem;
+  color:var(--ink);cursor:pointer;min-height:46px;}
+.mo:hover{border-color:var(--gold);}
+.mo.tenu{border-color:var(--gold);background:#fff;
+  box-shadow:0 0 0 3px rgba(200,146,42,.45);}
+.mo.pose{opacity:.3;cursor:default;box-shadow:none;}
+
+/* ── Les mots en désordre ───────────────────────────────────────── */
+#ligne{min-height:62px;background:var(--cream);border:2px dashed
+  rgba(92,61,30,.3);border-radius:12px;padding:12px;font-size:1.05rem;
+  line-height:1.6;text-align:center;}
+#ligne .vide{color:var(--sepia);opacity:.6;font-size:.92rem;}
+#vrac{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;
+  margin-top:14px;}
+.zone-titre{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.74rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--sepia);
+  opacity:.7;margin:18px 0 8px;text-align:center;}
+/* Le message qui passe : la règle héritée est en une seule ligne sans
+   largeur maximale, et nos messages sont des phrases entières. */
+#toast{white-space:normal;max-width:calc(100vw - 32px);text-align:center;
+  line-height:1.4;}
+</style>
+</head>
+<body>
+
+<a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
+<header>
+  <h1 id="mainTitle">Proverbes <em>incomplets</em></h1>
+  <p>Il manque le mot de la fin</p>
+  <div class="divider"></div>
+</header>
+
+<div id="menu">
+  <div class="demande">
+    <p class="dit">«&nbsp;Ma mère en avait un pour chaque occasion. Je les ai tous dans l'oreille, mais le dernier mot m'échappe.&nbsp;»</p>
+  </div>
+  <p class="hint">Des proverbes et des expressions. Le jeu les
+     montre tous avant d'en remontrer un seul.</p>
+  <div id="histList"></div>
+  <p class="imprimer"><a href="proverbes-01-trou.pdf" download
+     target="_blank" rel="noopener">Imprimer une fiche (PDF)</a><br>
+     <span class="imprimer-note">Les mêmes proverbes sur une feuille, avec
+     les réponses sur une seconde page</span></p>
+  <!-- LE LIEN VERS LE JEU VOISIN.
+       Deux cartes séparées au catalogue, mais la personne qui aime
+       l'une doit trouver l'autre sans repasser par le catalogue. -->
+  <p class="imprimer"><a href="jeu_proverbes_ordre.html">Les proverbes en désordre</a><br>
+     <span class="imprimer-note">les mêmes proverbes, mais à remettre dans l’ordre</span></p>
+  <div id="suggestion"></div>
+</div>
+
+<div id="game">
+  <div id="hud">
+    <button id="backBtn" onclick="backMenu()">↩ Revenir au début</button>
+    <span class="prog"><span id="progNow">0</span> /
+      <span id="progTot">0</span> <span id="progQuoi">trouvés</span></span>
+  </div>
+
+  <p id="titreHist" class="titre-hist"></p>
+  <p class="hint" id="consigne"></p>
+
+  <div id="ecranTrou">
+    <div id="liste"></div>
+    <div id="banque2"></div>
+  </div>
+
+  <div id="ecranMelange">
+    <div class="zone-titre">La phrase que vous reconstituez</div>
+    <div id="ligne"></div>
+    <div class="zone-titre">Les mots, en désordre</div>
+    <div id="vrac"></div>
+  </div>
+
+  <div id="doneBox">
+    <p class="msg" id="doneMsg">🎉 Bravo&nbsp;!</p>
+    <p id="doneQuoi"></p>
+    <p id="doneMot"></p>
+    <p style="margin-top:14px">
+      <button class="btn-g2" onclick="rejouer()">Une autre page</button>
+      <button class="btn-o2" onclick="backMenu()">↩ Revenir au début</button>
+    </p>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════
+//   LES PROVERBES D'AUTREFOIS
+// ═══════════════════════════════
+/* Le vivier est écrit par build_jeu_proverbes.py à partir de
+   proverbes.py, le MÊME fichier que les fiches à imprimer. */
+const VIVIER = [{"t": "Petit à petit, l'oiseau fait son …", "r": "nid", "i": "C'est là qu'il pond ses œufs."}, {"t": "Qui vole un œuf vole un …", "r": "bœuf", "i": "Ça rime avec œuf."}, {"t": "Quand le chat n'est pas là, les souris …", "r": "dansent", "i": "Elles en profitent, et ça se voit."}, {"t": "Chat échaudé craint l'eau …", "r": "froide", "i": "Le contraire de chaude."}, {"t": "Une hirondelle ne fait pas le …", "r": "printemps", "i": "La saison des premières fleurs."}, {"t": "À bon chat, bon …", "r": "rat", "i": "Le mot commence par « R » et fait 3 lettres."}, {"t": "Il ne faut pas vendre la peau de l'ours avant de l'avoir …", "r": "tué", "i": "Avant même de l'avoir attrapé."}, {"t": "On n'apprend pas à un vieux singe à faire la …", "r": "grimace", "i": "Une drôle de tête."}, {"t": "Faute de grives, on mange des …", "r": "merles", "i": "Un autre oiseau, noir, au bec jaune."}, {"t": "Chien qui aboie ne … pas", "r": "mord", "i": "Ce qu'il fait avec ses dents."}, {"t": "Les chats ne font pas des …", "r": "chiens", "i": "Le mot commence par « C » et fait 6 lettres."}, {"t": "Qui se couche avec les chiens se lève avec des …", "r": "puces", "i": "Le mot commence par « P » et fait 5 lettres."}, {"t": "Les chiens aboient, la caravane …", "r": "passe", "i": "Le mot commence par « P » et fait 5 lettres."}, {"t": "Il ne faut pas mettre la charrue avant les …", "r": "bœufs", "i": "Ce sont eux qui la tirent."}, {"t": "La faim fait sortir le loup du …", "r": "bois", "i": "Le mot commence par « B » et fait 4 lettres."}, {"t": "Qui veut voyager loin ménage sa …", "r": "monture", "i": "Sa bête, celle qui le porte."}, {"t": "À cheval donné on ne regarde pas les …", "r": "dents", "i": "C'est à elles qu'on devine l'âge d'un cheval."}, {"t": "Qui va à la chasse perd sa …", "r": "place", "i": "Ça rime avec chasse."}, {"t": "Quand on parle du loup, on en voit la …", "r": "queue", "i": "Le mot commence par « Q » et fait 5 lettres."}, {"t": "Les loups ne se mangent pas entre …", "r": "eux", "i": "Le mot commence par « E » et fait 3 lettres."}, {"t": "Une poule qui a trouvé un …", "r": "couteau", "i": "Elle ne sait pas quoi en faire. Un objet qui coupe."}, {"t": "Il n'y a pas de petites …", "r": "économies", "i": "Le mot commence par « É » et fait 9 lettres."}, {"t": "Après la pluie, le beau …", "r": "temps", "i": "Le mot commence par « T » et fait 5 lettres."}, {"t": "Noël au balcon, Pâques aux …", "r": "tisons", "i": "Les braises, dans la cheminée."}, {"t": "En avril, ne te découvre pas d'un …", "r": "fil", "i": "Le mot commence par « F » et fait 3 lettres."}, {"t": "En mai, fais ce qu'il te …", "r": "plaît", "i": "Le mot commence par « P » et fait 5 lettres."}, {"t": "Mariage pluvieux, mariage …", "r": "heureux", "i": "Le mot commence par « H » et fait 7 lettres."}, {"t": "Petite pluie abat grand …", "r": "vent", "i": "Le mot commence par « V » et fait 4 lettres."}, {"t": "À la Sainte-Catherine, tout bois prend …", "r": "racine", "i": "Ça rime avec Catherine."}, {"t": "Qui sème le vent récolte la …", "r": "tempête", "i": "Le mot commence par « T » et fait 7 lettres."}, {"t": "Le vent tourne, et les girouettes avec …", "r": "lui", "i": "Le mot commence par « L » et fait 3 lettres."}, {"t": "C'est en forgeant qu'on devient …", "r": "forgeron", "i": "Le mot commence par « F » et fait 8 lettres."}, {"t": "Il faut battre le fer tant qu'il est …", "r": "chaud", "i": "Le mot commence par « C » et fait 5 lettres."}, {"t": "Rien ne sert de courir, il faut partir à …", "r": "point", "i": "Le mot commence par « P » et fait 5 lettres."}, {"t": "Tout vient à point à qui sait …", "r": "attendre", "i": "Le mot commence par « A » et fait 8 lettres."}, {"t": "On ne peut pas être au four et au …", "r": "moulin", "i": "Le mot commence par « M » et fait 6 lettres."}, {"t": "Après l'effort, le …", "r": "réconfort", "i": "Ça rime avec effort."}, {"t": "Il n'y a que le premier pas qui …", "r": "coûte", "i": "Le mot commence par « C » et fait 5 lettres."}, {"t": "Petit à petit on va …", "r": "loin", "i": "Le mot commence par « L » et fait 4 lettres."}, {"t": "Les petits ruisseaux font les grandes …", "r": "rivières", "i": "Le mot commence par « R » et fait 8 lettres."}, {"t": "Qui trop embrasse mal …", "r": "étreint", "i": "Il serre mal dans ses bras."}, {"t": "Le mieux est l'ennemi du …", "r": "bien", "i": "Le mot commence par « B » et fait 4 lettres."}, {"t": "Il n'est jamais trop tard pour bien …", "r": "faire", "i": "Le mot commence par « F » et fait 5 lettres."}, {"t": "Vouloir, c'est …", "r": "pouvoir", "i": "Le mot commence par « P » et fait 7 lettres."}, {"t": "Aide-toi, le ciel t'…", "r": "aidera", "i": "Le mot commence par « A » et fait 6 lettres."}, {"t": "Chacun son métier, les vaches seront bien …", "r": "gardées", "i": "Le mot commence par « G » et fait 7 lettres."}, {"t": "L'union fait la …", "r": "force", "i": "Le mot commence par « F » et fait 5 lettres."}, {"t": "On ne fait pas d'omelette sans casser des …", "r": "œufs", "i": "Le mot commence par « Œ » et fait 4 lettres."}, {"t": "Les paroles s'envolent, les écrits …", "r": "restent", "i": "Le mot commence par « R » et fait 7 lettres."}, {"t": "La parole est d'argent, le silence est d'…", "r": "or", "i": "Le métal jaune, plus précieux que l'argent."}, {"t": "Qui ne dit mot …", "r": "consent", "i": "Le mot commence par « C » et fait 7 lettres."}, {"t": "Il faut tourner sept fois sa langue dans sa bouche avant de …", "r": "parler", "i": "Le mot commence par « P » et fait 6 lettres."}, {"t": "Les murs ont des …", "r": "oreilles", "i": "Le mot commence par « O » et fait 8 lettres."}, {"t": "La vérité sort de la bouche des …", "r": "enfants", "i": "Le mot commence par « E » et fait 7 lettres."}, {"t": "Il n'y a pas pire sourd que celui qui ne veut pas …", "r": "entendre", "i": "Ce qu'on fait avec ses oreilles, quand on veut bien."}, {"t": "Trop parler nuit, trop gratter …", "r": "cuit", "i": "Ça rime avec nuit."}, {"t": "Bien faire et laisser …", "r": "dire", "i": "Le mot commence par « D » et fait 4 lettres."}, {"t": "Un homme averti en vaut …", "r": "deux", "i": "Le mot commence par « D » et fait 4 lettres."}, {"t": "Toute vérité n'est pas bonne à …", "r": "dire", "i": "Le mot commence par « D » et fait 4 lettres."}, {"t": "Qui s'excuse s'…", "r": "accuse", "i": "Le mot commence par « A » et fait 6 lettres."}, {"t": "Les bons comptes font les bons …", "r": "amis", "i": "Le mot commence par « A » et fait 4 lettres."}, {"t": "L'argent ne fait pas le …", "r": "bonheur", "i": "Le mot commence par « B » et fait 7 lettres."}, {"t": "Qui paie ses dettes s'…", "r": "enrichit", "i": "Le mot commence par « E » et fait 8 lettres."}, {"t": "Un sou est un …", "r": "sou", "i": "Le mot commence par « S » et fait 3 lettres."}, {"t": "Bien mal acquis ne … jamais", "r": "profite", "i": "Le mot commence par « P » et fait 7 lettres."}, {"t": "Il n'y a pas de sot …", "r": "métier", "i": "Le mot commence par « M » et fait 6 lettres."}, {"t": "L'occasion fait le …", "r": "larron", "i": "Un voleur, en vieux français."}, {"t": "Abondance de biens ne …", "r": "nuit", "i": "Le mot commence par « N » et fait 4 lettres."}, {"t": "L'appétit vient en …", "r": "mangeant", "i": "Le mot commence par « M » et fait 8 lettres."}, {"t": "Ventre affamé n'a point d'…", "r": "oreilles", "i": "Le mot commence par « O » et fait 8 lettres."}, {"t": "Qui dort …", "r": "dîne", "i": "Le mot commence par « D » et fait 4 lettres."}, {"t": "À bon vin point d'…", "r": "enseigne", "i": "Le panneau accroché devant la boutique."}, {"t": "Il faut manger pour vivre et non vivre pour …", "r": "manger", "i": "Le mot commence par « M » et fait 6 lettres."}, {"t": "La sauce fait passer le …", "r": "poisson", "i": "Le mot commence par « P » et fait 7 lettres."}, {"t": "C'est dans les vieux pots qu'on fait les meilleures …", "r": "soupes", "i": "Le mot commence par « S » et fait 6 lettres."}, {"t": "Tel père, tel …", "r": "fils", "i": "Le mot commence par « F » et fait 4 lettres."}, {"t": "Bon sang ne saurait …", "r": "mentir", "i": "Le mot commence par « M » et fait 6 lettres."}, {"t": "Qui se ressemble s'…", "r": "assemble", "i": "Le mot commence par « A » et fait 8 lettres."}, {"t": "On reconnaît l'arbre à ses …", "r": "fruits", "i": "Le mot commence par « F » et fait 6 lettres."}, {"t": "Chacun voit midi à sa …", "r": "porte", "i": "Le mot commence par « P » et fait 5 lettres."}, {"t": "Comme on fait son lit, on se …", "r": "couche", "i": "Le mot commence par « C » et fait 6 lettres."}, {"t": "L'habit ne fait pas le …", "r": "moine", "i": "Celui qui vit au monastère."}, {"t": "Les absents ont toujours …", "r": "tort", "i": "Le mot commence par « T » et fait 4 lettres."}, {"t": "Loin des yeux, loin du …", "r": "cœur", "i": "Le mot commence par « C » et fait 4 lettres."}, {"t": "On a souvent besoin d'un plus petit que …", "r": "soi", "i": "Le mot commence par « S » et fait 3 lettres."}, {"t": "Il faut de tout pour faire un …", "r": "monde", "i": "Le mot commence par « M » et fait 5 lettres."}, {"t": "Nul n'est prophète en son …", "r": "pays", "i": "Le mot commence par « P » et fait 4 lettres."}, {"t": "Charbonnier est maître chez …", "r": "soi", "i": "Chez lui, personne ne lui dicte rien."}, {"t": "Les yeux sont le miroir de l'…", "r": "âme", "i": "Le mot commence par « Â » et fait 3 lettres."}, {"t": "L'amour est …", "r": "aveugle", "i": "Le mot commence par « A » et fait 7 lettres."}, {"t": "Qui aime bien châtie …", "r": "bien", "i": "Le mot commence par « B » et fait 4 lettres."}, {"t": "Jeux de mains, jeux de …", "r": "vilains", "i": "Le mot commence par « V » et fait 7 lettres."}, {"t": "Un tiens vaut mieux que deux tu l'…", "r": "auras", "i": "Le mot commence par « A » et fait 5 lettres."}, {"t": "Mieux vaut tard que …", "r": "jamais", "i": "Le mot commence par « J » et fait 6 lettres."}, {"t": "Mieux vaut prévenir que …", "r": "guérir", "i": "Le mot commence par « G » et fait 6 lettres."}, {"t": "Prudence est mère de …", "r": "sûreté", "i": "Le mot commence par « S » et fait 6 lettres."}, {"t": "Qui ne risque rien n'a …", "r": "rien", "i": "Le mot commence par « R » et fait 4 lettres."}, {"t": "La nuit porte …", "r": "conseil", "i": "Le mot commence par « C » et fait 7 lettres."}, {"t": "À chaque jour suffit sa …", "r": "peine", "i": "Le mot commence par « P » et fait 5 lettres."}, {"t": "Chaque chose en son …", "r": "temps", "i": "Le mot commence par « T » et fait 5 lettres."}, {"t": "Il ne faut pas jeter le bébé avec l'eau du …", "r": "bain", "i": "Le mot commence par « B » et fait 4 lettres."}, {"t": "C'est la goutte d'eau qui fait déborder le …", "r": "vase", "i": "Le mot commence par « V » et fait 4 lettres."}, {"t": "Il y a loin de la coupe aux …", "r": "lèvres", "i": "Le mot commence par « L » et fait 6 lettres."}, {"t": "Le jeu n'en vaut pas la …", "r": "chandelle", "i": "La bougie, qu'on brûlait pour s'éclairer."}, {"t": "Qui s'y frotte s'y …", "r": "pique", "i": "Le mot commence par « P » et fait 5 lettres."}, {"t": "Pierre qui roule n'amasse pas …", "r": "mousse", "i": "Le tapis vert qui pousse sur les cailloux."}, {"t": "Qui vivra …", "r": "verra", "i": "Le mot commence par « V » et fait 5 lettres."}, {"t": "Rira bien qui rira le …", "r": "dernier", "i": "Le mot commence par « D » et fait 7 lettres."}, {"t": "Tout ce qui brille n'est pas …", "r": "or", "i": "Le mot commence par « O » et fait 2 lettres."}, {"t": "Il n'y a pas de fumée sans …", "r": "feu", "i": "Le mot commence par « F » et fait 3 lettres."}, {"t": "L'espoir fait …", "r": "vivre", "i": "Le mot commence par « V » et fait 5 lettres."}, {"t": "Tous les chemins mènent à …", "r": "Rome", "i": "Le mot commence par « R » et fait 4 lettres."}, {"t": "Un malheur ne vient jamais …", "r": "seul", "i": "Le mot commence par « S » et fait 4 lettres."}, {"t": "À quelque chose malheur est …", "r": "bon", "i": "Le mot commence par « B » et fait 3 lettres."}, {"t": "Tout est bien qui finit …", "r": "bien", "i": "Le mot commence par « B » et fait 4 lettres."}, {"t": "La fin justifie les …", "r": "moyens", "i": "Le mot commence par « M » et fait 6 lettres."}, {"t": "Qui veut la fin veut les …", "r": "moyens", "i": "Le mot commence par « M » et fait 6 lettres."}, {"t": "Le temps guérit toutes les …", "r": "blessures", "i": "Le mot commence par « B » et fait 9 lettres."}, {"t": "La curiosité est un vilain …", "r": "défaut", "i": "Le mot commence par « D » et fait 6 lettres."}, {"t": "La nuit, tous les chats sont …", "r": "gris", "i": "Une couleur, entre le blanc et le noir."}, {"t": "Au royaume des aveugles, les borgnes sont …", "r": "rois", "i": "Le mot commence par « R » et fait 4 lettres."}, {"t": "On ne change pas une équipe qui …", "r": "gagne", "i": "Le mot commence par « G » et fait 5 lettres."}, {"t": "Il n'y a que les … qui ne se rencontrent pas", "r": "montagnes", "i": "Le mot commence par « M » et fait 9 lettres."}, {"t": "Paris ne s'est pas fait en un …", "r": "jour", "i": "Le mot commence par « J » et fait 4 lettres."}, {"t": "Les … se suivent et ne se ressemblent pas", "r": "jours", "i": "Le mot commence par « J » et fait 5 lettres."}, {"t": "Qui sème récolte, et qui ne sème rien ne récolte …", "r": "rien", "i": "Le mot commence par « R » et fait 4 lettres."}, {"t": "Avoir du pain sur la …", "r": "planche", "i": "Le mot commence par « P » et fait 7 lettres."}, {"t": "Être dans de beaux …", "r": "draps", "i": "Le mot commence par « D » et fait 5 lettres."}, {"t": "Couper la poire en …", "r": "deux", "i": "Le mot commence par « D » et fait 4 lettres."}, {"t": "Faire la sourde …", "r": "oreille", "i": "Le mot commence par « O » et fait 7 lettres."}, {"t": "Passer au peigne …", "r": "fin", "i": "Le mot commence par « F » et fait 3 lettres."}, {"t": "Prêter main …", "r": "forte", "i": "Le mot commence par « F » et fait 5 lettres."}, {"t": "Marcher à pas de …", "r": "loup", "i": "Le mot commence par « L » et fait 4 lettres."}, {"t": "Avoir un chat dans la …", "r": "gorge", "i": "Le mot commence par « G » et fait 5 lettres."}, {"t": "Tailler le bout de …", "r": "gras", "i": "Le mot commence par « G » et fait 4 lettres."}, {"t": "Avoir plusieurs cordes à son …", "r": "arc", "i": "Le mot commence par « A » et fait 3 lettres."}, {"t": "Mettre la main à la …", "r": "pâte", "i": "Le mot commence par « P » et fait 4 lettres."}, {"t": "Tomber dans les …", "r": "pommes", "i": "Le mot commence par « P » et fait 6 lettres."}, {"t": "Raconter des salades, en faire tout un …", "r": "plat", "i": "Le mot commence par « P » et fait 4 lettres."}, {"t": "Être au bout du …", "r": "rouleau", "i": "Le mot commence par « R » et fait 7 lettres."}, {"t": "Avoir le cœur sur la …", "r": "main", "i": "Le mot commence par « M » et fait 4 lettres."}, {"t": "Donner sa langue au …", "r": "chat", "i": "Le mot commence par « C » et fait 4 lettres."}, {"t": "Prendre ses jambes à son …", "r": "cou", "i": "Le mot commence par « C » et fait 3 lettres."}, {"t": "Mettre les petits plats dans les …", "r": "grands", "i": "Le mot commence par « G » et fait 6 lettres."}, {"t": "Arriver comme un cheveu sur la …", "r": "soupe", "i": "Le mot commence par « S » et fait 5 lettres."}, {"t": "Appeler un chat un …", "r": "chat", "i": "Le mot commence par « C » et fait 4 lettres."}, {"t": "Être tiré à quatre …", "r": "épingles", "i": "Le mot commence par « É » et fait 8 lettres."}, {"t": "Avoir d'autres chats à …", "r": "fouetter", "i": "Le mot commence par « F » et fait 8 lettres."}, {"t": "Faire d'une pierre deux …", "r": "coups", "i": "Le mot commence par « C » et fait 5 lettres."}, {"t": "Jeter l'argent par les …", "r": "fenêtres", "i": "Le mot commence par « F » et fait 8 lettres."}, {"t": "Casser du … sur le dos de quelqu'un", "r": "sucre", "i": "Le mot commence par « S » et fait 5 lettres."}, {"t": "Casser du sucre sur le … de quelqu'un", "r": "dos", "i": "Le mot commence par « D » et fait 3 lettres."}, {"t": "Mettre la … à la pâte", "r": "main", "i": "Le mot commence par « M » et fait 4 lettres."}, {"t": "Avoir le cœur sur la … ", "r": "main", "i": "Le mot commence par « M » et fait 4 lettres."}, {"t": "Prendre ses … à son cou", "r": "jambes", "i": "Le mot commence par « J » et fait 6 lettres."}, {"t": "Donner sa … au chat", "r": "langue", "i": "Le mot commence par « L » et fait 6 lettres."}, {"t": "Chercher … à quatorze heures", "r": "midi", "i": "Le mot commence par « M » et fait 4 lettres."}, {"t": "Mettre de l'… dans son vin", "r": "eau", "i": "Le mot commence par « E » et fait 3 lettres."}, {"t": "Avoir la puce à l'…", "r": "oreille", "i": "Le mot commence par « O » et fait 7 lettres."}, {"t": "Être comme un coq en …", "r": "pâte", "i": "Le mot commence par « P » et fait 4 lettres."}, {"t": "Avoir le bras …", "r": "long", "i": "Le mot commence par « L » et fait 4 lettres."}, {"t": "Mettre de l'eau dans son …", "r": "vin", "i": "Le mot commence par « V » et fait 3 lettres."}, {"t": "Chercher midi à quatorze …", "r": "heures", "i": "Le mot commence par « H » et fait 6 lettres."}];
+/* Cette page ne connaît QU'UNE façon de jouer : c'est une carte du
+   catalogue, et une carte est une façon de jouer. Sa jumelle est
+   l'autre page, et le menu y renvoie. */
+const MODE = 'trou';
+const COMBIEN = 10;
+const NOM = 'Proverbes incomplets';
+const SOUS = 'Dix proverbes, et les dix mots à replacer';
+const CONSIGNE = 'Prenez un mot en bas, puis touchez le proverbe auquel il manque. Si vous séchez, touchez un proverbe sans avoir de mot en main : il vous souffle un indice.';
+const BOUTON = 'Commencer une page';
+
+/* LA TOURNÉE.
+   Pas de série, pas de tirage au hasard à chaque partie : une tournée.
+   Le vivier est mélangé UNE fois, rangé dans le navigateur avec un
+   curseur, et chaque partie avance le curseur. On voit donc tous les
+   proverbes avant d'en revoir un seul. Quand la tournée est finie, elle
+   est remélangée.
+   Tout est dans un try/catch : un navigateur qui refuse son stockage
+   (navigation privée, réglages fermés) doit jouer quand même, avec un
+   simple tirage au hasard. */
+const CLE = 'jdc-proverbes-tournee-v1';
+
+function melangerTout(){
+  const d = VIVIER.map(function(_, i){ return i; });
+  for (let i = d.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    const g = d[i]; d[i] = d[j]; d[j] = g;
+  }
+  return d;
+}
+
+function litTournee(){
+  try {
+    const brut = localStorage.getItem(CLE);
+    if (brut) {
+      const t = JSON.parse(brut);
+      if (t && Array.isArray(t.ordre) && t.ordre.length === VIVIER.length
+          && typeof t.i === 'number') return t;
+    }
+  } catch(e){}
+  return {ordre: melangerTout(), i: 0};
+}
+
+function ecritTournee(t){
+  try { localStorage.setItem(CLE, JSON.stringify(t)); } catch(e){}
+}
+
+/* Rend `combien` proverbes jamais vus de cette tournée, et avance. */
+function prochains(combien){
+  let t = litTournee();
+  if (t.i + combien > t.ordre.length) t = {ordre: melangerTout(), i: 0};
+  const pris = t.ordre.slice(t.i, t.i + combien).map(function(k){
+    return VIVIER[k];
+  });
+  t.i += combien;
+  ecritTournee(t);
+  return pris;
+}
+
+// ── l'état d'une partie ────────────────────────────────────────────
+let mode = null;         // 'trou' ou 'melange'
+let jeu = [];            // les proverbes de cette partie
+let faits = [];          // proverbes déjà complétés
+let motsPoses = [];      // mots du vrac déjà consommés
+let tenu = null;         // le mot tenu en main (mode trou)
+let banque = [];         // les mots en vrac (mode trou)
+let courant = 0;         // le proverbe en cours (mode melange)
+let posesMots = [];      // les mots déjà remis en place (mode melange)
+let vracMots = [];       // les mots en désordre (mode melange)
+
+function buildMenu(){
+  document.getElementById('histList').innerHTML =
+      '<button class="h-card" onclick="start()">'
+    + '<span class="ht">' + BOUTON + '</span><br>'
+    + '<span class="hs">' + SOUS + '</span></button>';
+}
+
+function backMenu(){
+  if (mode && faits.length < jeu.length) {
+    try { JDC.enregistrer('proverbes', 1, false, {mode: mode}); } catch(e){}
+  }
+  mode = null;
+  document.getElementById('game').style.display = 'none';
+  document.getElementById('menu').style.display = 'block';
+  document.getElementById('doneBox').style.display = 'none';
+  document.body.style.paddingBottom = '';
+  window.scrollTo(0, 0);
+}
+
+function rejouer(){ start(); }
+
+function melangeMots(a){
+  let d;
+  do {
+    d = a.slice();
+    for (let i = d.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      const g = d[i]; d[i] = d[j]; d[j] = g;
+    }
+  } while (a.length > 1 && d.join('|') === a.join('|'));
+  return d;
+}
+
+function start(){
+  mode = MODE;
+  jeu = prochains(COMBIEN);
+  faits = []; motsPoses = []; tenu = null; courant = 0; posesMots = [];
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('game').style.display = 'block';
+  document.getElementById('doneBox').style.display = 'none';
+  document.getElementById('titreHist').textContent = NOM;
+  document.getElementById('consigne').textContent = CONSIGNE;
+  document.getElementById('ecranTrou').style.display =
+    (mode === 'trou') ? 'block' : 'none';
+  document.getElementById('ecranMelange').style.display =
+    (mode === 'melange') ? 'block' : 'none';
+  document.getElementById('progTot').textContent = jeu.length;
+  document.getElementById('progQuoi').textContent =
+    (mode === 'trou') ? 'trouvés' : 'proverbes';
+  if (mode === 'trou') {
+    banque = melangeMots(jeu.map(function(x, k){ return k; }));
+  } else {
+    prepareMelange();
+  }
+  dessiner();
+  window.scrollTo(0, 0);
+}
+
+// ── mode « le mot qui manque » ─────────────────────────────────────
+function dessinerTrou(){
+  document.getElementById('liste').innerHTML = jeu.map(function(x, i){
+    const fait = faits.indexOf(i) >= 0;
+    const creux = fait ? ('<span class="creux">' + x.r + '</span>')
+                       : '<span class="creux"></span>';
+    return '<button class="prv' + (fait ? ' fait' : '') + '"'
+         + ' onclick="clicProverbe(' + i + ')">'
+         + '<span class="n">' + (i + 1) + '.</span>'
+         + '<span class="t">' + x.t.replace('…', creux) + '</span>'
+         + '</button>';
+  }).join('');
+  /* Un mot posé QUITTE le vrac : il est déjà lisible dans sa phrase,
+     et le bandeau rétrécit d'autant. */
+  const restants = banque.filter(function(k){
+    return motsPoses.indexOf(k) < 0; });
+  const b = document.getElementById('banque2');
+  b.innerHTML = restants.length
+    ? '<span class="titre-vrac">Les mots, en vrac</span>'
+      + restants.map(function(k){
+          return '<button class="mo' + (tenu === k ? ' tenu' : '')
+               + '" onclick="clicMot(' + k + ')" aria-pressed="'
+               + (tenu === k ? 'true' : 'false') + '">' + jeu[k].r
+               + '</button>';
+        }).join('')
+    : '';
+  /* Le creux sous le contenu vaut la hauteur réelle du bandeau : une
+     hauteur devinée laisserait la dernière phrase dessous un jour où
+     les mots tiennent sur trois rangs. */
+  document.body.style.paddingBottom =
+    (b.offsetHeight ? b.offsetHeight + 18 : 0) + 'px';
+}
+
+function clicMot(k){
+  if (motsPoses.indexOf(k) >= 0) { toast('Ce mot est déjà posé.'); return; }
+  tenu = (tenu === k) ? null : k;
+  dessiner();
+}
+
+function clicProverbe(i){
+  if (faits.indexOf(i) >= 0) { toast('Celui-là est complet.'); return; }
+  /* Toucher un proverbe les mains vides, c'est demander un coup de
+     pouce. C'est l'équivalent à l'écran de la seconde feuille du
+     papier, celle des indices. */
+  if (tenu === null) { toast(jeu[i].i); return; }
+  /* ON COMPARE LE MOT, PAS SON NUMÉRO.
+     Deux proverbes d'une même page peuvent attendre le même mot :
+     « le silence est d'or » et « tout ce qui brille n'est pas or ». Si
+     on comparait les numéros, la personne qui prend le bon mot dans la
+     mauvaise pastille se verrait refuser une réponse juste. C'est
+     exactement la mise en échec qu'on s'interdit. */
+  if (jeu[tenu].r === jeu[i].r) {
+    faits.push(i); motsPoses.push(tenu); tenu = null; dessiner();
+    if (faits.length === jeu.length) win();
+    return;
+  }
+  toast('Ce mot-là ne va pas dans celui-ci. Essayez un autre proverbe.');
+}
+
+// ── mode « les mots en désordre » ──────────────────────────────────
+function prepareMelange(){
+  const pleine = jeu[courant].t.replace('…', jeu[courant].r);
+  const mots = pleine.split(' ').filter(function(m){ return m.length; });
+  posesMots = [];
+  vracMots = melangeMots(mots);
+}
+
+function dessinerMelange(){
+  const l = document.getElementById('ligne');
+  l.innerHTML = posesMots.length
+    ? posesMots.join(' ')
+    : '<span class="vide">Touchez le premier mot de la phrase.</span>';
+  document.getElementById('vrac').innerHTML = vracMots.map(function(m, k){
+    return '<button class="mo" onclick="clicVrac(' + k + ')">' + m
+         + '</button>';
+  }).join('');
+}
+
+function clicVrac(k){
+  const pleine = jeu[courant].t.replace('…', jeu[courant].r);
+  const mots = pleine.split(' ').filter(function(m){ return m.length; });
+  const attendu = mots[posesMots.length];
+  if (vracMots[k] === attendu) {
+    posesMots.push(vracMots[k]);
+    vracMots.splice(k, 1);
+    if (posesMots.length === mots.length) {
+      faits.push(courant);
+      if (faits.length === jeu.length) { dessiner(); win(); return; }
+      courant++;
+      prepareMelange();
+      toast('Et voilà. Au suivant.');
+    }
+    dessiner();
+    return;
+  }
+  /* Pas de rouge, pas de décompte : on dit ce qu'on attend, pas ce qui
+     est raté. */
+  toast(posesMots.length
+        ? 'Pas encore celui-là. Quel mot vient après « '
+          + posesMots[posesMots.length - 1] + ' » ?'
+        : 'Ce n’est pas le premier mot de la phrase.');
+}
+
+// ── commun ─────────────────────────────────────────────────────────
+function dessiner(){
+  if (mode === 'trou') dessinerTrou(); else dessinerMelange();
+  document.getElementById('progNow').textContent = faits.length;
+}
+
+function win(){
+  document.getElementById('doneQuoi').textContent =
+    (mode === 'trou')
+      ? 'Tous les mots ont retrouvé leur proverbe.'
+      : 'Tous les proverbes sont remis d’aplomb.';
+  document.getElementById('doneMot').textContent =
+    'Vous les aviez bien dans l’oreille.';
+  document.getElementById('doneBox').style.display = 'block';
+  try {
+    JDC.enregistrer('proverbes', 1, true, {mode: mode});
+    JDC.marquerVu('proverbes', mode);
+  } catch(e){}
+  confetti();
+  document.getElementById('doneBox').scrollIntoView({behavior: 'smooth'});
+}
+
+buildMenu();
+
+// ═══════════════════════════════
+//   REPRIS MOT POUR MOT DE « VOUS ME MONTREZ ? »
+// ═══════════════════════════════
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function confetti(){
+  const colors = ['#c8922a','#2d6a4f','#6b4c2a','#3a6ea5','#6b4c2a'];
+  for(let i = 0; i < 60; i++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDuration = (2 + Math.random() * 2) + 's';
+    c.style.animationDelay = (Math.random() * .8) + 's';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 5000);
+  }
+}
+</script>
+
+<details class="jdc-apropos">
+<summary>À propos de ce jeu</summary>
+<div class="corps">
+<p><strong>Proverbes incomplets</strong> · Des proverbes d’autrefois dont il manque un mot, à retrouver parmi plusieurs propositions. Ceux que tout le monde a dans l’oreille.</p>
+<h2>Ce que ce jeu n’est pas</h2>
+<p>Il n’y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne se compte et rien ne se ferme : on peut recommencer autant de fois qu’on veut. Ce jeu est une activité de loisir. Ce n’est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
+<h2>Qui le propose</h2>
+<p>Les Jardins de Célestine, un projet d’habitat partagé pour personnes atteintes de maladies neurodégénératives, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="projet.html">Découvrir le projet</a> · <a href="jeux.html">Voir tous les jeux</a>.</p>
+</div>
+</details>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+  <span aria-hidden="true"> · </span>
+  <a href="signaler.html?jeu=Proverbes%20incomplets&amp;p=jeu_proverbes" target="_blank" rel="noopener">Signaler un problème</a>
+</footer>
+</body>
+</html>
