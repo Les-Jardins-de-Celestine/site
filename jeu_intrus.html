@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>Trouver l'Intrus — jeu en ligne gratuit · Les Jardins de Célestine</title>
+<title>Trouver l'Intrus · jeu en ligne gratuit · Les Jardins de Célestine</title>
 <meta name="description" content="Repérer l'image qui n'a rien à faire là. Jeu de discrimination visuelle en ligne gratuit pour personne âgée, sans inscription et sans chronomètre.">
 <link rel="canonical" href="https://jardinsdecelestine.com/jeu_intrus">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
@@ -406,7 +406,6 @@ body{
 <div id="winScreen">
   <div class="win-ico" id="wIco">🎉</div>
   <div class="win-title" id="wTitle">Bravo !</div>
-  <div class="win-score" id="wScore">10 / 10</div>
   <div class="win-msg" id="wMsg"></div>
   <div class="win-btns">
 <button class="btn-w" onclick="replayGame()">Rejouer</button>
@@ -415,17 +414,7 @@ body{
 </div>
 
 <!-- ══════════ STATS ══════════ -->
-<div id="statsPanel">
-  <div id="statsBox">
-    <h2>📊 Statistiques</h2>
-    <span class="stats-sub">Enregistrées localement · Visibles uniquement par vous</span>
-    <div id="statsContent"></div>
-    <div class="sa">
-      <button class="btn-w btn-ol" style="padding:7px 14px;font-size:0.78rem;" onclick="resetStats()">Réinitialiser</button>
-      <button class="btn-w" style="padding:7px 14px;font-size:0.78rem;" onclick="closeStats()">Fermer</button>
-    </div>
-  </div>
-</div>
+
 
 <div id="toast"></div>
 
@@ -759,7 +748,6 @@ var THEME_POOLS = [POOL_ALL, POOL_ANIMAUX, POOL_CUISINE, POOL_LIEUX];
 // 2=difficile: 4 choix mais q marquées "hard"
 var G = { theme:0, diff:0, pool:[], qIdx:0, total:10, score:0, errors:0, answered:false };
 
-var STATS_KEY = 'jdc_intrus_v1';
 
 // ══════════════════════════════════════════════════════
 //  SÉLECTION PARAMÈTRES
@@ -861,17 +849,15 @@ function onChoice(chosen, intrusIdx, expl, total){
     btns[chosen].querySelector('.badge').textContent='✓';
     toast('✓ Bien trouvé !','ok');
   } else {
-    // ❌ Mauvais
+    /* La trame commune : une réponse fausse n'avance pas le jeu. On
+       grise ce choix-là, et on laisse réessayer. Ni ✗, ni verdict, ni la
+       bonne réponse dévoilée à sa place : c'est à la personne de la
+       trouver, et elle a tout son temps. */
     G.errors++;
-    btns[chosen].classList.add('wrong');
-    btns[chosen].querySelector('.badge').textContent='✗';
-    btns[intrusIdx].classList.add('reveal-correct');
-    btns[intrusIdx].querySelector('.badge').textContent='✓';
-    // Griser les autres
-    for(var i=0;i<btns.length;i++){
-      if(i!==chosen && i!==intrusIdx) btns[i].classList.add('reveal-wrong');
-    }
-    toast('Pas tout à fait…','err');
+    btns[chosen].classList.add('reveal-wrong');
+    btns[chosen].disabled = true;
+    G.answered = false;
+    return;
   }
 
   // Explication
@@ -883,7 +869,7 @@ function onChoice(chosen, intrusIdx, expl, total){
   setTimeout(function(){
     G.qIdx++;
     if(G.qIdx >= G.total){
-      showWin();
+      finDePartie();
     } else {
       renderQuestion();
     }
@@ -893,85 +879,14 @@ function onChoice(chosen, intrusIdx, expl, total){
 // ══════════════════════════════════════════════════════
 //  FIN DE PARTIE
 // ══════════════════════════════════════════════════════
-function showWin(){
+function finDePartie(){
+  if(typeof JDC !== 'undefined'){
+    JDC.enregistrer('intrus', Math.min(3, G.diff + 1), true, { erreurs: G.errors, variante: 'theme' + G.theme });
+  }
+  document.getElementById('wMsg').textContent = 'Les intrus sont tous débusqués. Rien ne vous échappe.';
   document.getElementById('gameScreen').classList.remove('active');
-  if(typeof JDC!=='undefined'){
-    JDC.enregistrer('intrus', 1, G.score>=Math.ceil(G.total*0.7), {erreurs:G.total-G.score});
-  }
-
-  // Plus de palier : « Parfait », « Bravo », « Bien joué »
-  // ou « Continuez » selon le pourcentage, c'était une note
-  // déguisée en encouragement.
-  document.getElementById('wIco').textContent = '🎉';
-  document.getElementById('wTitle').textContent = 'Bravo !';
-  document.getElementById('wScore').textContent = '';
-  document.getElementById('wMsg').textContent = 'Tous les intrus sont trouvés.';
   document.getElementById('winScreen').classList.add('active');
-  saveStats();
   confetti();
-}
-
-// ══════════════════════════════════════════════════════
-//  STATS
-// ══════════════════════════════════════════════════════
-function loadStats(){ try{ return JSON.parse(localStorage.getItem(STATS_KEY))||{}; }catch(e){ return {}; } }
-function saveStats(){
-  var st = loadStats();
-  var key = ['tous','animaux','cuisine','lieux'][G.theme]+'_'+['facile','moyen','difficile'][G.diff];
-  var label = ['Tous','Animaux','Cuisine','Lieux'][G.theme]+' · '+['Facile','Moyen','Difficile'][G.diff];
-  if(!st[key]) st[key]={label:label,plays:0,wins:0,totalScore:0};
-  st[key].plays++;
-  st[key].totalScore+=G.score;
-  if(G.score/G.total>=.7) st[key].wins++;
-  try{ localStorage.setItem(STATS_KEY, JSON.stringify(st)); }catch(e){}
-}
-var _stc=0,_stt=null;
-document.getElementById('logoTitle').addEventListener('click',function(){
-  _stc++;clearTimeout(_stt);
-  _stt=setTimeout(function(){_stc=0;},800);
-  if(_stc>=3){
-    _stc=0;
-    
-    
-    
-  }
-});
-
-function openStats(){
-  var st = loadStats();
-  var keys = Object.keys(st);
-  var el = document.getElementById('statsContent');
-  if(!keys.length){
-    el.innerHTML='<em style="color:var(--sepia);opacity:.6;">Aucune partie encore jouée.</em>';
-  } else {
-    var h='<table style="width:100%;border-collapse:collapse;font-size:0.82rem;color:var(--sepia);">';
-    h+='<tr style="font-size:0.72rem;text-transform:uppercase;border-bottom:1.5px solid rgba(200,146,42,.3);">';
-    h+='<th style="text-align:left;padding:4px 4px;opacity:.6;">Mode</th>';
-    h+='<th style="padding:4px;opacity:.6;">Parties</th>';
-    h+='<th style="padding:4px;opacity:.6;">Moy.</th>';
-    h+='<th style="padding:4px;opacity:.6;">Top</th>';
-    h+='</tr>';
-    keys.forEach(function(k){
-      var s=st[k];
-      var avg=s.plays?Math.round(s.totalScore/s.plays*10)/10:0;
-      var pctWin=s.plays?Math.round(s.wins/s.plays*100):0;
-      h+='<tr style="border-bottom:1px solid rgba(200,146,42,.1);">';
-      h+='<td style="padding:5px 4px;">'+s.label+'</td>';
-      h+='<td style="text-align:center;padding:5px 4px;font-weight:700;color:#c8922a;">'+s.plays+'</td>';
-      h+='<td style="text-align:center;padding:5px 4px;">'+avg+'/10</td>';
-      h+='<td style="text-align:center;padding:5px 4px;font-weight:700;color:#2d6a4f;">'+pctWin+'%</td>';
-      h+='</tr>';
-    });
-    h+='</table>';
-    el.innerHTML=h;
-  }
-  document.getElementById('statsPanel').classList.add('show');
-}
-function closeStats(){ document.getElementById('statsPanel').classList.remove('show'); }
-function resetStats(){
-  if(!confirm('Effacer toutes les statistiques ?')) return;
-  localStorage.removeItem(STATS_KEY);
-  closeStats();
 }
 
 // ══════════════════════════════════════════════════════
@@ -1008,7 +923,7 @@ function confetti(){
 <details class="jdc-apropos">
 <summary>À propos de ce jeu</summary>
 <div class="corps">
-<p><strong>Trouver l'Intrus</strong> — Plusieurs images qui vont ensemble, et une qui n'a rien à faire là. Trois fruits et un outil, quatre oiseaux et un poisson.</p>
+<p><strong>Trouver l'Intrus</strong> · Plusieurs images qui vont ensemble, et une qui n'a rien à faire là. Trois fruits et un outil, quatre oiseaux et un poisson.</p>
 <p data-famille="1">C'est un <strong>jeu de discrimination visuelle</strong> : ce qui compte est la catégorie à laquelle appartient chaque image, pas son détail.</p>
 <h2>Pour qui</h2>
 <p>Aux personnes âgées, à tous les stades. Repérer ce qui détonne est l'une des opérations les plus robustes : elle résiste longtemps.</p>
@@ -1022,7 +937,7 @@ function confetti(){
 <h2>Ce que ce jeu n'est pas</h2>
 <p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
 <h2>Qui le propose</h2>
-<p>Les Jardins de Célestine, un projet d'habitat partagé pour seniors, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="jeux.html">Voir tous les jeux</a>.</p>
+<p>Les Jardins de Célestine, un projet d’habitat partagé pour personnes atteintes de maladies neurodégénératives, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="projet.html">Découvrir le projet</a> · <a href="jeux.html">Voir tous les jeux</a>.</p>
 </div>
 </details>
 

@@ -188,7 +188,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 <body>
 
 
-<a class="jdc-retour" href="les-enquetes.html">← Retour aux enquêtes</a>
+<a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
 <header>
   <h1 id="mainTitle">L'<em>Enquête</em> à deux</h1>
   <p>L'un raconte, l'autre relance</p>
@@ -203,7 +203,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
       <div class="a-deux-t">Comment on joue à deux</div>
       <ul>
         <li>Installez-vous côte à côte, l'image bien en face de la personne.</li>
-        <li>Lisez la question à voix haute, puis laissez le temps de regarder.</li>
+        <li>Lisez la question, puis laissez le temps de regarder.</li>
         <li>Si le silence dure, trois phrases sont là pour relancer.
             Touchez-en une pour l'entendre.</li>
         <li>Ce qui compte, c'est ce qui se dit. Vous pouvez toucher l'image à sa
@@ -253,23 +253,15 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 
 <div id="winOverlay">
   <div id="winBox">
-    <div class="big">🔍</div>
-    <h2>Affaire résolue, à deux !</h2>
+    <div class="big">🎉</div>
+    <h2>Bravo !</h2>
+    <p class="jdc-sous">Affaire résolue, à deux.</p>
     <p id="winTxt"></p>
     <button class="btn-g2" onclick="retourIntro()">↩ Revenir au début</button>
   </div>
 </div>
 
-<div id="statsPanel">
-  <div id="statsBox">
-    <h2>📊 Statistiques</h2>
-    <div id="statsContent"></div>
-    <div class="sa">
-      <button class="btn-sm btn-ol" onclick="resetStats()">Réinitialiser</button>
-      <button class="btn-sm btn-g" onclick="closeStats()">Fermer</button>
-    </div>
-  </div>
-</div>
+
 
 <div id="toast"></div>
 
@@ -336,43 +328,12 @@ const NIVEAUX = {
 let niveau = 1, etapes = [], idx = 0, aides = 0, erreurs = 0;
 let startTime = null, playing = false;
 
-// ═══════════════════════════════
-//   STATS (triple-clic)
-// ═══════════════════════════════
-const STATS_KEY = 'enquete_a_deux_stats_v1';
 let _tc = 0, _tct = null;
 document.getElementById('mainTitle').addEventListener('click', () => {
   _tc++; clearTimeout(_tct);
   _tct = setTimeout(() => _tc = 0, 800);
   if(_tc >= 3){ _tc = 0;  toast('Mode admin activé'); }
 });
-function loadStats(){ try{ return JSON.parse(localStorage.getItem(STATS_KEY)) || {}; }catch(e){ return {}; } }
-function saveStats(s){ try{ localStorage.setItem(STATS_KEY, JSON.stringify(s)); }catch(e){} }
-function trackLocal(niv, reussi, sec, aid, err){
-  const st = loadStats(), k = 'niv' + niv;
-  if(!st[k]) st[k] = { parties:0, reussies:0, totalSec:0, totalAides:0, totalErr:0 };
-  st[k].parties++; st[k].totalSec += sec; st[k].totalAides += aid; st[k].totalErr += err;
-  if(reussi) st[k].reussies++;
-  saveStats(st);
-}
-function openStats(){
-  const st = loadStats(), keys = Object.keys(st), c = document.getElementById('statsContent');
-  const lbl = { niv1:'À deux' };
-  if(!keys.length){ c.innerHTML = '<p class="vide">Aucune enquête encore menée.</p>'; }
-  else {
-    c.innerHTML = keys.map(k => {
-      const s = st[k];
-      const moyAide = s.parties ? (s.totalAides / s.parties).toFixed(1) : 0;
-      return '<div class="srow"><span>' + (lbl[k] || k) + '</span><span>' +
-             s.reussies + '/' + s.parties + ' résolues · ' + moyAide + ' aide(s) en moyenne</span></div>';
-    }).join('');
-  }
-  document.getElementById('statsPanel').classList.add('show');
-}
-function closeStats(){ document.getElementById('statsPanel').classList.remove('show'); }
-function resetStats(){ if(confirm('Effacer les statistiques ?')){ localStorage.removeItem(STATS_KEY); closeStats(); toast('Statistiques effacées'); } }
-document.getElementById('statsPanel').addEventListener('click', function(e){ if(e.target === this) closeStats(); });
-
 function toast(msg, type){
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -406,7 +367,7 @@ function commencer(niv){
 
 
 /* ═══════════════════════════════
-     RELANCES · à dire à voix haute
+     RELANCES · à dire
    Elles ne donnent pas la réponse : elles rouvrent la conversation quand le
    silence dure. Phrases courtes, une seule information, pas de correction.
    (HAS, fiche « Communiquer avec une personne ayant des troubles de mémoire
@@ -569,7 +530,6 @@ function demanderAide(){
 function resolu(){
   playing = false;
   const sec = Math.floor((Date.now() - startTime) / 1000);
-  trackLocal(niveau, true, sec, aides, erreurs);
   if(typeof JDC !== 'undefined'){
     JDC.enregistrer('enquete_a_deux', niveau, true, { duree: sec, erreurs: erreurs, variante: ENQUETE.id });
     JDC.marquerVu('enquete_a_deux', ENQUETE.id);
@@ -636,7 +596,7 @@ function confetti(){
 <h2>Comment y jouer</h2>
 <ul>
 <li><strong>Côte à côte</strong> : l'image bien en face de la personne qui observe.</li>
-<li><strong>À voix haute</strong> : celui qui accompagne lit la question, puis laisse le temps de regarder.</li>
+<li><strong>À deux</strong> : celui qui accompagne lit la question, puis laisse le temps de regarder.</li>
 <li><strong>Avec les relances</strong> : trois phrases sont proposées à chaque question, à dire si le silence dure. Elles ne donnent jamais la réponse.</li>
 <li><strong>En petit groupe</strong> : les regards se complètent, et personne ne voit la même chose.</li>
 </ul>

@@ -13,8 +13,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>Devinettes d'autrefois · remue-méninges en ligne gratuit · Les Jardins de Célestine</title>
-<meta name="description" content="Trente devinettes d'autrefois, celles qu'on connaît depuis l'enfance. Aucun score, aucune mauvaise réponse : on retourne la carte quand on veut. Gratuit, sans inscription.">
+<title>Ça vous revient ? Devinettes d'autrefois · remue-méninges en ligne gratuit · Les Jardins de Célestine</title>
+<meta name="description" content="Des devinettes d'autrefois, celles qu'on connaît depuis l'enfance. Aucun score, aucune mauvaise réponse : on retourne la carte quand on veut. Gratuit, sans inscription.">
 <link rel="canonical" href="https://jardinsdecelestine.com/ca-vous-revient">
 <!-- LIGNE À SUPPRIMER LE JOUR DE LA PUBLICATION : tant qu'elle est là, la
      page n'est pas référencée. C'est voulu, elle n'est pas encore validée. -->
@@ -183,13 +183,35 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
   .rangee{width:100%}
   .plateau{padding:34px 20px}
 }
+
+.jdc-apropos{max-width:680px;margin:28px auto 8px;padding:0 16px;
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;color:#5c3d1e;}
+.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;
+  letter-spacing:.02em;opacity:.62;padding:9px 0;text-align:center;
+  border-top:1px solid rgba(92,61,30,.16);}
+.jdc-apropos>summary::-webkit-details-marker{display:none}
+.jdc-apropos>summary::after{content:' \203A';display:inline-block;
+  transform:rotate(90deg);margin-left:5px;opacity:.7}
+.jdc-apropos[open]>summary::after{transform:rotate(-90deg)}
+.jdc-apropos>summary:hover,.jdc-apropos>summary:focus-visible{opacity:.95}
+.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;
+  text-align:left;opacity:.9}
+.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:#5c3d1e;
+  font-weight:700}
+.jdc-apropos p{margin:0 0 10px}
+.jdc-apropos ul{margin:0 0 10px;padding-left:20px}
+.jdc-apropos li{margin-bottom:5px}
+.jdc-apropos a{color:#2d6a4f}
+.hc .jdc-apropos{color:#000}
+.hc .jdc-apropos h2{color:#000}
+.hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
 </style>
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
  "@type": "Game",
  "name": "Devinettes d'autrefois",
- "description": "Trente devinettes d'autrefois, celles qu'on connaît depuis l'enfance. Aucun score, aucune mauvaise réponse : on retourne la carte quand on veut. Gratuit, sans inscription.",
+ "description": "Des devinettes d'autrefois, celles qu'on connaît depuis l'enfance. Aucun score, aucune mauvaise réponse : on retourne la carte quand on veut. Gratuit, sans inscription.",
  "url": "https://jardinsdecelestine.com/ca-vous-revient",
  "inLanguage": "fr",
  "isAccessibleForFree": true,
@@ -206,7 +228,7 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
 <a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
 <header>
   <h1>Ça vous <em>revient</em> ?</h1>
-  <p>Trente devinettes d'autrefois</p>
+  <p>Des devinettes d'autrefois</p>
   <div class="divider"></div>
 </header>
 
@@ -286,7 +308,7 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
 <section class="ecran" id="regles" hidden>
   <h2>Comment s'en servir</h2>
   <ul>
-    <li><b>On lit à voix haute, et on attend.</b> Le silence fait partie du
+    <li><b>On lit la devinette, et on attend.</b> Le silence fait partie du
       jeu. Une devinette d'autrefois ne se calcule pas, elle remonte, et ça
       prend le temps que ça prend.</li>
     <li><b>Il n'y a rien à taper et rien à cocher.</b> Aucune case, aucun
@@ -295,8 +317,7 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
       qu'on dit quand ça ne vient pas.</li>
     <li><b>Retourner la carte n'est pas abandonner.</b> On retourne quand on
       veut, même tout de suite, même sans avoir cherché.</li>
-    <li><b>On s'arrête quand la personne s'arrête</b>, pas quand les trente
-      sont passées. Cinq devinettes est une bonne séance.</li>
+    <li><b>On s'arrête quand la personne s'arrête</b>, pas quand le paquet est passé. Cinq devinettes est une bonne séance.</li>
     <li><b>On ne corrige jamais.</b> Si une autre réponse est proposée et
       qu'elle tient debout, elle est bonne. Beaucoup de ces devinettes en
       ont plusieurs.</li>
@@ -313,6 +334,17 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
 
 </main>
 
+
+<details class="jdc-apropos">
+<summary>À propos de ce jeu</summary>
+<div class="corps">
+<p><strong>Ça vous revient ?</strong> · Des devinettes d’autrefois, celles qu’on connaît depuis l’enfance. On lit, on cherche ensemble, on retourne la carte quand on veut.</p>
+<h2>Ce que ce jeu n'est pas</h2>
+<p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
+<h2>Qui le propose</h2>
+<p>Les Jardins de Célestine, un projet d’habitat partagé pour personnes atteintes de maladies neurodégénératives, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="projet.html">Découvrir le projet</a> · <a href="jeux.html">Voir tous les jeux</a>.</p>
+</div>
+</details>
 <footer class="jdc-legal">
   <a href="mentions-legales.html">Mentions légales</a>
   <span aria-hidden="true"> · </span>
@@ -320,6 +352,7 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
   <span aria-hidden="true"> · </span>
   <a href="signaler.html?jeu=Devinettes%20d%27autrefois&amp;p=ca-vous-revient" target="_blank" rel="noopener">Signaler un problème</a>
 </footer>
+<script src="jdc-parcours.js"></script>
 
 <script>
 (function () {

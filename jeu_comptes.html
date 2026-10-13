@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Faire les comptes · carnet de courses à pointer · jeu gratuit · Les Jardins de Célestine</title>
+<meta name="robots" content="index, follow">
+<meta name="description" content="Pointer les tickets de courses sur le carnet de la semaine, retrouver la course oubliée, faire le total. Jeu gratuit, sans inscription, et la fiche à imprimer.">
+<link rel="canonical" href="https://jardinsdecelestine.com/jeu_comptes">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="jdc-parcours.js"></script>
+<style>
+:root {
+  --cream:#f7f3ea; --parchment:#eee8d5; --ink:#1c1208;
+  --sepia:#5c3d1e; --gold:#c8922a; --green:#2d6a4f;
+  --red:#6b4c2a; --shadow:rgba(28,18,8,0.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{
+  background:var(--parchment);
+  background-image:
+    radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.08) 0%,transparent 55%),
+    radial-gradient(ellipse at 85% 90%,rgba(45,106,79,.06) 0%,transparent 55%);
+  min-height:100vh; font-family:'Nunito',sans-serif;
+  color:var(--ink); user-select:none; -webkit-user-select:none;
+}
+
+header{text-align:center;padding:16px 20px 10px;border-bottom:1px solid rgba(200,146,42,.2);position:relative;}
+header h1{font-family:'Atkinson Hyperlegible',sans-serif;font-size:clamp(1.3rem,3vw,1.9rem);font-weight:700;color:var(--sepia);cursor:default;}
+header h1 em{color:var(--gold);font-style:normal;}
+header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-top:3px;}
+.divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:6px auto 0;}
+#statsBtn{display:none;position:absolute;top:14px;right:16px;background:none;border:1.5px solid rgba(200,146,42,.4);border-radius:6px;padding:4px 10px;font-family:'Nunito',sans-serif;font-size:.75rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+#statsBtn:hover{background:rgba(200,146,42,.1);}
+
+/* ── MENU ── */
+#menu{max-width:600px;margin:34px auto;padding:0 20px;}
+#menu h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.15rem;color:var(--sepia);text-align:center;margin-bottom:8px;}
+#menu .hint{text-align:center;font-size:.92rem;color:var(--sepia);opacity:.75;margin-bottom:20px;}
+.h-card{display:block;width:100%;text-align:left;background:var(--cream);border:1.5px solid rgba(200,146,42,.35);border-radius:14px;padding:18px 22px;margin-bottom:14px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s;}
+.h-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 22px var(--shadow);}
+.h-card .ht{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.08rem;font-weight:700;color:var(--sepia);}
+.h-card .hs{font-size:.82rem;color:var(--sepia);opacity:.65;margin-top:2px;}
+.badge-new{display:inline-block;background:var(--green);color:#fff;font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;}
+.badge-vu{display:inline-block;background:rgba(92,61,30,.12);color:var(--sepia);font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;}
+#suggestion{margin-top:14px;font-size:.86rem;color:var(--sepia);opacity:.8;font-style:italic;text-align:center;}
+
+/* ── JEU ── */
+#game{display:none;max-width:680px;margin:0 auto;padding:14px 18px 40px;}
+#hud{display:flex;justify-content:space-between;align-items:center;padding:4px 2px 12px;font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;color:var(--sepia);font-size:.92rem;}
+#hud .prog{color:var(--green);}
+#backBtn{background:none;border:1.5px solid rgba(200,146,42,.45);border-radius:8px;padding:5px 12px;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+#backBtn:hover{background:rgba(200,146,42,.1);}
+
+.zone-titre{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--sepia);opacity:.6;margin:10px 0 8px;}
+
+#histoire{background:var(--cream);border:1.5px solid rgba(45,106,79,.35);border-radius:14px;padding:14px 16px;min-height:70px;box-shadow:0 6px 20px var(--shadow);}
+#histoire .placed{background:#e9f2ec;border:1.5px solid rgba(45,106,79,.4);border-radius:10px;padding:11px 14px;margin-bottom:9px;font-size:1rem;line-height:1.55;color:var(--ink);animation:pop .3s ease;}
+#histoire .placed:last-child{margin-bottom:0;}
+#histoire .placed .num{display:inline-block;background:var(--green);color:#fff;font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700;font-size:.75rem;width:22px;height:22px;border-radius:50%;text-align:center;line-height:22px;margin-right:8px;}
+#histoire .vide{font-size:.9rem;color:var(--sepia);opacity:.5;font-style:italic;text-align:center;padding:10px 0;}
+@keyframes pop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+
+#blocs{margin-top:6px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.demande{background:var(--cream);border-left:4px solid var(--green);border-radius:12px;padding:14px 16px;margin:0 0 14px;}
+.demande .dit{font-size:1.04rem;line-height:1.6;color:var(--ink);margin:0;font-style:italic;}
+.bloc img{width:100%;display:block;border-radius:8px;margin-bottom:8px;}
+.bloc .lib{display:block;font-size:.95rem;line-height:1.4;text-align:center;}
+#histoire .placed img{width:100%;display:block;border-radius:8px;margin:6px 0 0;}
+#histoire .placed{display:block;}
+@media (min-width:620px){#blocs{grid-template-columns:repeat(3,1fr);}
+  #histoire{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;align-items:start;}
+  #histoire .vide{grid-column:1/-1;}}
+.bloc{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid rgba(200,146,42,.45);border-radius:10px;padding:12px 15px;margin-bottom:10px;font-family:'Nunito',sans-serif;font-size:1rem;line-height:1.55;color:var(--ink);cursor:pointer;transition:all .18s;}
+.bloc:hover{border-color:var(--gold);background:rgba(200,146,42,.06);}
+.bloc.used{display:none;}
+.bloc.shake{animation:shk .35s;border-color:var(--red);}
+@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+#doneBox{display:none;margin-top:18px;text-align:center;}
+#doneBox .msg{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.1rem;font-weight:700;color:var(--green);margin-bottom:12px;}
+.btn-g2{background:var(--gold);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;margin:0 5px;}
+.btn-g2:hover{background:#b07820;}
+.btn-o2{background:none;border:1.5px solid rgba(200,146,42,.5);color:var(--sepia);border-radius:10px;padding:12px 24px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;margin:0 5px;}
+.btn-o2:hover{background:rgba(200,146,42,.1);}
+
+/* ── STATS ── */
+#statsPanel{display:none;position:fixed;inset:0;background:rgba(28,18,8,.75);z-index:60;align-items:center;justify-content:center;}
+#statsPanel.show{display:flex;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+#statsBox{background:var(--cream);border:2px solid var(--gold);border-radius:14px;padding:26px 30px;max-width:440px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+#statsBox h2{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.2rem;font-weight:700;color:var(--sepia);margin-bottom:4px;}
+.s-sub{font-size:0.72rem;color:var(--sepia);opacity:.55;margin-bottom:14px;display:block;}
+.srow{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(200,146,42,.14);}
+.srow:last-child{border-bottom:none;}
+.srow-name{font-size:.82rem;font-weight:700;color:var(--sepia);}
+.scol{text-align:center;}
+.slbl{font-size:0.72rem;color:var(--sepia);opacity:.5;text-transform:uppercase;letter-spacing:.08em;}
+.sval{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.9rem;font-weight:700;color:var(--gold);}
+.sval.green{color:var(--green);}
+.sa{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;}
+.btn-sm{padding:6px 14px;border-radius:6px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;}
+.btn-ol{background:none;border:1.5px solid rgba(200,146,42,.5);color:var(--sepia);}
+.btn-g{background:var(--gold);color:white;border:none;}
+.no-stats{font-size:.85rem;color:var(--sepia);opacity:.6;font-style:italic;text-align:center;padding:14px 0;}
+
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(10px);color:white;background:#2d6a4f;padding:10px 22px;border-radius:8px;font-size:.86rem;font-weight:700;opacity:0;transition:all .25s;z-index:300;pointer-events:none;font-family:'Atkinson Hyperlegible',sans-serif;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+.confetti{position:fixed;top:-14px;width:10px;height:14px;z-index:70;pointer-events:none;animation:cfall linear forwards;}
+@keyframes cfall{to{transform:translateY(105vh) rotate(720deg);opacity:.9;}}
+
+/* Sortie de secours : toujours un moyen de revenir au catalogue. */
+.jdc-retour{display:block;text-align:center;padding:8px;font-size:.74rem;
+  color:#5c3d1e;opacity:.55;text-decoration:none;letter-spacing:.1em;
+  text-transform:uppercase;font-family:'Nunito',sans-serif;}
+.jdc-retour:hover{opacity:1;}
+@media print{.jdc-retour{display:none;}}
+
+/* Pied discret : le lien légal doit exister sur chaque page du site. */
+.jdc-legal{text-align:center;padding:16px 14px 22px;font-size:.78rem;line-height:1.6;
+  color:#5c3d1e;opacity:.6;font-family:'Nunito',sans-serif;}
+.jdc-legal a{color:inherit;}
+@media print{.jdc-legal{display:none;}}
+
+/* Une image posée peut être reprise : seule la dernière, pour ne pas casser l'ordre. */
+.placed.reprenable{cursor:pointer;position:relative;}
+.placed.reprenable:hover,.placed.reprenable:focus{outline:2px solid var(--gold,#c8922a);outline-offset:2px;}
+.placed .retirer{position:absolute;top:-7px;right:-7px;width:24px;height:24px;border-radius:50%;
+  background:#5c3d1e;color:#fff;font-size:15px;font-weight:700;line-height:24px;text-align:center;
+  box-shadow:0 2px 6px rgba(0,0,0,.3);}
+
+/* Le nom de la séquence en cours : on doit savoir ce qu'on est en train de montrer. */
+.imprimer{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.86rem;line-height:1.5;color:var(--sepia);opacity:.8;text-align:center;margin:14px 0 0;}
+.imprimer a{color:var(--sepia);text-underline-offset:3px;display:inline-block;padding:15px 16px;}.imprimer-note{display:inline-block;margin-top:-6px;}
+.titre-hist{text-align:center;font-weight:700;font-size:1.06rem;color:#5c3d1e;margin:2px 0 10px;}
+</style>
+<style id="jdc-apropos-style">
+/* Bloc « À propos » : replié par défaut, lu en entier par les moteurs.
+   Couleurs écrites en dur · chaque jeu a ses propres variables CSS. */
+.jdc-apropos{max-width:680px;margin:28px auto 8px;padding:0 16px;
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;color:#5c3d1e;}
+.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;
+  letter-spacing:.02em;opacity:.62;padding:9px 0;text-align:center;
+  border-top:1px solid rgba(92,61,30,.16);}
+.jdc-apropos>summary::-webkit-details-marker{display:none}
+.jdc-apropos>summary::after{content:' \203A';display:inline-block;
+  transform:rotate(90deg);margin-left:5px;opacity:.7}
+.jdc-apropos[open]>summary::after{transform:rotate(-90deg)}
+.jdc-apropos>summary:hover,.jdc-apropos>summary:focus-visible{opacity:.95}
+.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;
+  text-align:left;opacity:.9}
+.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:#5c3d1e;
+  font-weight:700}
+.jdc-apropos p{margin:0 0 10px}
+.jdc-apropos ul{margin:0 0 10px;padding-left:20px}
+.jdc-apropos li{margin-bottom:5px}
+.jdc-apropos a{color:#2d6a4f}
+.hc .jdc-apropos{color:#000}
+.hc .jdc-apropos h2{color:#000}
+.hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
+</style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Game",
+  "name": "Faire les comptes",
+  "url": "https://jardinsdecelestine.com/jeu_comptes",
+  "description": "Un carnet de courses et ses tickets. On pointe chaque ticket sur la ligne qui lui correspond, on retrouve la course oubliée, puis on fait le total, des euros entiers aux centimes.",
+  "inLanguage": "fr",
+  "isAccessibleForFree": true,
+  "genre": "Jeu de calcul et d'attention",
+  "audience": {
+    "@type": "Audience",
+    "audienceType": "Personnes âgées, aidants, orthophonistes, accueils de jour"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Les Jardins de Célestine",
+    "url": "https://jardinsdecelestine.com"
+  }
+}
+</script>
+
+<style id="comptes">
+/* ── Le carnet ──────────────────────────────────────────────────────
+   Un tableau à l'écran comme sur la fiche : mêmes colonnes, même ordre.
+   Les lignes sont des BOUTONS : au doigt, il faut une vraie cible, et
+   un lecteur d'écran doit savoir que ça se touche. */
+/* LE CARNET N'EST PAS UN TABLEAU, ET C'EST UNE CORRECTION.
+   Premier jet : un <table> avec quatre <th> en tête et UNE seule <td>
+   par ligne, contenant un bouton en flex. Les quatre colonnes du <thead>
+   et la colonne unique des lignes ne se correspondaient pas : en 390 px,
+   le libellé se retrouvait dans une colonne d'un caractère de large et
+   s'écrivait verticalement, une lettre par ligne. L'essai l'a vu, moi
+   non. Donc plus de tableau : une ligne d'en-tête et des boutons, tous
+   réglés sur les mêmes largeurs. */
+#carnet{margin:0 0 6px;}
+.tete-lgn{display:flex;align-items:flex-end;gap:8px;padding:0 6px 7px;
+  border-bottom:2px solid var(--gold);
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:.72rem;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--sepia);
+  opacity:.75;}
+.tete-lgn .ck,.lgn .ck{flex:0 0 22px;}
+.tete-lgn .jr,.lgn .jr{flex:0 0 74px;}
+.tete-lgn .lb,.lgn .lb{flex:1 1 auto;min-width:0;}
+.tete-lgn .sm,.lgn .sm{flex:0 0 68px;text-align:right;}
+.lgn{display:flex;align-items:center;gap:8px;width:100%;max-width:100%;
+  min-height:52px;padding:9px 6px;background:none;border:none;font:inherit;
+  color:var(--ink);text-align:left;cursor:pointer;border-radius:8px;
+  border-bottom:1px dotted rgba(92,61,30,.35);}
+.lgn:hover{background:rgba(200,146,42,.10);}
+.lgn .jr{font-size:.82rem;color:var(--sepia);opacity:.85;}
+.lgn .lb{font-size:.95rem;overflow-wrap:break-word;}
+.lgn .sm{font-size:.95rem;white-space:nowrap;font-weight:700;}
+.lgn .ck{width:22px;height:22px;border:2px solid var(--sepia);
+  border-radius:4px;display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;color:var(--green);background:#fff;}
+.lgn.fait{background:rgba(45,106,79,.09);}
+.lgn.fait .ck{border-color:var(--green);}
+.lgn.vide .lb{opacity:.45;font-style:italic;}
+
+/* ── Les tickets ────────────────────────────────────────────────────
+   Le même dessin que sur la fiche : fond clair, bord net, chasse fixe,
+   légèrement de travers. Un ticket posé ne disparaît pas, il s'efface à
+   moitié : on doit pouvoir revoir ce qu'on a déjà pointé. */
+#tickets{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;}
+.tk{width:150px;background:#faf8f4;border:1px solid rgba(92,61,30,.45);
+  border-radius:3px;padding:9px 10px 11px;font-family:'Courier New',
+  monospace;font-size:.78rem;line-height:1.5;color:var(--ink);cursor:pointer;
+  text-align:left;box-shadow:0 1px 3px var(--shadow);}
+.tk .ou{display:block;font-weight:700;font-size:.82rem;
+  text-transform:uppercase;margin-bottom:2px;}
+.tk .qd{display:block;color:var(--sepia);opacity:.8;margin-bottom:5px;}
+.tk .ar{display:block;margin-bottom:5px;}
+.tk .tt{display:flex;justify-content:space-between;font-weight:700;
+  border-top:1px dashed rgba(92,61,30,.5);padding-top:4px;font-size:.86rem;}
+.tk.pris{border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,146,42,.55);
+  transform:translateY(-3px);}
+.tk.pose{opacity:.38;cursor:default;box-shadow:none;}
+.zone-titre{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.74rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--sepia);
+  opacity:.7;margin:18px 0 8px;text-align:center;}
+#reste{text-align:center;font-size:.95rem;color:var(--sepia);margin:14px 0 0;
+  min-height:1.4em;}
+/* LE TICKET EN MAIN, RAPPELÉ EN BAS DE L'ÉCRAN.
+   Flo, le 10 octobre : « c'est chiant de naviguer entre le jeu et les
+   réponses ». Sur les proverbes et le ticket effacé, la réponse est un
+   mot ou une étiquette, et le bandeau du bas peut les porter tous. Ici
+   les tickets sont des cartes entières : neuf ne tiendraient pas. Ce
+   qui gêne, c'est de monter au carnet en ayant oublié ce qu'on tient.
+   Le bandeau ne porte donc QUE le ticket en main, et il disparaît dès
+   qu'il est posé. */
+#enMain{position:fixed;left:0;right:0;bottom:0;z-index:50;display:none;
+  align-items:center;gap:10px;justify-content:center;flex-wrap:wrap;
+  background:var(--parchment);border-top:2px solid var(--gold);
+  box-shadow:0 -3px 12px var(--shadow);
+  padding:11px 14px calc(11px + env(safe-area-inset-bottom,0px));
+  font-size:.95rem;color:var(--ink);}
+#enMain.vu{display:flex;}
+#enMain .quoi{font-family:'Courier New',monospace;font-weight:700;}
+#enMain .ou{font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--sepia);opacity:.75;}
+#enMain button{background:none;border:2px solid var(--sepia);
+  border-radius:999px;padding:7px 14px;font:inherit;font-size:.85rem;
+  color:var(--sepia);cursor:pointer;min-height:40px;}
+/* L'étape du total : une vraie page, pas une ligne sous le bravo. */
+#etapeTotal{display:none;margin-top:22px;padding:20px 18px;text-align:center;
+  background:var(--cream);border:2px solid var(--gold);border-radius:16px;
+  box-shadow:0 2px 8px var(--shadow);}
+#etapeTotal .et{font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--sepia);opacity:.75;margin-bottom:8px;}
+#etapeTotal .q{font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:1.12rem;font-weight:700;color:var(--sepia);line-height:1.45;
+  margin-bottom:8px;}
+#etapeTotal .calme{font-size:.9rem;color:var(--sepia);opacity:.8;
+  margin-bottom:14px;}
+#etapeTotal .rep{font-family:'Atkinson Hyperlegible',sans-serif;
+  font-size:2rem;font-weight:700;color:var(--green);margin:4px 0 14px;
+  display:none;}
+#etapeTotal .bt{display:flex;gap:10px;justify-content:center;
+  flex-wrap:wrap;}
+/* LE MESSAGE QUI PASSE, REPRIS ET CORRIGÉ ICI.
+   La règle #toast de la feuille héritée porte `white-space:nowrap` et
+   aucune largeur maximale : un message long sort donc de l'écran par la
+   droite, et la page défile latéralement. Ici les messages sont des
+   phrases entières, pas trois mots, d'où ce garde-fou local.
+   À signaler : 24 pages du site portent la même règle sans garde-fou. */
+#toast{white-space:normal;max-width:calc(100vw - 32px);text-align:center;
+  line-height:1.4;}
+
+@media (max-width:420px){
+  .tk{width:calc(50% - 6px);}
+  .lgn .jr{flex-basis:62px;font-size:.78rem;}
+}
+</style>
+</head>
+<body>
+
+<a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
+<header>
+  <h1 id="mainTitle">Faire les <em>comptes</em></h1>
+  <p>Le carnet de la semaine, et les tickets</p>
+  <div class="divider"></div>
+</header>
+
+<div id="menu">
+  <div class="demande">
+    <p class="dit">«&nbsp;J'ai fait les courses de la semaine pour toute la maison. J'ai tout noté dans mon carnet et j'ai gardé les tickets. Seulement le facteur a sonné au milieu, et je me suis arrêtée en route. Vous voulez bien vérifier avec moi&nbsp;?&nbsp;»</p>
+  </div>
+  <p class="hint">Chaque ticket a sa ligne dans le carnet. Sauf un&nbsp;:
+     c'est la course qu'elle a oublié de noter. Choisissez par quoi vous
+     voulez commencer.</p>
+  <div id="histList"></div>
+  <p class="imprimer"><a id="lienPdf" href="comptes-decouverte.pdf" download
+     target="_blank" rel="noopener">Imprimer la fiche (PDF)</a><br>
+     <span class="imprimer-note">Le même carnet et les mêmes tickets, sur
+     deux pages, pour faire l'exercice sur une table. Sur le papier, la
+     course oubliée est toujours la même&nbsp;; à l'écran, elle change à
+     chaque partie.</span></p>
+  <div id="suggestion"></div>
+</div>
+
+<div id="game">
+  <div id="hud">
+    <button id="backBtn" onclick="backMenu()">↩ Revenir au début</button>
+    <span class="prog"><span id="progNow">0</span> /
+      <span id="progTot">0</span> tickets pointés</span>
+  </div>
+
+  <p id="titreHist" class="titre-hist"></p>
+
+  <div class="zone-titre">Le carnet de la semaine</div>
+  <div id="carnet"></div>
+
+  <div class="zone-titre">Les tickets</div>
+  <div id="tickets"></div>
+  <p id="reste"></p>
+
+  <div id="enMain">
+    <span class="ou">Ticket en main</span>
+    <span class="quoi" id="enMainQuoi"></span>
+    <button onclick="reposer()">Le reposer</button>
+  </div>
+
+  <!-- LE TOTAL EST UNE ÉTAPE, PAS UNE NOTE DE BAS DE PAGE.
+       Flo, le 10 octobre : « si vous allez jusqu'au bout, combien cela
+       fait-il ? ça c'est bien, est-ce qu'on le mettrait pas plus en
+       avant, parce qu'il est en dessous du bravo ». Il passe donc AVANT
+       l'écran de fin, et il a sa propre page. Mais il ne barre jamais la
+       sortie : « Terminer » est là dès le premier instant, et la partie
+       est gagnée qu'on fasse l'addition ou non. -->
+  <div id="etapeTotal">
+    <p class="et">Il reste une chose</p>
+    <p class="q">Toutes les sommes du carnet, additionnées&nbsp;:
+       combien cela fait-il, cette semaine&nbsp;?</p>
+    <p class="calme">Prenez le temps. Rien n'est à rendre, et vous pouvez
+       passer.</p>
+    <p class="rep" id="totalRep"></p>
+    <p class="bt">
+      <button class="btn-g2" id="voirTotal" onclick="montrerTotal()">Voir le
+        total</button>
+      <button class="btn-o2" onclick="terminer()">Terminer</button>
+    </p>
+  </div>
+
+  <div id="doneBox">
+    <p class="msg" id="doneMsg">🎉 Bravo&nbsp;!</p>
+    <p id="doneQuoi"></p>
+    <p id="doneMot"></p>
+    <p style="margin-top:14px">
+      <button class="btn-g2" onclick="rejouer()">Rejouer</button>
+      <button class="btn-o2" onclick="backMenu()">↩ Revenir au début</button>
+    </p>
+  </div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════
+//   FAIRE LES COMPTES
+// ═══════════════════════════════
+/* Les données sont écrites par build_jeu_comptes.py à partir de
+   comptes_donnees.py, le MÊME fichier que la fiche à imprimer. Si on
+   change une somme ici à la main, le papier et l'écran divergent. */
+const COURSES = [{"jour": "lundi", "ou": "Boulangerie", "quoi": "pain et croissants"}, {"jour": "lundi", "ou": "Marché", "quoi": "légumes de la semaine"}, {"jour": "mardi", "ou": "Épicerie", "quoi": "café et sucre"}, {"jour": "mercredi", "ou": "Pharmacie", "quoi": "savon et dentifrice"}, {"jour": "mercredi", "ou": "Boucherie", "quoi": "un rôti"}, {"jour": "jeudi", "ou": "Quincaillerie", "quoi": "deux ampoules"}, {"jour": "vendredi", "ou": "Fleuriste", "quoi": "un bouquet"}, {"jour": "vendredi", "ou": "Maison de la presse", "quoi": "le journal"}, {"jour": "samedi", "ou": "Poissonnerie", "quoi": "du cabillaud"}];
+const NIVEAUX = [{"cle": "decouverte", "nom": "Découverte", "dit": "des sommes en euros entiers", "sommes": [400, 1200, 700, 900, 1500, 1100, 600, 200, 800]}, {"cle": "promenade", "nom": "Promenade", "dit": "des euros et des demi-euros", "sommes": [450, 1150, 700, 950, 1500, 1050, 650, 250, 850]}, {"cle": "grand-tour", "nom": "Grand tour", "dit": "des centimes partout", "sommes": [435, 1180, 725, 960, 1490, 1045, 615, 230, 870]}];
+/* L'ordre de la FICHE IMPRIMÉE, qui lui ne bouge pas : deux personnes
+   qui impriment la même fiche doivent recevoir la même feuille. */
+const ORDRE_PAPIER = [4, 0, 7, 2, 8, 5, 1, 6, 3];
+
+let niv = null;          // le niveau en cours
+let poses = [];          // index des courses déjà pointées
+let pris = null;         // le ticket tenu en main, s'il y en a un
+let ordre = [];          // l'ordre des tickets, retiré à chaque partie
+let oubliee = 0;         // la course absente du carnet, elle aussi tirée
+
+/* POURQUOI ON RETIRE À CHAQUE PARTIE.
+   Flo, le 10 octobre : « quand on joue plusieurs fois la partie, on
+   apprend par cœur où se trouvent les lignes et les tickets, et on ne
+   joue plus en cherchant, on joue parce qu'on se rappelle. »
+   Deux choses bougent donc : l'ordre des tickets sur la planche, et
+   SURTOUT quelle course manque au carnet. Sans la seconde, on retient
+   « c'est la poissonnerie » et il n'y a plus rien à trouver.
+   Les lignes du carnet, elles, restent dans l'ordre des jours : un
+   carnet de comptes se tient dans l'ordre où l'on dépense, et le
+   mélanger rendrait l'objet faux. */
+function tirer(n, saufCelui){
+  let d;
+  do {
+    d = [];
+    for (let i = 0; i < n; i++) d.push(i);
+    for (let i = d.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      const g = d[i]; d[i] = d[j]; d[j] = g;
+    }
+  } while (saufCelui && d.join() === saufCelui.join());
+  return d;
+}
+
+function euros(c){
+  return (c % 100 === 0) ? (c / 100) + ' €'
+       : (Math.floor(c / 100)) + ',' + String(c % 100).padStart(2, '0') + ' €';
+}
+
+// ── Le menu des niveaux ────────────────────────────────────────────
+/* Les classes .h-card / .ht / .hs viennent de la feuille de style
+   reprise : elles sont déjà définies plus haut dans la page. Le <br>
+   sépare le titre du sous-titre, sans lui les deux se collent. */
+function buildMenu(){
+  document.getElementById('histList').innerHTML = NIVEAUX.map(function(n, i){
+    return '<button class="h-card" onclick="start(' + i + ')">'
+         + '<span class="ht">' + n.nom + '</span><br>'
+         + '<span class="hs">' + n.dit + '</span></button>';
+  }).join('');
+}
+
+function backMenu(){
+  if (niv && poses.length < COURSES.length) {
+    try { JDC.enregistrer('comptes', 1, false, {niveau: niv.cle}); } catch(e){}
+  }
+  niv = null; poses = []; pris = null;
+  document.body.style.paddingBottom = '';
+  document.getElementById('game').style.display = 'none';
+  document.getElementById('menu').style.display = 'block';
+  document.getElementById('doneBox').style.display = 'none';
+  document.getElementById('etapeTotal').style.display = 'none';
+  window.scrollTo(0, 0);
+}
+
+function rejouer(){ const i = NIVEAUX.indexOf(niv); start(i); }
+
+function start(i){
+  niv = NIVEAUX[i];
+  poses = []; pris = null;
+  ordre = tirer(COURSES.length, ordre);
+  /* On évite de retomber sur la même course oubliée deux fois de
+     suite : c'est là que se joue la mémorisation. */
+  let tentee = oubliee;
+  while (COURSES.length > 1 && tentee === oubliee) {
+    tentee = Math.floor(Math.random() * COURSES.length);
+  }
+  oubliee = tentee;
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('game').style.display = 'block';
+  document.getElementById('doneBox').style.display = 'none';
+  document.getElementById('etapeTotal').style.display = 'none';
+  document.getElementById('totalRep').style.display = 'none';
+  document.getElementById('titreHist').textContent =
+    niv.nom + ' · ' + niv.dit;
+  document.getElementById('progTot').textContent = COURSES.length;
+  document.getElementById('lienPdf').setAttribute(
+    'href', 'comptes-' + niv.cle + '.pdf');
+  dessiner();
+  window.scrollTo(0, 0);
+}
+
+// ── Le dessin ──────────────────────────────────────────────────────
+function dessiner(){
+  let html = '<div class="tete-lgn"><span class="ck"></span>'
+           + '<span class="jr">Jour</span>'
+           + '<span class="lb">Ce qui a été acheté</span>'
+           + '<span class="sm">Somme</span></div>';
+  COURSES.forEach(function(c, i){
+    const fait = poses.indexOf(i) >= 0;
+    const cache = (i === oubliee) && !fait;   // la ligne restée vide
+    html += '<button class="lgn' + (fait ? ' fait' : '')
+          + (cache ? ' vide' : '') + '" onclick="clicLigne(' + i + ')"'
+          + ' aria-pressed="' + (fait ? 'true' : 'false') + '">'
+          + '<span class="ck">' + (fait ? '✓' : '') + '</span>'
+          + '<span class="jr">' + (cache ? '' : c.jour) + '</span>'
+          + '<span class="lb">'
+          + (cache ? 'ligne restée vide' : c.ou + ', ' + c.quoi)
+          + '</span>'
+          + '<span class="sm">' + (cache ? '' : euros(niv.sommes[i]))
+          + '</span></button>';
+  });
+  document.getElementById('carnet').innerHTML = html;
+
+  document.getElementById('tickets').innerHTML = ordre.map(function(j){
+    const c = COURSES[j], pose = poses.indexOf(j) >= 0;
+    return '<button class="tk' + (pose ? ' pose' : '')
+         + (pris === j ? ' pris' : '') + '" onclick="clicTicket(' + j + ')"'
+         + ' aria-pressed="' + (pris === j ? 'true' : 'false') + '">'
+         + '<span class="ou">' + c.ou + '</span>'
+         + '<span class="qd">' + c.jour + '</span>'
+         + '<span class="ar">' + c.quoi + '</span>'
+         + '<span class="tt"><span>à payer</span><span>'
+         + euros(niv.sommes[j]) + '</span></span></button>';
+  }).join('');
+
+  document.getElementById('progNow').textContent = poses.length;
+
+  /* Le rappel du ticket tenu, et le creux qui l'empêche de masquer la
+     dernière ligne du carnet. */
+  const em = document.getElementById('enMain');
+  if (pris === null) {
+    em.classList.remove('vu');
+    document.body.style.paddingBottom = '';
+  } else {
+    const c = COURSES[pris];
+    document.getElementById('enMainQuoi').textContent =
+      c.ou + ', ' + c.jour + ', ' + euros(niv.sommes[pris]);
+    em.classList.add('vu');
+    document.body.style.paddingBottom = (em.offsetHeight + 18) + 'px';
+  }
+
+  /* Le coup de pouce qui arrive tout seul quand il ne reste que
+     l'orphelin : sans lui, la personne cherche une ligne qui n'existe
+     pas et croit s'être trompée. */
+  const r = document.getElementById('reste');
+  if (poses.length === COURSES.length - 1 && poses.indexOf(oubliee) < 0) {
+    r.textContent = "Il ne reste qu'un ticket, et le carnet a une ligne "
+                  + "restée vide. C'est la course oubliée : touchez le "
+                  + "ticket, puis la ligne vide.";
+  } else {
+    r.textContent = '';
+  }
+}
+
+// ── Les gestes ─────────────────────────────────────────────────────
+function reposer(){ pris = null; dessiner(); }
+
+function clicTicket(j){
+  if (poses.indexOf(j) >= 0) { toast('Ce ticket est déjà pointé.'); return; }
+  pris = (pris === j) ? null : j;
+  dessiner();
+}
+
+function clicLigne(i){
+  if (poses.indexOf(i) >= 0) { toast('Cette ligne est déjà cochée.'); return; }
+  if (pris === null) { toast("Touchez d'abord un ticket, en dessous."); return; }
+  if (pris === i) { poser(i); return; }
+  /* Pas d'erreur, pas de rouge, pas de décompte : on souffle le jour que
+     porte le ticket, et le ticket reste en main. La ligne vide ne dit
+     JAMAIS son jour : ce serait donner la course oubliée. */
+  if (i === oubliee) {
+    toast('Cette ligne est restée vide : elle attend le ticket qui n’a '
+          + 'pas été noté.');
+  } else {
+    toast('Ce ticket est du ' + COURSES[pris].jour + ', et cette ligne est '
+          + 'du ' + COURSES[i].jour + '.');
+  }
+}
+
+function poser(i){
+  poses.push(i);
+  pris = null;
+  dessiner();
+  if (poses.length === COURSES.length) etapeDuTotal();
+}
+
+function etapeDuTotal(){
+  const total = niv.sommes.reduce(function(a, b){ return a + b; }, 0);
+  document.getElementById('totalRep').textContent = euros(total);
+  document.getElementById('totalRep').style.display = 'none';
+  document.getElementById('voirTotal').style.display = '';
+  const p = document.getElementById('etapeTotal');
+  p.style.display = 'block';
+  p.scrollIntoView({behavior: 'smooth'});
+}
+
+function montrerTotal(){
+  document.getElementById('totalRep').style.display = 'block';
+  document.getElementById('voirTotal').style.display = 'none';
+}
+
+function terminer(){
+  document.getElementById('etapeTotal').style.display = 'none';
+  document.getElementById('doneQuoi').textContent =
+    'Tous les tickets sont pointés, et la course oubliée est retrouvée : '
+    + COURSES[oubliee].ou + ', ' + COURSES[oubliee].quoi + '.';
+  document.getElementById('doneMot').textContent = 'Rien ne vous a échappé.';
+  document.getElementById('doneBox').style.display = 'block';
+  try {
+    JDC.enregistrer('comptes', 1, true, {niveau: niv.cle});
+    JDC.marquerVu('comptes', niv.cle);
+  } catch(e){}
+  confetti();
+  document.getElementById('doneBox').scrollIntoView({behavior: 'smooth'});
+}
+
+buildMenu();
+
+// ═══════════════════════════════
+//   REPRIS MOT POUR MOT DE « VOUS ME MONTREZ ? »
+// ═══════════════════════════════
+/* Ces deux fonctions ne sont pas réécrites : elles sont découpées dans
+   jeu_gestes.html au moment de fabriquer cette page. Le message qui
+   passe et les confettis qui tombent sont donc exactement les mêmes que
+   dans les autres jeux, et le resteront. */
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function confetti(){
+  const colors = ['#c8922a','#2d6a4f','#6b4c2a','#3a6ea5','#6b4c2a'];
+  for(let i = 0; i < 60; i++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDuration = (2 + Math.random() * 2) + 's';
+    c.style.animationDelay = (Math.random() * .8) + 's';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 5000);
+  }
+}
+</script>
+
+<details class="jdc-apropos">
+<summary>À propos de ce jeu</summary>
+<div class="corps">
+<p><strong>Faire les comptes</strong> · Le carnet de courses de quelqu’un d’autre, à compléter avec ses tickets : une dépense manque, on la retrouve, puis on fait le total si on veut.</p>
+<h2>Ce que ce jeu n’est pas</h2>
+<p>Il n’y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne se compte et rien ne se ferme : on peut recommencer autant de fois qu’on veut. Ce jeu est une activité de loisir. Ce n’est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
+<h2>Qui le propose</h2>
+<p>Les Jardins de Célestine, un projet d’habitat partagé pour personnes atteintes de maladies neurodégénératives, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="projet.html">Découvrir le projet</a> · <a href="jeux.html">Voir tous les jeux</a>.</p>
+</div>
+</details>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+  <span aria-hidden="true"> · </span>
+  <a href="signaler.html?jeu=Faire%20les%20comptes&amp;p=jeu_comptes" target="_blank" rel="noopener">Signaler un problème</a>
+</footer>
+</body>
+</html>

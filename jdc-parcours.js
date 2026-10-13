@@ -1,5 +1,5 @@
 /* ════════════════════════════════════════════════════════════
-   LES JARDINS DE CÉLESTINE — Carnet de bord partagé
+   LES JARDINS DE CÉLESTINE · Carnet de bord partagé
    Mémoire commune à tous les jeux : parcours, niveaux, variété.
    À inclure dans chaque jeu :  <script src="jdc-parcours.js"></script>
    ════════════════════════════════════════════════════════════ */
@@ -93,6 +93,109 @@
     }
   }
 
+  /* ── Mesure d'usage, anonyme ──
+     Pour savoir, dans deux ou trois mois, quels jeux et quelles rubriques
+     du catalogue sont les plus joués (et, dans « Qui a fait quoi ? », quel
+     thème est choisi). À chaque partie enregistrée, un signal part vers
+     Google Analytics (déjà présent sur le site) :
+        jeu_<identifiant>     avec rubrique, niveau, variante
+        rubrique_<rubrique>   avec jeu
+     Rien d'autre : ni résultat, ni durée, ni nombre d'erreurs, ni nom.
+     Sans Google Analytics (bloqueur, hors ligne), le jeu ne voit aucune
+     différence. Pour que tes propres parties ne comptent pas, ouvre une
+     fois n'importe quelle page du site avec  ?sans-mesure=1  (et
+     ?sans-mesure=0  pour rétablir).
+
+     La table RUBRIQUE_DE est ENGENDRÉE par fiches/rubriques_mesure.py
+     d'après jeux.html : ne pas la modifier à la main.                    */
+  /* RUBRIQUES:DEBUT */
+  var RUBRIQUE_DE = {
+    apres: 'reperes',
+    association: 'memoire',
+    associations: 'langage',
+    calcul: 'nombres',
+    changeregle: 'attention',
+    cherchetrouve: 'attention',
+    combien: 'nombres',
+    commission: 'memoire',
+    comptes: 'nombres',
+    danslordre: 'logique',
+    double: 'nombres',
+    enquete: 'logique',
+    enquete_a_deux: 'logique',
+    enquete_groupe: 'logique',
+    enquete_vase: 'logique',
+    filannee: 'reperes',
+    formes: 'attention',
+    geographie: 'reperes',
+    gestes: 'quotidien',
+    grandeliste: 'souvenirs',
+    heure: 'reperes',
+    intrus: 'attention',
+    journee: 'reperes',
+    labyrinthe: 'attention',
+    lettre: 'souvenirs',
+    lettres: 'langage',
+    loto: 'memoire',
+    memoire: 'memoire',
+    memory: 'memoire',
+    monnaie: 'nombres',
+    mot_de_trop: 'logique',
+    motsmanquants: 'langage',
+    motsmeles: 'langage',
+    oeilmot: 'attention',
+    paires: 'memoire',
+    panier: 'logique',
+    proverbes: 'langage',
+    puzzle: 'attention',
+    quifaitquoi: 'memoire',
+    racontemoi: 'souvenirs',
+    range: 'attention',
+    saisons: 'reperes',
+    sudoku: 'logique',
+    syllabes: 'langage',
+    tables: 'nombres',
+    ticket: 'nombres',
+    touty: 'quotidien'
+  };
+  /* RUBRIQUES:FIN */
+
+  function sansMesure() {
+    var m = /[?&]sans-mesure=([01])(&|#|$)/.exec(global.location.search || '');
+    var cle = 'jdc-sans-mesure';
+    try {
+      if (m && m[1] === '1') localStorage.setItem(cle, '1');
+      if (m && m[1] === '0') localStorage.removeItem(cle);
+      if (m) return m[1] === '1';
+      return localStorage.getItem(cle) === '1';
+    } catch (e) {
+      return !!(m && m[1] === '1');
+    }
+  }
+
+  /* Envoie un évènement. Retourne true s'il est parti (utile aux essais). */
+  function mesure(nom, params) {
+    try {
+      if (typeof global.gtag !== 'function' || sansMesure()) return false;
+      var n = String(nom).toLowerCase().replace(/[^a-z0-9_]/g, '_').slice(0, 40);
+      var p = {};
+      Object.keys(params || {}).forEach(function (k) {
+        var v = params[k];
+        if (v !== null && v !== undefined && v !== '') p[k] = String(v).slice(0, 60);
+      });
+      global.gtag('event', n, p);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function mesurerPartie(jeu, niveau, variante) {
+    var rub = RUBRIQUE_DE[jeu] || 'autre';
+    mesure('jeu_' + jeu, { rubrique: rub, niveau: niveau, variante: variante });
+    mesure('rubrique_' + rub, { jeu: jeu });
+  }
+
   /* ── Enregistrer une partie terminée ──
      jeu     : identifiant du catalogue (ex. 'cherchetrouve')
      niveau  : 1, 2, 3…
@@ -111,6 +214,8 @@
       t: Date.now()
     });
     ecrire(d);
+    mesurerPartie(jeu, niveau || 1,
+                  options.variante || options.theme || options.mode);
   }
 
   /* ── Mémoriser un contenu déjà vu (fable, scène, histoire…) ──
@@ -231,6 +336,8 @@
     CATALOGUE: CATALOGUE,
     FONCTIONS: FONCTIONS,
     enregistrer: enregistrer,
+    mesure: mesure,
+    RUBRIQUE_DE: RUBRIQUE_DE,
     marquerVu: marquerVu,
     contenuSuivant: contenuSuivant,
     bilanJeu: bilanJeu,
