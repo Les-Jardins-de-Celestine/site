@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carnet de parcours · Les Jardins de Célestine</title>
+<meta name="description" content="Le carnet garde la trace des parties jouées sur cet appareil. Il reste dans le navigateur et n'est envoyé à personne.">
+<meta name="robots" content="noindex, follow">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="jdc-parcours.js"></script>
+<style>
+:root{--cream:#f7f3ea;--parchment:#eee8d5;--ink:#1c1208;--sepia:#5c3d1e;--gold:#c8922a;--green:#2d6a4f;--shadow:rgba(28,18,8,0.13);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--parchment);
+  background-image:radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.08) 0%,transparent 55%);
+  min-height:100vh;font-family:'Nunito',sans-serif;color:var(--ink);}
+
+.retour{display:block;text-align:center;padding:9px;font-size:.74rem;color:var(--sepia);opacity:.55;text-decoration:none;letter-spacing:.1em;text-transform:uppercase;}
+.retour:hover{opacity:1;}
+
+.feuille{max-width:640px;margin:14px auto 40px;background:#fff;border:1px solid rgba(200,146,42,.35);border-radius:14px;padding:34px 38px 40px;box-shadow:0 8px 30px var(--shadow);}
+
+.entete{text-align:center;border-bottom:2px solid var(--gold);padding-bottom:18px;margin-bottom:6px;}
+.marque{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--sepia);opacity:.6;}
+.entete h1{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.75rem;font-weight:700;color:var(--sepia);margin:8px 0 6px;}
+.periode{font-size:.95rem;color:var(--sepia);opacity:.8;}
+.edite{font-size:.76rem;color:var(--sepia);opacity:.55;margin-top:6px;}
+
+.jour{padding:15px 0;border-bottom:1px solid rgba(200,146,42,.22);}
+.jour:last-child{border-bottom:none;}
+.jour-d{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;color:var(--sepia);margin-bottom:7px;}
+.jour-t{width:100%;border-collapse:collapse;table-layout:fixed;font-size:1rem;}
+.jour-t col.cp{width:4.8rem;}
+.jour-t col.ct{width:9rem;}
+.jour-t col.cr{width:5.8rem;}
+.jour:has(+ .pied){border-bottom:none;}
+.jour-t th{font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sepia);opacity:.65;text-align:left;padding:2px 8px 5px 0;border-bottom:1px solid rgba(200,146,42,.22);}
+.jour-t td{padding:6px 8px 6px 0;line-height:1.4;vertical-align:top;border-bottom:1px solid rgba(200,146,42,.12);}
+.jour-t tr:last-child td{border-bottom:none;}
+.jour-t .c-n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;padding-right:0;}
+.jour-t th.c-n{padding-right:0;}
+.jour-t .c-n+.c-n{padding-left:14px;}
+.jour-t .c-t{white-space:nowrap;padding-left:14px;}
+.jour-t th.c-t{padding-left:14px;}
+.nr{color:var(--sepia);opacity:.6;font-size:.9rem;}
+@media (max-width:480px){
+  .feuille{padding:24px 18px 30px;}
+  .jour-t{font-size:.94rem;}
+  .jour-t th{font-size:.66rem;letter-spacing:.02em;}
+  .jour-t col.cp{width:3.9rem;}
+  .jour-t col.ct{width:5.6rem;}
+  .jour-t col.cr{width:5rem;}
+  .jour-t .c-t,.jour-t th.c-t{padding-left:8px;white-space:normal;}
+  .jour-t .c-n+.c-n{padding-left:8px;}
+}
+
+.rien{text-align:center;padding:40px 10px;color:var(--sepia);opacity:.7;font-style:italic;line-height:1.7;}
+
+.pied{margin-top:26px;padding-top:16px;border-top:1px solid rgba(200,146,42,.25);font-size:.78rem;line-height:1.65;color:var(--sepia);opacity:.7;text-align:center;}
+
+.actions{max-width:640px;margin:0 auto 30px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:0 18px;}
+.btn-or{background:var(--gold);color:#fff;border:none;border-radius:11px;padding:13px 26px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.98rem;font-weight:700;cursor:pointer;}
+.btn-or:hover{background:#b07820;}
+.btn-vide{background:none;border:1.5px solid rgba(200,146,42,.55);color:var(--sepia);border-radius:11px;padding:13px 26px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:.98rem;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;}
+.btn-vide:hover{background:rgba(200,146,42,.1);}
+.aide{max-width:640px;margin:0 auto 18px;padding:0 18px;font-size:.86rem;color:var(--sepia);opacity:.75;text-align:center;line-height:1.6;}
+
+/* ── IMPRESSION ── */
+@media print{
+  @page{margin:16mm 14mm;}
+  body{background:#fff;background-image:none;}
+  .retour,.actions,.aide{display:none !important;}
+  .feuille{max-width:none;margin:0;border:none;border-radius:0;box-shadow:none;padding:0;}
+  .jour{break-inside:avoid;page-break-inside:avoid;}
+  .entete{border-bottom:2px solid #8a6a20;}
+  .entete h1,.jour-d,.marque{color:#3d2a10;}
+  .jour-t td{color:#000;}
+  .jour-t th{opacity:1;color:#3d2a10;}
+  .jour-t th,.jour-t td{border-color:#d8c9a8;}
+  .nr{opacity:1;color:#4a3a2c;}
+  .pied{opacity:1;color:#4a3a2c;}
+}
+
+/* Pied discret : le lien légal doit exister sur chaque page du site. */
+.jdc-legal{text-align:center;padding:16px 14px 22px;font-size:.78rem;line-height:1.6;
+  color:#5c3d1e;opacity:.6;font-family:'Nunito',sans-serif;}
+.jdc-legal a{color:inherit;}
+@media print{.jdc-legal{display:none;}}
+</style>
+</head>
+<body>
+
+<a class="retour" href="jeux.html">← Retour aux jeux</a>
+
+<p class="aide">Ce carnet reprend, jour par jour, les jeux joués sur cet appareil : le nombre de parties, le temps passé et les parties réussies. Vous pouvez l'imprimer ou l'enregistrer en PDF : dans la fenêtre d'impression, choisissez « Enregistrer au format PDF » comme destination.</p>
+
+<div class="actions">
+  <button class="btn-or" onclick="window.print()">Imprimer ou enregistrer en PDF</button>
+  <a class="btn-vide" href="jeux.html">← Retour aux jeux</a>
+</div>
+
+<div class="feuille" id="feuille"></div>
+
+<script>
+var MOIS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+var JOURS = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+
+function enToutesLettres(d){
+  return JOURS[d.getDay()] + ' ' + d.getDate() + ' ' + MOIS[d.getMonth()] + ' ' + d.getFullYear();
+}
+function cle(d){
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+// Jeux encore en prototype, absents du catalogue de jdc-parcours.js.
+// À supprimer d'ici le jour où ils y sont inscrits.
+var EN_ATTENTE = {
+  racontemoi:'Racontez-moi', panier:'Le bon panier',
+  /* Jeux qui enregistrent leurs parties mais absents du catalogue de
+     jdc-parcours.js : sans cette liste, le carnet affichait leur code interne. */
+  commission:'La commission', comptes:'Faire les comptes',
+  enquete_a_deux:"L'Enquête à deux", gestes:'Vous me montrez ?',
+  lettre:'La Lettre du Jour', lettres:'Les lettres mêlées',
+  mot_de_trop:'Le mot de trop', proverbes:'Proverbes incomplets',
+  quifaitquoi:'Qui a fait quoi ?', syllabes:'Les mots coupés en deux',
+  ticket:'Le ticket effacé', touty:'Tout y est ?'
+};
+
+function nomDuJeu(id, catalogue){
+  if(catalogue[id] && catalogue[id].nom) return catalogue[id].nom;
+  if(EN_ATTENTE[id]) return EN_ATTENTE[id];
+  return String(id);
+}
+
+function echapper(t){
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* Temps passé : somme des durées relevées. Si certaines parties n'ont pas de
+   durée, la somme est un minimum ; si aucune n'en a, on le dit. */
+function leTemps(g){
+  if(!g.avecTemps) return '<span class="nr">non relevé</span>';
+  var s = Math.round(g.secondes), t;
+  if(s < 60){ t = s + ' s'; }
+  else {
+    var m = Math.round(s / 60);
+    t = (m < 60) ? m + ' min' : Math.floor(m / 60) + ' h ' + String(m % 60).padStart(2,'0');
+  }
+  return (g.avecTemps < g.parties ? 'au moins ' : '') + t;
+}
+
+function construire(){
+  var f = document.getElementById('feuille');
+  var noms = (typeof JDC !== 'undefined') ? JDC.CATALOGUE : {};
+  var sessions = (typeof JDC !== 'undefined') ? JDC.lire().sessions : [];
+
+  var entete =
+    '<div class="entete">' +
+      '<div class="marque">Les Jardins de Célestine</div>' +
+      '<h1>Carnet de parcours</h1>' +
+      '<div class="periode" id="periode"></div>' +
+      '<div class="edite">Édité le ' + enToutesLettres(new Date()) + '</div>' +
+    '</div>';
+
+  if(!sessions.length){
+    f.innerHTML = entete +
+      '<p class="rien">Aucune partie n\'a encore été jouée sur cet appareil.<br>Le carnet se remplira au fil des jeux.</p>' +
+      pied();
+    document.getElementById('periode').textContent = '';
+    return;
+  }
+
+  // regroupement par jour (du plus récent au plus ancien), puis par jeu,
+  // dans l'ordre où les jeux ont été ouverts ce jour-là
+  var parJour = {};
+  sessions.forEach(function(s){
+    var d = new Date(s.t);
+    if(isNaN(d.getTime())) return;
+    var k = cle(d);
+    if(!parJour[k]) parJour[k] = { date: d, jeux: {}, ordre: [] };
+    var jour = parJour[k];
+    var g = jour.jeux[s.j];
+    if(!g){
+      g = jour.jeux[s.j] = { nom: nomDuJeu(s.j, noms), parties: 0, reussies: 0, secondes: 0, avecTemps: 0 };
+      jour.ordre.push(s.j);
+    }
+    g.parties++;
+    if(s.r) g.reussies++;
+    if(s.d > 0){ g.secondes += Number(s.d); g.avecTemps++; }
+  });
+
+  var cles = Object.keys(parJour).sort().reverse();
+
+  if(!cles.length){
+    f.innerHTML = entete +
+      '<p class="rien">Aucune partie n\'a encore été jouée sur cet appareil.<br>Le carnet se remplira au fil des jeux.</p>' +
+      pied();
+    document.getElementById('periode').textContent = '';
+    return;
+  }
+
+  var corps = cles.map(function(k){
+    var j = parJour[k];
+    var lignes = j.ordre.map(function(id){
+      var g = j.jeux[id];
+      return '<tr><td>' + echapper(g.nom) + '</td>' +
+             '<td class="c-n">' + g.parties + '</td>' +
+             '<td class="c-t">' + leTemps(g) + '</td>' +
+             '<td class="c-n">' + g.reussies + ' sur ' + g.parties + '</td></tr>';
+    }).join('');
+    return '<div class="jour"><div class="jour-d">' + enToutesLettres(j.date) + '</div>' +
+      '<table class="jour-t"><colgroup><col><col class="cp"><col class="ct"><col class="cr"></colgroup><thead><tr><th>Jeu</th><th class="c-n">Parties</th><th class="c-t">Temps</th><th class="c-n">Réussies</th></tr></thead>' +
+      '<tbody>' + lignes + '</tbody></table></div>';
+  }).join('');
+
+  f.innerHTML = entete + corps + pied();
+
+  var premier = parJour[cles[cles.length-1]].date;
+  var dernier = parJour[cles[0]].date;
+  document.getElementById('periode').textContent =
+    (cles.length === 1)
+      ? 'Une journée de jeu'
+      : 'Du ' + enToutesLettres(premier) + ' au ' + enToutesLettres(dernier);
+}
+
+function pied(){
+  return '<div class="pied">' +
+    'Ce carnet est enregistré uniquement sur cet appareil et n\'est transmis à personne.<br>' +
+    'Le temps est celui pendant lequel la partie est restée ouverte, quand le jeu le relève. ' +
+    'Une partie est réussie quand elle est menée jusqu\'au bout. Pour six jeux ' +
+    '(Calcul Mental, Jeu de l\'Heure, À qui appartient ?, Change de Règle, L\'Œil et le Mot, Mémoire des Grands), ' +
+    'il faut en plus au moins 70 % de bonnes réponses (la moitié des points pour Mémoire des Grands).<br>' +
+    'C\'est un repère pour en parler, pas une évaluation : il ne remplace aucun avis professionnel.' +
+    '</div>';
+}
+
+construire();
+</script>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+  <span aria-hidden="true"> · </span>
+  <a href="signaler.html?jeu=Carnet%20de%20parcours&amp;p=carnet" target="_blank" rel="noopener">Signaler un problème</a>
+</footer>
+</body>
+</html>
