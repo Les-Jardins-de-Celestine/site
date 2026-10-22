@@ -644,6 +644,7 @@ function win(){
   document.getElementById('doneMsg').textContent =
     'Le texte est reconstitué. Rien ne vous échappe.';
   document.getElementById('doneBox').style.display = 'block';
+  document.getElementById('doneBox').scrollIntoView({behavior: 'smooth'});
   confetti();
 }
 

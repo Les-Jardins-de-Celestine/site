@@ -440,6 +440,7 @@ function win(){
   document.getElementById('doneMsg').textContent = 'L\'année est dans l\'ordre.';
   confetti();
   document.getElementById('doneBox').style.display = 'block';
+  document.getElementById('doneBox').scrollIntoView({behavior: 'smooth'});
 }
 
 buildMenu();

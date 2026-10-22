@@ -164,16 +164,13 @@ svg.forme{display:block;}
     </div>
     <div class="niveaux">
       <button class="niv" onclick="commencer(1)">
-        <span class="niv-t">Tranquille</span>
-        <span class="niv-d">12 figures · 2 couleurs, 2 formes</span>
+        <span class="niv-t">12 figures · 2 couleurs, 2 formes</span>
       </button>
       <button class="niv niv-mid" onclick="commencer(2)">
-        <span class="niv-t">Attentif</span>
-        <span class="niv-d">16 figures · 3 couleurs, 3 formes</span>
+        <span class="niv-t">16 figures · 3 couleurs, 3 formes</span>
       </button>
       <button class="niv" onclick="commencer(3)">
-        <span class="niv-t">Vif d'esprit</span>
-        <span class="niv-d">20 figures · 4 couleurs, 4 formes</span>
+        <span class="niv-t">20 figures · 4 couleurs, 4 formes</span>
       </button>
     </div>
     <div id="suggestion"></div>
@@ -264,7 +261,7 @@ function afficherSuggestion(){
   const b=JDC.bilanJeu('changeregle');
   if(!b.parties){el.textContent='';return;}
   const c=JDC.niveauConseille('changeregle');
-  const lbl={1:'Tranquille',2:'Attentif',3:"Vif d'esprit"}[c];
+  const lbl={1:'12 figures',2:'16 figures',3:'20 figures'}[c];
   el.textContent=b.parties+' partie(s) jouée(s). Parcours conseillé : '+lbl+'.';
 }
 afficherSuggestion();

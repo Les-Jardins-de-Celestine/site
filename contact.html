@@ -393,6 +393,22 @@ h2{font-family:var(--disp);font-size:1.55em;font-weight:600;color:var(--c1);line
 </footer>
 
 <script>
+/* Mesure : un message de contact part (clic sur Envoyer, formulaire valide).
+   Aucun contenu transmis, seulement le nom de l'événement.
+   Respecte ?sans-mesure=1, comme le reste du site. */
+(function(){
+  var f=document.querySelector('#pg-contact form');
+  if(!f)return;
+  f.addEventListener('submit',function(){
+    try{
+      var sans=/[?&]sans-mesure=1(&|#|$)/.test(location.search)||localStorage.getItem('jdc-sans-mesure')==='1';
+      if(!sans&&typeof gtag==='function')gtag('event','contact_envoye',{transport_type:'beacon'});
+    }catch(e){}
+  });
+})();
+</script>
+
+<script>
 var curSz=15;
 var criteres=[
   'Un espace extérieur accessible (jardin, terrasse)',

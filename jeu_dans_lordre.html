@@ -388,6 +388,7 @@ function win(){
   document.getElementById('doneMsg').textContent =
     'L\'histoire est reconstituée.';
   document.getElementById('doneBox').style.display = 'block';
+  document.getElementById('doneBox').scrollIntoView({behavior: 'smooth'});
   confetti();
 }
 

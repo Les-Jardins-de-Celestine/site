@@ -163,16 +163,13 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
     <p style="font-size:0.9rem;opacity:.85">Prenez tout votre temps : rien n'est chronométré.</p>
     <div class="niveaux">
       <button class="niv" onclick="commencer(1)">
-        <span class="niv-t">En douceur</span>
-        <span class="niv-d">12 mots · 2 couleurs · beaucoup d'accords</span>
+        <span class="niv-t">12 mots · 2 couleurs</span>
       </button>
       <button class="niv niv-mid" onclick="commencer(2)">
-        <span class="niv-t">Concentré</span>
-        <span class="niv-d">16 mots · 3 couleurs</span>
+        <span class="niv-t">16 mots · 3 couleurs</span>
       </button>
       <button class="niv" onclick="commencer(3)">
-        <span class="niv-t">Sans se laisser prendre</span>
-        <span class="niv-d">20 mots · 4 couleurs · pièges fréquents</span>
+        <span class="niv-t">20 mots · 4 couleurs</span>
       </button>
     </div>
     <div id="suggestion"></div>
@@ -241,7 +238,7 @@ function afficherSuggestion(){
   const b=JDC.bilanJeu('oeilmot');
   if(!b.parties){el.textContent='';return;}
   const c=JDC.niveauConseille('oeilmot');
-  const lbl={1:'En douceur',2:'Concentré',3:'Sans se laisser prendre'}[c];
+  const lbl={1:'12 mots',2:'16 mots',3:'20 mots'}[c];
   el.textContent=b.parties+' partie(s) jouée(s). Parcours conseillé : '+lbl+'.';
 }
 afficherSuggestion();

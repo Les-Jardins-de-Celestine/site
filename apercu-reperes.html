@@ -259,36 +259,5 @@ document.querySelectorAll('a[data-jeu]').forEach(function(a){
   });
 });
 </script>
-
-<!-- ══ APERÇU : repère d'exigence, greffé sur les cartes existantes ══
-     Lit JDC.CATALOGUE[data-jeu].exigence. Aucune carte n'est modifiée à la
-     main. Retirer ce bloc suffit à revenir en arrière. -->
-<style>
-.jeu{position:relative}
-.jeu-rep{display:inline-flex;align-items:center;gap:5px;margin-top:7px;
-  font-size:11px;font-weight:700;letter-spacing:.3px;border-radius:30px;padding:2px 9px;}
-.jeu-rep i{width:7px;height:7px;border-radius:50%;display:block;font-style:normal}
-.rep1{background:#e8f2ec;color:#1f5c42;border:1px solid #a9cfbb}
-.rep1 i{background:#2d6a4f}
-.rep2{background:#f8efdc;color:#8a6320;border:1px solid #e5cf9f}
-.rep2 i{background:#c8922a}
-.rep3{background:#f3ece6;color:#6b4a2c;border:1px solid #d6c1ac}
-.rep3 i{background:#8a5a32}
-</style>
-<script>
-(function(){
-  var MOTS = { 1:'Tout en douceur', 2:'Un peu plus', 3:'Pour les jours en forme' };
-  if (typeof JDC === 'undefined') return;
-  var cartes = document.querySelectorAll('.jeu[data-jeu]');
-  for (var i = 0; i < cartes.length; i++) {
-    var info = JDC.CATALOGUE[cartes[i].getAttribute('data-jeu')];
-    if (!info || !info.exigence) continue;
-    var s = document.createElement('span');
-    s.className = 'jeu-rep rep' + info.exigence;
-    s.innerHTML = '<i></i>' + MOTS[info.exigence];
-    cartes[i].appendChild(s);
-  }
-})();
-</script>
 </body>
 </html>
