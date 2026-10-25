@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script>(function(){var m=/[?&]sans-mesure=([01])(&|#|$)/.exec(location.search),k='jdc-sans-mesure',s=!!(m&&m[1]==='1');try{if(m)s?localStorage.setItem(k,'1'):localStorage.removeItem(k);else s=localStorage.getItem(k)==='1'}catch(e){}if(s)window['ga-disable-G-NT825E8XDT']=true})();</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-NT825E8XDT');</script>
 <meta charset="UTF-8">
@@ -159,6 +160,65 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
  }
 }
 </script>
+
+<style id="feuille-papier">
+/* « Imprimer cette partie » : la feuille est construite à la demande par
+   imprimerPartie(), cachée à l'écran, et seule visible à l'impression
+   quand la page porte la classe .imprime (posée par le bouton). */
+#feuille{display:none}
+.imp-btn{font-family:'Nunito',sans-serif;font-weight:700;cursor:pointer}
+@media print{
+  @page{size:A4 portrait;margin:11mm 14mm}
+  body.imprime{background:#fff!important;color:#000!important;padding:0!important;
+    margin:0!important;min-height:0!important;display:block!important}
+  body.imprime>*:not(#feuille){display:none!important}
+  body.imprime #feuille{display:block}
+  #feuille{font-family:'Atkinson Hyperlegible','Nunito',Arial,sans-serif;color:#000;
+    font-size:15pt;line-height:1.35;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #feuille .f-page{break-after:page;page-break-after:always}
+  #feuille .f-page:last-child{break-after:auto;page-break-after:auto}
+  #feuille .f-entete{display:flex;align-items:center;gap:3mm;
+    border-bottom:.3mm solid #999;padding-bottom:2mm;margin:0 0 4mm}
+  #feuille .f-entete img{width:13mm;height:13mm;display:block}
+  #feuille .f-marque{font-size:16pt;font-weight:700;line-height:1.1}
+  #feuille .f-titre{font-size:24pt;font-weight:700;margin:0 0 2mm;line-height:1.15}
+  #feuille .f-consigne{font-size:15pt;margin:0 0 6mm}
+  #feuille .f-pied{border-top:.3mm solid #999;padding-top:2mm;margin:4mm 0 0;line-height:1.3}
+  #feuille .f-pied .f-site{font-size:12pt;font-weight:700;margin:0}
+  #feuille .f-pied .f-jeu{font-size:10.5pt;color:#333;margin:0}
+  /* blocs communs aux jeux en séries */
+  #feuille .f-num{font-size:15pt;font-weight:700}
+  #feuille .f-mot{border:.5mm solid #000;border-radius:3mm;padding:3mm 1mm;
+    text-align:center;font-size:17pt;font-weight:700;min-height:17mm;display:flex;
+    align-items:center;justify-content:center;white-space:normal;line-height:1.15}
+  #feuille .f-mot.f-long{font-size:15pt}
+  #feuille .f-boites{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));
+    gap:3.5mm;margin:0 0 7mm}
+  #feuille .f-rep{list-style:none;padding:0;margin:0}
+  #feuille .f-rep li{font-size:15pt;margin:0 0 5mm}
+  #feuille .f-lignes{list-style:none;padding:0;margin:0}
+  #feuille .f-lignes li{display:flex;align-items:flex-end;gap:3mm;height:14mm;
+    font-size:15pt;font-weight:700}
+  #feuille .f-lignes li::after{content:'';flex:1;border-bottom:.4mm solid #000;margin-bottom:1.6mm}
+  #feuille .f-bloc{break-inside:avoid;page-break-inside:avoid}
+}
+</style>
+
+<style id="feuille-papier-combien">
+#barre{flex-wrap:wrap;gap:8px}
+#barre .lien{white-space:nowrap}
+@media print{
+  #feuille .f-combien{display:grid;grid-template-columns:1fr 1fr;gap:4mm 6mm}
+  #feuille .f-plateau{border:.4mm solid #000;border-radius:3mm;padding:3mm;break-inside:avoid;
+    display:flex;flex-direction:column;gap:2.5mm}
+  #feuille .f-vign{display:flex;flex-wrap:wrap;gap:1.5mm;align-content:flex-start;min-height:28mm}
+  #feuille .f-vign img{width:var(--t);height:var(--t);object-fit:contain}
+  #feuille .f-plateau .f-question{font-size:15pt;font-weight:700;margin:0}
+  #feuille .f-plateau .f-choix{display:flex;gap:2.5mm}
+  #feuille .f-plateau .f-choix span{border:.4mm solid #000;border-radius:2mm;padding:1mm 3mm;
+    font-weight:700;font-size:16pt;min-width:10mm;text-align:center}
+}
+</style>
 </head>
 <body>
 
@@ -195,6 +255,7 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
 <div id="game">
   <div id="barre">
     <button class="lien" onclick="retourAccueil()">↩ Revenir au début</button>
+    <button class="lien" onclick="imprimerPartie()"><span aria-hidden="true">🖨</span> Imprimer cette partie</button>
     <span id="compteur"></span>
   </div>
 
@@ -214,6 +275,7 @@ header p{font-size:0.74rem;letter-spacing:.15em;text-transform:uppercase;color:v
     <p id="finTexte"></p>
     <button class="btn-g" onclick="rejouer()">Rejouer</button>
     <button class="btn-o" onclick="retourAccueil()">↩ Revenir au début</button>
+    <button class="btn-o" onclick="imprimerPartie()"><span aria-hidden="true">🖨</span> Imprimer cette partie</button>
   </div>
 </div>
 
@@ -514,5 +576,141 @@ function confetti(){
   <span aria-hidden="true"> · </span>
   <a href="signaler.html?jeu=Combien%20y%20en%20a-t-il%20%3F&amp;p=jeu_combien" target="_blank" rel="noopener">Signaler un problème</a>
 </footer>
+<div id="feuille" aria-hidden="true"></div>
+<script id="impression">
+
+function feuilleEl(tag, cls, txt){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt != null) e.textContent = txt;
+  return e;
+}
+function feuilleOuvre(titre, consigne, adresse){
+  var p = feuilleEl('section', 'f-page');
+  var e = feuilleEl('div', 'f-entete');
+  var im = document.createElement('img');
+  im.src = 'logo-fleur.png'; im.alt = ''; im.width = 96; im.height = 96;
+  e.appendChild(im);
+  e.appendChild(feuilleEl('span', 'f-marque', 'Les Jardins de Célestine'));
+  p.appendChild(e);
+  p.appendChild(feuilleEl('h1', 'f-titre', titre));
+  if (consigne) p.appendChild(feuilleEl('p', 'f-consigne', consigne));
+  p._adresse = adresse;
+  return p;
+}
+function feuilleFerme(p){
+  var pied = feuilleEl('div', 'f-pied');
+  pied.appendChild(feuilleEl('p', 'f-site', 'jardinsdecelestine.com · jardinsdecelestine@gmail.com'));
+  pied.appendChild(feuilleEl('p', 'f-jeu', 'Ce jeu est gratuit en ligne : jardinsdecelestine.com/' + p._adresse));
+  p.appendChild(pied);
+}
+function feuilleImprime(jeu){
+  /* compteur Google Analytics : un évènement par impression, nommé d'après le jeu
+     (JDC.mesure ne part pas avec ?sans-mesure=1) */
+  try { if (window.JDC && JDC.mesure) JDC.mesure('impression_' + jeu, {}); } catch (e) {}
+  document.body.classList.add('imprime');
+  var attente = [].slice.call(document.querySelectorAll('#feuille img')).filter(function(i){ return !i.complete; });
+  var lance = false;
+  function go(){ if (lance) return; lance = true; window.print(); }
+  function fin(){ if (--n <= 0) go(); }
+  var n = attente.length;
+  if (!n) return go();
+  attente.forEach(function(i){ i.addEventListener('load', fin); i.addEventListener('error', fin); });
+  setTimeout(go, 5000);
+}
+window.addEventListener('afterprint', function(){
+  document.body.classList.remove('imprime');
+});
+function feuilleNeuve(){
+  var f = document.getElementById('feuille');
+  /* la feuille doit être un enfant direct de <body> (une balise restée
+     ouverte dans la page peut l'avoir rangée dans un bloc caché) */
+  if (f.parentNode !== document.body) document.body.appendChild(f);
+  f.textContent = '';
+  return f;
+}
+function feuilleCap(m){ return m.charAt(0).toUpperCase() + m.slice(1); }
+/* des cadres côte à côte, n par ligne */
+function feuilleBoites(textes, n){
+  var b = feuilleEl('div', 'f-boites');
+  b.style.setProperty('--n', n);
+  /* une seule taille de lettres par cadre : 15 pt dès qu'un texte est long */
+  var long = textes.some(function(t){ return t.length >= 10; });
+  textes.forEach(function(t){
+    b.appendChild(feuilleEl('span', 'f-mot' + (long ? ' f-long' : ''), t));
+  });
+  return b;
+}
+/* des lignes numérotées pour écrire */
+function feuilleLignes(nb){
+  var ol = feuilleEl('ol', 'f-lignes');
+  for (var i = 0; i < nb; i++) ol.appendChild(feuilleEl('li', null, (i + 1) + '.'));
+  return ol;
+}
+function feuilleReponses(lignes){
+  var ol = feuilleEl('ol', 'f-rep');
+  lignes.forEach(function(t){ ol.appendChild(feuilleEl('li', null, t)); });
+  return ol;
+}
+
+function imprimerPartie(){
+  if (!cfg) return;
+  var tours = [];
+  /* l'image à l'écran d'abord, telle quelle */
+  if (document.getElementById('game').style.display === 'block' && objet) {
+    tours.push({
+      objet: objet, quantite: quantite,
+      vign: [].slice.call(document.querySelectorAll('#plateau .ob img')).map(function(i){ return i.getAttribute('src'); }),
+      props: [].slice.call(document.querySelectorAll('#choix .rep')).map(function(b){ return +b.getAttribute('data-n'); })
+    });
+  }
+  var vus = tours.map(function(t){ return t.objet.id; });
+  while (tours.length < cfg.tour) {
+    var pool = OBJETS.filter(function(o){ return vus.indexOf(o.id) === -1; });
+    if (!pool.length) pool = OBJETS.slice();
+    var o = pool[Math.floor(Math.random() * pool.length)];
+    vus.push(o.id);
+    var q = hasard(cfg.min, cfg.max), v = [], i;
+    for (i = 0; i < q; i++) v.push(o.i);
+    if (cfg.types > 1) {
+      var autres = melange(OBJETS.filter(function(x){ return x.id !== o.id; })).slice(0, cfg.types - 1);
+      var total = hasard(cfg.autres[0], cfg.autres[1]);
+      for (i = 0; i < total; i++) v.push(autres[i % autres.length].i);
+    }
+    var set = [q], bas = Math.max(1, cfg.min - 1), haut = cfg.max + 1, ecart = 1;
+    while (set.length < cfg.props && ecart < 6) {
+      var cands = melange([q - ecart, q + ecart]);
+      for (var c = 0; c < cands.length && set.length < cfg.props; c++)
+        if (cands[c] >= bas && cands[c] <= haut && set.indexOf(cands[c]) === -1) set.push(cands[c]);
+      ecart++;
+    }
+    tours.push({objet: o, quantite: q, vign: melange(v), props: set.sort(function(a, b){ return a - b; })});
+  }
+  var taille = {1: '16mm', 2: '12mm', 3: '9.5mm'}[niveau] || '12mm';
+  var f = feuilleNeuve();
+  var p1 = feuilleOuvre('Combien y en a-t-il ?', 'Comptez, puis entourez le bon nombre.', 'jeu_combien');
+  var g = feuilleEl('div', 'f-combien');
+  tours.forEach(function(t, k){
+    var cel = feuilleEl('div', 'f-plateau');
+    var vg = feuilleEl('div', 'f-vign');
+    vg.style.setProperty('--t', taille);
+    t.vign.forEach(function(src){ var im = document.createElement('img'); im.src = src; im.alt = ''; vg.appendChild(im); });
+    cel.appendChild(vg);
+    cel.appendChild(feuilleEl('p', 'f-question', (k + 1) + '. Combien de ' + t.objet.p + ' ?'));
+    var ch = feuilleEl('div', 'f-choix');
+    t.props.forEach(function(n){ ch.appendChild(feuilleEl('span', null, String(n))); });
+    cel.appendChild(ch);
+    g.appendChild(cel);
+  });
+  p1.appendChild(g);
+  feuilleFerme(p1); f.appendChild(p1);
+  var p2 = feuilleOuvre('Combien y en a-t-il ? Les réponses', null, 'jeu_combien');
+  p2.appendChild(feuilleReponses(tours.map(function(t, k){
+    return (k + 1) + '. ' + t.quantite + ' ' + (t.quantite > 1 ? t.objet.p : t.objet.s);
+  })));
+  feuilleFerme(p2); f.appendChild(p2);
+  feuilleImprime('combien');
+}
+</script>
 </body>
 </html>

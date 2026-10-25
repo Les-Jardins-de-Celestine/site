@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <!-- Google tag (gtag.js) -->
+<script>(function(){var m=/[?&]sans-mesure=([01])(&|#|$)/.exec(location.search),k='jdc-sans-mesure',s=!!(m&&m[1]==='1');try{if(m)s?localStorage.setItem(k,'1'):localStorage.removeItem(k);else s=localStorage.getItem(k)==='1'}catch(e){}if(s)window['ga-disable-G-NT825E8XDT']=true})();</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -296,6 +297,59 @@ header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:va
  }
 }
 </script>
+
+<style id="feuille-papier">
+/* « Imprimer cette partie » : la feuille est construite à la demande par
+   imprimerPartie(), cachée à l'écran, et seule visible à l'impression
+   quand la page porte la classe .imprime (posée par le bouton). */
+#feuille{display:none}
+.imp-btn{font-family:'Nunito',sans-serif;font-weight:700;cursor:pointer}
+@media print{
+  @page{size:A4 portrait;margin:11mm 14mm}
+  body.imprime{background:#fff!important;color:#000!important;padding:0!important;
+    margin:0!important;min-height:0!important;display:block!important}
+  body.imprime>*:not(#feuille){display:none!important}
+  body.imprime #feuille{display:block}
+  #feuille{font-family:'Atkinson Hyperlegible','Nunito',Arial,sans-serif;color:#000;
+    font-size:15pt;line-height:1.35;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #feuille .f-page{break-after:page;page-break-after:always}
+  #feuille .f-page:last-child{break-after:auto;page-break-after:auto}
+  #feuille .f-entete{display:flex;align-items:center;gap:3mm;
+    border-bottom:.3mm solid #999;padding-bottom:2mm;margin:0 0 4mm}
+  #feuille .f-entete img{width:13mm;height:13mm;display:block}
+  #feuille .f-marque{font-size:16pt;font-weight:700;line-height:1.1}
+  #feuille .f-titre{font-size:24pt;font-weight:700;margin:0 0 2mm;line-height:1.15}
+  #feuille .f-consigne{font-size:15pt;margin:0 0 6mm}
+  #feuille .f-pied{border-top:.3mm solid #999;padding-top:2mm;margin:4mm 0 0;line-height:1.3}
+  #feuille .f-pied .f-site{font-size:12pt;font-weight:700;margin:0}
+  #feuille .f-pied .f-jeu{font-size:10.5pt;color:#333;margin:0}
+  /* blocs communs aux jeux en séries */
+  #feuille .f-num{font-size:15pt;font-weight:700}
+  #feuille .f-mot{border:.5mm solid #000;border-radius:3mm;padding:3mm 1mm;
+    text-align:center;font-size:17pt;font-weight:700;min-height:17mm;display:flex;
+    align-items:center;justify-content:center;white-space:normal;line-height:1.15}
+  #feuille .f-mot.f-long{font-size:15pt}
+  #feuille .f-boites{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));
+    gap:3.5mm;margin:0 0 7mm}
+  #feuille .f-rep{list-style:none;padding:0;margin:0}
+  #feuille .f-rep li{font-size:15pt;margin:0 0 5mm}
+  #feuille .f-lignes{list-style:none;padding:0;margin:0}
+  #feuille .f-lignes li{display:flex;align-items:flex-end;gap:3mm;height:14mm;
+    font-size:15pt;font-weight:700}
+  #feuille .f-lignes li::after{content:'';flex:1;border-bottom:.4mm solid #000;margin-bottom:1.6mm}
+  #feuille .f-bloc{break-inside:avoid;page-break-inside:avoid}
+}
+</style>
+
+<style id="feuille-papier-calcul">
+@media print{
+  #feuille .f-calc{display:grid;grid-template-columns:1fr 1fr;column-gap:12mm;row-gap:6mm;margin-top:2mm}
+  #feuille .f-op{display:flex;align-items:center;gap:3mm;font-size:20pt;font-weight:700;white-space:nowrap}
+  #feuille .f-op .f-num{font-size:15pt;min-width:10mm}
+  #feuille .f-op .f-boite{display:inline-block;width:24mm;height:12mm;border:.4mm solid #000;border-radius:1.5mm}
+  #feuille .f-op strong{text-decoration:underline;text-underline-offset:1.2mm}
+}
+</style>
 </head>
 <body>
 
@@ -348,6 +402,7 @@ header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:va
   <div class="hud">
     <div class="hb"><span class="l">Question</span><span class="v" id="hQ">1/10</span></div>
     <button type="button" class="btn-menu" onclick="backToStart()">↩ Revenir au début</button>
+    <button type="button" class="btn-menu" onclick="imprimerPartie()"><span aria-hidden="true">🖨</span> Imprimer cette partie</button>
   </div>
 
   <div class="score-row" id="scoreRow"></div>
@@ -375,6 +430,7 @@ header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:va
     <p id="resultMsg"></p>
     <div class="btn-row-r">
       <button class="btn btn-ol btn-sm" onclick="backToStart()">↩ Revenir au début</button>
+      <button class="btn btn-ol btn-sm" onclick="imprimerPartie()"><span aria-hidden="true">🖨</span> Imprimer cette partie</button>
       <button class="btn btn-sm" onclick="startGame()">Rejouer</button>
     </div>
   </div>
@@ -687,5 +743,119 @@ afficherConseil();
   <span aria-hidden="true"> · </span>
   <a href="signaler.html?jeu=Calcul%20Mental&amp;p=jeu_calcul" target="_blank" rel="noopener">Signaler un problème</a>
 </footer>
+<div id="feuille" aria-hidden="true"></div>
+<script id="impression">
+
+function feuilleEl(tag, cls, txt){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt != null) e.textContent = txt;
+  return e;
+}
+function feuilleOuvre(titre, consigne, adresse){
+  var p = feuilleEl('section', 'f-page');
+  var e = feuilleEl('div', 'f-entete');
+  var im = document.createElement('img');
+  im.src = 'logo-fleur.png'; im.alt = ''; im.width = 96; im.height = 96;
+  e.appendChild(im);
+  e.appendChild(feuilleEl('span', 'f-marque', 'Les Jardins de Célestine'));
+  p.appendChild(e);
+  p.appendChild(feuilleEl('h1', 'f-titre', titre));
+  if (consigne) p.appendChild(feuilleEl('p', 'f-consigne', consigne));
+  p._adresse = adresse;
+  return p;
+}
+function feuilleFerme(p){
+  var pied = feuilleEl('div', 'f-pied');
+  pied.appendChild(feuilleEl('p', 'f-site', 'jardinsdecelestine.com · jardinsdecelestine@gmail.com'));
+  pied.appendChild(feuilleEl('p', 'f-jeu', 'Ce jeu est gratuit en ligne : jardinsdecelestine.com/' + p._adresse));
+  p.appendChild(pied);
+}
+function feuilleImprime(jeu){
+  /* compteur Google Analytics : un évènement par impression, nommé d'après le jeu
+     (JDC.mesure ne part pas avec ?sans-mesure=1) */
+  try { if (window.JDC && JDC.mesure) JDC.mesure('impression_' + jeu, {}); } catch (e) {}
+  document.body.classList.add('imprime');
+  var attente = [].slice.call(document.querySelectorAll('#feuille img')).filter(function(i){ return !i.complete; });
+  var lance = false;
+  function go(){ if (lance) return; lance = true; window.print(); }
+  function fin(){ if (--n <= 0) go(); }
+  var n = attente.length;
+  if (!n) return go();
+  attente.forEach(function(i){ i.addEventListener('load', fin); i.addEventListener('error', fin); });
+  setTimeout(go, 5000);
+}
+window.addEventListener('afterprint', function(){
+  document.body.classList.remove('imprime');
+});
+function feuilleNeuve(){
+  var f = document.getElementById('feuille');
+  /* la feuille doit être un enfant direct de <body> (une balise restée
+     ouverte dans la page peut l'avoir rangée dans un bloc caché) */
+  if (f.parentNode !== document.body) document.body.appendChild(f);
+  f.textContent = '';
+  return f;
+}
+function feuilleCap(m){ return m.charAt(0).toUpperCase() + m.slice(1); }
+/* des cadres côte à côte, n par ligne */
+function feuilleBoites(textes, n){
+  var b = feuilleEl('div', 'f-boites');
+  b.style.setProperty('--n', n);
+  /* une seule taille de lettres par cadre : 15 pt dès qu'un texte est long */
+  var long = textes.some(function(t){ return t.length >= 10; });
+  textes.forEach(function(t){
+    b.appendChild(feuilleEl('span', 'f-mot' + (long ? ' f-long' : ''), t));
+  });
+  return b;
+}
+/* des lignes numérotées pour écrire */
+function feuilleLignes(nb){
+  var ol = feuilleEl('ol', 'f-lignes');
+  for (var i = 0; i < nb; i++) ol.appendChild(feuilleEl('li', null, (i + 1) + '.'));
+  return ol;
+}
+function feuilleReponses(lignes){
+  var ol = feuilleEl('ol', 'f-rep');
+  lignes.forEach(function(t){ ol.appendChild(feuilleEl('li', null, t)); });
+  return ol;
+}
+
+function imprimerPartie(){
+  var lbl = {1: 'Simple', 2: 'Intermédiaire', 3: 'Difficile'}[G.lvl] || '';
+  var garde = {a: G.curA, b: G.curB, op: G.curOp, r: G.curAnswer};
+  var enJeu = document.getElementById('gameScreen').style.display === 'block' && G.qIndex < G.totalQ;
+  var ops = [], vus = {};
+  if (enJeu) { ops.push(garde); vus[garde.a + garde.op + garde.b] = 1; }
+  for (var essai = 0; ops.length < G.totalQ && essai < 400; essai++) {
+    generateQuestion();
+    var cle = G.curA + G.curOp + G.curB;
+    if (vus[cle]) continue;
+    vus[cle] = 1;
+    ops.push({a: G.curA, b: G.curB, op: G.curOp, r: G.curAnswer});
+  }
+  G.curA = garde.a; G.curB = garde.b; G.curOp = garde.op; G.curAnswer = garde.r;
+  var f = feuilleNeuve();
+  var p1 = feuilleOuvre('Calcul mental · ' + lbl, 'Écrivez le résultat de chaque calcul.', 'jeu_calcul');
+  var g = feuilleEl('div', 'f-calc'), rep = feuilleEl('div', 'f-calc');
+  ops.forEach(function(o, k){
+    var l = feuilleEl('div', 'f-op');
+    l.appendChild(feuilleEl('span', 'f-num', (k + 1) + '.'));
+    l.appendChild(document.createTextNode(o.a + ' ' + o.op + ' ' + o.b + ' ='));
+    l.appendChild(feuilleEl('span', 'f-boite'));
+    g.appendChild(l);
+    var r = feuilleEl('div', 'f-op');
+    r.appendChild(feuilleEl('span', 'f-num', (k + 1) + '.'));
+    r.appendChild(document.createTextNode(o.a + ' ' + o.op + ' ' + o.b + ' = '));
+    r.appendChild(feuilleEl('strong', null, String(o.r)));
+    rep.appendChild(r);
+  });
+  p1.appendChild(g);
+  feuilleFerme(p1); f.appendChild(p1);
+  var p2 = feuilleOuvre('Calcul mental · ' + lbl + ' : les réponses', null, 'jeu_calcul');
+  p2.appendChild(rep);
+  feuilleFerme(p2); f.appendChild(p2);
+  feuilleImprime('calcul');
+}
+</script>
 </body>
 </html>
