@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <!-- Google tag (gtag.js) -->
+<script>(function(){var m=/[?&]sans-mesure=([01])(&|#|$)/.exec(location.search),k='jdc-sans-mesure',s=!!(m&&m[1]==='1');try{if(m)s?localStorage.setItem(k,'1'):localStorage.removeItem(k);else s=localStorage.getItem(k)==='1'}catch(e){}if(s)window['ga-disable-G-NT825E8XDT']=true})();</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -392,6 +393,70 @@ header p { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase
  }
 }
 </script>
+
+<style id="feuille-papier">
+/* « Imprimer cette partie » : la feuille est construite à la demande par
+   imprimerPartie(), cachée à l'écran, et seule visible à l'impression
+   quand la page porte la classe .imprime (posée par le bouton). */
+#feuille{display:none}
+.imp-btn{font-family:'Nunito',sans-serif;font-weight:700;cursor:pointer}
+@media print{
+  @page{size:A4 portrait;margin:11mm 14mm}
+  body.imprime{background:#fff!important;color:#000!important;padding:0!important;
+    margin:0!important;min-height:0!important;display:block!important}
+  body.imprime>*:not(#feuille){display:none!important}
+  body.imprime #feuille{display:block}
+  #feuille{font-family:'Atkinson Hyperlegible','Nunito',Arial,sans-serif;color:#000;
+    font-size:15pt;line-height:1.35;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #feuille .f-page{break-after:page;page-break-after:always}
+  #feuille .f-page:last-child{break-after:auto;page-break-after:auto}
+  #feuille .f-entete{display:flex;align-items:center;gap:3mm;
+    border-bottom:.3mm solid #999;padding-bottom:2mm;margin:0 0 4mm}
+  #feuille .f-entete img{width:13mm;height:13mm;display:block}
+  #feuille .f-marque{font-size:16pt;font-weight:700;line-height:1.1}
+  #feuille .f-titre{font-size:24pt;font-weight:700;margin:0 0 2mm;line-height:1.15}
+  #feuille .f-consigne{font-size:15pt;margin:0 0 6mm}
+  #feuille .f-pied{border-top:.3mm solid #999;padding-top:2mm;margin:4mm 0 0;line-height:1.3}
+  #feuille .f-pied .f-site{font-size:12pt;font-weight:700;margin:0}
+  #feuille .f-pied .f-jeu{font-size:10.5pt;color:#333;margin:0}
+  /* blocs communs aux jeux en séries */
+  #feuille .f-num{font-size:15pt;font-weight:700}
+  #feuille .f-mot{border:.5mm solid #000;border-radius:3mm;padding:3mm 1mm;
+    text-align:center;font-size:17pt;font-weight:700;min-height:17mm;display:flex;
+    align-items:center;justify-content:center;white-space:normal;line-height:1.15}
+  #feuille .f-mot.f-long{font-size:15pt}
+  #feuille .f-boites{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));
+    gap:3.5mm;margin:0 0 7mm}
+  #feuille .f-rep{list-style:none;padding:0;margin:0}
+  #feuille .f-rep li{font-size:15pt;margin:0 0 5mm}
+  #feuille .f-lignes{list-style:none;padding:0;margin:0}
+  #feuille .f-lignes li{display:flex;align-items:flex-end;gap:3mm;height:14mm;
+    font-size:15pt;font-weight:700}
+  #feuille .f-lignes li::after{content:'';flex:1;border-bottom:.4mm solid #000;margin-bottom:1.6mm}
+  #feuille .f-bloc{break-inside:avoid;page-break-inside:avoid}
+}
+</style>
+
+<style id="feuille-papier-grands">
+@media print{
+  #feuille .f-tab{width:100%;border-collapse:collapse;table-layout:fixed}
+  #feuille .f-tab col.c1{width:36%}
+  #feuille .f-tab col.c2{width:26%}
+  #feuille .f-tab col.c3{width:38%}
+  #feuille .f-tab th{font-size:12pt;text-align:left;padding:0 1.5mm 1mm;border-bottom:.5mm solid #000}
+  #feuille .f-tab td{border-bottom:.3mm solid #999;padding:1mm 1.5mm;vertical-align:middle}
+  #feuille .f-tab tr{break-inside:avoid}
+  #feuille .f-tab .qui b{display:block;font-size:13pt;line-height:1.15}
+  #feuille .f-tab .qui span{display:block;font-size:10.5pt;line-height:1.15}
+  #feuille .f-tab .opts{display:flex;flex-wrap:wrap;gap:1.2mm}
+  #feuille .f-tab .opts span{border:.35mm solid #000;border-radius:1.5mm;padding:.2mm 1.1mm;font-size:11pt;line-height:1.3;white-space:nowrap}
+  #feuille .f-tab .sol{font-size:12pt;font-weight:700;line-height:1.3}
+  #feuille .f-tab .fait{font-size:10.5pt;line-height:1.3}
+  #feuille .f-tab.rep col.c1{width:34%}
+  #feuille .f-tab.rep col.c2{width:22%}
+  #feuille .f-tab.rep col.c3{width:44%}
+}
+</style>
 </head>
 <body>
 
@@ -436,10 +501,6 @@ header p { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase
   <!-- La version papier. Sur une table, les dates sont écrites sur la
        carte et l'accompagnant retire ce qui ne parle pas : ce n'est plus
        le même jeu, et c'est voulu. -->
-  <p class="imprimer"><a href="grands-personnages.pdf" download target="_blank"
-     rel="noopener">Imprimer les cartes (PDF)</a><br>
-     <span class="imprimer-note">Les personnages à découper, pour jouer
-     sur une table. Les dates sont sur la carte.</span></p>
 </div>
 
 <div id="step1">
@@ -453,6 +514,7 @@ header p { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase
   <div class="btn-center">
     <button class="btn" id="btnV1" disabled onclick="validateStep1()">Valider →</button>
     <button type="button" class="btn-retour-jeu" onclick="revenirAuDebut()">↩ Revenir au début</button>
+    <button type="button" class="btn-retour-jeu" onclick="imprimerPartie()"><span aria-hidden="true">🖨</span> Imprimer cette partie</button>
   </div>
 </div>
 
@@ -482,6 +544,7 @@ header p { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase
     <p id="rFact"></p>
   </div>
   <button class="btn" onclick="restart()" style="margin-top:8px;">↩ Revenir au début</button>
+  <button type="button" class="btn-retour-jeu" onclick="imprimerPartie()"><span aria-hidden="true">🖨</span> Imprimer cette partie</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -1164,7 +1227,7 @@ show('niveauScreen');
 hide('step1');
 hide('step2');
 hide('result');
-afficherConseil(); }
+if (typeof afficherConseil === 'function') afficherConseil(); }
 
 initStep1();
 
@@ -1238,5 +1301,119 @@ function confetti(){
   <span aria-hidden="true"> · </span>
   <a href="signaler.html?jeu=M%C3%A9moire%20des%20Grands&amp;p=jeu_memoire_historique" target="_blank" rel="noopener">Signaler un problème</a>
 </footer>
+<div id="feuille" aria-hidden="true"></div>
+<script id="impression">
+
+function feuilleEl(tag, cls, txt){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt != null) e.textContent = txt;
+  return e;
+}
+function feuilleOuvre(titre, consigne, adresse){
+  var p = feuilleEl('section', 'f-page');
+  var e = feuilleEl('div', 'f-entete');
+  var im = document.createElement('img');
+  im.src = 'logo-fleur.png'; im.alt = ''; im.width = 96; im.height = 96;
+  e.appendChild(im);
+  e.appendChild(feuilleEl('span', 'f-marque', 'Les Jardins de Célestine'));
+  p.appendChild(e);
+  p.appendChild(feuilleEl('h1', 'f-titre', titre));
+  if (consigne) p.appendChild(feuilleEl('p', 'f-consigne', consigne));
+  p._adresse = adresse;
+  return p;
+}
+function feuilleFerme(p){
+  var pied = feuilleEl('div', 'f-pied');
+  pied.appendChild(feuilleEl('p', 'f-site', 'jardinsdecelestine.com · jardinsdecelestine@gmail.com'));
+  pied.appendChild(feuilleEl('p', 'f-jeu', 'Ce jeu est gratuit en ligne : jardinsdecelestine.com/' + p._adresse));
+  p.appendChild(pied);
+}
+function feuilleImprime(jeu){
+  /* compteur Google Analytics : un évènement par impression, nommé d'après le jeu
+     (JDC.mesure ne part pas avec ?sans-mesure=1) */
+  try { if (window.JDC && JDC.mesure) JDC.mesure('impression_' + jeu, {}); } catch (e) {}
+  document.body.classList.add('imprime');
+  var attente = [].slice.call(document.querySelectorAll('#feuille img')).filter(function(i){ return !i.complete; });
+  var lance = false;
+  function go(){ if (lance) return; lance = true; window.print(); }
+  function fin(){ if (--n <= 0) go(); }
+  var n = attente.length;
+  if (!n) return go();
+  attente.forEach(function(i){ i.addEventListener('load', fin); i.addEventListener('error', fin); });
+  setTimeout(go, 5000);
+}
+window.addEventListener('afterprint', function(){
+  document.body.classList.remove('imprime');
+});
+function feuilleNeuve(){
+  var f = document.getElementById('feuille');
+  /* la feuille doit être un enfant direct de <body> (une balise restée
+     ouverte dans la page peut l'avoir rangée dans un bloc caché) */
+  if (f.parentNode !== document.body) document.body.appendChild(f);
+  f.textContent = '';
+  return f;
+}
+function feuilleCap(m){ return m.charAt(0).toUpperCase() + m.slice(1); }
+/* des cadres côte à côte, n par ligne */
+function feuilleBoites(textes, n){
+  var b = feuilleEl('div', 'f-boites');
+  b.style.setProperty('--n', n);
+  /* une seule taille de lettres par cadre : 15 pt dès qu'un texte est long */
+  var long = textes.some(function(t){ return t.length >= 10; });
+  textes.forEach(function(t){
+    b.appendChild(feuilleEl('span', 'f-mot' + (long ? ' f-long' : ''), t));
+  });
+  return b;
+}
+/* des lignes numérotées pour écrire */
+function feuilleLignes(nb){
+  var ol = feuilleEl('ol', 'f-lignes');
+  for (var i = 0; i < nb; i++) ol.appendChild(feuilleEl('li', null, (i + 1) + '.'));
+  return ol;
+}
+function feuilleReponses(lignes){
+  var ol = feuilleEl('ol', 'f-rep');
+  lignes.forEach(function(t){ ol.appendChild(feuilleEl('li', null, t)); });
+  return ol;
+}
+
+function imprimerPartie(){
+  var figs = S.figures && S.figures.length ? S.figures.slice() : pick();
+  var cats = CATS.filter(function(c){ return figs.some(function(f){ return f.cat === c; }); });
+  var pers = periodesActives();
+  function qui(f){
+    var td = feuilleEl('td', 'qui');
+    td.appendChild(feuilleEl('b', null, f.name));
+    td.appendChild(feuilleEl('span', null, f.hint));
+    td.appendChild(feuilleEl('span', null, f.lifespan));
+    return td;
+  }
+  function opts(liste){ var td = feuilleEl('td'), o = feuilleEl('div', 'opts'); liste.forEach(function(x){ o.appendChild(feuilleEl('span', null, x)); }); td.appendChild(o); return td; }
+  function tableau(sol){
+    var t = feuilleEl('table', 'f-tab' + (sol ? ' rep' : '')), tr = feuilleEl('tr');
+    ['c1', 'c2', 'c3'].forEach(function(c){ t.appendChild(feuilleEl('col', c)); });
+    (sol ? ['Personne', 'Famille et époque', 'À raconter'] : ['Personne', 'Famille', 'Époque']).forEach(function(h){ tr.appendChild(feuilleEl('th', null, h)); });
+    t.appendChild(tr);
+    figs.forEach(function(f){
+      var r = feuilleEl('tr'); r.appendChild(qui(f));
+      if (sol) {
+        var td = feuilleEl('td', 'sol'); td.appendChild(feuilleEl('div', null, f.cat)); td.appendChild(feuilleEl('div', null, periodeCorrecte(f.eraIdx)));
+        r.appendChild(td); r.appendChild(feuilleEl('td', 'fait', f.fact));
+      } else { r.appendChild(opts(cats)); r.appendChild(opts(pers)); }
+      t.appendChild(r);
+    });
+    return t;
+  }
+  var f = feuilleNeuve();
+  var p1 = feuilleOuvre('Mémoire des Grands', 'Pour chaque personne, entourez sa famille et son époque.', 'jeu_memoire_historique');
+  p1.appendChild(tableau(false));
+  feuilleFerme(p1); f.appendChild(p1);
+  var p2 = feuilleOuvre('Mémoire des Grands : les réponses', null, 'jeu_memoire_historique');
+  p2.appendChild(tableau(true));
+  feuilleFerme(p2); f.appendChild(p2);
+  feuilleImprime('memoire');
+}
+</script>
 </body>
 </html>

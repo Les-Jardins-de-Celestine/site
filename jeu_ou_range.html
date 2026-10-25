@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script>(function(){var m=/[?&]sans-mesure=([01])(&|#|$)/.exec(location.search),k='jdc-sans-mesure',s=!!(m&&m[1]==='1');try{if(m)s?localStorage.setItem(k,'1'):localStorage.removeItem(k);else s=localStorage.getItem(k)==='1'}catch(e){}if(s)window['ga-disable-G-NT825E8XDT']=true})();</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -156,6 +157,66 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
  }
 }
 </script>
+
+<style id="feuille-papier">
+/* « Imprimer cette partie » : la feuille est construite à la demande par
+   imprimerPartie(), cachée à l'écran, et seule visible à l'impression
+   quand la page porte la classe .imprime (posée par le bouton). */
+#feuille{display:none}
+.imp-btn{font-family:'Nunito',sans-serif;font-weight:700;cursor:pointer}
+@media print{
+  @page{size:A4 portrait;margin:11mm 14mm}
+  body.imprime{background:#fff!important;color:#000!important;padding:0!important;
+    margin:0!important;min-height:0!important;display:block!important}
+  body.imprime>*:not(#feuille){display:none!important}
+  body.imprime #feuille{display:block}
+  #feuille{font-family:'Atkinson Hyperlegible','Nunito',Arial,sans-serif;color:#000;
+    font-size:15pt;line-height:1.35;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #feuille .f-page{break-after:page;page-break-after:always}
+  #feuille .f-page:last-child{break-after:auto;page-break-after:auto}
+  #feuille .f-entete{display:flex;align-items:center;gap:3mm;
+    border-bottom:.3mm solid #999;padding-bottom:2mm;margin:0 0 4mm}
+  #feuille .f-entete img{width:13mm;height:13mm;display:block}
+  #feuille .f-marque{font-size:16pt;font-weight:700;line-height:1.1}
+  #feuille .f-titre{font-size:24pt;font-weight:700;margin:0 0 2mm;line-height:1.15}
+  #feuille .f-consigne{font-size:15pt;margin:0 0 6mm}
+  #feuille .f-pied{border-top:.3mm solid #999;padding-top:2mm;margin:4mm 0 0;line-height:1.3}
+  #feuille .f-pied .f-site{font-size:12pt;font-weight:700;margin:0}
+  #feuille .f-pied .f-jeu{font-size:10.5pt;color:#333;margin:0}
+  /* blocs communs aux jeux en séries */
+  #feuille .f-num{font-size:15pt;font-weight:700}
+  #feuille .f-mot{border:.5mm solid #000;border-radius:3mm;padding:3mm 1mm;
+    text-align:center;font-size:17pt;font-weight:700;min-height:17mm;display:flex;
+    align-items:center;justify-content:center;white-space:normal;line-height:1.15}
+  #feuille .f-mot.f-long{font-size:15pt}
+  #feuille .f-boites{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));
+    gap:3.5mm;margin:0 0 7mm}
+  #feuille .f-rep{list-style:none;padding:0;margin:0}
+  #feuille .f-rep li{font-size:15pt;margin:0 0 5mm}
+  #feuille .f-lignes{list-style:none;padding:0;margin:0}
+  #feuille .f-lignes li{display:flex;align-items:flex-end;gap:3mm;height:14mm;
+    font-size:15pt;font-weight:700}
+  #feuille .f-lignes li::after{content:'';flex:1;border-bottom:.4mm solid #000;margin-bottom:1.6mm}
+  #feuille .f-bloc{break-inside:avoid;page-break-inside:avoid}
+}
+</style>
+
+<style id="feuille-papier-range">
+#imprimer{width:100%;margin-top:10px;background:none;border:1.5px solid rgba(200,146,42,.45);border-radius:9px;padding:8px;
+  font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:700;color:var(--sepia);cursor:pointer}
+#imprimer:hover{background:rgba(200,146,42,.1)}
+@media print{
+  #feuille .f-cherche{display:grid;grid-template-columns:repeat(var(--n,2),minmax(0,1fr));gap:3mm 6mm;margin:0 0 5mm}
+  #feuille .f-cherche .o{display:flex;align-items:center;gap:3mm;font-size:14.5pt;line-height:1.25}
+  #feuille .f-cherche .o .f-num{font-weight:700;min-width:6mm}
+  #feuille .f-cherche img{width:20mm;height:20mm;object-fit:contain;border:.3mm solid #bbb;border-radius:2mm;flex:none}
+  #feuille .f-scene{position:relative;width:100%;line-height:0}
+  #feuille .f-scene img{width:100%;height:auto;outline:.4mm solid #000;border-radius:2mm}
+  #feuille .f-scene svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+  #feuille .f-trouve{margin:5mm 0 0;padding:0 0 0 7mm;font-size:14.5pt;line-height:1.35}
+  #feuille .f-trouve li{margin:0 0 1.5mm}
+}
+</style>
 </head>
 <body>
 
@@ -210,6 +271,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
         <button id="aideBtn" onclick="demanderAide()">Un petit coup de pouce ?</button>
         <div id="aideTxt"></div>
         <button id="retour" onclick="retourIntro()">↩ Revenir au début</button>
+        <button id="imprimer" onclick="imprimerPartie()"><span aria-hidden="true">🖨</span> Imprimer cette partie</button>
       </div>
     </div>
   </div>
@@ -223,6 +285,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
     <p id="winTxt"></p>
     <button class="btn-g2" onclick="commencer(niveau)">Rejouer</button>
     <button class="btn-g2" onclick="retourIntro()" style="background:none;border:1.5px solid rgba(200,146,42,.5);color:inherit">↩ Revenir au début</button>
+    <button class="btn-g2" onclick="imprimerPartie()" style="background:none;border:1.5px solid rgba(200,146,42,.5);color:inherit"><span aria-hidden="true">🖨</span> Imprimer cette partie</button>
   </div>
 </div>
 
@@ -462,5 +525,136 @@ function confetti(){
   <span aria-hidden="true"> · </span>
   <a href="signaler.html?jeu=O%C3%B9%20est-ce%20rang%C3%A9%20%3F&amp;p=jeu_ou_range" target="_blank" rel="noopener">Signaler un problème</a>
 </footer>
+<div id="feuille" aria-hidden="true"></div>
+<script id="impression">
+
+function feuilleEl(tag, cls, txt){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt != null) e.textContent = txt;
+  return e;
+}
+function feuilleOuvre(titre, consigne, adresse){
+  var p = feuilleEl('section', 'f-page');
+  var e = feuilleEl('div', 'f-entete');
+  var im = document.createElement('img');
+  im.src = 'logo-fleur.png'; im.alt = ''; im.width = 96; im.height = 96;
+  e.appendChild(im);
+  e.appendChild(feuilleEl('span', 'f-marque', 'Les Jardins de Célestine'));
+  p.appendChild(e);
+  p.appendChild(feuilleEl('h1', 'f-titre', titre));
+  if (consigne) p.appendChild(feuilleEl('p', 'f-consigne', consigne));
+  p._adresse = adresse;
+  return p;
+}
+function feuilleFerme(p){
+  var pied = feuilleEl('div', 'f-pied');
+  pied.appendChild(feuilleEl('p', 'f-site', 'jardinsdecelestine.com · jardinsdecelestine@gmail.com'));
+  pied.appendChild(feuilleEl('p', 'f-jeu', 'Ce jeu est gratuit en ligne : jardinsdecelestine.com/' + p._adresse));
+  p.appendChild(pied);
+}
+function feuilleImprime(jeu){
+  /* compteur Google Analytics : un évènement par impression, nommé d'après le jeu
+     (JDC.mesure ne part pas avec ?sans-mesure=1) */
+  try { if (window.JDC && JDC.mesure) JDC.mesure('impression_' + jeu, {}); } catch (e) {}
+  document.body.classList.add('imprime');
+  var attente = [].slice.call(document.querySelectorAll('#feuille img')).filter(function(i){ return !i.complete; });
+  var lance = false;
+  function go(){ if (lance) return; lance = true; window.print(); }
+  function fin(){ if (--n <= 0) go(); }
+  var n = attente.length;
+  if (!n) return go();
+  attente.forEach(function(i){ i.addEventListener('load', fin); i.addEventListener('error', fin); });
+  setTimeout(go, 5000);
+}
+window.addEventListener('afterprint', function(){
+  document.body.classList.remove('imprime');
+});
+function feuilleNeuve(){
+  var f = document.getElementById('feuille');
+  /* la feuille doit être un enfant direct de <body> (une balise restée
+     ouverte dans la page peut l'avoir rangée dans un bloc caché) */
+  if (f.parentNode !== document.body) document.body.appendChild(f);
+  f.textContent = '';
+  return f;
+}
+function feuilleCap(m){ return m.charAt(0).toUpperCase() + m.slice(1); }
+/* des cadres côte à côte, n par ligne */
+function feuilleBoites(textes, n){
+  var b = feuilleEl('div', 'f-boites');
+  b.style.setProperty('--n', n);
+  /* une seule taille de lettres par cadre : 15 pt dès qu'un texte est long */
+  var long = textes.some(function(t){ return t.length >= 10; });
+  textes.forEach(function(t){
+    b.appendChild(feuilleEl('span', 'f-mot' + (long ? ' f-long' : ''), t));
+  });
+  return b;
+}
+/* des lignes numérotées pour écrire */
+function feuilleLignes(nb){
+  var ol = feuilleEl('ol', 'f-lignes');
+  for (var i = 0; i < nb; i++) ol.appendChild(feuilleEl('li', null, (i + 1) + '.'));
+  return ol;
+}
+function feuilleReponses(lignes){
+  var ol = feuilleEl('ol', 'f-rep');
+  lignes.forEach(function(t){ ol.appendChild(feuilleEl('li', null, t)); });
+  return ol;
+}
+
+function imprimerPartie(){
+  var objs = aChercher.length ? aChercher.slice() : OBJETS.slice();
+  var scene = document.getElementById('sceneImg').getAttribute('src');
+  function liste(sol){
+    var g = feuilleEl('div', 'f-cherche'); g.style.setProperty('--n', objs.length === 1 ? 1 : 2);
+    objs.forEach(function(o, k){
+      var d = feuilleEl('div', 'o');
+      d.appendChild(feuilleEl('span', 'f-num', (k + 1) + '.'));
+      var im = document.createElement('img'); im.src = o.img; im.alt = ''; d.appendChild(im);
+      d.appendChild(feuilleEl('span', null, feuilleCap(o.nom) + ', habituellement ' + o.avant + '.'));
+      g.appendChild(d);
+    });
+    return g;
+  }
+  function tableau(sol){
+    var s = feuilleEl('div', 'f-scene');
+    var im = document.createElement('img'); im.src = scene; im.alt = ''; s.appendChild(im);
+    if (sol) {
+      var src = document.getElementById('sceneImg'), W = src.naturalWidth || 1376, H = src.naturalHeight || 768;
+      var NS = 'http://www.w3.org/2000/svg', svg = document.createElementNS(NS, 'svg');
+      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+      objs.forEach(function(o, k){
+        var z = o.zone, cx = (z.l + z.w / 2) * W / 100, cy = (z.t + z.h / 2) * H / 100;
+        var rx = (z.w / 2 + 2) * W / 100, ry = (z.h / 2 + 3.5) * H / 100;
+        var e = document.createElementNS(NS, 'ellipse');
+        e.setAttribute('cx', cx); e.setAttribute('cy', cy); e.setAttribute('rx', rx); e.setAttribute('ry', ry);
+        e.setAttribute('fill', 'none'); e.setAttribute('stroke', '#000'); e.setAttribute('stroke-width', H / 110);
+        e.setAttribute('class', 'f-rond');
+        svg.appendChild(e);
+        var tx = document.createElementNS(NS, 'text'), y = cy - ry - H * 0.02;
+        tx.setAttribute('x', Math.min(cx, W * 0.96)); tx.setAttribute('y', y > H * 0.08 ? y : cy + ry + H * 0.07);
+        tx.setAttribute('text-anchor', 'middle'); tx.setAttribute('font-size', H * 0.055); tx.setAttribute('font-weight', '700');
+        tx.setAttribute('font-family', 'Atkinson Hyperlegible, sans-serif');
+        tx.setAttribute('fill', '#000'); tx.setAttribute('stroke', '#fff'); tx.setAttribute('stroke-width', H / 90); tx.setAttribute('paint-order', 'stroke');
+        tx.textContent = String(k + 1);
+        svg.appendChild(tx);
+      });
+      s.appendChild(svg);
+    }
+    return s;
+  }
+  var f = feuilleNeuve();
+  var p1 = feuilleOuvre('Où est-ce rangé ?', objs.length > 1 ? 'Retrouvez ces objets dans le salon et entourez-les.' : 'Retrouvez cet objet dans le salon et entourez-le.', 'jeu_ou_range');
+  p1.appendChild(liste()); p1.appendChild(tableau(false));
+  feuilleFerme(p1); f.appendChild(p1);
+  var p2 = feuilleOuvre('Où est-ce rangé ? Les réponses', null, 'jeu_ou_range');
+  p2.appendChild(tableau(true));
+  var ol = feuilleEl('ol', 'f-trouve');
+  objs.forEach(function(o){ ol.appendChild(feuilleEl('li', null, o.trouve)); });
+  p2.appendChild(ol);
+  feuilleFerme(p2); f.appendChild(p2);
+  feuilleImprime('range');
+}
+</script>
 </body>
 </html>

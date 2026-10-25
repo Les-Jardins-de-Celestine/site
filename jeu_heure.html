@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <!-- Google tag (gtag.js) -->
+<script>(function(){var m=/[?&]sans-mesure=([01])(&|#|$)/.exec(location.search),k='jdc-sans-mesure',s=!!(m&&m[1]==='1');try{if(m)s?localStorage.setItem(k,'1'):localStorage.removeItem(k);else s=localStorage.getItem(k)==='1'}catch(e){}if(s)window['ga-disable-G-NT825E8XDT']=true})();</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -283,6 +284,61 @@ header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:va
  }
 }
 </script>
+
+<style id="feuille-papier">
+/* « Imprimer cette partie » : la feuille est construite à la demande par
+   imprimerPartie(), cachée à l'écran, et seule visible à l'impression
+   quand la page porte la classe .imprime (posée par le bouton). */
+#feuille{display:none}
+.imp-btn{font-family:'Nunito',sans-serif;font-weight:700;cursor:pointer}
+@media print{
+  @page{size:A4 portrait;margin:11mm 14mm}
+  body.imprime{background:#fff!important;color:#000!important;padding:0!important;
+    margin:0!important;min-height:0!important;display:block!important}
+  body.imprime>*:not(#feuille){display:none!important}
+  body.imprime #feuille{display:block}
+  #feuille{font-family:'Atkinson Hyperlegible','Nunito',Arial,sans-serif;color:#000;
+    font-size:15pt;line-height:1.35;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #feuille .f-page{break-after:page;page-break-after:always}
+  #feuille .f-page:last-child{break-after:auto;page-break-after:auto}
+  #feuille .f-entete{display:flex;align-items:center;gap:3mm;
+    border-bottom:.3mm solid #999;padding-bottom:2mm;margin:0 0 4mm}
+  #feuille .f-entete img{width:13mm;height:13mm;display:block}
+  #feuille .f-marque{font-size:16pt;font-weight:700;line-height:1.1}
+  #feuille .f-titre{font-size:24pt;font-weight:700;margin:0 0 2mm;line-height:1.15}
+  #feuille .f-consigne{font-size:15pt;margin:0 0 6mm}
+  #feuille .f-pied{border-top:.3mm solid #999;padding-top:2mm;margin:4mm 0 0;line-height:1.3}
+  #feuille .f-pied .f-site{font-size:12pt;font-weight:700;margin:0}
+  #feuille .f-pied .f-jeu{font-size:10.5pt;color:#333;margin:0}
+  /* blocs communs aux jeux en séries */
+  #feuille .f-num{font-size:15pt;font-weight:700}
+  #feuille .f-mot{border:.5mm solid #000;border-radius:3mm;padding:3mm 1mm;
+    text-align:center;font-size:17pt;font-weight:700;min-height:17mm;display:flex;
+    align-items:center;justify-content:center;white-space:normal;line-height:1.15}
+  #feuille .f-mot.f-long{font-size:15pt}
+  #feuille .f-boites{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));
+    gap:3.5mm;margin:0 0 7mm}
+  #feuille .f-rep{list-style:none;padding:0;margin:0}
+  #feuille .f-rep li{font-size:15pt;margin:0 0 5mm}
+  #feuille .f-lignes{list-style:none;padding:0;margin:0}
+  #feuille .f-lignes li{display:flex;align-items:flex-end;gap:3mm;height:14mm;
+    font-size:15pt;font-weight:700}
+  #feuille .f-lignes li::after{content:'';flex:1;border-bottom:.4mm solid #000;margin-bottom:1.6mm}
+  #feuille .f-bloc{break-inside:avoid;page-break-inside:avoid}
+}
+</style>
+
+<style id="feuille-papier-heure">
+@media print{
+  #feuille .f-horloges{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:5mm 4mm;justify-items:center}
+  #feuille .f-hz{display:flex;flex-direction:column;align-items:center;gap:1.5mm;break-inside:avoid}
+  #feuille .f-hz .tete{display:flex;align-items:baseline;gap:2.5mm;align-self:stretch}
+  #feuille .f-hz .f-num{font-size:13pt}
+  #feuille .f-hz .lu{font-size:18pt;font-weight:700;letter-spacing:.03em}
+  #feuille .f-hz .ecrire{display:flex;align-items:center;gap:1.5mm;font-size:15pt;font-weight:700}
+  #feuille .f-hz .ecrire span{display:inline-block;width:11mm;height:9mm;border:.4mm solid #000;border-radius:1mm}
+}
+</style>
 </head>
 <body>
 
@@ -345,6 +401,7 @@ header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:va
   <div class="hud">
     <div class="hb"><span class="l">Question</span><span class="v" id="hQ">1/10</span></div>
     <button type="button" class="btn-menu" onclick="backToStart()">↩ Revenir au début</button>
+    <button type="button" class="btn-menu" onclick="imprimerPartie()"><span aria-hidden="true">🖨</span> Imprimer cette partie</button>
   </div>
 
   <div class="score-row" id="scoreRow"></div>
@@ -404,6 +461,7 @@ header p{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:va
     <p id="resultMsg"></p>
     <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
       <button class="btn btn-ol btn-sm" onclick="backToStart()">↩ Revenir au début</button>
+      <button class="btn btn-ol btn-sm" onclick="imprimerPartie()"><span aria-hidden="true">🖨</span> Imprimer cette partie</button>
       <button class="btn btn-sm" onclick="startGame()">Rejouer</button>
     </div>
   </div>
@@ -878,5 +936,147 @@ afficherConseil();
   <span aria-hidden="true"> · </span>
   <a href="signaler.html?jeu=Jeu%20de%20l%27Heure&amp;p=jeu_heure" target="_blank" rel="noopener">Signaler un problème</a>
 </footer>
+<div id="feuille" aria-hidden="true"></div>
+<script id="impression">
+
+function feuilleEl(tag, cls, txt){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt != null) e.textContent = txt;
+  return e;
+}
+function feuilleOuvre(titre, consigne, adresse){
+  var p = feuilleEl('section', 'f-page');
+  var e = feuilleEl('div', 'f-entete');
+  var im = document.createElement('img');
+  im.src = 'logo-fleur.png'; im.alt = ''; im.width = 96; im.height = 96;
+  e.appendChild(im);
+  e.appendChild(feuilleEl('span', 'f-marque', 'Les Jardins de Célestine'));
+  p.appendChild(e);
+  p.appendChild(feuilleEl('h1', 'f-titre', titre));
+  if (consigne) p.appendChild(feuilleEl('p', 'f-consigne', consigne));
+  p._adresse = adresse;
+  return p;
+}
+function feuilleFerme(p){
+  var pied = feuilleEl('div', 'f-pied');
+  pied.appendChild(feuilleEl('p', 'f-site', 'jardinsdecelestine.com · jardinsdecelestine@gmail.com'));
+  pied.appendChild(feuilleEl('p', 'f-jeu', 'Ce jeu est gratuit en ligne : jardinsdecelestine.com/' + p._adresse));
+  p.appendChild(pied);
+}
+function feuilleImprime(jeu){
+  /* compteur Google Analytics : un évènement par impression, nommé d'après le jeu
+     (JDC.mesure ne part pas avec ?sans-mesure=1) */
+  try { if (window.JDC && JDC.mesure) JDC.mesure('impression_' + jeu, {}); } catch (e) {}
+  document.body.classList.add('imprime');
+  var attente = [].slice.call(document.querySelectorAll('#feuille img')).filter(function(i){ return !i.complete; });
+  var lance = false;
+  function go(){ if (lance) return; lance = true; window.print(); }
+  function fin(){ if (--n <= 0) go(); }
+  var n = attente.length;
+  if (!n) return go();
+  attente.forEach(function(i){ i.addEventListener('load', fin); i.addEventListener('error', fin); });
+  setTimeout(go, 5000);
+}
+window.addEventListener('afterprint', function(){
+  document.body.classList.remove('imprime');
+});
+function feuilleNeuve(){
+  var f = document.getElementById('feuille');
+  /* la feuille doit être un enfant direct de <body> (une balise restée
+     ouverte dans la page peut l'avoir rangée dans un bloc caché) */
+  if (f.parentNode !== document.body) document.body.appendChild(f);
+  f.textContent = '';
+  return f;
+}
+function feuilleCap(m){ return m.charAt(0).toUpperCase() + m.slice(1); }
+/* des cadres côte à côte, n par ligne */
+function feuilleBoites(textes, n){
+  var b = feuilleEl('div', 'f-boites');
+  b.style.setProperty('--n', n);
+  /* une seule taille de lettres par cadre : 15 pt dès qu'un texte est long */
+  var long = textes.some(function(t){ return t.length >= 10; });
+  textes.forEach(function(t){
+    b.appendChild(feuilleEl('span', 'f-mot' + (long ? ' f-long' : ''), t));
+  });
+  return b;
+}
+/* des lignes numérotées pour écrire */
+function feuilleLignes(nb){
+  var ol = feuilleEl('ol', 'f-lignes');
+  for (var i = 0; i < nb; i++) ol.appendChild(feuilleEl('li', null, (i + 1) + '.'));
+  return ol;
+}
+function feuilleReponses(lignes){
+  var ol = feuilleEl('ol', 'f-rep');
+  lignes.forEach(function(t){ ol.appendChild(feuilleEl('li', null, t)); });
+  return ol;
+}
+
+function imprimerPartie(){
+  var NS = 'http://www.w3.org/2000/svg';
+  function el(tag, at){ var e = document.createElementNS(NS, tag); for (var k in at) e.setAttribute(k, at[k]); return e; }
+  function horloge(h, m, aiguilles, taille){
+    var svg = el('svg', {viewBox: '-60 -60 120 120', width: taille, height: taille});
+    svg.appendChild(el('circle', {cx: 0, cy: 0, r: 57, fill: '#fff', stroke: '#000', 'stroke-width': 2.4}));
+    for (var i = 0; i < 60; i++) {
+      var a = i * 6 * Math.PI / 180, l = i % 5 === 0 ? 7 : 3, R = 55;
+      svg.appendChild(el('line', {x1: Math.sin(a) * R, y1: -Math.cos(a) * R, x2: Math.sin(a) * (R - l), y2: -Math.cos(a) * (R - l),
+        stroke: '#000', 'stroke-width': i % 5 === 0 ? 2.2 : 0.9}));
+    }
+    for (var n = 1; n <= 12; n++) {
+      var b = n * 30 * Math.PI / 180;
+      var t = el('text', {x: Math.sin(b) * 37, y: -Math.cos(b) * 37 + 4.6, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 700,
+        'font-family': 'Atkinson Hyperlegible, Arial, sans-serif'});
+      t.textContent = n; svg.appendChild(t);
+    }
+    if (aiguilles) {
+      var ah = ((h % 12) + m / 60) * 30 * Math.PI / 180, am = m * 6 * Math.PI / 180;
+      svg.appendChild(el('line', {x1: 0, y1: 0, x2: Math.sin(ah) * 27, y2: -Math.cos(ah) * 27, stroke: '#000', 'stroke-width': 6, 'stroke-linecap': 'round'}));
+      svg.appendChild(el('line', {x1: 0, y1: 0, x2: Math.sin(am) * 45, y2: -Math.cos(am) * 45, stroke: '#000', 'stroke-width': 3.2, 'stroke-linecap': 'round'}));
+    }
+    svg.appendChild(el('circle', {cx: 0, cy: 0, r: 3.5, fill: '#000'}));
+    return svg;
+  }
+  function lu(h, m){ return String(h % 12 || 12).padStart(2, '0') + ':' + String(m).padStart(2, '0'); }
+  var enJeu = document.getElementById('gameScreen').style.display === 'block' && G.qIndex < G.totalQ;
+  var heures = [], vus = {};
+  if (enJeu) { heures.push({h: G.targetH, m: G.targetM}); vus[G.targetH + ':' + G.targetM] = 1; }
+  var maxi = Math.floor(12 * 60 / DIFF_STEPS[G.diff]);
+  for (var essai = 0; heures.length < G.totalQ && essai < 500; essai++) {
+    var t = generateTime(), k = t.h + ':' + t.m;
+    if (vus[k] && Object.keys(vus).length < maxi) continue;
+    vus[k] = 1; heures.push(t);
+  }
+  var n = G.totalQ <= 6 ? 3 : (G.totalQ <= 12 ? 4 : 5);
+  var taille = G.totalQ <= 6 ? '46mm' : (G.totalQ <= 12 ? '36mm' : '30mm');
+  var lecture = G.mode !== 'digital';
+  var niveau = {1: 'Facile', 2: 'Moyen', 3: 'Difficile', 4: 'Expert'}[G.diff] || '';
+  var titre = 'Jeu de l’Heure · ' + niveau;
+  function bloc(ou, solution){
+    var g = feuilleEl('div', 'f-horloges'); g.style.setProperty('--n', n);
+    heures.forEach(function(x, k){
+      var c = feuilleEl('div', 'f-hz');
+      var tete = feuilleEl('div', 'tete');
+      tete.appendChild(feuilleEl('span', 'f-num', (k + 1) + '.'));
+      if (solution || !lecture) tete.appendChild(feuilleEl('span', 'lu', lu(x.h, x.m)));
+      c.appendChild(tete);
+      c.appendChild(horloge(x.h, x.m, lecture || solution, taille));
+      if (lecture && !solution) { var e = feuilleEl('span', 'ecrire'); e.appendChild(feuilleEl('span')); e.appendChild(document.createTextNode('h')); e.appendChild(feuilleEl('span')); c.appendChild(e); }
+      g.appendChild(c);
+    });
+    ou.appendChild(g);
+  }
+  var f = feuilleNeuve();
+  var p1 = feuilleOuvre(titre, lecture ? 'Écrivez l’heure que montre chaque horloge.'
+                                       : 'Dessinez les deux aiguilles pour montrer l’heure.', 'jeu_heure');
+  bloc(p1, false);
+  feuilleFerme(p1); f.appendChild(p1);
+  var p2 = feuilleOuvre(titre + ' : les réponses', null, 'jeu_heure');
+  bloc(p2, true);
+  feuilleFerme(p2); f.appendChild(p2);
+  feuilleImprime('heure');
+}
+</script>
 </body>
 </html>

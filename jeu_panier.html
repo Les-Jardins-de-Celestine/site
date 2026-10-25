@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script>(function(){var m=/[?&]sans-mesure=([01])(&|#|$)/.exec(location.search),k='jdc-sans-mesure',s=!!(m&&m[1]==='1');try{if(m)s?localStorage.setItem(k,'1'):localStorage.removeItem(k);else s=localStorage.getItem(k)==='1'}catch(e){}if(s)window['ga-disable-G-NT825E8XDT']=true})();</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -15,7 +16,7 @@
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="description" content="Trier ce qui va ensemble et remplir le bon panier. Jeu du quotidien en ligne gratuit pour personne âgée, sans inscription.">
-<meta name="robots" content="index, follow">>
+<meta name="robots" content="index, follow">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="jdc-parcours.js"></script>
 <style>
@@ -155,6 +156,83 @@ header p{font-size:.74rem;letter-spacing:.15em;text-transform:uppercase;color:va
 </style>
 <style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
 #statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
+
+<style id="feuille-papier">
+/* « Imprimer cette partie » : la feuille est construite à la demande par
+   imprimerPartie(), cachée à l'écran, et seule visible à l'impression
+   quand la page porte la classe .imprime (posée par le bouton). */
+#feuille{display:none}
+.imp-btn{font-family:'Nunito',sans-serif;font-weight:700;cursor:pointer}
+@media print{
+  @page{size:A4 portrait;margin:11mm 14mm}
+  body.imprime{background:#fff!important;color:#000!important;padding:0!important;
+    margin:0!important;min-height:0!important;display:block!important}
+  body.imprime>*:not(#feuille){display:none!important}
+  body.imprime #feuille{display:block}
+  #feuille{font-family:'Atkinson Hyperlegible','Nunito',Arial,sans-serif;color:#000;
+    font-size:15pt;line-height:1.35;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #feuille .f-page{break-after:page;page-break-after:always}
+  #feuille .f-page:last-child{break-after:auto;page-break-after:auto}
+  #feuille .f-entete{display:flex;align-items:center;gap:3mm;
+    border-bottom:.3mm solid #999;padding-bottom:2mm;margin:0 0 4mm}
+  #feuille .f-entete img{width:13mm;height:13mm;display:block}
+  #feuille .f-marque{font-size:16pt;font-weight:700;line-height:1.1}
+  #feuille .f-titre{font-size:24pt;font-weight:700;margin:0 0 2mm;line-height:1.15}
+  #feuille .f-consigne{font-size:15pt;margin:0 0 6mm}
+  #feuille .f-pied{border-top:.3mm solid #999;padding-top:2mm;margin:4mm 0 0;line-height:1.3}
+  #feuille .f-pied .f-site{font-size:12pt;font-weight:700;margin:0}
+  #feuille .f-pied .f-jeu{font-size:10.5pt;color:#333;margin:0}
+  /* blocs communs aux jeux en séries */
+  #feuille .f-num{font-size:15pt;font-weight:700}
+  #feuille .f-mot{border:.5mm solid #000;border-radius:3mm;padding:3mm 1mm;
+    text-align:center;font-size:17pt;font-weight:700;min-height:17mm;display:flex;
+    align-items:center;justify-content:center;white-space:normal;line-height:1.15}
+  #feuille .f-mot.f-long{font-size:15pt}
+  #feuille .f-boites{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));
+    gap:3.5mm;margin:0 0 7mm}
+  #feuille .f-rep{list-style:none;padding:0;margin:0}
+  #feuille .f-rep li{font-size:15pt;margin:0 0 5mm}
+  #feuille .f-lignes{list-style:none;padding:0;margin:0}
+  #feuille .f-lignes li{display:flex;align-items:flex-end;gap:3mm;height:14mm;
+    font-size:15pt;font-weight:700}
+  #feuille .f-lignes li::after{content:'';flex:1;border-bottom:.4mm solid #000;margin-bottom:1.6mm}
+  #feuille .f-bloc{break-inside:avoid;page-break-inside:avoid}
+}
+</style>
+<style>#barre{flex-wrap:wrap;gap:8px}#barre .lien{white-space:nowrap}</style>
+<style id="feuille-papier-images">
+@media print{
+  /* une question en images : l'énoncé, puis les images à entourer */
+  #feuille .f-qi-grille{display:grid;grid-template-columns:repeat(var(--n,2),minmax(0,1fr));gap:3.5mm 6mm}
+  #feuille .f-qi{border:.4mm solid #000;border-radius:3mm;padding:2mm 3mm;break-inside:avoid}
+  #feuille .f-qi .f-enonce{font-size:15pt;font-weight:700;margin:0 0 1.5mm;line-height:1.15}
+  #feuille .f-qi .f-imgs{display:flex;gap:2.5mm;justify-content:space-around}
+  #feuille .f-fig{display:flex;flex-direction:column;align-items:center;gap:1mm;text-align:center}
+  #feuille .f-fig img{width:var(--t,20mm);height:var(--t,20mm);object-fit:contain;border:.3mm solid #bbb;border-radius:2mm}
+  #feuille .f-fig .lg{font-size:12.5pt;line-height:1.1;max-width:calc(var(--t,20mm) + 6mm)}
+  #feuille .f-fig .ligne{display:block;width:calc(var(--t,20mm) + 4mm);height:8mm;border-bottom:.4mm solid #000}
+  /* relier deux colonnes d'images */
+  #feuille .f-rel{display:grid;grid-template-columns:1fr 26mm 1fr;row-gap:4mm;align-items:center}
+  #feuille .f-rel .g,#feuille .f-rel .d{position:relative;display:flex;align-items:center;gap:3mm}
+  #feuille .f-rel .g{justify-content:flex-end}
+  #feuille .f-rel .g::after,#feuille .f-rel .d::before{content:'';width:3.2mm;height:3.2mm;border-radius:50%;background:#000;flex:none}
+  #feuille .f-rel img{width:var(--t,20mm);height:var(--t,20mm);object-fit:contain;border:.3mm solid #bbb;border-radius:2mm}
+  #feuille .f-rel .lg{font-size:15pt;font-weight:700}
+  #feuille .f-sol-lg{font-size:15pt}
+  #feuille .f-cartes{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));gap:5mm 4mm;justify-items:center}
+}
+</style>
+
+<style id="feuille-papier-rangees">
+@media print{
+  #feuille .f-bloc{border:.4mm solid #000;border-radius:3mm;padding:2.5mm 3mm;margin:0 0 4mm;break-inside:avoid}
+  #feuille .f-bloc .f-enonce{font-size:15pt;font-weight:700;margin:0 0 2mm;line-height:1.2}
+  #feuille .f-bloc .f-texte{font-size:14.5pt;line-height:1.35;margin:0 0 2.5mm}
+  #feuille .f-rangee{display:grid;grid-template-columns:repeat(var(--n,5),minmax(0,1fr));gap:2.5mm 2mm;justify-items:center;align-items:start}
+  #feuille .f-rangee .f-fig .lg{font-size:11.5pt;max-width:none}
+  #feuille .f-rangee.nue img{width:100%;height:auto;aspect-ratio:1}
+}
+</style>
 </head>
 <body>
 
@@ -192,6 +270,7 @@ header p{font-size:.74rem;letter-spacing:.15em;text-transform:uppercase;color:va
 <div id="jeu">
   <div id="barre">
     <button class="lien" onclick="retourAccueil()">↩ Revenir au début</button>
+    <button class="lien" onclick="imprimerPartie()"><span aria-hidden="true">🖨</span> Imprimer cette partie</button>
     <span id="avancement"></span>
   </div>
 
@@ -214,6 +293,7 @@ header p{font-size:.74rem;letter-spacing:.15em;text-transform:uppercase;color:va
     <p class="msg" id="finMsg">Le panier est plein !</p>
     <button class="btn-or" onclick="manche()">Une autre consigne →</button>
     <button class="btn-vide" onclick="retourAccueil()">↩ Revenir au début</button>
+    <button class="btn-vide" onclick="imprimerPartie()"><span aria-hidden="true">🖨</span> Imprimer cette partie</button>
   </div>
 </div>
 
@@ -735,5 +815,129 @@ afficherSuggestion();
   <span aria-hidden="true"> · </span>
   <a href="signaler.html?jeu=Le%20bon%20panier&amp;p=jeu_panier" target="_blank" rel="noopener">Signaler un problème</a>
 </footer>
+<div id="feuille" aria-hidden="true"></div>
+<script id="impression">
+
+function feuilleEl(tag, cls, txt){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt != null) e.textContent = txt;
+  return e;
+}
+function feuilleOuvre(titre, consigne, adresse){
+  var p = feuilleEl('section', 'f-page');
+  var e = feuilleEl('div', 'f-entete');
+  var im = document.createElement('img');
+  im.src = 'logo-fleur.png'; im.alt = ''; im.width = 96; im.height = 96;
+  e.appendChild(im);
+  e.appendChild(feuilleEl('span', 'f-marque', 'Les Jardins de Célestine'));
+  p.appendChild(e);
+  p.appendChild(feuilleEl('h1', 'f-titre', titre));
+  if (consigne) p.appendChild(feuilleEl('p', 'f-consigne', consigne));
+  p._adresse = adresse;
+  return p;
+}
+function feuilleFerme(p){
+  var pied = feuilleEl('div', 'f-pied');
+  pied.appendChild(feuilleEl('p', 'f-site', 'jardinsdecelestine.com · jardinsdecelestine@gmail.com'));
+  pied.appendChild(feuilleEl('p', 'f-jeu', 'Ce jeu est gratuit en ligne : jardinsdecelestine.com/' + p._adresse));
+  p.appendChild(pied);
+}
+function feuilleImprime(jeu){
+  /* compteur Google Analytics : un évènement par impression, nommé d'après le jeu
+     (JDC.mesure ne part pas avec ?sans-mesure=1) */
+  try { if (window.JDC && JDC.mesure) JDC.mesure('impression_' + jeu, {}); } catch (e) {}
+  document.body.classList.add('imprime');
+  var attente = [].slice.call(document.querySelectorAll('#feuille img')).filter(function(i){ return !i.complete; });
+  var lance = false;
+  function go(){ if (lance) return; lance = true; window.print(); }
+  function fin(){ if (--n <= 0) go(); }
+  var n = attente.length;
+  if (!n) return go();
+  attente.forEach(function(i){ i.addEventListener('load', fin); i.addEventListener('error', fin); });
+  setTimeout(go, 5000);
+}
+window.addEventListener('afterprint', function(){
+  document.body.classList.remove('imprime');
+});
+function feuilleNeuve(){
+  var f = document.getElementById('feuille');
+  /* la feuille doit être un enfant direct de <body> (une balise restée
+     ouverte dans la page peut l'avoir rangée dans un bloc caché) */
+  if (f.parentNode !== document.body) document.body.appendChild(f);
+  f.textContent = '';
+  return f;
+}
+function feuilleCap(m){ return m.charAt(0).toUpperCase() + m.slice(1); }
+/* des cadres côte à côte, n par ligne */
+function feuilleBoites(textes, n){
+  var b = feuilleEl('div', 'f-boites');
+  b.style.setProperty('--n', n);
+  /* une seule taille de lettres par cadre : 15 pt dès qu'un texte est long */
+  var long = textes.some(function(t){ return t.length >= 10; });
+  textes.forEach(function(t){
+    b.appendChild(feuilleEl('span', 'f-mot' + (long ? ' f-long' : ''), t));
+  });
+  return b;
+}
+/* des lignes numérotées pour écrire */
+function feuilleLignes(nb){
+  var ol = feuilleEl('ol', 'f-lignes');
+  for (var i = 0; i < nb; i++) ol.appendChild(feuilleEl('li', null, (i + 1) + '.'));
+  return ol;
+}
+function feuilleReponses(lignes){
+  var ol = feuilleEl('ol', 'f-rep');
+  lignes.forEach(function(t){ ol.appendChild(feuilleEl('li', null, t)); });
+  return ol;
+}
+
+function feuilleFig(src, legende, taille, ligne){
+  var f = feuilleEl('div', 'f-fig');
+  if (taille) f.style.setProperty('--t', taille);
+  var im = document.createElement('img'); im.src = src; im.alt = ''; f.appendChild(im);
+  if (legende) f.appendChild(feuilleEl('span', 'lg', legende));
+  if (ligne) f.appendChild(feuilleEl('span', 'ligne'));
+  return f;
+}
+function feuilleSansBalises(html){ var d = document.createElement('div'); d.innerHTML = html; return d.textContent; }
+
+function imprimerPartie(){
+  var cfg = NIVEAUX[niveau], manches = [], nb = niveau === 3 ? 2 : 3;
+  if (document.getElementById('jeu').style.display === 'block' && cons) {
+    manches.push({c: cons, cibles: aTrouver.slice(),
+      tout: [].slice.call(document.querySelectorAll('#choix .obj')).map(function(o){ return o.getAttribute('data-k'); })});
+  }
+  var autres = melange(CONSIGNES.filter(function(c){ return !manches.length || c.id !== manches[0].c.id; }));
+  while (manches.length < nb) {
+    var c = autres.shift(), cib = melange(c.c).slice(0, Math.min(cfg.cibles, c.c.length));
+    manches.push({c: c, cibles: cib, tout: melange(cib.concat(melange(c.p).slice(0, cfg.intrus)))});
+  }
+  function enonce(m, k){ return (k + 1) + '. ' + m.c.t.replace(/^Mettez ici /, 'Entourez ') + '.'; }
+  var f = feuilleNeuve();
+  var p1 = feuilleOuvre('Le bon panier', 'Dans chaque cadre, entourez ce qui est demandé.', 'jeu_panier');
+  manches.forEach(function(m, k){
+    var b = feuilleEl('div', 'f-bloc');
+    b.appendChild(feuilleEl('p', 'f-enonce', enonce(m, k)));
+    var n = m.tout.length, r = feuilleEl('div', 'f-rangee');
+    r.style.setProperty('--n', n <= 7 ? n : Math.ceil(n / 2));
+    var t = n <= 5 ? '26mm' : (n <= 7 ? '21mm' : '22mm');
+    m.tout.forEach(function(key){ r.appendChild(feuilleFig(IMG[key][1], IMG[key][0], t)); });
+    b.appendChild(r); p1.appendChild(b);
+  });
+  feuilleFerme(p1); f.appendChild(p1);
+  var p2 = feuilleOuvre('Le bon panier : les réponses', null, 'jeu_panier');
+  manches.forEach(function(m, k){
+    var b = feuilleEl('div', 'f-bloc');
+    b.appendChild(feuilleEl('p', 'f-enonce', enonce(m, k)));
+    var r = feuilleEl('div', 'f-rangee'); r.style.setProperty('--n', 5);
+    m.tout.filter(function(key){ return m.cibles.indexOf(key) !== -1; })
+      .forEach(function(key){ r.appendChild(feuilleFig(IMG[key][1], IMG[key][0], '20mm')); });
+    b.appendChild(r); p2.appendChild(b);
+  });
+  feuilleFerme(p2); f.appendChild(p2);
+  feuilleImprime('panier');
+}
+</script>
 </body>
 </html>

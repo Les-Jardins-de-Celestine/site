@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <!-- Google tag (gtag.js) -->
+<script>(function(){var m=/[?&]sans-mesure=([01])(&|#|$)/.exec(location.search),k='jdc-sans-mesure',s=!!(m&&m[1]==='1');try{if(m)s?localStorage.setItem(k,'1'):localStorage.removeItem(k);else s=localStorage.getItem(k)==='1'}catch(e){}if(s)window['ga-disable-G-NT825E8XDT']=true})();</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -356,6 +357,60 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 #toast{white-space:normal;max-width:calc(100vw - 32px);text-align:center;
   line-height:1.4;}
 </style>
+
+<style id="feuille-papier">
+/* « Imprimer cette partie » : la feuille est construite à la demande par
+   imprimerPartie(), cachée à l'écran, et seule visible à l'impression
+   quand la page porte la classe .imprime (posée par le bouton). */
+#feuille{display:none}
+.imp-btn{font-family:'Nunito',sans-serif;font-weight:700;cursor:pointer}
+@media print{
+  @page{size:A4 portrait;margin:11mm 14mm}
+  body.imprime{background:#fff!important;color:#000!important;padding:0!important;
+    margin:0!important;min-height:0!important;display:block!important}
+  body.imprime>*:not(#feuille){display:none!important}
+  body.imprime #feuille{display:block}
+  #feuille{font-family:'Atkinson Hyperlegible','Nunito',Arial,sans-serif;color:#000;
+    font-size:15pt;line-height:1.35;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #feuille .f-page{break-after:page;page-break-after:always}
+  #feuille .f-page:last-child{break-after:auto;page-break-after:auto}
+  #feuille .f-entete{display:flex;align-items:center;gap:3mm;
+    border-bottom:.3mm solid #999;padding-bottom:2mm;margin:0 0 4mm}
+  #feuille .f-entete img{width:13mm;height:13mm;display:block}
+  #feuille .f-marque{font-size:16pt;font-weight:700;line-height:1.1}
+  #feuille .f-titre{font-size:24pt;font-weight:700;margin:0 0 2mm;line-height:1.15}
+  #feuille .f-consigne{font-size:15pt;margin:0 0 6mm}
+  #feuille .f-pied{border-top:.3mm solid #999;padding-top:2mm;margin:4mm 0 0;line-height:1.3}
+  #feuille .f-pied .f-site{font-size:12pt;font-weight:700;margin:0}
+  #feuille .f-pied .f-jeu{font-size:10.5pt;color:#333;margin:0}
+  /* blocs communs aux jeux en séries */
+  #feuille .f-num{font-size:15pt;font-weight:700}
+  #feuille .f-mot{border:.5mm solid #000;border-radius:3mm;padding:3mm 1mm;
+    text-align:center;font-size:17pt;font-weight:700;min-height:17mm;display:flex;
+    align-items:center;justify-content:center;white-space:normal;line-height:1.15}
+  #feuille .f-mot.f-long{font-size:15pt}
+  #feuille .f-boites{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));
+    gap:3.5mm;margin:0 0 7mm}
+  #feuille .f-rep{list-style:none;padding:0;margin:0}
+  #feuille .f-rep li{font-size:15pt;margin:0 0 5mm}
+  #feuille .f-lignes{list-style:none;padding:0;margin:0}
+  #feuille .f-lignes li{display:flex;align-items:flex-end;gap:3mm;height:14mm;
+    font-size:15pt;font-weight:700}
+  #feuille .f-lignes li::after{content:'';flex:1;border-bottom:.4mm solid #000;margin-bottom:1.6mm}
+  #feuille .f-bloc{break-inside:avoid;page-break-inside:avoid}
+}
+</style>
+
+<style id="feuille-papier-serie">
+#hud{flex-wrap:wrap;gap:8px}
+.imp-btn{background:none;border:1.5px solid rgba(200,146,42,.45);border-radius:8px;
+  padding:5px 12px;font-size:.78rem;color:#5c3d1e}
+.imp-btn:hover{background:rgba(200,146,42,.1)}
+@media print{
+  #feuille .f-serie{display:grid;grid-template-columns:11mm repeat(4,minmax(0,1fr));gap:0 3.5mm;
+    align-items:center;margin:0 0 9mm}
+}
+</style>
 </head>
 <body>
 
@@ -378,6 +433,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 <div id="game">
   <div id="hud">
     <button id="backBtn" onclick="backMenu()">↩ Revenir au début</button>
+    <button class="imp-btn" onclick="imprimerPartie()"><span aria-hidden="true">🖨</span> Imprimer cette partie</button>
     <span class="prog"><span id="progNow">0</span> /
       <span id="progTot">0</span> <span id="progQuoi"></span></span>
   </div>
@@ -396,6 +452,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
     <p id="doneMot"></p>
     <p style="margin-top:14px">
       <button class="btn-g2" onclick="rejouer()">Huit autres séries</button>
+      <button class="btn-o2" onclick="imprimerPartie()"><span aria-hidden="true">🖨</span> Imprimer cette partie</button>
       <button class="btn-o2" onclick="backMenu()">↩ Revenir au début</button>
     </p>
   </div>
@@ -634,5 +691,110 @@ function confetti(){
   <span aria-hidden="true"> · </span>
   <a href="signaler.html?jeu=Le%20mot%20de%20trop&amp;p=jeu_mot_de_trop" target="_blank" rel="noopener">Signaler un problème</a>
 </footer>
+<div id="feuille" aria-hidden="true"></div>
+<script id="impression">
+
+function feuilleEl(tag, cls, txt){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt != null) e.textContent = txt;
+  return e;
+}
+function feuilleOuvre(titre, consigne, adresse){
+  var p = feuilleEl('section', 'f-page');
+  var e = feuilleEl('div', 'f-entete');
+  var im = document.createElement('img');
+  im.src = 'logo-fleur.png'; im.alt = ''; im.width = 96; im.height = 96;
+  e.appendChild(im);
+  e.appendChild(feuilleEl('span', 'f-marque', 'Les Jardins de Célestine'));
+  p.appendChild(e);
+  p.appendChild(feuilleEl('h1', 'f-titre', titre));
+  if (consigne) p.appendChild(feuilleEl('p', 'f-consigne', consigne));
+  p._adresse = adresse;
+  return p;
+}
+function feuilleFerme(p){
+  var pied = feuilleEl('div', 'f-pied');
+  pied.appendChild(feuilleEl('p', 'f-site', 'jardinsdecelestine.com · jardinsdecelestine@gmail.com'));
+  pied.appendChild(feuilleEl('p', 'f-jeu', 'Ce jeu est gratuit en ligne : jardinsdecelestine.com/' + p._adresse));
+  p.appendChild(pied);
+}
+function feuilleImprime(jeu){
+  /* compteur Google Analytics : un évènement par impression, nommé d'après le jeu
+     (JDC.mesure ne part pas avec ?sans-mesure=1) */
+  try { if (window.JDC && JDC.mesure) JDC.mesure('impression_' + jeu, {}); } catch (e) {}
+  document.body.classList.add('imprime');
+  var attente = [].slice.call(document.querySelectorAll('#feuille img')).filter(function(i){ return !i.complete; });
+  var lance = false;
+  function go(){ if (lance) return; lance = true; window.print(); }
+  function fin(){ if (--n <= 0) go(); }
+  var n = attente.length;
+  if (!n) return go();
+  attente.forEach(function(i){ i.addEventListener('load', fin); i.addEventListener('error', fin); });
+  setTimeout(go, 5000);
+}
+window.addEventListener('afterprint', function(){
+  document.body.classList.remove('imprime');
+});
+function feuilleNeuve(){
+  var f = document.getElementById('feuille');
+  /* la feuille doit être un enfant direct de <body> (une balise restée
+     ouverte dans la page peut l'avoir rangée dans un bloc caché) */
+  if (f.parentNode !== document.body) document.body.appendChild(f);
+  f.textContent = '';
+  return f;
+}
+function feuilleCap(m){ return m.charAt(0).toUpperCase() + m.slice(1); }
+/* des cadres côte à côte, n par ligne */
+function feuilleBoites(textes, n){
+  var b = feuilleEl('div', 'f-boites');
+  b.style.setProperty('--n', n);
+  /* une seule taille de lettres par cadre : 15 pt dès qu'un texte est long */
+  var long = textes.some(function(t){ return t.length >= 10; });
+  textes.forEach(function(t){
+    b.appendChild(feuilleEl('span', 'f-mot' + (long ? ' f-long' : ''), t));
+  });
+  return b;
+}
+/* des lignes numérotées pour écrire */
+function feuilleLignes(nb){
+  var ol = feuilleEl('ol', 'f-lignes');
+  for (var i = 0; i < nb; i++) ol.appendChild(feuilleEl('li', null, (i + 1) + '.'));
+  return ol;
+}
+function feuilleReponses(lignes){
+  var ol = feuilleEl('ol', 'f-rep');
+  lignes.forEach(function(t){ ol.appendChild(feuilleEl('li', null, t)); });
+  return ol;
+}
+
+function imprimerPartie(){
+  if (!jeu || !jeu.length) return;
+  function cap(m){ return m.charAt(0).toUpperCase() + m.slice(1); }
+  var feuille = feuilleNeuve();
+
+  var p1 = feuilleOuvre('Le mot de trop',
+    'Dans chaque série, entourez le mot qui n’a rien à y faire.',
+    'jeu_mot_de_trop');
+  var rep = feuilleEl('ol', 'f-rep');
+  jeu.forEach(function(s, k){
+    var mots = (k === courant && cartes.length === 4) ? cartes.slice() : melange(s.f.concat([s.i]));
+    var ligne = feuilleEl('div', 'f-serie');
+    ligne.appendChild(feuilleEl('span', 'f-num', (k + 1) + '.'));
+    mots.forEach(function(m){ ligne.appendChild(feuilleEl('span', 'f-mot' + (m.length >= 10 ? ' f-long' : ''), cap(m))); });
+    p1.appendChild(ligne);
+    rep.appendChild(feuilleEl('li', null, (k + 1) + '. ' + cap(s.i) + ' : les trois autres, ' + s.r + '.'));
+  });
+  feuilleFerme(p1);
+  feuille.appendChild(p1);
+
+  var p2 = feuilleOuvre('Le mot de trop : les réponses', null, 'jeu_mot_de_trop');
+  p2.appendChild(rep);
+  feuilleFerme(p2);
+  feuille.appendChild(p2);
+
+  feuilleImprime('mot_de_trop');
+}
+</script>
 </body>
 </html>

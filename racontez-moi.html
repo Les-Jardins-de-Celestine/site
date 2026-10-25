@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <!-- Google tag (gtag.js) -->
+<script>(function(){var m=/[?&]sans-mesure=([01])(&|#|$)/.exec(location.search),k='jdc-sans-mesure',s=!!(m&&m[1]==='1');try{if(m)s?localStorage.setItem(k,'1'):localStorage.removeItem(k);else s=localStorage.getItem(k)==='1'}catch(e){}if(s)window['ga-disable-G-NT825E8XDT']=true})();</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -239,6 +240,65 @@ details.aide>summary:hover{opacity:1}
  }
 }
 </script>
+
+<style id="feuille-papier">
+/* « Imprimer cette partie » : la feuille est construite à la demande par
+   imprimerPartie(), cachée à l'écran, et seule visible à l'impression
+   quand la page porte la classe .imprime (posée par le bouton). */
+#feuille{display:none}
+.imp-btn{font-family:'Nunito',sans-serif;font-weight:700;cursor:pointer}
+@media print{
+  @page{size:A4 portrait;margin:11mm 14mm}
+  body.imprime{background:#fff!important;color:#000!important;padding:0!important;
+    margin:0!important;min-height:0!important;display:block!important}
+  body.imprime>*:not(#feuille){display:none!important}
+  body.imprime #feuille{display:block}
+  #feuille{font-family:'Atkinson Hyperlegible','Nunito',Arial,sans-serif;color:#000;
+    font-size:15pt;line-height:1.35;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #feuille .f-page{break-after:page;page-break-after:always}
+  #feuille .f-page:last-child{break-after:auto;page-break-after:auto}
+  #feuille .f-entete{display:flex;align-items:center;gap:3mm;
+    border-bottom:.3mm solid #999;padding-bottom:2mm;margin:0 0 4mm}
+  #feuille .f-entete img{width:13mm;height:13mm;display:block}
+  #feuille .f-marque{font-size:16pt;font-weight:700;line-height:1.1}
+  #feuille .f-titre{font-size:24pt;font-weight:700;margin:0 0 2mm;line-height:1.15}
+  #feuille .f-consigne{font-size:15pt;margin:0 0 6mm}
+  #feuille .f-pied{border-top:.3mm solid #999;padding-top:2mm;margin:4mm 0 0;line-height:1.3}
+  #feuille .f-pied .f-site{font-size:12pt;font-weight:700;margin:0}
+  #feuille .f-pied .f-jeu{font-size:10.5pt;color:#333;margin:0}
+  /* blocs communs aux jeux en séries */
+  #feuille .f-num{font-size:15pt;font-weight:700}
+  #feuille .f-mot{border:.5mm solid #000;border-radius:3mm;padding:3mm 1mm;
+    text-align:center;font-size:17pt;font-weight:700;min-height:17mm;display:flex;
+    align-items:center;justify-content:center;white-space:normal;line-height:1.15}
+  #feuille .f-mot.f-long{font-size:15pt}
+  #feuille .f-boites{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));
+    gap:3.5mm;margin:0 0 7mm}
+  #feuille .f-rep{list-style:none;padding:0;margin:0}
+  #feuille .f-rep li{font-size:15pt;margin:0 0 5mm}
+  #feuille .f-lignes{list-style:none;padding:0;margin:0}
+  #feuille .f-lignes li{display:flex;align-items:flex-end;gap:3mm;height:14mm;
+    font-size:15pt;font-weight:700}
+  #feuille .f-lignes li::after{content:'';flex:1;border-bottom:.4mm solid #000;margin-bottom:1.6mm}
+  #feuille .f-bloc{break-inside:avoid;page-break-inside:avoid}
+}
+</style>
+
+<style id="feuille-papier-souvenirs">
+@media print{
+  #feuille .f-souv{display:grid;grid-template-columns:repeat(var(--n,2),minmax(0,1fr));gap:7mm 8mm}
+  #feuille .f-sc{display:flex;flex-direction:column;align-items:center;text-align:center;gap:1.5mm;break-inside:avoid}
+  #feuille .f-sc img{width:var(--l,60mm);height:auto;max-width:100%;border:.3mm solid #bbb;border-radius:2mm}
+  #feuille .f-sc .t{font-size:16pt;font-weight:700;line-height:1.2}
+  #feuille .f-sc .p{font-size:14pt;line-height:1.3;max-width:var(--l,60mm)}
+  #feuille .f-souv.texte .f-sc{border:.4mm solid #000;border-radius:3mm;padding:5mm 4mm;justify-content:center;min-height:30mm}
+  #feuille .f-acc{columns:var(--c,1);column-gap:9mm}
+  #feuille .f-acc .bloc{break-inside:avoid;margin:0 0 5mm}
+  #feuille .f-acc .t{font-size:14pt;font-weight:700;margin:0 0 1mm}
+  #feuille .f-acc ul{margin:0;padding:0 0 0 5mm}
+  #feuille .f-acc li{font-size:12.5pt;line-height:1.3;margin:0 0 .8mm}
+}
+</style>
 </head>
 <body>
 
@@ -262,8 +322,7 @@ details.aide>summary:hover{opacity:1}
   </div>
   <div class="rangee">
     <button type="button" class="discret" id="bRegles">Comment s'en servir</button>
-    <a class="discret" href="racontez-moi.pdf" download
-       target="_blank" rel="noopener">Imprimer le jeu (PDF)</a>
+    <button type="button" class="discret" onclick="imprimerPartie()"><span aria-hidden="true">🖨</span> Imprimer des cartes</button>
   </div>
 </section>
 
@@ -291,6 +350,7 @@ details.aide>summary:hover{opacity:1}
     <button type="button" class="gros" id="bMenu">Choisir une carte</button>
   </div>
   <button type="button" class="discret" id="bAccueil1">↩ Revenir au début</button>
+  <button type="button" class="discret" onclick="imprimerPartie()"><span aria-hidden="true">🖨</span> Imprimer cette partie</button>
 </section>
 
 <!-- ─────────────── Les douze ─────────────── -->
@@ -603,9 +663,138 @@ details.aide>summary:hover{opacity:1}
       });
     });
 
+
+  window.imprimerPartie = function () {
+    var cur = -1;
+    if (!ecrans.carte.hidden) CARTES.forEach(function (c, i) { if (c.t === nom.textContent) cur = i; });
+    var l = feuilleSuiteDuPaquet(paquet, pose, cur, 4);
+    feuilleSouvenirs({
+      titre: 'Racontez-moi', consigne: 'On regarde, on parle si on veut.', adresse: 'racontez-moi',
+      parPage: 2, cols: 1, largeur: '134mm',
+      items: l.map(function (i) { var c = CARTES[i];
+        return {img: 'images/recit/carte' + (c.n < 10 ? '0' : '') + c.n + '.jpg', titre: c.t, texte: c.p, relances: c.r}; }),
+      accTitre: 'Racontez-moi : pour l’accompagnant', accConsigne: 'À glisser dans un silence qui gêne, pas à dérouler.',
+      jeu: 'racontezmoi'
+    });
+  };
   brasser();
 })();
 </script>
 
+<div id="feuille" aria-hidden="true"></div>
+<script id="impression">
+
+function feuilleEl(tag, cls, txt){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt != null) e.textContent = txt;
+  return e;
+}
+function feuilleOuvre(titre, consigne, adresse){
+  var p = feuilleEl('section', 'f-page');
+  var e = feuilleEl('div', 'f-entete');
+  var im = document.createElement('img');
+  im.src = 'logo-fleur.png'; im.alt = ''; im.width = 96; im.height = 96;
+  e.appendChild(im);
+  e.appendChild(feuilleEl('span', 'f-marque', 'Les Jardins de Célestine'));
+  p.appendChild(e);
+  p.appendChild(feuilleEl('h1', 'f-titre', titre));
+  if (consigne) p.appendChild(feuilleEl('p', 'f-consigne', consigne));
+  p._adresse = adresse;
+  return p;
+}
+function feuilleFerme(p){
+  var pied = feuilleEl('div', 'f-pied');
+  pied.appendChild(feuilleEl('p', 'f-site', 'jardinsdecelestine.com · jardinsdecelestine@gmail.com'));
+  pied.appendChild(feuilleEl('p', 'f-jeu', 'Ce jeu est gratuit en ligne : jardinsdecelestine.com/' + p._adresse));
+  p.appendChild(pied);
+}
+function feuilleImprime(jeu){
+  /* compteur Google Analytics : un évènement par impression, nommé d'après le jeu
+     (JDC.mesure ne part pas avec ?sans-mesure=1) */
+  try { if (window.JDC && JDC.mesure) JDC.mesure('impression_' + jeu, {}); } catch (e) {}
+  document.body.classList.add('imprime');
+  var attente = [].slice.call(document.querySelectorAll('#feuille img')).filter(function(i){ return !i.complete; });
+  var lance = false;
+  function go(){ if (lance) return; lance = true; window.print(); }
+  function fin(){ if (--n <= 0) go(); }
+  var n = attente.length;
+  if (!n) return go();
+  attente.forEach(function(i){ i.addEventListener('load', fin); i.addEventListener('error', fin); });
+  setTimeout(go, 5000);
+}
+window.addEventListener('afterprint', function(){
+  document.body.classList.remove('imprime');
+});
+function feuilleNeuve(){
+  var f = document.getElementById('feuille');
+  /* la feuille doit être un enfant direct de <body> (une balise restée
+     ouverte dans la page peut l'avoir rangée dans un bloc caché) */
+  if (f.parentNode !== document.body) document.body.appendChild(f);
+  f.textContent = '';
+  return f;
+}
+function feuilleCap(m){ return m.charAt(0).toUpperCase() + m.slice(1); }
+/* des cadres côte à côte, n par ligne */
+function feuilleBoites(textes, n){
+  var b = feuilleEl('div', 'f-boites');
+  b.style.setProperty('--n', n);
+  /* une seule taille de lettres par cadre : 15 pt dès qu'un texte est long */
+  var long = textes.some(function(t){ return t.length >= 10; });
+  textes.forEach(function(t){
+    b.appendChild(feuilleEl('span', 'f-mot' + (long ? ' f-long' : ''), t));
+  });
+  return b;
+}
+/* des lignes numérotées pour écrire */
+function feuilleLignes(nb){
+  var ol = feuilleEl('ol', 'f-lignes');
+  for (var i = 0; i < nb; i++) ol.appendChild(feuilleEl('li', null, (i + 1) + '.'));
+  return ol;
+}
+function feuilleReponses(lignes){
+  var ol = feuilleEl('ol', 'f-rep');
+  lignes.forEach(function(t){ ol.appendChild(feuilleEl('li', null, t)); });
+  return ol;
+}
+
+/* les souvenirs : deux pages d'images (règle de la réminiscence), puis une page pour l'accompagnant */
+function feuilleSouvenirs(o){
+  var f = feuilleNeuve(), par = o.parPage, nbp = Math.ceil(o.items.length / par);
+  for (var pg = 0; pg < nbp; pg++) {
+    var p = feuilleOuvre(o.titre + (nbp > 1 ? ' (' + (pg + 1) + '/' + nbp + ')' : ''), o.consigne, o.adresse);
+    var g = feuilleEl('div', 'f-souv' + (o.texte ? ' texte' : ''));
+    g.style.setProperty('--n', o.cols); g.style.setProperty('--l', o.largeur);
+    o.items.slice(pg * par, pg * par + par).forEach(function(it){
+      var c = feuilleEl('div', 'f-sc');
+      if (it.img) { var im = document.createElement('img'); im.src = it.img; im.alt = ''; c.appendChild(im); }
+      c.appendChild(feuilleEl('span', 't', it.titre));
+      if (it.texte) c.appendChild(feuilleEl('span', 'p', it.texte));
+      g.appendChild(c);
+    });
+    p.appendChild(g);
+    feuilleFerme(p); f.appendChild(p);
+  }
+  var p3 = feuilleOuvre(o.accTitre, o.accConsigne, o.adresse);
+  var a = feuilleEl('div', 'f-acc'); a.style.setProperty('--c', o.items.length > 4 ? 2 : 1);
+  o.items.forEach(function(it){
+    var b = feuilleEl('div', 'bloc');
+    b.appendChild(feuilleEl('p', 't', it.titre));
+    var ul = feuilleEl('ul');
+    it.relances.forEach(function(r){ ul.appendChild(feuilleEl('li', null, r)); });
+    b.appendChild(ul); a.appendChild(b);
+  });
+  p3.appendChild(a);
+  feuilleFerme(p3); f.appendChild(p3);
+  feuilleImprime(o.jeu);
+}
+/* la carte à l'écran d'abord, puis la suite du paquet */
+function feuilleSuiteDuPaquet(paquet, pose, cur, nb){
+  var l = [];
+  if (cur >= 0) l.push(cur);
+  paquet.slice(pose).concat(paquet.slice(0, pose)).forEach(function(i){ if (l.indexOf(i) === -1) l.push(i); });
+  return l.slice(0, nb);
+}
+</script>
 </body>
 </html>
