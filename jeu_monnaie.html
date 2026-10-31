@@ -407,143 +407,74 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
 <script>
 (function () {
   "use strict";
-  var Q = [
-{n:"simple",q:"Ça fait 32 §. Vous donnez 50 §. On vous rend combien ?",b:"18 §",m:["17,90 §","17 §"],c:"Vous achetez un litre d'huile."},
-{n:"simple",q:"Ça fait 34 §. Vous donnez 100 §. On vous rend combien ?",b:"66 §",m:["65,90 §","67 §"],c:"Vous achetez une douzaine d'œufs."},
-{n:"simple",q:"Ça fait 2 §. Vous donnez 20 §. On vous rend combien ?",b:"18 §",m:["17,90 §","17 §"],c:"Vous achetez deux tablettes de chocolat."},
-{n:"simple",q:"Ça fait 12 §. Vous donnez 50 §. On vous rend combien ?",b:"38 §",m:["38,10 §","39 §"],c:"Vous achetez un pot de confiture."},
-{n:"simple",q:"Ça fait 35 §. Vous donnez 50 §. On vous rend combien ?",b:"15 §",m:["15,10 §","5 §"],c:"Vous achetez une douzaine d'œufs."},
-{n:"simple",q:"Ça fait 3 §. Vous donnez 10 §. On vous rend combien ?",b:"7 §",m:["7,50 §","8 §"],c:"Vous achetez un paquet de lessive."},
-{n:"simple",q:"Ça fait 33 §. Vous donnez 50 §. On vous rend combien ?",b:"17 §",m:["16 §","7 §"],c:"Vous achetez trois baguettes."},
-{n:"simple",q:"Ça fait 19 §. Vous donnez 20 §. On vous rend combien ?",b:"1 §",m:["2 §","1,50 §"],c:"Vous achetez le café et le sucre."},
-{n:"simple",q:"Ça fait 9 §. Vous donnez 20 §. On vous rend combien ?",b:"11 §",m:["12 §","10,90 §"],c:"Vous achetez le café et le sucre."},
-{n:"simple",q:"Ça fait 39 §. Vous donnez 100 §. On vous rend combien ?",b:"61 §",m:["61,10 §","60 §"],c:"Vous achetez du fil et des boutons."},
-{n:"simple",q:"Ça fait 23 §. Vous donnez 50 §. On vous rend combien ?",b:"27 §",m:["27,10 §","26,90 §"],c:"Vous achetez une douzaine d'œufs."},
-{n:"simple",q:"Ça fait 26 §. Vous donnez 100 §. On vous rend combien ?",b:"74 §",m:["74,10 §","75 §"],c:"Vous achetez une douzaine d'œufs."},
-{n:"simple",q:"Ça fait 21 §. Vous donnez 50 §. On vous rend combien ?",b:"29 §",m:["30 §","28 §"],c:"Vous achetez le pain et le lait."},
-{n:"simple",q:"Ça fait 37 §. Vous donnez 100 §. On vous rend combien ?",b:"63 §",m:["62,90 §","62 §"],c:"Vous achetez une douzaine d'œufs."},
-{n:"simple",q:"Ça fait 16 §. Vous donnez 20 §. On vous rend combien ?",b:"4 §",m:["3,90 §","4,50 §"],c:"Vous achetez un pot de confiture."},
-{n:"simple",q:"Ça fait 27 §. Vous donnez 50 §. On vous rend combien ?",b:"23 §",m:["22,90 §","24 §"],c:"Vous achetez trois baguettes."},
-{n:"simple",q:"Ça fait 38 §. Vous donnez 50 §. On vous rend combien ?",b:"12 §",m:["11 §","12,10 §"],c:"Vous achetez un pot de confiture."},
-{n:"simple",q:"Ça fait 13 §. Vous donnez 50 §. On vous rend combien ?",b:"37 §",m:["38 §","27 §"],c:"Vous achetez le café et le sucre."},
-{n:"simple",q:"Ça fait 35 §. Vous donnez 100 §. On vous rend combien ?",b:"65 §",m:["64 §","66 §"],c:"Vous achetez du fil et des boutons."},
-{n:"simple",q:"Ça fait 28 §. Vous donnez 50 §. On vous rend combien ?",b:"22 §",m:["23 §","22,10 §"],c:"Vous achetez deux tablettes de chocolat."},
-{n:"simple",q:"Ça fait 13 §. Vous donnez 20 §. On vous rend combien ?",b:"7 §",m:["8 §","7,50 §"],c:"Vous achetez le café et le sucre."},
-{n:"simple",q:"Ça fait 34 §. Vous donnez 50 §. On vous rend combien ?",b:"16 §",m:["16,10 §","15,90 §"],c:"Vous achetez le pain et le lait."},
-{n:"simple",q:"Ça fait 33 §. Vous donnez 100 §. On vous rend combien ?",b:"67 §",m:["57 §","66,90 §"],c:"Vous achetez trois baguettes."},
-{n:"simple",q:"Ça fait 25 §. Vous donnez 50 §. On vous rend combien ?",b:"25 §",m:["25,10 §","15 §"],c:"Vous achetez deux tablettes de chocolat."},
-{n:"simple",q:"Ça fait 3 §. Vous donnez 20 §. On vous rend combien ?",b:"17 §",m:["18 §","7 §"],c:"Vous achetez le journal et un timbre."},
-{n:"simple",q:"Ça fait 30 §. Vous donnez 50 §. On vous rend combien ?",b:"20 §",m:["10 §","20,10 §"],c:"Vous achetez un litre d'huile."},
-{n:"simple",q:"Ça fait 36 §. Vous donnez 100 §. On vous rend combien ?",b:"64 §",m:["65 §","64,10 §"],c:"Vous achetez le café et le sucre."},
-{n:"simple",q:"Ça fait 10 §. Vous donnez 50 §. On vous rend combien ?",b:"40 §",m:["40,10 §","39 §"],c:"Vous achetez deux tablettes de chocolat."},
-{n:"simple",q:"Ça fait 37 §. Vous donnez 50 §. On vous rend combien ?",b:"13 §",m:["12 §","13,10 §"],c:"Vous achetez un paquet de lessive."},
-{n:"simple",q:"Ça fait 6 §. Vous donnez 20 §. On vous rend combien ?",b:"14 §",m:["15 §","13,90 §"],c:"Vous achetez trois baguettes."},
-{n:"simple",q:"Ça fait 18 §. Vous donnez 50 §. On vous rend combien ?",b:"32 §",m:["31 §","32,10 §"],c:"Vous achetez un pot de confiture."},
-{n:"simple",q:"Ça fait 1 §. Vous donnez 20 §. On vous rend combien ?",b:"19 §",m:["18,90 §","20 §"],c:"Vous achetez une douzaine d'œufs."},
-{n:"simple",q:"Ça fait 21 §. Vous donnez 100 §. On vous rend combien ?",b:"79 §",m:["79,10 §","78 §"],c:"Vous achetez du fil et des boutons."},
-{n:"simple",q:"Ça fait 6 §. Vous donnez 10 §. On vous rend combien ?",b:"4 §",m:["3,90 §","4,10 §"],c:"Vous achetez le café et le sucre."},
-{n:"simple",q:"Ça fait 2 §. Vous donnez 10 §. On vous rend combien ?",b:"8 §",m:["8,10 §","8,50 §"],c:"Vous achetez un kilo de pommes."},
-{n:"simple",q:"Ça fait 4 §. Vous donnez 20 §. On vous rend combien ?",b:"16 §",m:["15,90 §","16,10 §"],c:"Vous achetez un paquet de lessive."},
-{n:"simple",q:"Ça fait 9 §. Vous donnez 10 §. On vous rend combien ?",b:"1 §",m:["2 §","1,50 §"],c:"Vous achetez deux tablettes de chocolat."},
-{n:"simple",q:"Ça fait 15 §. Vous donnez 50 §. On vous rend combien ?",b:"35 §",m:["34 §","36 §"],c:"Vous achetez un paquet de lessive."},
-{n:"simple",q:"Ça fait 38 §. Vous donnez 100 §. On vous rend combien ?",b:"62 §",m:["63 §","61 §"],c:"Vous achetez un kilo de pommes."},
-{n:"simple",q:"Ça fait 7 §. Vous donnez 10 §. On vous rend combien ?",b:"3 §",m:["2,90 §","3,50 §"],c:"Vous achetez des allumettes et une bougie."},
-{n:"simple",q:"Ça fait 14 §. Vous donnez 20 §. On vous rend combien ?",b:"6 §",m:["5 §","7 §"],c:"Vous achetez le journal et un timbre."},
-{n:"simple",q:"Ça fait 24 §. Vous donnez 100 §. On vous rend combien ?",b:"76 §",m:["75 §","75,90 §"],c:"Vous achetez deux tablettes de chocolat."},
-{n:"simple",q:"Ça fait 10 §. Vous donnez 20 §. On vous rend combien ?",b:"10 §",m:["9,90 §","10,50 §"],c:"Vous achetez des allumettes et une bougie."},
-{n:"simple",q:"Ça fait 16 §. Vous donnez 50 §. On vous rend combien ?",b:"34 §",m:["35 §","34,10 §"],c:"Vous achetez un kilo de pommes."},
-{n:"simple",q:"Ça fait 8 §. Vous donnez 20 §. On vous rend combien ?",b:"12 §",m:["11 §","2 §"],c:"Vous achetez le pain et le lait."},
-{n:"moyen",q:"Ça fait 1,50 §. Vous donnez 20 §. On vous rend combien ?",b:"18,50 §",m:["17,50 §","18,60 §"],c:"Vous achetez une douzaine d'œufs."},
-{n:"moyen",q:"Ça fait 18,50 §. Vous donnez 50 §. On vous rend combien ?",b:"31,50 §",m:["31,60 §","31,40 §"],c:"Vous achetez un litre d'huile."},
-{n:"moyen",q:"Ça fait 38,50 §. Vous donnez 100 §. On vous rend combien ?",b:"61,50 §",m:["61,60 §","51,50 §"],c:"Vous achetez des allumettes et une bougie."},
-{n:"moyen",q:"Ça fait 24,50 §. Vous donnez 100 §. On vous rend combien ?",b:"75,50 §",m:["76,50 §","75,40 §"],c:"Vous achetez un kilo de pommes."},
-{n:"moyen",q:"Ça fait 30,50 §. Vous donnez 100 §. On vous rend combien ?",b:"69,50 §",m:["69,60 §","59,50 §"],c:"Vous achetez le journal et un timbre."},
-{n:"moyen",q:"Ça fait 28,50 §. Vous donnez 50 §. On vous rend combien ?",b:"21,50 §",m:["21,60 §","21,40 §"],c:"Vous achetez trois baguettes."},
-{n:"moyen",q:"Ça fait 30,50 §. Vous donnez 50 §. On vous rend combien ?",b:"19,50 §",m:["18,50 §","9,50 §"],c:"Vous achetez le café et le sucre."},
-{n:"moyen",q:"Ça fait 13,50 §. Vous donnez 20 §. On vous rend combien ?",b:"6,50 §",m:["6,60 §","5,50 §"],c:"Vous achetez le café et le sucre."},
-{n:"moyen",q:"Ça fait 32,50 §. Vous donnez 100 §. On vous rend combien ?",b:"67,50 §",m:["66,50 §","67,40 §"],c:"Vous achetez le pain et le lait."},
-{n:"moyen",q:"Ça fait 26,50 §. Vous donnez 50 §. On vous rend combien ?",b:"23,50 §",m:["22,50 §","24,50 §"],c:"Vous achetez un kilo de pommes."},
-{n:"moyen",q:"Ça fait 4,50 §. Vous donnez 10 §. On vous rend combien ?",b:"5,50 §",m:["5,40 §","6,50 §"],c:"Vous achetez une douzaine d'œufs."},
-{n:"moyen",q:"Ça fait 37,50 §. Vous donnez 100 §. On vous rend combien ?",b:"62,50 §",m:["62,60 §","52,50 §"],c:"Vous achetez le pain et le lait."},
-{n:"moyen",q:"Ça fait 2,50 §. Vous donnez 20 §. On vous rend combien ?",b:"17,50 §",m:["7,50 §","16,50 §"],c:"Vous achetez trois baguettes."},
-{n:"moyen",q:"Ça fait 16,50 §. Vous donnez 20 §. On vous rend combien ?",b:"3,50 §",m:["3,40 §","2,50 §"],c:"Vous achetez un litre d'huile."},
-{n:"moyen",q:"Ça fait 33,50 §. Vous donnez 50 §. On vous rend combien ?",b:"16,50 §",m:["17,50 §","6,50 §"],c:"Vous achetez un paquet de lessive."},
-{n:"moyen",q:"Ça fait 13,50 §. Vous donnez 50 §. On vous rend combien ?",b:"36,50 §",m:["35,50 §","36,40 §"],c:"Vous achetez un kilo de pommes."},
-{n:"moyen",q:"Ça fait 11,50 §. Vous donnez 20 §. On vous rend combien ?",b:"8,50 §",m:["8,40 §","8,60 §"],c:"Vous achetez le pain et le lait."},
-{n:"moyen",q:"Ça fait 11,50 §. Vous donnez 50 §. On vous rend combien ?",b:"38,50 §",m:["38,60 §","39,50 §"],c:"Vous achetez une douzaine d'œufs."},
-{n:"moyen",q:"Ça fait 33,50 §. Vous donnez 100 §. On vous rend combien ?",b:"66,50 §",m:["66,40 §","56,50 §"],c:"Vous achetez une douzaine d'œufs."},
-{n:"moyen",q:"Ça fait 19,50 §. Vous donnez 50 §. On vous rend combien ?",b:"30,50 §",m:["29,50 §","30,60 §"],c:"Vous achetez le pain et le lait."},
-{n:"moyen",q:"Ça fait 20,50 §. Vous donnez 50 §. On vous rend combien ?",b:"29,50 §",m:["19,50 §","29,60 §"],c:"Vous achetez le journal et un timbre."},
-{n:"moyen",q:"Ça fait 10,50 §. Vous donnez 20 §. On vous rend combien ?",b:"9,50 §",m:["8,50 §","9,40 §"],c:"Vous achetez une douzaine d'œufs."},
-{n:"moyen",q:"Ça fait 6,50 §. Vous donnez 10 §. On vous rend combien ?",b:"3,50 §",m:["2,50 §","3,60 §"],c:"Vous achetez un kilo de pommes."},
-{n:"moyen",q:"Ça fait 10,50 §. Vous donnez 50 §. On vous rend combien ?",b:"39,50 §",m:["38,50 §","39,60 §"],c:"Vous achetez une douzaine d'œufs."},
-{n:"moyen",q:"Ça fait 31,50 §. Vous donnez 50 §. On vous rend combien ?",b:"18,50 §",m:["19,50 §","8,50 §"],c:"Vous achetez un paquet de lessive."},
-{n:"moyen",q:"Ça fait 15,50 §. Vous donnez 50 §. On vous rend combien ?",b:"34,50 §",m:["34,40 §","35,50 §"],c:"Vous achetez un paquet de lessive."},
-{n:"moyen",q:"Ça fait 7,50 §. Vous donnez 10 §. On vous rend combien ?",b:"2,50 §",m:["2,60 §","3 §"],c:"Vous achetez le pain et le lait."},
-{n:"moyen",q:"Ça fait 3,50 §. Vous donnez 20 §. On vous rend combien ?",b:"16,50 §",m:["17,50 §","16,40 §"],c:"Vous achetez un litre d'huile."},
-{n:"moyen",q:"Ça fait 9,50 §. Vous donnez 10 §. On vous rend combien ?",b:"0,50 §",m:["0,60 §","1,50 §"],c:"Vous achetez un pot de confiture."},
-{n:"moyen",q:"Ça fait 21,50 §. Vous donnez 100 §. On vous rend combien ?",b:"78,50 §",m:["77,50 §","78,40 §"],c:"Vous achetez deux tablettes de chocolat."},
-{n:"moyen",q:"Ça fait 34,50 §. Vous donnez 50 §. On vous rend combien ?",b:"15,50 §",m:["15,40 §","5,50 §"],c:"Vous achetez du fil et des boutons."},
-{n:"moyen",q:"Ça fait 36,50 §. Vous donnez 100 §. On vous rend combien ?",b:"63,50 §",m:["63,40 §","63,60 §"],c:"Vous achetez le pain et le lait."},
-{n:"moyen",q:"Ça fait 12,50 §. Vous donnez 20 §. On vous rend combien ?",b:"7,50 §",m:["7,40 §","7,60 §"],c:"Vous achetez le pain et le lait."},
-{n:"moyen",q:"Ça fait 22,50 §. Vous donnez 50 §. On vous rend combien ?",b:"27,50 §",m:["17,50 §","28,50 §"],c:"Vous achetez le journal et un timbre."},
-{n:"moyen",q:"Ça fait 9,50 §. Vous donnez 20 §. On vous rend combien ?",b:"10,50 §",m:["0,50 §","9,50 §"],c:"Vous achetez un paquet de lessive."},
-{n:"moyen",q:"Ça fait 7,50 §. Vous donnez 20 §. On vous rend combien ?",b:"12,50 §",m:["13,50 §","12,40 §"],c:"Vous achetez du fil et des boutons."},
-{n:"moyen",q:"Ça fait 5,50 §. Vous donnez 20 §. On vous rend combien ?",b:"14,50 §",m:["14,40 §","14,60 §"],c:"Vous achetez un paquet de lessive."},
-{n:"moyen",q:"Ça fait 18,50 §. Vous donnez 20 §. On vous rend combien ?",b:"1,50 §",m:["1,40 §","2,50 §"],c:"Vous achetez le café et le sucre."},
-{n:"moyen",q:"Ça fait 35,50 §. Vous donnez 50 §. On vous rend combien ?",b:"14,50 §",m:["13,50 §","15,50 §"],c:"Vous achetez un paquet de lessive."},
-{n:"moyen",q:"Ça fait 24,50 §. Vous donnez 50 §. On vous rend combien ?",b:"25,50 §",m:["26,50 §","25,40 §"],c:"Vous achetez des allumettes et une bougie."},
-{n:"moyen",q:"Ça fait 36,50 §. Vous donnez 50 §. On vous rend combien ?",b:"13,50 §",m:["12,50 §","13,60 §"],c:"Vous achetez le café et le sucre."},
-{n:"moyen",q:"Ça fait 19,50 §. Vous donnez 20 §. On vous rend combien ?",b:"0,50 §",m:["1,50 §","0,40 §"],c:"Vous achetez le café et le sucre."},
-{n:"moyen",q:"Ça fait 21,50 §. Vous donnez 50 §. On vous rend combien ?",b:"28,50 §",m:["29,50 §","27,50 §"],c:"Vous achetez deux tablettes de chocolat."},
-{n:"moyen",q:"Ça fait 6,50 §. Vous donnez 20 §. On vous rend combien ?",b:"13,50 §",m:["13,40 §","13,60 §"],c:"Vous achetez le journal et un timbre."},
-{n:"moyen",q:"Ça fait 26,50 §. Vous donnez 100 §. On vous rend combien ?",b:"73,50 §",m:["74,50 §","73,40 §"],c:"Vous achetez un kilo de pommes."},
-{n:"difficile",q:"Ça fait 3,40 §. Vous donnez 20 §. On vous rend combien ?",b:"16,60 §",m:["17,60 §","16,70 §"],c:"Vous achetez une douzaine d'œufs."},
-{n:"difficile",q:"Ça fait 16,80 §. Vous donnez 20 §. On vous rend combien ?",b:"3,20 §",m:["3,70 §","3,30 §"],c:"Vous achetez du fil et des boutons."},
-{n:"difficile",q:"Ça fait 39,10 §. Vous donnez 100 §. On vous rend combien ?",b:"60,90 §",m:["61,90 §","61 §"],c:"Vous achetez le pain et le lait."},
-{n:"difficile",q:"Ça fait 14,30 §. Vous donnez 20 §. On vous rend combien ?",b:"5,70 §",m:["6,70 §","5,60 §"],c:"Vous achetez une douzaine d'œufs."},
-{n:"difficile",q:"Ça fait 13,20 §. Vous donnez 50 §. On vous rend combien ?",b:"36,80 §",m:["36,90 §","37,80 §"],c:"Vous achetez un paquet de lessive."},
-{n:"difficile",q:"Ça fait 33,20 §. Vous donnez 50 §. On vous rend combien ?",b:"16,80 §",m:["15,80 §","16,90 §"],c:"Vous achetez trois baguettes."},
-{n:"difficile",q:"Ça fait 4,40 §. Vous donnez 10 §. On vous rend combien ?",b:"5,60 §",m:["6,60 §","5,70 §"],c:"Vous achetez une douzaine d'œufs."},
-{n:"difficile",q:"Ça fait 19,20 §. Vous donnez 50 §. On vous rend combien ?",b:"30,80 §",m:["20,80 §","30,90 §"],c:"Vous achetez le journal et un timbre."},
-{n:"difficile",q:"Ça fait 23,10 §. Vous donnez 50 §. On vous rend combien ?",b:"26,90 §",m:["16,90 §","26,80 §"],c:"Vous achetez un litre d'huile."},
-{n:"difficile",q:"Ça fait 12,30 §. Vous donnez 50 §. On vous rend combien ?",b:"37,70 §",m:["38,70 §","37,80 §"],c:"Vous achetez un litre d'huile."},
-{n:"difficile",q:"Ça fait 20,30 §. Vous donnez 50 §. On vous rend combien ?",b:"29,70 §",m:["29,80 §","29,60 §"],c:"Vous achetez trois baguettes."},
-{n:"difficile",q:"Ça fait 28,30 §. Vous donnez 50 §. On vous rend combien ?",b:"21,70 §",m:["20,70 §","11,70 §"],c:"Vous achetez du fil et des boutons."},
-{n:"difficile",q:"Ça fait 33,80 §. Vous donnez 50 §. On vous rend combien ?",b:"16,20 §",m:["15,20 §","6,20 §"],c:"Vous achetez trois baguettes."},
-{n:"difficile",q:"Ça fait 21,60 §. Vous donnez 50 §. On vous rend combien ?",b:"28,40 §",m:["28,30 §","18,40 §"],c:"Vous achetez un paquet de lessive."},
-{n:"difficile",q:"Ça fait 15,80 §. Vous donnez 20 §. On vous rend combien ?",b:"4,20 §",m:["3,20 §","4,30 §"],c:"Vous achetez un paquet de lessive."},
-{n:"difficile",q:"Ça fait 31,80 §. Vous donnez 50 §. On vous rend combien ?",b:"18,20 §",m:["18,10 §","19,20 §"],c:"Vous achetez le journal et un timbre."},
-{n:"difficile",q:"Ça fait 36,60 §. Vous donnez 100 §. On vous rend combien ?",b:"63,40 §",m:["53,40 §","63,30 §"],c:"Vous achetez le pain et le lait."},
-{n:"difficile",q:"Ça fait 29,10 §. Vous donnez 50 §. On vous rend combien ?",b:"20,90 §",m:["20,80 §","21,90 §"],c:"Vous achetez un paquet de lessive."},
-{n:"difficile",q:"Ça fait 12,80 §. Vous donnez 20 §. On vous rend combien ?",b:"7,20 §",m:["7,70 §","6,20 §"],c:"Vous achetez un paquet de lessive."},
-{n:"difficile",q:"Ça fait 35,20 §. Vous donnez 50 §. On vous rend combien ?",b:"14,80 §",m:["4,80 §","13,80 §"],c:"Vous achetez le café et le sucre."},
-{n:"difficile",q:"Ça fait 6,90 §. Vous donnez 10 §. On vous rend combien ?",b:"3,10 §",m:["3,20 §","3,60 §"],c:"Vous achetez le pain et le lait."},
-{n:"difficile",q:"Ça fait 32,30 §. Vous donnez 50 §. On vous rend combien ?",b:"17,70 §",m:["17,60 §","17,80 §"],c:"Vous achetez le pain et le lait."},
-{n:"difficile",q:"Ça fait 24,60 §. Vous donnez 50 §. On vous rend combien ?",b:"25,40 §",m:["26,40 §","15,40 §"],c:"Vous achetez le journal et un timbre."},
-{n:"difficile",q:"Ça fait 29,90 §. Vous donnez 100 §. On vous rend combien ?",b:"70,10 §",m:["60,10 §","70 §"],c:"Vous achetez le pain et le lait."},
-{n:"difficile",q:"Ça fait 20,90 §. Vous donnez 50 §. On vous rend combien ?",b:"29,10 §",m:["29,20 §","30,10 §"],c:"Vous achetez le journal et un timbre."},
-{n:"difficile",q:"Ça fait 28,70 §. Vous donnez 100 §. On vous rend combien ?",b:"71,30 §",m:["72,30 §","61,30 §"],c:"Vous achetez deux tablettes de chocolat."},
-{n:"difficile",q:"Ça fait 14,60 §. Vous donnez 20 §. On vous rend combien ?",b:"5,40 §",m:["6,40 §","4,40 §"],c:"Vous achetez le journal et un timbre."},
-{n:"difficile",q:"Ça fait 39,40 §. Vous donnez 50 §. On vous rend combien ?",b:"10,60 §",m:["10,70 §","11,60 §"],c:"Vous achetez des allumettes et une bougie."},
-{n:"difficile",q:"Ça fait 5,40 §. Vous donnez 10 §. On vous rend combien ?",b:"4,60 §",m:["3,60 §","4,70 §"],c:"Vous achetez un paquet de lessive."},
-{n:"difficile",q:"Ça fait 14,90 §. Vous donnez 20 §. On vous rend combien ?",b:"5,10 §",m:["6,10 §","5 §"],c:"Vous achetez trois baguettes."},
-{n:"difficile",q:"Ça fait 37,60 §. Vous donnez 50 §. On vous rend combien ?",b:"12,40 §",m:["11,40 §","13,40 §"],c:"Vous achetez un paquet de lessive."},
-{n:"difficile",q:"Ça fait 16,10 §. Vous donnez 20 §. On vous rend combien ?",b:"3,90 §",m:["4,40 §","4,90 §"],c:"Vous achetez le pain et le lait."},
-{n:"difficile",q:"Ça fait 11,10 §. Vous donnez 50 §. On vous rend combien ?",b:"38,90 §",m:["39 §","28,90 §"],c:"Vous achetez le café et le sucre."},
-{n:"difficile",q:"Ça fait 24,40 §. Vous donnez 50 §. On vous rend combien ?",b:"25,60 §",m:["15,60 §","25,70 §"],c:"Vous achetez le pain et le lait."},
-{n:"difficile",q:"Ça fait 17,40 §. Vous donnez 20 §. On vous rend combien ?",b:"2,60 §",m:["3,60 §","3,10 §"],c:"Vous achetez deux tablettes de chocolat."},
-{n:"difficile",q:"Ça fait 33,90 §. Vous donnez 100 §. On vous rend combien ?",b:"66,10 §",m:["56,10 §","66,20 §"],c:"Vous achetez le journal et un timbre."},
-{n:"difficile",q:"Ça fait 37,90 §. Vous donnez 100 §. On vous rend combien ?",b:"62,10 §",m:["61,10 §","62,20 §"],c:"Vous achetez le pain et le lait."},
-{n:"difficile",q:"Ça fait 3,90 §. Vous donnez 10 §. On vous rend combien ?",b:"6,10 §",m:["6,60 §","6 §"],c:"Vous achetez un pot de confiture."},
-{n:"difficile",q:"Ça fait 9,30 §. Vous donnez 10 §. On vous rend combien ?",b:"0,70 §",m:["0,80 §","1,20 §"],c:"Vous achetez une douzaine d'œufs."},
-{n:"difficile",q:"Ça fait 9,70 §. Vous donnez 20 §. On vous rend combien ?",b:"10,30 §",m:["10,20 §","11,30 §"],c:"Vous achetez du fil et des boutons."},
-{n:"difficile",q:"Ça fait 24,80 §. Vous donnez 100 §. On vous rend combien ?",b:"75,20 §",m:["76,20 §","75,10 §"],c:"Vous achetez trois baguettes."},
-{n:"difficile",q:"Ça fait 18,40 §. Vous donnez 50 §. On vous rend combien ?",b:"31,60 §",m:["30,60 §","31,70 §"],c:"Vous achetez du fil et des boutons."},
-{n:"difficile",q:"Ça fait 36,70 §. Vous donnez 50 §. On vous rend combien ?",b:"13,30 §",m:["14,30 §","13,20 §"],c:"Vous achetez le pain et le lait."},
-{n:"difficile",q:"Ça fait 6,80 §. Vous donnez 10 §. On vous rend combien ?",b:"3,20 §",m:["3,10 §","3,30 §"],c:"Vous achetez un kilo de pommes."},
-{n:"difficile",q:"Ça fait 38,40 §. Vous donnez 100 §. On vous rend combien ?",b:"61,60 §",m:["62,60 §","61,70 §"],c:"Vous achetez un litre d'huile."}
-  ];
+  /* LES QUESTIONS SONT TIRÉES À CHAQUE PARTIE (30 octobre 2026).
+     Avant, une liste fixe : la même à chaque partie, dans un autre ordre.
+     Les sommes restent les mêmes en francs et en euros (le calcul ne
+     dépend pas de la monnaie), comme avant.
+       Simple        : prix entier, de 1 à 39
+       Intermédiaire : prix « et cinquante », de 1,50 à 38,50
+       Difficile     : prix au dixième (sauf ,50), de 3,10 à 39,90
+     Le billet donné est plus grand que le prix, le plus souvent le plus
+     petit qui suffit. Les deux propositions fausses sont des erreurs de
+     caisse ordinaires : un de plus ou de moins, dix centimes de plus ou de
+     moins, cinquante centimes, une dizaine de moins.                     */
+  var PAR_PARTIE = 45;
+  var PETITES = ["Vous achetez trois baguettes.", "Vous achetez le pain et le lait.",
+    "Vous achetez le journal et un timbre.", "Vous achetez des allumettes et une bougie.",
+    "Vous achetez deux tablettes de chocolat.", "Vous achetez du fil et des boutons.",
+    "Vous achetez le café et le sucre.", "Vous achetez des timbres et des enveloppes.",
+    "Vous achetez un magazine et des bonbons.", "Vous achetez un savon et du dentifrice.",
+    "Vous achetez des piles et une ampoule.", "Vous achetez un pot de confiture.",
+    "Vous achetez une douzaine d'œufs.", "Vous achetez un kilo de pommes.",
+    "Vous achetez du beurre et un camembert.", "Vous achetez des cahiers et des crayons.",
+    "Vous achetez un paquet de lessive.", "Vous achetez un litre d'huile."];
+  var GRANDES = ["Vous faites le marché de la semaine.", "Vous achetez un rôti chez le boucher.",
+    "Vous achetez un poulet au marché.", "Vous achetez un gâteau pour dimanche.",
+    "Vous achetez de la laine pour un tricot.", "Vous achetez un bouquet de fleurs.",
+    "Vous achetez une paire de chaussons.", "Vous achetez un cadeau d'anniversaire.",
+    "Vous achetez une casserole.", "Vous achetez des fruits et des légumes pour la semaine.",
+    "Vous achetez du poisson et des crevettes.", "Vous achetez une bonne bouteille.",
+    "Vous achetez les courses du week-end.", "Vous achetez une nappe et des serviettes."];
+  var BILLETS = [10, 20, 50, 100];
+  function hasard(n) { return Math.floor(Math.random() * n); }
+  function somme(c) {                   // en centimes, avec l'espace fine avant le symbole
+    var e = Math.floor(c / 100), r = c % 100;
+    return (r ? e + ',' + (r < 10 ? '0' : '') + r : String(e)) + ' §';
+  }
+  function prix(niv) {                   // en centimes
+    if (niv === 'simple') return (1 + hasard(39)) * 100;
+    if (niv === 'moyen') return (1 + hasard(38)) * 100 + 50;
+    var d; do { d = 1 + hasard(9); } while (d === 5);
+    return (3 + hasard(37)) * 100 + d * 10;
+  }
+  function billet(p) {
+    var ok = BILLETS.filter(function (b) { return b * 100 > p; });
+    // le plus petit billet qui suffit deux fois sur trois, un plus gros sinon
+    return (ok.length > 1 && Math.random() < 1 / 3) ? ok[1 + hasard(ok.length - 1)] : ok[0];
+  }
+  var ECARTS = [100, -100, 10, -10, -1000, 50, -50];
+  function fausses(r) {
+    var possibles = ECARTS.filter(function (e) { return r + e > 0; });
+    for (var i = possibles.length - 1; i > 0; i--) { var j = hasard(i + 1); var t = possibles[i]; possibles[i] = possibles[j]; possibles[j] = t; }
+    return [somme(r + possibles[0]), somme(r + possibles[1])];
+  }
+  var dernierContexte = '';
+  function question(niv, deja) {
+    var p, b, cle, n = 0;
+    do { p = prix(niv); b = billet(p); cle = p + '/' + b; n++; } while (deja[cle] && n < 50);
+    deja[cle] = true;
+    var liste = p < 1000 ? PETITES : GRANDES, c;
+    do { c = liste[hasard(liste.length)]; } while (c === dernierContexte);
+    dernierContexte = c;
+    var r = b * 100 - p;
+    return { n: niv, q: 'Ça fait ' + somme(p) + '. Vous donnez ' + b + ' §. On vous rend combien ?',
+             b: somme(r), m: fausses(r), c: c };
+  }
+  function fabriquer(niv) {
+    var deja = {}, out = [];
+    for (var k = 0; k < PAR_PARTIE; k++) out.push(question(niv, deja));
+    return out;
+  }
 
   var ecrans = {
     accueil: document.getElementById('accueil'),
@@ -554,7 +485,7 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
   function finir() {
     annuler();
     if (typeof JDC !== 'undefined') {
-      JDC.enregistrer('monnaie', Math.min(3, niveau || 1), true, { variante: 'niveau' + niveau });
+      JDC.enregistrer('monnaie', { simple: 1, moyen: 2, difficile: 3 }[niveau] || 1, true, { variante: 'niveau' + niveau });
     }
     montrer('fin');
     confetti();
@@ -577,15 +508,9 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
   function u(t) { return String(t).split('§').join(unite); }
   var paquet = [], pose = 0;
 
-  // Brassé une fois puis distribué. Un tirage indépendant à chaque clic
-  // ramènerait la même question deux fois de suite, et ça se lit comme une
-  // panne de la machine ou de soi.
+  // Tiré une fois pour la partie, sans deux fois la même question.
   function brasser() {
-    paquet = Q.filter(function (x) { return x.n === niveau; });
-    for (var i = paquet.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var t = paquet[i]; paquet[i] = paquet[j]; paquet[j] = t;
-    }
+    paquet = fabriquer(niveau);
     pose = 0;
   }
 

@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- Google tag (gtag.js) -->
+<script>(function(){var m=/[?&]sans-mesure=([01])(&|#|$)/.exec(location.search),k='jdc-sans-mesure',s=!!(m&&m[1]==='1');try{if(m)s?localStorage.setItem(k,'1'):localStorage.removeItem(k);else s=localStorage.getItem(k)==='1'}catch(e){}if(s)window['ga-disable-G-NT825E8XDT']=true})();</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>La suite de sons · Les Jardins de Célestine</title>
+<meta name="description" content="Quelques sons à la suite, chaque image s'allume avec son son : les refaire dans le même ordre. Sans score et sans chrono. Gratuit, sans inscription.">
+<link rel="canonical" href="https://jardinsdecelestine.com/jeu_suite_sons">
+<!-- LIGNE À SUPPRIMER LE JOUR DE LA PUBLICATION : tant qu'elle est là, la
+     page n'est pas référencée. C'est voulu, elle n'est pas encore validée. -->
+<meta name="robots" content="index, follow">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "Game",
+ "name": "La suite de sons",
+ "description": "Quelques sons à la suite, chaque image s'allume avec son son : les refaire dans le même ordre. Sans score et sans chrono. Gratuit, sans inscription.",
+ "url": "https://jardinsdecelestine.com/jeu_suite_sons",
+ "inLanguage": "fr",
+ "isAccessibleForFree": true,
+ "publisher": {
+  "@type": "Organization",
+  "name": "Les Jardins de Célestine",
+  "url": "https://jardinsdecelestine.com"
+ }
+}
+</script>
+<style>
+:root{--cream:#f7f3ea;--parchment:#eee8d5;--ink:#1c1208;--sepia:#5c3d1e;--gold:#c8922a;--green:#2d6a4f;--shadow:rgba(28,18,8,0.13);}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{background:var(--parchment);
+  background-image:radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.08) 0%,transparent 55%),
+                   radial-gradient(ellipse at 85% 90%,rgba(45,106,79,.06) 0%,transparent 55%);
+  min-height:100vh;font-family:'Nunito',sans-serif;color:var(--ink);}
+.jdc-retour{display:block;text-align:center;padding:9px;font-size:.74rem;color:var(--sepia);opacity:.55;text-decoration:none;letter-spacing:.1em;text-transform:uppercase;}
+.jdc-retour:hover{opacity:1;}
+header{text-align:center;padding:16px 20px 10px;border-bottom:1px solid rgba(200,146,42,.2);}
+header h1{font-family:'Atkinson Hyperlegible',sans-serif;font-size:clamp(1.3rem,3vw,1.9rem);font-weight:700;color:var(--sepia);}
+header h1 em{color:var(--gold);font-style:normal;}
+header p{font-size:.74rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sepia);opacity:.55;margin-top:3px;}
+.divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:6px auto 0;}
+.ecran[hidden]{display:none !important;}
+
+/* ── Écran de départ : le motif des jeux du site (repris de La Géographie) ── */
+#accueil{max-width:620px;margin:0 auto;padding:20px 16px 8px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+.ob{background:var(--cream);border:2.5px solid rgba(200,146,42,.35);border-radius:8px;padding:10px 16px;cursor:pointer;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;color:var(--sepia);transition:all .2s;
+  box-shadow:0 2px 8px var(--shadow);min-height:44px;}
+.ob:hover{border-color:var(--gold);}
+.ob.active{background:var(--gold);color:#fff;border-color:var(--gold);box-shadow:0 4px 14px rgba(200,146,42,.4);}
+.consigne{font-size:1.12rem;line-height:1.55;color:var(--sepia);max-width:460px;}
+.petit{font-size:.9rem;color:var(--sepia);opacity:.7;}
+.lvl-card{display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--cream);border:2.5px solid rgba(200,146,42,.3);
+  border-radius:12px;padding:12px 14px;cursor:pointer;transition:all .2s;box-shadow:0 2px 8px var(--shadow);min-width:104px;text-align:center;}
+.lvl-card:hover{border-color:var(--gold);}
+.lvl-card.active{border-color:var(--gold);background:rgba(200,146,42,.07);box-shadow:0 4px 16px rgba(200,146,42,.2);}
+.lvl-card .lvl-ico{font-size:1.3rem;}
+.lvl-card .lvl-name{font-family:'Atkinson Hyperlegible',sans-serif;font-size:.95rem;font-weight:700;color:var(--sepia);}
+.lvl-card .lvl-ops{font-size:.75rem;color:var(--sepia);opacity:.65;max-width:104px;line-height:1.35;}
+#niveaux[hidden]{display:none;}
+.btn-start{padding:14px 42px;background:var(--gold);color:#fff;border:none;border-radius:8px;cursor:pointer;
+  font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:.05em;
+  box-shadow:0 5px 18px rgba(200,146,42,.4);transition:background .2s,transform .15s;min-height:48px;}
+.btn-start:hover{background:#b07820;transform:translateY(-2px);}
+.ob:focus-visible,.lvl-card:focus-visible,.btn-start:focus-visible,.carte-img:focus-visible{outline:3px solid var(--green);outline-offset:3px;}
+
+/* ── En jeu ── */
+.zone{max-width:640px;margin:0 auto;padding:14px 18px 46px;}
+.barre{display:flex;justify-content:space-between;align-items:center;padding:2px 2px 14px;}
+.lien{background:none;border:1.5px solid rgba(200,146,42,.45);border-radius:8px;padding:6px 13px;font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+.lien:hover{background:rgba(200,146,42,.1);}
+.scene{background:var(--cream);border:1.5px solid rgba(200,146,42,.35);border-radius:18px;padding:22px 20px 24px;box-shadow:0 8px 26px var(--shadow);text-align:center;}
+.son{display:block;width:100%;max-width:340px;margin:0 auto;background:var(--gold);color:#fff;border:none;border-radius:16px;padding:24px 18px;cursor:pointer;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.5rem;font-weight:700;box-shadow:0 6px 18px rgba(200,146,42,.35);}
+.son:hover{background:#b07820;}
+.son.petit-son{padding:14px 18px;font-size:1.2rem;}
+.son.petit-son .son-ico{font-size:1.8rem;}
+.son:focus-visible,.btn-or:focus-visible,.btn-vide:focus-visible,.lien:focus-visible{outline:3px solid var(--green);outline-offset:2px;}
+.son-ico{display:block;font-size:2.6rem;line-height:1.1;margin-bottom:6px;}
+.son.joue .son-ico{animation:onde 1.1s ease-in-out infinite;}
+@keyframes onde{0%,100%{transform:scale(1);}50%{transform:scale(1.14);}}
+.vignette{margin-top:22px;}
+.vignette[hidden]{display:none;}
+.vignette img{display:block;width:100%;max-width:300px;aspect-ratio:1/1;object-fit:cover;margin:0 auto;border-radius:12px;box-shadow:0 2px 10px rgba(28,18,8,.10);animation:apparait .5s ease both;}
+@keyframes apparait{from{opacity:0;}to{opacity:1;}}
+.actions{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap;}
+.actions [hidden]{display:none;}
+.btn-or{flex:1;min-width:150px;background:var(--gold);color:#fff;border:none;border-radius:11px;padding:14px 18px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;}
+.btn-or:hover{background:#b07820;}
+.btn-vide{flex:1;min-width:150px;background:none;border:1.5px solid rgba(200,146,42,.55);color:var(--sepia);border-radius:11px;padding:14px 18px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;}
+.btn-vide:hover{background:rgba(200,146,42,.1);}
+
+/* Les images à montrer : deux colonnes sur téléphone. */
+.grille{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px;align-items:start;}
+.grille.trois{grid-template-columns:repeat(3,1fr);}
+@media (max-width:520px){.grille.trois{grid-template-columns:repeat(2,1fr);}.grille.trois .carte-img:last-child{grid-column:1 / -1;justify-self:center;width:calc(50% - 6px);}}
+@media (min-width:600px){.grille.quatre{grid-template-columns:repeat(4,1fr);}}
+.carte-img{display:block;width:100%;background:#fff;border:3px solid rgba(200,146,42,.3);border-radius:14px;padding:5px;cursor:pointer;
+  font-family:'Atkinson Hyperlegible',sans-serif;color:var(--sepia);transition:opacity .3s,border-color .2s,transform .2s,box-shadow .2s;}
+.carte-img img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px;}
+.carte-img .nom{display:block;font-size:.95rem;font-weight:700;padding:6px 2px 2px;line-height:1.3;}
+.carte-img .nom[hidden]{display:none;}
+.carte-img:hover{border-color:var(--gold);}
+/* Une image écartée s'efface, sans croix ni rouge. */
+.carte-img.ecartee{opacity:.3;pointer-events:none;}
+.carte-img.trouvee{border-color:var(--green);box-shadow:0 0 0 3px rgba(45,106,79,.25);}
+.carte-img.retiree{opacity:.3;}
+/* La suite : l'image s'allume pendant que son son passe. */
+.carte-img.allume{border-color:var(--gold);transform:scale(1.05);box-shadow:0 0 0 5px rgba(200,146,42,.45),0 8px 20px rgba(200,146,42,.35);}
+.grille.attente .carte-img{cursor:default;}
+.etat{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.35rem;font-weight:700;color:var(--sepia);min-height:1.9rem;}
+.etat.ok{color:var(--green);}
+.points{display:flex;gap:8px;justify-content:center;margin-top:10px;min-height:16px;}
+.points span{width:14px;height:14px;border-radius:50%;border:2px solid var(--gold);}
+.points span.plein{background:var(--gold);}
+@media (prefers-reduced-motion:reduce){.son.joue .son-ico,.vignette img{animation:none;}.carte-img.allume{transform:none;}}
+
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(10px);color:#fff;background:var(--green);padding:11px 22px;border-radius:9px;font-size:.88rem;font-weight:700;opacity:0;transition:all .25s;z-index:300;pointer-events:none;font-family:'Atkinson Hyperlegible',sans-serif;max-width:90vw;text-align:center;}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* les confettis de la trame commune */
+.cp{position:fixed;top:-10px;width:9px;height:9px;border-radius:2px;z-index:60;pointer-events:none;animation:fall 2.6s ease-in forwards;}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+
+/* ── À propos et pied : le motif commun aux pages du site ── */
+.jdc-apropos{max-width:600px;margin:28px auto 8px;padding:0 20px;color:var(--sepia);}
+.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.7;padding:12px 0;border-top:1px solid rgba(200,146,42,.3);}
+.jdc-apropos>summary::-webkit-details-marker{display:none;}
+.jdc-apropos>summary::after{content:' \203A';display:inline-block;margin-left:6px;transition:transform .2s;}
+.jdc-apropos[open]>summary::after{transform:rotate(-90deg);}
+.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;}
+.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:var(--sepia);font-family:'Atkinson Hyperlegible',sans-serif;}
+.jdc-apropos p{margin:0 0 10px;}
+.jdc-apropos a{color:var(--green);}
+.jdc-legal{text-align:center;padding:16px 14px 22px;font-size:.78rem;line-height:1.6;color:var(--sepia);opacity:.6;}
+.jdc-legal a{color:inherit;}
+
+/* Bascule accueil ↔ jeu : en fin de feuille pour avoir la priorité. */
+body.en-jeu .jdc-apropos{display:none;}
+</style>
+</head>
+<body>
+
+<a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
+
+<header>
+  <h1 id="titre">La suite <em>de sons</em></h1>
+  <p>Écouter, puis refaire</p>
+  <div class="divider"></div>
+</header>
+
+<section class="ecran" id="accueil">
+  <p class="consigne">Écoutez quelques sons à la suite, puis refaites-les dans le même ordre.</p>
+  <div class="btn-row" id="niveaux">
+    <div class="lvl-card active" data-n="facile" tabindex="0" role="button">
+      <span class="lvl-ico">⭐</span><span class="lvl-name">Simple</span><span class="lvl-ops">trois images, jusqu'à quatre sons</span>
+    </div>
+    <div class="lvl-card" data-n="moyen" tabindex="0" role="button">
+      <span class="lvl-ico">⭐⭐</span><span class="lvl-name">Intermédiaire</span><span class="lvl-ops">quatre images, jusqu'à cinq sons</span>
+    </div>
+    <div class="lvl-card" data-n="difficile" tabindex="0" role="button">
+      <span class="lvl-ico">⭐⭐⭐</span><span class="lvl-name">Difficile</span><span class="lvl-ops">quatre images, jusqu'à six sons</span>
+    </div>
+  </div>
+  <p class="petit">Pensez à monter le son.</p>
+  <button type="button" class="btn-start" id="bJouer">▶ Commencer</button>
+</section>
+
+<!-- La suite : écouter, puis refaire dans le même ordre. -->
+<section class="ecran zone" id="suite" hidden>
+  <div class="barre">
+    <button class="lien" onclick="retourAccueil()">↩ Revenir au début</button>
+  </div>
+  <div class="scene">
+    <p class="etat" id="sEtat" aria-live="polite"></p>
+    <div class="points" id="sPoints" aria-hidden="true"></div>
+    <div class="grille" id="sGrille"></div>
+  </div>
+  <div class="actions">
+    <button class="btn-vide" id="sReecouter" onclick="reecouterSuite()">Réécouter</button>
+    <button class="btn-or" id="sPasser" onclick="passerSuite()">Passer →</button>
+  </div>
+</section>
+
+
+<section class="ecran zone" id="fin" hidden>
+  <div class="scene">
+    <div style="font-size:2.4rem;line-height:1">🎉</div>
+    <h2 style="font-family:'Atkinson Hyperlegible',sans-serif;color:var(--sepia);margin:10px 0 6px">Bravo !</h2>
+    <p id="finTexte" style="color:var(--sepia);margin:0 0 6px"></p>
+    <p style="color:var(--sepia);opacity:.8">Merci d'avoir tendu l'oreille.</p>
+    <div class="actions">
+      <button class="btn-or" id="bRejouer" onclick="rejouer()">Rejouer</button>
+      <button class="btn-vide" onclick="retourAccueil()">↩ Revenir au début</button>
+    </div>
+  </div>
+</section>
+
+<details class="jdc-apropos">
+<summary>À propos de ce jeu</summary>
+<div class="corps">
+<p><strong>La suite de sons</strong> · Le jeu fait entendre quelques sons à la suite, chaque image s'allume avec son son. On les refait ensuite dans le même ordre en montrant les images. Réussie, la suite s'allonge d'un son.</p>
+<p>Il n'y a pas de temps limite. Si on se trompe, rien n'est dit : on réécoute la même suite. On peut aussi la réécouter ou passer à la suivante quand on veut.</p>
+<h2>Ce que ce jeu n'est pas</h2>
+<p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre, ni score. Ce jeu est une activité de loisir, sans valeur médicale.</p>
+<h2>Les sons</h2>
+<p>Les sons viennent de <a href="https://bigsoundbank.com" target="_blank" rel="noopener">BigSoundBank</a>, une banque de sons libres de droits.</p>
+<h2>Qui le propose</h2>
+<p>Les Jardins de Célestine, un projet d'habitat partagé pour personnes atteintes de maladies neurodégénératives, mettent leurs jeux à disposition gratuitement. Le site ne vend rien. <a href="projet.html">Découvrir le projet</a>.</p>
+</div>
+</details>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+  <span aria-hidden="true"> · </span>
+  <a href="signaler.html?jeu=La%20suite%20de%20sons&amp;p=jeu_suite_sons" target="_blank" rel="noopener">Signaler un problème</a>
+</footer>
+
+<div id="toast"></div>
+
+<script src="jdc-parcours.js"></script>
+<script>
+// Une ligne par son. Fichiers : sons/son-NNNN.mp3 et images-sons/son-NNNN.jpg.
+// Le numéro est celui du son sur BigSoundBank.
+//   t : la famille (sert au niveau Difficile de « Quel est ce son ? »)
+//   c : début, en secondes, du court extrait joué dans « La suite »
+//   s : 1 si le son sert dans « La suite » (reconnaissable en moins de deux secondes)
+// Chat, chien et machine à coudre (30 octobre) : images de la banque du site.
+var SONS = [
+  {id:'0167', alt:'Un moulin à café',                   t:'maison',    c:0.1,  s:1},
+  {id:'2841', alt:'Une machine à écrire',               t:'autrefois', c:6.15, s:1},
+  {id:'3306', alt:'Un téléphone à cadran',              t:'maison',    c:0.2,  s:1},
+  {id:'2816', alt:'Un réveil mécanique',                t:'maison',    c:2.1,  s:1},
+  {id:'2828', alt:'Un projecteur 8 mm',                 t:'autrefois', c:6.0,  s:0},
+  {id:'0312', alt:'Une radio',                          t:'maison',    c:1.75, s:1},
+  {id:'0283', alt:'Un coq',                             t:'animaux',   c:0.1,  s:1},
+  {id:'0546', alt:'Une vache',                          t:'animaux',   c:5.45, s:1},
+  {id:'0276', alt:'Des canards',                        t:'animaux',   c:0.3,  s:1},
+  {id:'0143', alt:'Une poêle sur le feu',               t:'maison',    c:2.55, s:1},
+  {id:'3022', alt:'Un appareil photo',                  t:'autrefois', c:0.1,  s:1},
+  {id:'3009', alt:'Une locomotive à vapeur',            t:'dehors',    c:7.15, s:1},
+  {id:'0541', alt:'De la craie sur un tableau noir',    t:'autrefois', c:0.85, s:1},
+  {id:'0611', alt:'Un cheval au galop',                 t:'animaux',   c:3.75, s:1},
+  {id:'0267', alt:'La mer et des mouettes',             t:'dehors',    c:11.2, s:1},
+  {id:'0301', alt:'Une machine à café',                 t:'maison',    c:0.1,  s:0},
+  {id:'0410', alt:'Une cuillère dans une tasse de café',t:'maison',    c:0.25, s:1},
+  {id:'0135', alt:'Une cloche d\'église',               t:'dehors',    c:4.0,  s:1},
+  {id:'2730', alt:'Un marché en plein air',             t:'dehors',    c:2.45, s:0},
+  {id:'1567', alt:'Une horloge',                        t:'maison',    c:1.8,  s:0},
+  {id:'2857', alt:'Une cheminée',                       t:'maison',    c:0.1,  s:0},
+  {id:'2716', alt:'Un ruisseau dans un bois',           t:'dehors',    c:2.0,  s:0},
+  {id:'1890', alt:'Un chat',                            t:'animaux',   c:0.1,  s:1},
+  {id:'2954', alt:'Un chien',                           t:'animaux',   c:0.1,  s:1},
+  {id:'1116', alt:'Une machine à coudre',               t:'maison',    c:1.25, s:1}
+];
+
+/* Les sons qui se ressemblent trop pour être reconnus à coup sûr l'un à côté
+   de l'autre. Deux sons d'un même groupe ne sont jamais montrés ensemble :
+   ni comme bonne réponse et image fausse, ni dans la même suite. Ainsi une
+   seule image va avec le son, sans hésitation possible. */
+var PROCHES = [
+  ['0267', '2716', '0143', '2857', '0312'],          // eau, feu, friture, grésillement
+  ['2816', '1567'],                                  // tic-tac
+  ['2841', '1116', '2828', '3022', '3306', '0167'],  // mécaniques
+  ['0301', '0410', '0167'],                          // le café
+  ['3009', '0611']                                   // rythmes qui roulent
+];
+function proches(a, b){
+  for(var i = 0; i < PROCHES.length; i++){
+    if(PROCHES[i].indexOf(a) !== -1 && PROCHES[i].indexOf(b) !== -1) return true;
+  }
+  return false;
+}
+var PAR_ID = {};
+SONS.forEach(function(s){ PAR_ID[s.id] = s; });
+
+// Sert uniquement à la version d'essai en un seul fichier (fichiers intégrés).
+function src(chemin){ return (window.FICHIERS && window.FICHIERS[chemin]) || chemin; }
+function melange(a){
+  a = a.slice();
+  for(var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var x = a[i]; a[i] = a[j]; a[j] = x; }
+  return a;
+}
+function el(id){ return document.getElementById(id); }
+function toast(m){
+  var t = el('toast');
+  t.textContent = m; t.classList.add('on');
+  clearTimeout(t._t); t._t = setTimeout(function(){ t.classList.remove('on'); }, 2800);
+}
+
+
+/* ── Les écrans ── */
+var ECRANS = ['accueil', 'suite', 'fin'];
+function montrer(id){
+  ECRANS.forEach(function(x){ el(x).hidden = (x !== id); });
+  document.body.classList.toggle('en-jeu', id !== 'accueil');
+  window.scrollTo(0, 0);
+}
+
+/* ── L'écran de départ : le niveau ── */
+var niveau = 'facile';
+var NIVEAU_NUM = { facile: 1, moyen: 2, difficile: 3 };
+function choisirNiveau(n){
+  niveau = n;
+  [].forEach.call(document.querySelectorAll('#niveaux .lvl-card'), function(c){ c.classList.toggle('active', c.getAttribute('data-n') === n); });
+}
+[].forEach.call(document.querySelectorAll('#niveaux .lvl-card'), function(c){
+  c.addEventListener('click', function(){ choisirNiveau(c.getAttribute('data-n')); });
+  c.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); choisirNiveau(c.getAttribute('data-n')); } });
+});
+el('bJouer').addEventListener('click', function(){
+  contexteAudio();                 // le premier toucher ouvre le son (téléphones)
+  debutSuite();
+});
+
+/* ── Le son : Web Audio, pour couper un extrait
+      proprement et jouer sans nouveau toucher. Repli sur <audio> si absent. ── */
+var AC = null, tampons = {}, enCours = null, repli = null, jetonSon = 0;
+function contexteAudio(){
+  try{
+    if(!AC){ var C = window.AudioContext || window.webkitAudioContext; if(C) AC = new C(); }
+    if(AC && AC.state === 'suspended') AC.resume();
+  }catch(e){ AC = null; }
+  return AC;
+}
+function charger(id){
+  if(!tampons[id]){
+    tampons[id] = fetch(src('sons/son-' + id + '.mp3'))
+      .then(function(r){ return r.arrayBuffer(); })
+      .then(function(b){ return new Promise(function(ok, ko){ AC.decodeAudioData(b, ok, ko); }); });
+    tampons[id].catch(function(){ delete tampons[id]; });
+  }
+  return tampons[id];
+}
+function stopSon(){
+  jetonSon++;                      // un son encore en chargement ne partira pas
+  if(enCours){ try{ enCours.onended = null; enCours.stop(); }catch(e){} enCours = null; }
+  if(repli){ repli.pause(); repli = null; }
+}
+/* debut et duree en secondes ; sans duree, le son passe en entier. */
+function jouerSon(id, debut, duree, apres){
+  stopSon();
+  debut = debut || 0;
+  if(!contexteAudio()){
+    repli = new Audio(src('sons/son-' + id + '.mp3'));
+    var a = repli;
+    a.currentTime = debut;
+    a.play().catch(function(){});
+    if(duree){ setTimeout(function(){ if(repli === a){ a.pause(); repli = null; } }, duree * 1000); }
+    a.addEventListener('ended', function(){ if(apres) apres(); });
+    return;
+  }
+  var jeton = jetonSon;
+  charger(id).then(function(buf){
+    if(jeton !== jetonSon) return;
+    if(debut > buf.duration - 0.3) debut = 0;
+    var t = AC.currentTime + 0.02;
+    var d = duree ? Math.min(duree, buf.duration - debut) : buf.duration - debut;
+    var g = AC.createGain(), s = AC.createBufferSource();
+    s.buffer = buf; s.connect(g); g.connect(AC.destination);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(1, t + 0.05);
+    if(duree){
+      g.gain.setValueAtTime(1, t + Math.max(0.06, d - 0.2));
+      g.gain.linearRampToValueAtTime(0, t + d);
+    }
+    s.start(t, debut, d);
+    enCours = s;
+    s.onended = function(){ if(enCours === s){ enCours = null; if(apres) apres(); } };
+  }).catch(function(){
+    toast('Le son ne démarre pas. Vérifiez le volume de l’appareil.');
+  });
+}
+
+/* Une carte image. */
+function carteImage(s, avecNom){
+  var b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'carte-img';
+  b.setAttribute('data-id', s.id);
+  var im = document.createElement('img');
+  im.src = src('images-sons/son-' + s.id + '.jpg');
+  im.alt = s.alt;
+  b.appendChild(im);
+  if(avecNom){
+    var n = document.createElement('span');
+    n.className = 'nom'; n.hidden = true; n.textContent = s.alt;
+    b.appendChild(n);
+  }
+  return b;
+}
+
+/* La fin : la trame commune des jeux du site. */
+function confetti(){
+  var colors = ['#c9963a','#2a5c3f','#6b4c2a','#ede5d0','#c8922a'];
+  for (var i = 0; i < 36; i++) {
+    var e = document.createElement('div');
+    e.className = 'cp';
+    e.style.cssText = 'left:' + (10 + Math.random() * 80) + '%;'
+      + 'background:' + colors[0 | Math.random() * colors.length] + ';'
+      + 'animation-delay:' + (Math.random() * 0.8) + 's;'
+      + 'animation-duration:' + (2 + Math.random() * 1.5) + 's;'
+      + 'width:' + (6 + Math.random() * 8) + 'px;height:' + (6 + Math.random() * 8) + 'px;'
+      + 'border-radius:' + (Math.random() > 0.5 ? '50%' : '2px') + ';';
+    document.body.appendChild(e);
+    (function (x) { setTimeout(function () { x.remove(); }, 4000); })(e);
+  }
+}
+function finir(texte, debutPartie, erreurs){
+  stopSon();
+  var sec = Math.floor((Date.now() - debutPartie) / 1000);
+  if(typeof JDC !== 'undefined'){
+    try { JDC.enregistrer('suitesons', NIVEAU_NUM[niveau] || 1, true, { duree: sec, erreurs: erreurs, variante: niveau }); } catch(e){}
+  }
+  el('finTexte').textContent = texte;
+  montrer('fin');
+  confetti();
+}
+function rejouer(){
+  contexteAudio();
+  debutSuite();
+}
+function retourAccueil(){
+  arreterSuite();
+  montrer('accueil');
+}
+
+/* ════════ La suite ════════
+   Quelques images restent à l'écran toute la partie. Le jeu fait entendre
+   une suite de leurs sons (chaque image s'allume avec son son), puis on la
+   refait dans le même ordre. Réussie, la suite s'allonge d'un son. Pas de
+   temps limite. Si on se trompe, rien n'est dit : on réécoute la même suite. */
+var LONGUEURS = { facile: [2, 3, 4], moyen: [2, 3, 4, 5], difficile: [3, 4, 5, 6] };
+var NB_IMAGES = { facile: 3, moyen: 4, difficile: 4 };
+var EXTRAIT = 1.8, PAUSE = 0.45, EXTRAIT_TOUCHE = 1.0;
+var S = { images: [], seq: [], manche: 0, saisie: [], bloque: true, jeton: 0, minuteur: null, erreurs: 0, debut: 0 };
+
+function imagesSuite(k){
+  var pool = melange(SONS.filter(function(s){ return s.s; }));
+  var pris = [];
+  // d'abord des familles différentes, puis on complète
+  [true, false].forEach(function(familleNeuve){
+    pool.forEach(function(x){
+      if(pris.length >= k || pris.indexOf(x) !== -1) return;
+      if(pris.some(function(p){ return proches(p.id, x.id); })) return;
+      if(familleNeuve && pris.some(function(p){ return p.t === x.t; })) return;
+      pris.push(x);
+    });
+  });
+  return pris;
+}
+function allonger(seq, n){
+  seq = seq.slice();
+  while(seq.length < n){
+    var dernier = seq[seq.length - 1];
+    var choix = S.images.filter(function(x){ return x.id !== dernier; });   // jamais deux fois de suite le même son
+    seq.push(choix[Math.floor(Math.random() * choix.length)].id);
+  }
+  return seq;
+}
+function debutSuite(){
+  arreterSuite();
+  S.images = imagesSuite(NB_IMAGES[niveau]);
+  S.manche = 0; S.erreurs = 0; S.debut = Date.now();
+  S.seq = allonger([], LONGUEURS[niveau][0]);
+  var g = el('sGrille');
+  g.innerHTML = '';
+  g.className = 'grille attente ' + (S.images.length === 3 ? 'trois' : 'quatre');
+  S.images.forEach(function(x){
+    var b = carteImage(x, false);
+    b.addEventListener('click', function(){ toucherSuite(b, x); });
+    g.appendChild(b);
+  });
+  montrer('suite');
+  etat('Un instant…');
+  var jeton = ++S.jeton;
+  var prets = contexteAudio() ? Promise.all(S.images.map(function(x){ return charger(x.id); })) : Promise.resolve();
+  prets.catch(function(){}).then(function(){ if(jeton === S.jeton) manche(); });
+}
+function etat(texte, ok){
+  var e = el('sEtat');
+  e.textContent = texte;
+  e.classList.toggle('ok', !!ok);
+}
+function points(nbPleins){
+  var p = el('sPoints');
+  p.innerHTML = '';
+  for(var i = 0; i < S.seq.length; i++){
+    var d = document.createElement('span');
+    if(i < nbPleins) d.className = 'plein';
+    p.appendChild(d);
+  }
+}
+function carteDe(id){ return el('sGrille').querySelector('[data-id="' + id + '"]'); }
+function manche(){
+  S.saisie = [];
+  jouerSuite();
+}
+function jouerSuite(){
+  clearTimeout(S.minuteur);
+  stopSon();
+  S.bloque = true;
+  S.saisie = [];
+  el('sGrille').classList.add('attente');
+  [].forEach.call(el('sGrille').children, function(c){ c.classList.remove('allume'); });
+  etat('Écoutez…');
+  points(0);
+  var jeton = ++S.jeton;
+  function etape(k){
+    if(jeton !== S.jeton) return;
+    if(k >= S.seq.length){
+      S.bloque = false;
+      el('sGrille').classList.remove('attente');
+      etat('À vous.');
+      points(0);
+      return;
+    }
+    var s = PAR_ID[S.seq[k]], c = carteDe(s.id);
+    c.classList.add('allume');
+    points(k + 1);
+    jouerSon(s.id, s.c, EXTRAIT);
+    S.minuteur = setTimeout(function(){
+      if(jeton !== S.jeton) return;
+      c.classList.remove('allume');
+      S.minuteur = setTimeout(function(){ etape(k + 1); }, PAUSE * 1000);
+    }, EXTRAIT * 1000);
+  }
+  S.minuteur = setTimeout(function(){ etape(0); }, 600);
+}
+function toucherSuite(b, x){
+  if(S.bloque) return;
+  b.classList.add('allume');
+  setTimeout(function(){ b.classList.remove('allume'); }, 350);
+  jouerSon(x.id, x.c, EXTRAIT_TOUCHE);
+  var attendu = S.seq[S.saisie.length];
+  if(x.id === attendu){
+    S.saisie.push(x.id);
+    points(S.saisie.length);
+    if(S.saisie.length === S.seq.length){
+      S.bloque = true;
+      el('sGrille').classList.add('attente');
+      etat('Oui, c’est bien ça.', true);
+      var jeton = ++S.jeton;
+      S.minuteur = setTimeout(function(){ if(jeton === S.jeton) mancheSuivante(); }, 3000);
+    }
+  } else {
+    S.erreurs++;
+    S.bloque = true;
+    el('sGrille').classList.add('attente');
+    var j = ++S.jeton;
+    S.minuteur = setTimeout(function(){
+      if(j !== S.jeton) return;
+      etat('Écoutez encore.');
+      S.minuteur = setTimeout(function(){ if(j === S.jeton) jouerSuite(); }, 1200);
+    }, 1000);
+  }
+}
+function mancheSuivante(){
+  S.manche++;
+  var L = LONGUEURS[niveau];
+  if(S.manche >= L.length){ finir('Toutes les suites sont faites.', S.debut, S.erreurs); return; }
+  S.seq = allonger(S.seq, L[S.manche]);
+  manche();
+}
+function reecouterSuite(){
+  if(el('suite').hidden) return;
+  jouerSuite();
+}
+function passerSuite(){
+  S.jeton++;
+  clearTimeout(S.minuteur);
+  stopSon();
+  mancheSuivante();
+}
+function arreterSuite(){
+  S.jeton++;
+  clearTimeout(S.minuteur);
+  stopSon();
+}
+
+
+window.addEventListener('pagehide', function(){ stopSon(); });
+</script>
+</body>
+</html>

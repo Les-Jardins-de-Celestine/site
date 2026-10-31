@@ -839,7 +839,8 @@ function startGame(){
   var pool = THEME_POOLS[G.theme].slice();
   // Mélanger
   for(var i=pool.length-1;i>0;i--){ var j=0|Math.random()*(i+1);var t=pool[i];pool[i]=pool[j];pool[j]=t; }
-  G.pool = pool.slice(0,G.total);
+  G.pool = pool.slice(0,10);
+  G.total = G.pool.length;  /* Animaux et Cuisine ont moins de 10 questions */
   G.qIdx = 0; G.score = 0; G.errors = 0; G.answered = false;
 
   document.getElementById('startScreen').style.display='none';

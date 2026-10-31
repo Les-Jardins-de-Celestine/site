@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- Google tag (gtag.js) -->
+<script>(function(){var m=/[?&]sans-mesure=([01])(&|#|$)/.exec(location.search),k='jdc-sans-mesure',s=!!(m&&m[1]==='1');try{if(m)s?localStorage.setItem(k,'1'):localStorage.removeItem(k);else s=localStorage.getItem(k)==='1'}catch(e){}if(s)window['ga-disable-G-NT825E8XDT']=true})();</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT825E8XDT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-NT825E8XDT");
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>De mot en mot · jeu gratuit · Les Jardins de Célestine</title>
+<meta name="robots" content="index, follow">
+<meta name="description" content="Changer une seule lettre pour faire un nouveau mot, et continuer tant qu'on en a envie, seul ou chacun son tour. Jeu de langage gratuit, sans inscription.">
+<link rel="canonical" href="https://jardinsdecelestine.com/jeu_mot_en_mot">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="jdc-parcours.js"></script>
+<style>
+/* Charte des jeux des Jardins de Célestine (une seule apparence, claire, comme le site).
+   Mise en page : une colonne centrée, le mot en grandes cases, l'ardoise juste dessous. */
+:root{
+  --cream:#f7f3ea; --parchment:#eee8d5; --ink:#1c1208; --sepia:#5c3d1e;
+  --gold:#c8922a; --gold-dark:#a87418; --green:#2d6a4f; --green-soft:#e9f2ec;
+  --brown:#6b4c2a; --shadow:rgba(28,18,8,.13);
+  --f-titre:'Atkinson Hyperlegible','Segoe UI',Arial,sans-serif;
+  --f-texte:'Nunito','Segoe UI',Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{
+  margin:0;background:var(--parchment);color:var(--ink);font-family:var(--f-texte);
+  background-image:radial-gradient(ellipse at 15% 10%,rgba(200,146,42,.08) 0%,transparent 55%),
+    radial-gradient(ellipse at 85% 90%,rgba(45,106,79,.06) 0%,transparent 55%);
+  min-height:100vh;
+}
+button{font-family:var(--f-titre);}
+button:focus-visible,summary:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px;}
+
+.jdc-retour{display:block;text-align:center;padding:8px;font-size:.74rem;color:var(--sepia);opacity:.6;text-decoration:none;letter-spacing:.1em;text-transform:uppercase;}
+.jdc-retour:hover{opacity:1;}
+header{text-align:center;padding:10px 16px 10px;border-bottom:1px solid rgba(200,146,42,.2);}
+header h1{font-family:var(--f-titre);font-size:clamp(1.4rem,4vw,1.9rem);font-weight:700;color:var(--sepia);margin:4px 0 0;text-wrap:balance;}
+header h1 em{color:var(--gold);font-style:normal;}
+header p{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sepia);opacity:.6;margin:3px 0 0;}
+.divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:6px auto 0;}
+
+/* ── Accueil ── */
+#menu{max-width:560px;margin:26px auto 10px;padding:0 16px;}
+.hint{text-align:center;font-size:1rem;line-height:1.5;color:var(--sepia);margin:0 0 6px;}
+.exemple{text-align:center;font-family:var(--f-titre);font-size:1rem;color:var(--green);margin:0 0 20px;}
+.h-card{display:block;width:100%;text-align:left;background:var(--cream);border:1.5px solid rgba(200,146,42,.35);border-radius:14px;padding:16px 22px;margin:0 0 12px;cursor:pointer;color:var(--sepia);transition:transform .2s,box-shadow .2s,border-color .2s;}
+.h-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 22px var(--shadow);}
+.h-card .ht{display:block;font-size:1.1rem;font-weight:700;}
+.h-card .hs{display:block;font-family:var(--f-texte);font-size:.86rem;opacity:.7;margin-top:2px;letter-spacing:.12em;}
+.plusieurs{margin-top:18px;background:var(--cream);border:1.5px dashed rgba(200,146,42,.45);border-radius:14px;padding:4px 18px;}
+.plusieurs summary{cursor:pointer;font-family:var(--f-titre);font-weight:700;color:var(--sepia);padding:10px 0;font-size:1rem;}
+.plusieurs p{font-size:.92rem;color:var(--sepia);margin:0 0 10px;}
+.prenoms{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-bottom:14px;}
+.prenom{width:100%;min-width:0;font:inherit;font-size:1rem;padding:10px 12px;border:1.5px solid rgba(200,146,42,.45);border-radius:10px;background:#fff;color:var(--ink);}
+
+/* ── Jeu ── */
+#game{max-width:640px;margin:0 auto;padding:12px 16px 30px;min-height:calc(100vh - 100px);}
+#hud{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:0 0 10px;}
+#hud #stopBtn{margin-left:auto;}
+.btn-pt{background:none;border:1.5px solid rgba(200,146,42,.45);border-radius:8px;padding:7px 12px;font-size:.8rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+.btn-pt:hover{background:rgba(200,146,42,.1);}
+#tour{text-align:center;font-family:var(--f-titre);font-weight:700;font-size:1.08rem;color:var(--green);margin:4px 0 2px;}
+.consigne{text-align:center;font-size:1.02rem;color:var(--sepia);margin:6px 0 12px;}
+#mot,#vMot{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,78px));gap:8px;justify-content:center;}
+.case{aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:#fff;border:2px solid rgba(200,146,42,.55);border-radius:12px;font-family:var(--f-titre);font-weight:700;font-size:clamp(1.6rem,7vw,2.4rem);color:var(--ink);box-shadow:0 4px 12px var(--shadow);cursor:pointer;padding:0;transition:transform .15s,border-color .15s,background .15s;}
+.case:hover{border-color:var(--gold);}
+.case.choisie{background:#fbecd0;border-color:var(--gold);border-width:3px;transform:translateY(-4px);}
+.case.peut{border-color:var(--green);border-style:dashed;border-width:3px;}
+.case.pop{animation:pop .45s ease;}
+.case.petite{cursor:default;font-size:clamp(1.2rem,5vw,1.7rem);box-shadow:none;}
+.case.neuve{background:var(--green-soft);border-color:var(--green);}
+@keyframes pop{0%{transform:scale(.8);background:var(--green-soft)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+
+.panneau{background:var(--cream);border:1.5px solid rgba(200,146,42,.4);border-radius:14px;padding:14px 16px 16px;margin:16px auto 0;max-width:420px;text-align:center;box-shadow:0 6px 20px var(--shadow);}
+.panneau p{margin:0 0 10px;font-size:1rem;line-height:1.45;color:var(--sepia);}
+#pad{display:block;width:min(300px,100%);aspect-ratio:1;margin:0 auto;background:#fff;border:2px dashed rgba(200,146,42,.6);border-radius:14px;touch-action:none;cursor:crosshair;}
+.rangee{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px;}
+.btn-g2{background:var(--gold-dark);color:#fff;border:none;border-radius:10px;padding:12px 20px;font-size:1rem;font-weight:700;cursor:pointer;}
+.btn-g2:hover{background:#8f6212;}
+.btn-g2:disabled{opacity:.45;cursor:default;}
+.btn-o2{background:var(--cream);border:1.5px solid rgba(200,146,42,.55);color:var(--sepia);border-radius:10px;padding:11px 18px;font-size:.98rem;font-weight:700;cursor:pointer;}
+.btn-o2:hover{background:rgba(200,146,42,.12);}
+#vLu{font-size:1.05rem;}
+.lu{display:inline-block;min-width:1.6em;font-family:var(--f-titre);font-size:1.6rem;color:var(--green);}
+#vMot{margin:4px 0 12px;grid-template-columns:repeat(var(--n,4),minmax(0,52px));}
+#vTxt{font-weight:700;}
+#vAutres{font-size:.95rem;color:var(--sepia);margin:4px 0 6px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+.case-choix{width:46px;height:46px;border-radius:10px;border:2px solid rgba(200,146,42,.55);background:#fff;font-size:1.3rem;font-weight:700;color:var(--ink);cursor:pointer;}
+.case-choix:hover{border-color:var(--gold);}
+.aides{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0 6px;}
+#pouceTxt{text-align:center;color:var(--green);font-weight:700;margin:4px 0;min-height:1.2em;}
+#pouceMots{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:6px 0 4px;}
+.mot-choix{background:#fff;border:2px solid var(--green);border-radius:10px;padding:10px 18px;font-size:1.1rem;font-weight:700;color:var(--green);cursor:pointer;}
+.mot-choix:hover{background:var(--green-soft);}
+
+.zone-titre{font-family:var(--f-titre);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--sepia);opacity:.7;margin:22px 0 8px;text-align:center;}
+.chaine{display:flex;flex-wrap:wrap;gap:6px 8px;justify-content:center;align-items:center;}
+.maillon{display:inline-flex;flex-direction:column;align-items:center;background:var(--cream);border:1.5px solid rgba(45,106,79,.35);border-radius:10px;padding:6px 12px;font-family:var(--f-titre);font-weight:700;font-size:1.05rem;color:var(--ink);}
+.maillon small{font-family:var(--f-texte);font-weight:600;font-size:.72rem;color:var(--sepia);opacity:.8;}
+.maillon.neuf{background:var(--green-soft);border-color:var(--green);animation:pop .45s ease;}
+.fleche{color:var(--gold);font-weight:700;}
+
+#doneBox{text-align:center;margin-top:16px;}
+#doneBox .msg{font-family:var(--f-titre);font-size:1.6rem;font-weight:700;color:var(--green);margin:6px 0 4px;}
+#doneBox .sous{color:var(--sepia);margin:0 0 14px;}
+#chaineFin .maillon{font-size:1.15rem;}
+
+#toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(10px);max-width:calc(100% - 32px);text-align:center;color:#fff;background:var(--green);padding:10px 20px;border-radius:8px;font-family:var(--f-titre);font-size:.9rem;font-weight:700;opacity:0;transition:opacity .25s,transform .25s;z-index:300;pointer-events:none;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.confetti{position:fixed;top:-14px;width:10px;height:14px;z-index:70;pointer-events:none;animation:cfall linear forwards;}
+@keyframes cfall{to{transform:translateY(105vh) rotate(720deg);opacity:.9;}}
+
+@media (max-width:420px){ .prenoms{grid-template-columns:1fr;} #mot{gap:6px;} }
+@media (prefers-reduced-motion:reduce){ *{animation:none!important;transition:none!important;} }
+/* Bascule accueil / jeu : en fin de feuille pour avoir la priorité. */
+.jdc-legal{text-align:center;padding:16px 14px 22px;font-size:.78rem;line-height:1.6;color:#5c3d1e;opacity:.6;font-family:'Nunito',sans-serif;}
+.jdc-legal a{color:inherit;}
+@media print{.jdc-retour,.jdc-legal{display:none;}}
+[hidden]{display:none!important;}
+</style>
+<style id="jdc-apropos-style">
+/* Bloc « À propos » : replié par défaut, lu en entier par les moteurs.
+   Couleurs écrites en dur · chaque jeu a ses propres variables CSS. */
+.jdc-apropos{max-width:680px;margin:28px auto 8px;padding:0 16px;
+  font-family:'Nunito',system-ui,-apple-system,sans-serif;color:#5c3d1e;}
+.jdc-apropos>summary{cursor:pointer;list-style:none;font-size:.86rem;
+  letter-spacing:.02em;opacity:.62;padding:9px 0;text-align:center;
+  border-top:1px solid rgba(92,61,30,.16);}
+.jdc-apropos>summary::-webkit-details-marker{display:none}
+.jdc-apropos>summary::after{content:' \203A';display:inline-block;
+  transform:rotate(90deg);margin-left:5px;opacity:.7}
+.jdc-apropos[open]>summary::after{transform:rotate(-90deg)}
+.jdc-apropos>summary:hover,.jdc-apropos>summary:focus-visible{opacity:.95}
+.jdc-apropos .corps{font-size:.9rem;line-height:1.65;padding:6px 2px 18px;
+  text-align:left;opacity:.9}
+.jdc-apropos h2{font-size:.95rem;margin:16px 0 5px;color:#5c3d1e;
+  font-weight:700}
+.jdc-apropos p{margin:0 0 10px}
+.jdc-apropos ul{margin:0 0 10px;padding-left:20px}
+.jdc-apropos li{margin-bottom:5px}
+.jdc-apropos a{color:#2d6a4f}
+.hc .jdc-apropos{color:#000}
+.hc .jdc-apropos h2{color:#000}
+.hc .jdc-apropos>summary{opacity:1;border-top-color:#000}
+</style>
+<style id="sans-stats">/* Le panneau de relevés est retiré : le bouton est parti, et cette règle interdit à quoi que ce soit de le rouvrir. Le carnet de parcours, lui, est ailleurs et intact. */
+#statsPanel,#statsBtn,#statsBtnWin{display:none!important}</style>
+<style id="feuille-papier">
+/* « Imprimer cette partie » : la feuille est construite à la demande par
+   imprimerPartie(), cachée à l'écran, et seule visible à l'impression
+   quand la page porte la classe .imprime (posée par le bouton). */
+#feuille{display:none}
+.imp-btn{font-family:'Nunito',sans-serif;font-weight:700;cursor:pointer}
+@media print{
+  @page{size:A4 portrait;margin:11mm 14mm}
+  body.imprime{background:#fff!important;color:#000!important;padding:0!important;
+    margin:0!important;min-height:0!important;display:block!important}
+  body.imprime>*:not(#feuille){display:none!important}
+  body.imprime #feuille{display:block}
+  #feuille{font-family:'Atkinson Hyperlegible','Nunito',Arial,sans-serif;color:#000;
+    font-size:15pt;line-height:1.35;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #feuille .f-page{break-after:page;page-break-after:always}
+  #feuille .f-page:last-child{break-after:auto;page-break-after:auto}
+  #feuille .f-entete{display:flex;align-items:center;gap:3mm;
+    border-bottom:.3mm solid #999;padding-bottom:2mm;margin:0 0 4mm}
+  #feuille .f-entete img{width:13mm;height:13mm;display:block}
+  #feuille .f-marque{font-size:16pt;font-weight:700;line-height:1.1}
+  #feuille .f-titre{font-size:24pt;font-weight:700;margin:0 0 2mm;line-height:1.15}
+  #feuille .f-consigne{font-size:15pt;margin:0 0 6mm}
+  #feuille .f-pied{border-top:.3mm solid #999;padding-top:2mm;margin:4mm 0 0;line-height:1.3}
+  #feuille .f-pied .f-site{font-size:12pt;font-weight:700;margin:0}
+  #feuille .f-pied .f-jeu{font-size:10.5pt;color:#333;margin:0}
+  /* blocs communs aux jeux en séries */
+  #feuille .f-num{font-size:15pt;font-weight:700}
+  #feuille .f-mot{border:.5mm solid #000;border-radius:3mm;padding:3mm 1mm;
+    text-align:center;font-size:17pt;font-weight:700;min-height:17mm;display:flex;
+    align-items:center;justify-content:center;white-space:normal;line-height:1.15}
+  #feuille .f-mot.f-long{font-size:15pt}
+  #feuille .f-boites{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));
+    gap:3.5mm;margin:0 0 7mm}
+  #feuille .f-rep{list-style:none;padding:0;margin:0}
+  #feuille .f-rep li{font-size:15pt;margin:0 0 5mm}
+  #feuille .f-lignes{list-style:none;padding:0;margin:0}
+  #feuille .f-lignes li{display:flex;align-items:flex-end;gap:3mm;height:14mm;
+    font-size:15pt;font-weight:700}
+  #feuille .f-lignes li::after{content:'';flex:1;border-bottom:.4mm solid #000;margin-bottom:1.6mm}
+  #feuille .f-bloc{break-inside:avoid;page-break-inside:avoid}
+}
+</style>
+<style id="feuille-papier-motenmot">
+@media print{
+  #feuille .f-dejas{font-size:13pt;margin:0 0 5mm;line-height:1.4}
+  #feuille .f-echelle{display:flex;flex-direction:column;align-items:center;gap:3.2mm;margin:1mm 0 0}
+  #feuille .f-rang{display:flex;gap:2.5mm}
+  #feuille .f-cv{width:15mm;height:15mm;border:.4mm solid #777;border-bottom:.7mm solid #000;
+    display:flex;align-items:center;justify-content:center;font-size:20pt;font-weight:700}
+  #feuille .f-depart .f-cv{border:.6mm solid #000;background:#eee}
+  #feuille .f-sous{font-size:15pt;font-weight:700;margin:0 0 3mm}
+  #feuille .f-chemin{font-size:15pt;line-height:1.6;margin:0 0 4mm}
+}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Game",
+  "name": "De mot en mot",
+  "url": "https://jardinsdecelestine.com/jeu_mot_en_mot",
+  "description": "Changer une seule lettre pour faire un nouveau mot, et continuer tant qu'on en a envie, seul ou chacun son tour. Jeu de langage gratuit, sans inscription.",
+  "inLanguage": "fr",
+  "isAccessibleForFree": true,
+  "genre": "Jeu de langage",
+  "audience": {
+    "@type": "Audience",
+    "audienceType": "Personnes âgées, aidants, orthophonistes, accueils de jour"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Les Jardins de Célestine",
+    "url": "https://jardinsdecelestine.com"
+  }
+}
+</script>
+</head>
+<body>
+
+<a class="jdc-retour" href="jeux.html">← Retour aux jeux</a>
+<header>
+  <h1 id="mainTitle">De mot <em>en mot</em></h1>
+  <p>Une lettre change, un autre mot arrive</p>
+  <div class="divider"></div>
+</header>
+
+<main id="menu">
+  <p class="hint">On change une seule lettre pour faire un nouveau mot, et on continue tant qu’on en a envie.</p>
+  <p class="exemple">pain → main → mais → mois → bois</p>
+  <button type="button" class="h-card" data-n="4"><span class="ht">Des mots de 4 lettres</span><span class="hs">A B C D</span></button>
+  <button type="button" class="h-card" data-n="5"><span class="ht">Des mots de 5 lettres</span><span class="hs">A B C D E</span></button>
+  <button type="button" class="h-card" data-n="6"><span class="ht">Des mots de 6 lettres</span><span class="hs">A B C D E F</span></button>
+  <details class="plusieurs">
+    <summary>Jouer à plusieurs</summary>
+    <p>Écrivez vos prénoms : le jeu dira à qui c’est le tour.</p>
+    <div class="prenoms">
+      <input class="prenom" id="prenom1" type="text" autocomplete="off" placeholder="Prénom" aria-label="Prénom du premier joueur">
+      <input class="prenom" id="prenom2" type="text" autocomplete="off" placeholder="Prénom" aria-label="Prénom du deuxième joueur">
+      <input class="prenom" id="prenom3" type="text" autocomplete="off" placeholder="Prénom" aria-label="Prénom du troisième joueur">
+      <input class="prenom" id="prenom4" type="text" autocomplete="off" placeholder="Prénom" aria-label="Prénom du quatrième joueur">
+    </div>
+  </details>
+</main>
+
+<main id="game" hidden>
+  <div id="hud">
+    <button type="button" class="btn-pt" id="backBtn">↩ Revenir au début</button>
+    <button type="button" class="btn-pt imp-btn" id="impBtn"><span aria-hidden="true">🖨</span> Imprimer</button>
+    <button type="button" class="btn-pt" id="stopBtn">On s’arrête là</button>
+  </div>
+  <div id="jeuZone">
+    <p id="tour" hidden></p>
+    <p class="consigne" id="consigne">Choisissez la lettre à changer.</p>
+    <div id="mot" role="group" aria-label="Le mot à changer"></div>
+
+    <section class="panneau" id="ardoise" hidden>
+      <p id="ardoiseTxt"></p>
+      <canvas id="pad" aria-label="Zone pour dessiner la lettre"></canvas>
+      <div class="rangee">
+        <button type="button" class="btn-o2" id="effacer">Effacer</button>
+        <button type="button" class="btn-g2" id="lireBtn" disabled>C’est ma lettre</button>
+      </div>
+    </section>
+
+    <section class="panneau" id="verdict" hidden aria-live="polite">
+      <p id="vLu"></p>
+      <div id="vMot"></div>
+      <p id="vTxt"></p>
+      <div id="vAutres" hidden></div>
+      <div class="rangee" id="vBtns"></div>
+    </section>
+
+    <div class="aides">
+      <button type="button" class="btn-o2" id="pouce">Un coup de pouce</button>
+      <button type="button" class="btn-o2" id="annuler" hidden>↶ Revenir au mot d’avant</button>
+    </div>
+    <p id="pouceTxt" aria-live="polite"></p>
+    <div id="pouceMots" hidden></div>
+
+    <h2 class="zone-titre">Les mots trouvés</h2>
+    <div class="chaine" id="chaine"></div>
+  </div>
+
+  <div id="doneBox" hidden>
+    <p class="msg">🎉 Bravo&nbsp;!</p>
+    <p class="sous">Voici votre chemin de mots&nbsp;:</p>
+    <div class="chaine" id="chaineFin"></div>
+    <div class="rangee" style="margin-top:18px">
+      <button type="button" class="btn-g2" id="encore">Un autre mot</button>
+      <button type="button" class="btn-o2 imp-btn" id="impBtn2"><span aria-hidden="true">🖨</span> Imprimer cette partie</button>
+      <button type="button" class="btn-o2" id="finMenu">↩ Revenir au début</button>
+    </div>
+  </div>
+</main>
+
+<div id="toast" role="status"></div>
+
+<details class="jdc-apropos">
+<summary>À propos de ce jeu</summary>
+<div class="corps">
+<p><strong>De mot en mot</strong> · On part d’un mot, on change une seule lettre, et un autre mot apparaît : pain, main, mais, mois, bois… Seul ou chacun son tour, on s’arrête quand on veut. Les mots trouvés s’affichent les uns derrière les autres.</p>
+<h2>Comment on joue</h2>
+<p>On touche la lettre à changer. Sur un téléphone ou une tablette, on dessine la nouvelle lettre avec le doigt, en majuscule ; sur un ordinateur, on la tape au clavier ou on la dessine à la souris. Les accents ne comptent pas : « mère » s’écrit MERE. Le coup de pouce montre d’abord les lettres qui peuvent changer, puis propose quelques mots. On peut imprimer la partie pour la continuer sur papier.</p>
+<h2>D’où viennent les mots</h2>
+<p>De la base lexicale Lexique (Boris New, Christophe Pallier et coll., <a href="http://www.lexique.org" target="_blank" rel="noopener">lexique.org</a>), sous licence CC BY-SA 4.0. Les mots proposés en coup de pouce sont des mots courants. La lecture des lettres dessinées suit la méthode $P de l’université de Washington.</p>
+<h2>Ce que ce jeu n’est pas</h2>
+<p>Il n’y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne se compte et rien ne se ferme : on peut recommencer autant de fois qu’on veut. Ce jeu est une activité de loisir. Ce n’est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
+<h2>Qui le propose</h2>
+<p>Les Jardins de Célestine, un projet d’habitat partagé pour personnes atteintes de maladies neurodégénératives, mettent leurs jeux à disposition gratuitement. Le site ne vend rien. <a href="projet.html">Découvrir le projet</a> · <a href="jeux.html">Voir tous les jeux</a>.</p>
+</div>
+</details>
+
+<footer class="jdc-legal">
+  <a href="mentions-legales.html">Mentions légales</a>
+  <span aria-hidden="true"> · </span>
+  <span>Les jeux sont des activités de loisir, sans valeur médicale.</span>
+  <span aria-hidden="true"> · </span>
+  <a href="signaler.html?jeu=De%20mot%20en%20mot&amp;p=jeu_mot_en_mot" target="_blank" rel="noopener">Signaler un problème</a>
+</footer>
+<div id="feuille" aria-hidden="true"></div>
+
+<script id="impression">
+
+function feuilleEl(tag, cls, txt){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt != null) e.textContent = txt;
+  return e;
+}
+function feuilleOuvre(titre, consigne, adresse){
+  var p = feuilleEl('section', 'f-page');
+  var e = feuilleEl('div', 'f-entete');
+  var im = document.createElement('img');
+  im.src = 'logo-fleur.png'; im.alt = ''; im.width = 96; im.height = 96;
+  e.appendChild(im);
+  e.appendChild(feuilleEl('span', 'f-marque', 'Les Jardins de Célestine'));
+  p.appendChild(e);
+  p.appendChild(feuilleEl('h1', 'f-titre', titre));
+  if (consigne) p.appendChild(feuilleEl('p', 'f-consigne', consigne));
+  p._adresse = adresse;
+  return p;
+}
+function feuilleFerme(p){
+  var pied = feuilleEl('div', 'f-pied');
+  pied.appendChild(feuilleEl('p', 'f-site', 'jardinsdecelestine.com · jardinsdecelestine@gmail.com'));
+  pied.appendChild(feuilleEl('p', 'f-jeu', 'Ce jeu est gratuit en ligne : jardinsdecelestine.com/' + p._adresse));
+  p.appendChild(pied);
+}
+function feuilleImprime(jeu){
+  /* compteur Google Analytics : un évènement par impression, nommé d'après le jeu
+     (JDC.mesure ne part pas avec ?sans-mesure=1) */
+  try { if (window.JDC && JDC.mesure) JDC.mesure('impression_' + jeu, {}); } catch (e) {}
+  document.body.classList.add('imprime');
+  var attente = [].slice.call(document.querySelectorAll('#feuille img')).filter(function(i){ return !i.complete; });
+  var lance = false;
+  function go(){ if (lance) return; lance = true; window.print(); }
+  function fin(){ if (--n <= 0) go(); }
+  var n = attente.length;
+  if (!n) return go();
+  attente.forEach(function(i){ i.addEventListener('load', fin); i.addEventListener('error', fin); });
+  setTimeout(go, 5000);
+}
+window.addEventListener('afterprint', function(){
+  document.body.classList.remove('imprime');
+});
+function feuilleNeuve(){
+  var f = document.getElementById('feuille');
+  /* la feuille doit être un enfant direct de <body> (une balise restée
+     ouverte dans la page peut l'avoir rangée dans un bloc caché) */
+  if (f.parentNode !== document.body) document.body.appendChild(f);
+  f.textContent = '';
+  return f;
+}
+function feuilleCap(m){ return m.charAt(0).toUpperCase() + m.slice(1); }
+/* des cadres côte à côte, n par ligne */
+function feuilleBoites(textes, n){
+  var b = feuilleEl('div', 'f-boites');
+  b.style.setProperty('--n', n);
+  /* une seule taille de lettres par cadre : 15 pt dès qu'un texte est long */
+  var long = textes.some(function(t){ return t.length >= 10; });
+  textes.forEach(function(t){
+    b.appendChild(feuilleEl('span', 'f-mot' + (long ? ' f-long' : ''), t));
+  });
+  return b;
+}
+/* des lignes numérotées pour écrire */
+function feuilleLignes(nb){
+  var ol = feuilleEl('ol', 'f-lignes');
+  for (var i = 0; i < nb; i++) ol.appendChild(feuilleEl('li', null, (i + 1) + '.'));
+  return ol;
+}
+function feuilleReponses(lignes){
+  var ol = feuilleEl('ol', 'f-rep');
+  lignes.forEach(function(t){ ol.appendChild(feuilleEl('li', null, t)); });
+  return ol;
+}
+
+</script>
+<script>var MOTS={"acc":{"4":"abat abbe able aboi abri abus acne acre acte adja ados aere afin afro agee ages agir agis agit ahan aida aide aies aigu aile aima aime aine aire airs aise alfa alla alle allo alma aloi alpa alto alun amas amen amer ames amie amis anal anar anda anes ange anis anon anse ante anti anus aout apex apre apte arak arcs arde ardu aria arma arme arts asse atre aube auge aune aura auto aval avec aveu avez avis axee axes axis ayez azur baba baby back bacs bada baie bail bain bale bals banc bang bans bars base bate bath bati bats baux bave beat beau bebe becs beni berk best beta bete beuh beur bibi bide bief bien bigo bile bill bing bipe bips bise bite bled bles blet bleu bloc blot boas bobo bobs bock bodo body bois boit bols bome bond boni bons book boom bord boss bouc boue boum bous bout boxe boys bras bref brie brin brio bris broc brou brrr brun brus brut buee bues bugs buis bull bure buse buta bute buts caca cadi cafe cage caid cake cala cale cals came camp cane cape capo caps care cars casa case cash cata cati cato cave ceci ceda cede cela cens cent ceps cerf ceux char chas chat chef cher chez chic chie chip choc chou chum chut ciao ciel cils cime cine cinq cire cita cite city clac clan clap clef cles clic clin clip clos clot clou club coca coco cocu code coin cois coit coke cola cold colo cols colt coma cone cons cool cops coqs core cors cosy cote coud coup cour cous cout crac cran crea cree cria cric crie crin cris croc crue crus crut cube cuir cuis cuit culs cure cuti cuve czar dabe dada daim dais dame dans dard data date daya deal deca deco decu defi deja dela demi deni dent ders deux diam dico diem dieu dime dina dine ding dira dire dise dite dito dits diva dock dodo dodu doge dois doit dojo dome dona donc dong dons dont dope dore dors dort dose dote doue doux down drag drap drop drue drus duce ducs duel dues dune duos dupe dura dure durs eaux echo echu ecot ecru ecus edam eden edit egal elan elfe elia elie elis elle elue elus emet emir emis emit emoi emue emus emut epee epie epis eres ergo eros erra erre esse este etai etal etat etau etes etre etui eues euro exam exil exit expo face facs fada fade fado fafs faim fais fait faix fame fana fane fans faon fard fart fats faut faxe fees fele fend fera fers feru feta fete fetu feue feux feve fias fiee fief fiel fier fiez fifi fige fila file film fils fine fini fins fion fisc fixa fixe flac flag flan flat flic flip floc flop flot flou fluo flux foie foin fois folk fols fond font foot fort foui four fous fout frac fret fric fris frit froc fuel fuie fuir fuis fuit full fuma fume funk fusa fuse fute futs gabe gaga gage gags gaie gail gain gais gala gale game gang gant gara gare gars gate gave gays gaze geai gele gels gemi gena gene gens gent gere girl gite glas glue gnon goal goba gobe gode gogo gogs gold golf gone gong gore goum gour gout gras grec gree gres gril gris grog gros grue guet guns hadj haha haie haik hair hais hait hale hall halo hard hare haro hata hate haut have hein hela hele here hero heur hier hola home homo hors hote hotu houe houx hugh huis huit huma hume hune hure ibis idee idem ides iles ilot imam imbu inca indo info inne insu iode ions iota irai iras irez iris isba isme issu item itou ives ivre jack jade jais jaja jans japs jars jase java jazz jean jeep jerk jeta jete jets jeux jobs joie jojo joli jonc joua joue joug joui jour judo juge juif juin jupe jura jure jury jute kaki kart kawa kepi keuf khan khol kick kids kiki kilo kilt kine kipa kirs kits kore labo lacs lady laic laid laie lait lala lama lame land lape laps lard lava lave laya lego legs lent lese lest leur leva leve liai liat lice liee lien lier lies lieu lift lime line lino lins lion lira lire lise lita lits live lobe loch loco loft loge logo loin loir lois lolo long look lope lord lors loti loto lots loua loue louf loup love lues luge luis luit lulu lune luth lutz luxe lynx lyre macs mage maia maie mail main mais maja male malt mame mamy mana mara marc mare mari mark mars mary maso mata mate math mats maux maxi maya mayo mecs mega mela mele melo meme memo mena mene mens ment menu mere mers mesa mess mets meuf meuh meut miam mica midi miel mien mile mima mime mimi mine mini mino mire miro misa mise miss mite mlle mode mois moka mole mome mono mons mont mord more mors mort moto mots moud moue mous mout muee muer mues muet mule muni mure muri murs musc muse must mute nada nage naif nain nais nait naja nana nant nase nave naze nazi nees nefs nene neon nerf nets neuf nice nids nier nies niet niez noce noel noie noir noix noms none nope nord nota note noua noue nous nova noya noye nuee nues nuit nuls obei obus ocre oeil oeuf ogre oies omis once onde onyx onze open opta opte opus oral orbe oree orge orme orne osai osat oser oses osez otai otee oter otes otez ouah oued ouie ouir ouis ouit ours ouzo ovni oyez pack pacs page paie pain pair pais paix pale pali palu pame pans paon papa pape papi papy para parc pare pari pars part paru past pate pati pave paya paye pays peau pede pele pend pene pepe perd pere peri perm pesa pese peso pete pets peuh peur peut peux peze pfft phot piaf pico pics pied pies pieu pige pila pile pina pine pink pins pion pipe pipi pire pisa pise pita plan plat plia plie plis ploc plot plum plus plut pneu poil pois poix pole poli polo poly pond pont pool pope porc pore port posa pose post pote pots pouf pour poux pres pret pria prie pris prit prix proc prof pros psys pubs puce puer pues puez puff puis pull puma puni punk pure purs pute quai quel quiz quoi race rade rafa rafe rage raid raie rail rain rais rait raki rala rale rame rami rams rang rani rape rapt rare rasa rase rata rate rats rave ravi raya raye reac recu reel regi rein reis relu rend rene reps repu reva reve revu rhum rida ride rien riez riff rima rime ring rink rira rire rise rite riva rive rixe robe rock rocs rode rois role roll rond rose rota rote roti rots roue roux ruai rude ruee ruer rues rugi rune ruse rush sacs sado saga sage sain sais sait sake sale sali sana sang sans sape sari sauf saur saut saxo scie seau secs secu sein self sels sema seme semi sens sent sept sera sers sert sets seul seve sevi sexe sexy shah shit show sida sidi sied sien silo sils sima sire sise site situ skai skie skin skip skis slip slow snob soda sofa soft soie soif soin soir sois soit soja sole solo sols soma song sono sons sont sors sort sots soue souk soul sous spot star stop stuc subi suca suce sucs suee suer sues suez suie suif suis suit sumo sure surf surs taco tact taie tain tais tait tala talc tank tant tapa tape tapi tara tard tare tari taro tata tate taux taxe taxi team teck tele tell tels tend tenu test tete tetu teve thai thes thon thym tics tien tifs tige till tilt tins tint tipi tira tire tirs titi tocs tofu toge toit tole tome tond tong tons tope topo tord toro tors tort toue tour tous tout toux trac tram tres trie trio trip troc trop trot trou truc tsar tuat tuba tube tuee tuer tues tuez tune turc turf tutu type typo tzar unes unie unir unis unit urge urne usai usee user uses usez vain vais vals valu vamp vape vase vaut vaux veau vecu velo velu vend vent venu vers vert veto vets vetu veuf veut veux vexa vexe vice vida vide vies vifs vile vils vins vint vioc viol vira vire visa vise vite vive vlan voeu voie voir vois voit voix vola vole vols volt vomi vont vote voua voue vous vrac vues yack yali yang yard yeah yens yeti yeux yeye yoga yogi yole york youp yoyo yuan zade zele zero zinc zizi zona zone zoom zoos zozo","5":"abats abbes abces abdos abeti abima abime aboie abois aboli abord about aboya aboye abris abuse acces accro accru acere achat acide acier acres actes actif adage adieu adjas admet admis admit adore adule aeree aerer aerez affut agaca agace agate agees agent agile agira agita agite agora agree agres ahane ahuri aidai aidat aidee aider aides aidez aient aieul aieux aigle aigre aigri aigue aigus ailee ailes aille aimai aimat aimee aimer aimes aimez ainee aines ainsi aires aisee aises ajout album aleas alene aleph alese algue alias alibi alite alize allai allat allee aller alles allez allie aloes alors alpha alpin amant amaro amble ambre amena amene amere amers amies amigo amont amour amphi ample ampli amusa amuse anale anars ancre aneth anges angle angon anier anima anime annee anses antan antre aorte apero apnee appas appat appel appui apres aptes arabe arbre arche archi arcon ardue ardus arene arete argon argot argus arias aride armee armer armes armez arome arque arret arroi arums asile aspic assez assis assit aster astre athee atlas atoll atome atone atout aubes aucun audio audit auges aunes aurai auras aurez aussi autel autos autre avais avait avala avale avant avare avent avenu avera avere aveux avide aviez avili avine avion avisa avise aviso avive avoir avons avoua avoue avril ayant ayons azote azyme babas babil bache bacle bacon badge badin baffe bafre bagne bague bahts bahut baies bains baisa baise balai balle balte balto banal banco bancs banda bande bangs banjo banne banni barbe barbu barda barde barge baril barjo baron barra barre basee baser bases basez basse basta baste batie batir batis batit baton batte battu bauge baume baver baves bayou bazar beait beant beate beats beauf beaux bebes beche becot becte begue beige belge belle belon bemol benef benet benie benin benir benis benit benne berca berce beret berge berne betel betes beton bette beurk bevue biais bibis bible biche bicot bidet bidon biens biere biffa biffe bigle bigre bijou bilan biler bilez bille biner bingo bipee biper bipez bique birbe bises bison bisou bites bitos bitte bizut black blair blame blanc blase blaze bleds bleme blemi bleue bleus block blocs blond blues bluff bobby bobos bocal boche bocks bodhi boeuf bogue boira boire boise boite boive bolet bomba bombe bonde bondi bonds bonir bonne bonte bonus bonze books boots borde bordj bords borie borna borne bosco bossa bosse bossu botte boucs bouda boude boudu bouee boues bouge boule boume boums bourg bouse bouts bovin boxer boxes boxez boxon boyau brade brama brame brava brave bravo braye break brefs breme breve bribe brick bride brima brime brins brisa brise brize brocs brode broie broum brout broye bruit brula brule brume brune bruni bruns brute bruts buche buees bugle bulbe bulle bulls bumes burin buses buste butee buter butes butez butin butor butte buvez caban cabas cable cabot cabra cabre cabri cacao cacas cacha cache caddy cadet cador cadre caduc cafes cafte cages cagna cahot caids cajun cakes calee caler cales calez calin calle calma calme calot calva camee camer cames campa campe campo camps camus canal caner canif canin canne canoe canon canot caoua capes capon capot capte caque carat carde cargo carie caris carne carpe carra carre carry carte casas casee caser cases cassa casse caste catch catho catin causa cause caves ceans cedai ceder cedez cedre cegep ceint celer cella celle celte celui cense cents cepes cerfs cerne cessa cesse cette chair chais chale champ chant chaos chape chars chats chaud chaut chaux cheap chefs cheik chene chenu chere cheri chers chica chics chiee chien chier chies chili china chine chiot chipe chips chocs choir choit choix chome chope chose choux choye chulo chute cible cidre ciels cieux cigue cilla cille cimes ciree cirer cires citai citee citer cites citez civet civil claie clair clama clame clamp clans clape clash class clean clebs clefs clerc click clins clips clito clodo clone clope clore close cloua cloue clous clown clubs coach cobra cocas coche cocon cocos cocue cocus codee codes codex coeur cogna cogne cohue coing coins coite coits colas colin colis colla colle colon colts colza comac combe combi combo comme compo comte concu conde condo cones conge conne connu conta conte copie coque coran corde corne cornu coron corps corse corso cosmo cosse cossu cotes coton cotre cotte couac coude couds couic coula coule coupa coupe coups coure cours court couru cousu couta coute couts couve crabe crabs crack crade crado craie crame crane crans craps crash crawl credo creee creek creer crees creez creme crepe crepi crepu crete creux creva creve criai criat crics criee crier cries criez crime crins crise croco crocs croie crois croit croix cross croup cruel crues cubes cucul cueva cuira cuire cuirs cuise cuite cuits culot culte cumin curee curer cures curie curry cuvee cuver cuves cycle cyclo cygne daces dadas dague daims dalle damas dames damne dandy dansa danse darde dards daron darse datee dater dates daube deale deals debat debit debut deces deche dechu decor decru decue decus decut dedia dedie dedit defie defis defit degat degel degre delai delco delia delie delit delta demie demis demon denie dense dents denue depit deplu depot derby derme desir dette deuil devez devia devie devin devis devot devra diams diane diapo dicta dicte diese diete dieux digne digue dilue dimes dinai dinar dinde diner dines dinez dingo dirai diras dires direz dirlo disco dises dispo dites divan divas divin dixie dixit djinn docks docte dodue dodus doges dogme dogue doigt doive dolce domes donna donne doper doree dorer dores dorme dormi doser doses dotee doter dotes douar douce douee doues douma douta doute douve douze doyen drain drame drapa drape draps dring drink drive droit drole drone drues druze ducal ducon dudit duels dumes dunes dupee duper dupes durat durci duree durer dures duvet ebahi ebats ebene eboue ecart echec echos echue eclat eclos ecole ecolo ecope ecran ecria ecrie ecrin ecris ecrit ecrou ecrue ecume edite effet egale egard egare egaux egaye egide egout elans eleva eleve elfes elime elire elise elite elles eloge eluda elude elues email emane emaux embue emeri emets emeut emois empli emues emule encas encor encre enfer enfin enfla enfle enfui engin enjeu ennui enter entra entre envia envie envoi envol epais epand epars epata epate epave epees epele epice epiee epier epieu epile epine epoux epris eprit epure erige errai errer essai essor etage etain etais etait etala etale etals etang etant etape etats etaux etaye etend ether etiez etira etire etole etres etron etude etuis etuve eumes euros eusse evade evase eveil evide evier evita evite exact exams exces exclu exige exigu exile exils exode expie expos extra fable faces facha fache facho facon fadas fader fades fagot faims faine faire faite faits fakir fallu falot fames fanal fanee faner fanes fange fanny faons farad farce farci farde fards farsi fasse faste fatal fatma fatum faune faute fauve faxer feces feins feint felee feles felin felon femme femur fends fendu fente ferai feras ferez feria ferie ferir ferma ferme ferre ferry ferus fesse feter fetes fetez fetus feves fiait fiant fibre ficha fiche fichu fiefs field fiere fiers fifis fifre fifty figea figee figer figes figue filai filee filer files filet filez filin fille filme films filon filou fimes final fines finie finir finis finit fiole firme fissa fisse fites fixai fixee fixer fixes fixez fjord flair flanc flane flash flats fleau fleur flics flirt flood flore flots floue flous fluet flush flute foies foins foire folie folio folks folle fonca fonce fonda fonde fonds fondu fonte fonts forca force forci forer foret forge forma forme forte forts forum fosse fouet foule fours foute foutu foyer fraie frais franc fraya fraye frein frele fremi frene frere frigo frime fripe frire frise frite frits fritz frocs froid frola frole front fruit fugue fuite fumee fumer fumes fumet fumez funky furax furet furie fusee fuser fusil fusse futal futee futes futur fuyez gache gadin gadjo gaffe gager gages gagna gagne gaies gaine gains gaite galas galbe galet gallo galon galop gambe gamin gamma gamme gangs ganse gante gants garce garda garde garee garer gares garez garni gatee gater gates gatez gaule gavee gaver gaves gavez gazer gazes gazon geais geant geint gelee geler geles gemir gemis gemit gemme genee gener genes genet genez genie genou genre gente geole gerbe geree gerer gerez germe geste gibet gibus gicla gicle gifla gifle gigot gigue gilet girls giron gitan giter gites giton givre glaca glace gland glapi glass glebe globe gnole gnome gnons gnouf gober gobez goder godes godet gogos goldo golfe gombo gomme gonds gonze goret gorge gosse gouge goulu goumi gourd goure gouta goute gouts graal grace grade grain grand grava grave gravi grecs green grege grele grenu greve grief grill griot grisa grise grive groin groom group gruau grues guepe guere gueri gueux guida guide guise guppy gusto habit hache hadji haies haine haira halee haler hales halle halls halos halte hamac hampe hante happa happe haque haras harde hardi harem harpe hasch hatai hater hates hatez hatif haute hauts haves havre hebdo helas heler hello henne herbe herbu heres heron heros herse hetre heure heurt hibou hippo hippy hissa hisse hiver hobby hocha hoche homme homos honni honte horde hosto hotel hotes hotte hotus houla houle houri house huard huche huees huile humer humus huppe hures hurla hurle hutte hydre hyene hymen hymne hyper icone ideal idees idiot idole igloo ilots image imita imite impec imper impie impot impro impur indes index indic infos infra innee inoui inter ipeca irais irait iriez irise irons iront isard isbas islam isola isole issue issus ivres jabot jacks jacot jacte jadis jaffa jaffe jalon jambe jante jappe jarre jaser jatte jauge jaune jauni javas javel jeans jeeps jenny jerez jesus jetai jetee jeter jetes jetez jeton jette jeudi jeune joice joies joins joint joker jolie jolis joncs jouai jouat jouee jouer joues jouet jouez jouir jouis jouit jours joute joyau jucha juche judas jugea jugee juger juges jugez juifs juive jules julot jumbo jupes jupon jurai juree jurer jures jurez juron jusqu juste juter kacha kapok karen karma kayak kebab kepis keufs khans kilos kiosk kippa kodak krach kraft kyrie kyste label labos lacer lacet lacha lache lacis lagon laics laide laids laine laird laits laius lamas lames lampe lanca lance lande lange laper lapin lapon laque lardu large largo larme larve laser lassa lasse lasso latex latin latte lavai lavee laver laves lavez lavis layon lazzi lebel lecha leche lecon ledit legal legat leger legue lente lents lepre lesee leser leste leurs levai levat levee lever leves levez levre liait liane liant libre licol licou liees liege liens lient lieue lieux light ligne ligue lilas limbo limer limes limon linge linon lions lippe lippu lirai liras lires lirez liron lises lisez lissa lisse liste litre livra livre lobby lobes local loche locos loden logea logee loger loges logez logis logos loirs lolos longe longs looks lopes lopin loque lords loser lotie lotir lotis lotta lotus louai louee louer loues louez louis loupe loups lourd louve lovee lover loves loyal loyer lubie lucre lueur luger luire lumen lunch lundi lunes lupus luron luths lutin lutta lutte lycee macha mache macho macon madre mafia mages magie magma magne magot mails mains maint maire major males malin malle maman mambo mamie mamma mammy mande manes manga mange mania manie manif manne manta mante maous marcs mardi maree mares marge maria marie marin maris marks marle marne marra marre marri masai massa masse mataf match mater mates matez maths matin maton matos matou matte maure mauve mazet meche media mefie megot melai melat melee meler meles melez melon memes memos menee mener menes menez mente menti menue menus merci merda merde meres merle merou messe metal meteo metis metre metro mette meufs meule meure meurs meurt meute mezig miaou miche micro miens mieux miles mille mimer mimes mince minee miner mines minet minot minou minus mirer mirus miser mises misez mitan mites mitre mixer mixte moche model modem modes moine moins moire moise moisi moite mokas moles molle molli mollo momes momie monde monta monte monts moose moqua moque moral morde mords mordu morne morse morte morts morue morve motel motif motos motte motus moues moule moult moulu moyen moyeu muait mucus muets mufle mugir mugit mules mulet mulot multi munie munir munis mural muree murer mures muret murie murir murit musee muses mutee muter mutes myope myrte mythe mytho nabab nabot nacre nagea nager nages nagez naifs naine nains naive nanan nanas nanti nappe narre nasal nases nasse natal natif natte naval navet navre nazes nazie nazis neant negre negro negus neige nenes nenni neons nerfs nerva nervi nette neufs neuve neveu niais niait niant niche niece nient nimbe ninas nique noble noces nocif nodal noels noeud noies noire noirs noise nomma nomme nonce nones nonne noria norme notai notee noter notes notez notre nouba nouee nouer noues noyau noyee noyer noyes noyez nuage nuees nuira nuire nuise nuits nulle nuque nurse nylon oasis obeir obeis obeit obese objet obole obtus occis ocean ocres odeon odeur oeils oeufs offre ogive ogres oisif olive ombre omega onces oncle ondee ondes ongle opale opera opere opina opine opium optai opter orage orale ordre orgie orgue ormes ornee orner ornes orque ortho ortie osais osait osant oscar osees osent osera osier osiez osons otage otais otait otant otent otera otite ouais ouate oubli ouche ouest ouies ourdi ourle ourse ouste outil outre ouvre ovale ovnis ovule oxyde ozone pacha packs pacte paddy pager pages pagne paien paies pains paire pairs palan pales palet palie palir palis palit palle palme palot palpa palpe pamee pamer pampa panda panic panne panse pansu paons papas papes papet paque paras parce parcs pardi paree parer pares parez paria parie paris parka parla parle parme parmi paroi paros parte parti parts party parue parus parut paseo passa passe patch patee pater pates patin patio patir patis patit patre patte paume pause pavee paves pavot payai payat payee payer payes payez peage peaux pecan peche pedes pegre peine peins peint pekin pelee peler peles pelle penal pence pende pends pendu penis penne penny pensa pense pente pentu pepee pepin perca perce percu perde perds perdu peres peril perir perit perle perme perse perso perte pesee peser peses pesez pesos pesta peste petee peter petes petit petri peurs phare phase philo phlox phone phono photo piafs piano picot piece pieds piege pieta piete pieux piger piges pigez pilee piler piles pille pilon pilot pilou pinca pince pinot pinte pions piper pipes pipis piqua pique pires pissa pisse piste pitie piton pitre pivot pizza placa place plage plaid plaie plain plais plait plana plane plans plant plate plats plaza plebe plein pleur pleut pliee plier plies pliez ploie plomb plouc plouf plouk ploye pluie plume pneus poche poele poeme poete pogne poids poils poilu poing point poire poker polak polar poles polie polio polir polis polka pomme pompe ponce pondu poney pongo ponte ponts popes porcs pores porno porta porte porto ports posai posat posee poser poses posez posta poste potee potes potin pouah pouce poufs pouic poule pouls poupe preau prend prepa preta prete prets preux prevu priai priee prier pries priez prima prime primo prion prise priva prive probe profs proie projo prolo promo promu prone prose prote proue proxo proze prude prune puais puait puant pubis puces puent puisa puise puits pulls pulpe pumas pumes punch punie punir punis punit punks puree pures purge purin pusse putes quais quand quant quart quasi quels quete queue quine quite quota rabat rabbi rable rabot racee races racla racle radar rades radie radin radio radis rafla rafle ragea rages ragot raide raidi raids raies rails raler rales ramer rames ramez rampa rampe rance ranch range rangs raout rapee raper rapes rapin raque rares rasee raser rases rasez rasif rasta ratee rater rates ratez ratio raton raves ravie ravin ravir ravis ravit rayee rayer rayes rayez rayon reagi reaux rebus rebut recel reche recif recit recre recru recta recto recue recul recus recut redis redit reels reelu refis refit refus regal regie regir regis regit regla regle reglo regna regne regul reich reine reins rejet relax relie relis relit relus relut remet remis remit remua remue renal rende rends rendu renes renie renne renom rente repas repit repli repos repue repus resta reste resto retif retro reuni revai revee rever reves revet revez revis revit revue revus rhino rhume riais riait riant riche ricin ridee rider rides riens rient rieur rifle rimes rinca rince rions riper ripou rirai riras rires rirez risee rital rites rival rivee river rives rivet rixes robes robot roche rocks rodee rodeo roder rodes rogne rogue roide roles roman rompe romps rompt rompu ronce ronde rondo ronds ronge ronin roque rosee roses rosie rosir rosit rosse roter rotie rotin rotir rotis rotor rouee rouer roues rouet rouge rougi roula roule round route royal ruade ruais ruait ruant ruban rubis ruche rudes ruent rugby rugir rugit ruine rumba runes rupin rural rusee ruser ruses russe sabir sable sabot sabre sache sacra sacre sacro sages sahib saine sains saint saisi salas salee saler sales salie salin salir salis salit salle salon salop salsa salua salue salut salve samba sangs sanie sante saoul sapee saper sapes sapin sarde satan satin sauce saufs sauge saule sauna saura saurs sauta saute sauts sauva sauve savez savon sbire scalp sceau scene sciee scier scies scion scoop scope score scout seant seaux secco secha seche secte seins seize selle selon selva semee semer semes semez semis senat sense sente senti sepia serai seras serbe serez serfs serge serie serin serpe serra serre serti serum serve servi seuil seule seuls seves sevir sevit sevre sexes shako shoot short siege siens sieur sigle signa signe sikhs silex silos singe sinon sinue sinus sioux sirop sisal sites sitot situa situe skate skier skins slave slips slows smala smash snack sniff snobs sobre socle sodas soeur sofas soies soifs soins soirs solde soles solex solos somma somme sonar sonda sonde songe sonna sonne sorte sorti sorts sosie sotte souci soude souks soule souls soupe sourd souri soute soyez spahi speed spoon sport spots spray squat squaw stade staff stage stand stars stase state steak stele steno stick stock stone store stout strie strip stucs stuka stups style stylo suais suait suant suave subie subir subis subit sucer suces sucez sucon sucre suees suent sueur suffi suint suite suive suivi sujet sulky sumes super supra sures surfe surge surgi surin sushi swing sympa tabac table tabou tacha tache tacle tacos tacot taffe taies taiga taira taire taise talon talus tamis tango tanin tanka tanks tanna tanne tante taons tapee taper tapes tapez tapie tapin tapir tapis tapit tarda tarde taree tares targe tarie tarif tarin tarir taris tarit tarot tarpe tarte tassa tasse tatai tater tatez tatou taule taupe taxer taxes taxis tchao teins teint teles telex telle tempe tempo temps tende tends tendu tenez tenia tenir tenor tenta tente tenue tenus terme terne terni terra terre terri testa teste tests tetee teter tetes teton tetue tetus texan texte texto theme these thugs thune tiare tibia tiede tiens tient tiers tiges tigre timon tinta tinte tique tirai tirat tiree tirer tires tirez tison tisse tissu titan titra titre toast toile toisa toise toits toles tolle tomba tombe tomes tondu tongs tonic tonna tonne tonte tonus toqua toque tords tordu toril torse torts torve total totem tours toute traca trace tract trahi train trais trait trame trams trapu trepe treve trial tribu trick trier tries trime trios tripe trois troll tronc trone troua troue trous truck trucs truie trust tsars tuais tuait tuant tubes tuees tuent tuera tueur tuiez tuile tulle tunes tuons turbo turco turcs turlu turne tutus tuyau tweed twist types typos tyran ultra unies union unira unite untel urina urine urnes usage usais usait usant usees usent usera usine usuel usure utile vache vagal vagin vague vaine vains valet valez valse valut valve vanna vanne vanta vante vapes varie vases vaste veaux veces vecue vecus vecut veine veler velin velos velue velus venal vende vends vendu venez venge venin venir venta vente vents venue venus verbe verdi verge verni verra verre versa verse verso verte verts vertu verve vespa veste vetez vetir vetue vetus veufs veule veuve vexee vexer vexes vexez vibra vibre vices vichy vicie vidai videe video vider vides videz vieil viens vient vieux vigie vigne villa ville vimes vingt viola viole viols viral viree virer vires virez viril virus visas visee viser vises visez vison vissa visse vista vital vitre vivat vives vivez vivra vivre vizir vlouf vocal vodka voeux vogue voici voies voila voile voire volee voler voles volet volez volte volts vomir vomis vomit votee voter votes votez votre vouee vouer voues voulu voute voyez voyou vraie vrais vroom vroum vulve wagon water watts wharf wouah xenon xeres yacht yacks yards youpi yuans zanzi zappe zarbi zazou zebre zelee zeles zelle zeros zeste zigue zincs zizis zombi zoner zones zoome zozos","6":"abatis abatte abattu abbaye abetir abimee abimer abimes abimez abject abjure aboies abolie abolir abolis abolit abonde abonne aborda aborde abords aboule abouti aboyer abrege abrita abrite abrupt abruti absent abside absolu absous abuser abuses abusez abusif abysse acabit acacia acajou acceda accede accent accole accord accote accroc accros accrue accrut accule accusa accuse acerbe aceree aceres achats acheta achete acheva acheve acides aciers aconit acquis acquit acrete acteur actifs action active actuel acuite adagio adapte adepte adhere adieux adjuge adjure admets admira admire admise adonna adonne adopta adopte adoree adorer adores adorez adossa adosse adouci adroit adulee adules adulte advenu advint aerait aerees aerien affala affale affame affine afflue afflux affola affole affres affure affute affuts afghan agacee agacer agaces agacez agapes agates agaves agence agenda agente agents agiles agirai agisse agitee agiter agites agitez agneau agnela agonie agonir agouti agrafe agreer agrege ahurie ahurir ahuris ahurit aidais aidait aidant aidees aident aidera aidiez aidons aieule aigles aiglon aigres aigrie aigrir aigris aigues ailier ailles aimais aimait aimant aimees aiment aimera aimiez aimons ainees airain airbag aisees ajoncs ajoure ajouta ajoute ajusta ajuste alarma alarme albums alcade alcool alcove alcyon alerta alerte alezan algues alibis aliena aliene aligna aligne alinea alitee allais allait allant allees allege allers alliee allier allies alliez allocs allons alloue alluma allume allure alpaga alpage alpine alpins altere altier amadou amande amante amants amarra amarre amassa amasse ambigu ambree amenai amende amenee amener amenes amenez ameres ameute amical amidon amigos amines amiral amitie amoche amolli amoral amorca amorce amorti amours amphes amphis amples amplis ampute amusai amusat amusee amuser amuses amusez ananas ancien ancree ancrer ancres anemie anerie anesse angine angles angora animai animal animee animer animes anneau annees annexe annuel annule anodin anorak apache apaisa apaise aparte apercu aperos apeure aphone aplani aplati aplomb apogee apotre appart apparu appate appats appela appele appels apport appose appret appris apprit appuie appuis appuya appuye apreme aprete aqueux arabes aramon arbore arbres arcade arcane arcans archer arches archet ardent ardeur ardues arenes areole aretes argent argile argots arguer arides aristo armada armait armees armure arnica aromes aronde arpege arpete arquee arquer arques arreta arrete arrets arrhes arrime arriva arrive arrosa arrose artere aryens ascese ascete asiate asiles aspect aspira aspire assagi assaut assena assene asseye assidu assied assise assoie assois assoit assume assura assure asters asthme astral astres astuce athees atomes atonie atours atouts atrium atroce attela attele attend attira attire attise aubade aubain aubier auburn aucune aucuns audace augure aulnes aumone aupres auquel aurais aurait auriez aurons auront aurore autant autels auteur autour autres autrui auvent avachi avalai avalee avaler avales avalez avanca avance avares avarie avatar avenir avenue averee averer averse averti avides avilir avilit avinee avines avions aviron avisai avisat avisee aviser avises avisez avisos avivee aviver avocat avoine avoirs avorte avouai avouee avouer avoues avouez axiome babine babord baches bachot baclee bacler badaud badges badine baffer baffes bafoue bafrer bagage bagnes bagout baguee bagues bahuts baigna baigne bailla baille bailli baisai baisee baiser baises baisez baissa baisse bajoue balade balaie balais balaya balaye balcon baleze balise baller balles ballet ballon ballot baltes bambin bambou banale banals banana banane bancal bandee bander bandes bandez bandit banner bannie bannir bannis banque baobab baquet baraka barbes barbet barbon barbue barbus bardas bardee barder bardes bareme barges barils barjot barman barmen barons baroud barouf barque barree barrer barres barrez basane basant basees basket basque basses basset bassin baston bastos batard bateau baties batons battes battez battis battit battra battre battue battus baudet baumes bavais bavait bavant bavard bavent baveux bavoir bavure bazars beance beante beants beaute bebete becane becher becter bedeau beeper begaie begaya begaye beguin beiges beigne belant belges belier belles belons belote benard benets benies benira benite bennes benoit bercee bercer berces bercez berets berger berges berlue berner bernes berthe besace besoin betail betise betons beugla beugle beurra beurre bevues bibine bibles biceps bicher biches bichon bicots bidets bidons bidule bielle bieres biffer biffin bifide bifton bigler bigote bijoux bikini bilans billes billet billot biniou bipede biplan biques biquet biribi biseau bisons bisous bisque bistre bistro bitume biture blabla blacks blague blaire blamer blames blamez blancs blasee blases blason blatte blazer blazes blemes blemir blemit blessa blesse blette bleues bleuet bleuit bleute blinde blinis blocks blocus blonde blondi blonds bloqua bloque blotti blouse bluffe bobard bobine bobino bocage bocaux boches bodega boeufs boghei boheme boirai boiras boirez boisee boiter boites boives bolduc bolero bolets bolide bombee bomber bombes bonbon bondee bondes bondir bondis bondit bonnes bonnet bonnie bonnir bonnit bontes bonzes boomer bordee bordel border bordes boreal borgne bornai bornee borner bornes bosser bosses bossez bossue bossus boston bottee botter bottes bottin boubou boucan boucha bouche boucla boucle bouder boudes boudin bouees boueux bouffe bouffi bougea bouger bouges bougez bougie bougne bougon bougre bouler boules boulet boulon boulot bourde bourge bourgs bourra bourre bourru bourse bouses bouton boutre bovine bovins boxeur boyard boyaux brader braies braire braise bramer brames brandi brandy branle braqua braque brasse braver braves bravos brebis breche brelan bremes breton breves brevet bribes brider brides bridge bridon briefe briffe brilla brille brimer brique brisee briser brises brisez broche brodee broder brodes bronze broque brossa brosse brouet broute broyee broyer broyes bruine bruire bruits brulat brulee bruler brules brulez brulis brulot brumes brunch brunes brunie brunir brunit brutal brutes bucher buches buddha budget buffet buffle bulbes bulbul bulles bunker bureau burent burger burine burnes busard busque bustes butait butane butant butent buteur butine butins butoir butter buttes buvais buvait buvant buvard buveur buviez buvons cabale cabane cabine cables cabots cabree cabrer cabres cabris cachai cachat cachee cacher caches cachet cachez cachot cachou cactus caddie cadeau cadets cadors cadran cadrer cadres cafard caftan cafter cagade cageot cagibi cagnas caguer cahier cahote cahots cahute caille caiman caique caisse cajola cajole calait calant calcif calcul calice calife caline calins calmai calmar calmee calmer calmes calmez calmos calots calque calter caltez camail camaro cambra cambre camera camion campee camper campes campus canada canape canard canari canaux cancan cancer cancre candie canifs canine cannas cannee canner cannes canons canots canton canyon capote capots capres captee capter captez captif caquet caraco carafe carats carcan cardan careme carene cargos carien caries carlin carmer carmes carmin carnes carnet carpes carree carrer carres cartel carter cartes carton casbah casher casier casino casoar casque cassee casser casses cassez cassis castel castes castor castre casuel cathos catins cauris causee causer causes causez causse cavale caveau caviar cavite cecite cedais cedait cedant cedent cedera cedons cedres ceinte ceints celeri celles celtes cendre censee censes centon centre cercle cerise cernee cerner cernes cernez certes certif cesars cessai cessat cesser cesses cessez cesure chacal chacun chahut chaine chaire chairs chaise chales chalet chalon chaman champs chance change chanta chante chants chapka chapon chaque charca charge charme charnu charre charte chassa chasse chaste chatie chaton chatre chatte chaude chauds chaume chauve cheche cheikh chelem chemin chenal chenes chenil chenue cheque cheres cherie cherif cherir cheris cherit cherry cherte chetif chevai cheval chevet cheveu chevre chiais chiale chiant chiard chibre chiche chichi chiees chiens chient chieur chiffe chimie chiots chiper chipie chique chiure chlore choeur choisi chomer chopee choper chopes chopez choppe choqua choque choral chorus choses chouia choura choure choyee choyer christ chrome chromo chrono chtimi chuter chutes cibler cibles cicero cierge cigale cigare ciller ciment cimier cinema cingla cingle cintra cintre cirage cirait cirees cireur cireux cirque ciseau cisele cistes citais citait citant citent citron civile civils claies claire clairs clamer clamse clande claper clapet clapot claqua claque clarte classe claude clause clercs clerge cliche client cligna cligne climat clique cloche clodos cloner clones cloper clopes cloque closes clouee clouer cloues cloute clowns cobalt cobaye coccyx cocher cochon cocker cocons codage codees coeurs coffin coffio coffre cogito cognac cognee cogner cognes cognez cohues coiffa coiffe coinca coince coings colere colite collai collee coller colles collet collez colons colora colore combat combes combla comble comete comics comite commet commis commit commun compas complu compta compte comtes concis conclu concue concus concut condes condor condos confia confie confit confus conges connes connue connus connut conque consul contee conter contes contez contre convia convie convoi cookie coolos copain copeau copiee copier copies copiez copine coques coquet coquin corail coraux corbin cordee cordes cordon coreen cornac cornee corner cornes cornet cornue cornus corona corons corpus corral corsee corser corses corset cortex corvee coryza cosmos cosses cossue cossus coteau cotele cotoie cotons cotoye cottes couard coucha couche coucou coudes coudre couine coulee couler coules coulez coulis coupai coupee couper coupes coupez couple coupon courba courbe courez courge courir courra courre course courte courts courus courut cousin cousue cousus coutat couter coutes coutil couvee couver couves couvre coyote crabes cracha crache cracks cracra craies crains craint cramer crampe craner cranes craqua craque crashe crasse crayon creait creant creche credit creees creent creera cremes crenom creole creons crepes crepis crepon crepue crepus cresyl cretes cretin creusa creuse crevee crever creves crevez criais criait criant criard crible cricri crient criera crieur crimes crions crique crises crispa crispe crissa crisse croate croche crochu crocos crocus croies croira croire croisa croise croqua croque crosse crotte croule croupe croupi croute croyez cruche cruels crumes crypte cubain cuesta cuevas cuisse cuites cuivre culots cultes cumule cupide curait curare cursus cutter cycles cygnes cypres cyprin dadais dagues daguet daigna daigne dallee daller dalles damier damned damnee damner damnes dandys danger danois danser danses dansez dardee darons datait datant datcha datees datent dattes dealer deales debats debile debine debita debite debits deblai debout debris debuta debute debuts decade decale decape decede decele decent dechet dechue dechus decida decide decime declic declin decode decois decoit decora decore decors decret decris decrit decrut dedain dedale dedans dediee dedier dedies deduis deduit deesse defais defait defaut defend defere defier defiez defila defile defini defont defunt degage degats degote degout degres degueu dehors dejete dejoue delais delave delaye delice deliee delier delies delire delits deloge deluge delure demain demele demene demens dement demode demoli demons demuni denier denoua denoue denree denses denude denuee denues depare depart depece depend depens deperi depite deplia deplie deplut depoli deposa depose depots depris depuis depute derapa derape derate derche derida deriva derive deroba derobe desape desert design desira desire desirs desole dessin dessus destin desuet detail detala detale detele detend detenu detour dettes deuils deuzio devais devait devala devale devant devenu devers devetu devide devier deviez devina devine devins devint devise devoir devolu devons devora devore devote devots devoua devoue devoye devrai devras devrez dextre diable diacre diapos dictee dicter dictes dicton diesel diffus digere digest dignes digues dilate diluee diluer dilues dinais dinait dinant dinars dindes dindon dinent dinera diners dingue dinons dirais dirait direct dirent diriez dirige dirons diront disais disait disant disent disert disiez disons dispos disque diurne divans divers divine divins divisa divise djebel djihad djinns docile docker doctes dodues dogmes dogues doigte doigts doives dolent dollar dolman dolmen domina domine domino dompte dondon donjon donnai donnat donnee donner donnes donnez doping dorait dorees dormes dormez dormir dormis dormit dorure dosage dosant dotait dotees douait douane doubla double douces doucet douche doudou douees douros doutai doutat doutee douter doutes doutez douves dragee dragon drague drames drapee drapes drelin dressa dresse drille drinks drisse drogue droite droits droles drones druide druzes ducale ducats duegne dument duplex duquel durait durant durcie durcir durcis durcit durent durera durete durian durite duvets dynamo ebahie ebahis ebloui eboule ebroua ebroue ecarta ecarte ecarts echecs echine echoit echoua echoue eclair eclata eclate eclats eclore eclose ecluse ecoles ecolos ecoper ecorce ecorne ecosse ecoula ecoule ecouta ecoute ecrans ecrasa ecrase ecreme ecriai ecriee ecrier ecrins ecrira ecrire ecrite ecrits ecrive ecroue ecrous ecueil ecules ecumer ecurie ecuyer eczema edente edifie editer edites eduque effaca efface effare effets effile effort effroi egaler egales egards egaree egarer egares egarez egayee egayer egerie eglise egoine egorge egouts egrene ehonte ejecte elanca elance elargi elevai elevee elever eleves elevez elimes elites elixir eloges eluder elysee emacie emails emaner embete embout embrun embuee embuer embues emeche emerge emeute emeuve emigre emises emmele emmena emmene emmure emotif emoulu empale empara empare empate empese empila empile empira empire emplie emplir emplis emplit emploi empote encens enclin enclos encode encore encres encule endors endort enduit endure enerva enerve enfant enfers enfila enfile enflee enfler enfles enfoui enfuie enfuir enfuis enfuit enfume engage engins englue enieme enigme enivre enjeux enjoue enlaca enlace enleva enleve enlise ennemi ennuie ennuis ennuya ennuye enonca enonce enorme enquis enquit enrage enraye enrobe enrole enroue ensuit entama entame entend entete entier entite entour entrai entrat entree entrer entres entrez entube envahi envers enviai enviee envier envies enviez envoie envois envola envole envols envoya envoye enzyme eolien eparse epatee epater epates epaula epaule epaves epeler epelle eperdu eperon ephebe epiais epiait epiant epicee epices epient epilee epiler epines epique epitre eploie eplore eponge epopee epoque epousa epouse eprise epuisa epuise epuree epurer epures equipe equite erable erafle ergots erigee eriger ermite errais errait errant errent erreur errone ersatz eructe erudit escale escroc espaca espace espada espece espera espere espion espoir esprit esquif essaie essaim essais essaya essaye essieu essuie essuya essuye estima estime etable etabli etages etalee etaler etales etalon etangs etapes etayee etayer etayes eteins eteint etende etends etendu etiage etiole etions etique etirai etiree etirer etires etoffe etoile etoles etonna etonne etoupe etrave etrier etripe etroit etrons etudes etudia etudie etuves eubage eurent evacue evadee evader evades evalua evalue evasif eveche evente eveque eviers evince evitai evitat evitee eviter evites evitez evolue evoqua evoque exacte exacts exalta exalte examen exauce excede excita excite exclue exclus exclut excusa excuse execre exempt exerca exerce exhala exhale exhiba exhibe exhume exigea exigee exiger exiges exigez exigue exigus exilee exiler exiles exista existe exorde expert expier expira expire export exposa expose expres exquis extase extras exulta exulte fables fabule facade fachee facher faches fachez fachos facial facies facile facons fadeur fagote fagots faible faibli faille failli faisan faites fakirs fallut falote falzar famees fameux famine fanaux fanees fanent fanfan fanion fanons faquin faraud farces farcie farcir farcis farcit fardee farder fardes farine fasses fastes fatale fatals fatmas fatras faucha fauche faucon faudra faunes fausse fautes fautif fauves favela faveur favori fayots fecale fecond feerie feinte feline felure femmes fendez fendit fendre fendue fendus fentes fenton feodal ferais ferait feries feriez fermai fermee fermer fermes fermez feroce ferons feront ferree ferrer ferres ferule fessee fesses fessue festif festin fetait fetard fetent fetera fetide fetons feutre fiable fiacre fiance fiasco fibres ficela ficele fichee ficher fiches fichez fichue fichus fictif fidele fieffe fiente fieres fierte fiesta fievre fifres figaro figees figent figues figura figure filais filait filant filent filera filets filial filins filles filmee filmer filmes filmez filons filous filtre finale finaud finies finira finish fioles firent firmes fiscal fiston fixais fixait fixant fixees fixent fixera fixite fixons fjords flacon flaira flaire flamba flambe flamme flancs flaner flaque flashe flashs flatta flatte fleaux fleche flechi flegme flemme fletri fleuri fleurs fleuve flippe flirte flirts flocon flopee floral flores florin flotta flotte floues flouze flubes fluets fluide flutee flutes focale foetal foetus foirer foires foison folies folklo folles follet foncai foncee foncer fonces foncez fondee fonder fondes fondez fondit fondre fondue fondus fontes forage forain forban forcai forcat forcee forcer forces forcez forets foreur forgee forger forges format formee formel former formes formez formol fortes fortin fosses foudre fouets foufou fougue fouine foulee fouler foules fourbe fourbi fourbu fourme fourmi fourni fourra fourre foutez foutra foutre foutue foutus foyers fracas fraise franco francs frange frappa frappe fraude frayer freina freine freins freles frelon fremir fremis fremit french frenes freres frerot fretin friand friche fricot frigos frimas frimer frimes fripee fripes fripon frique frisee friser frises frites froide froids frolai frolee froler froles fronca fronce fronde fronts frotta frotte frugal fruite fruits fruste fugace fuguer fugues fuhrer fuient fuirai fuites fumais fumait fumant fumees fument fumets fumeur fumeux fumier fumiez fumoir fumons furent fureur furies furtif fusain fusait fusant fuseau fusees fusent fusils fusion futaie futees futile future futurs fuyais fuyait fuyant fuyard fuyons gachee gacher gaches gachez gachis gadget gadoue gaffer gaffes gagnai gagnat gagnee gagner gagnes gagnez gaiete gainee gaines galant galene galere galets galeux galion galons galopa galope galops galure gambas gamine gamins gammee gammes gandin gangue gansee ganses gantee garage garait garant garces garcon gardai gardat gardee garder gardes gardez gardon garees garnie garnir garnis garnit garrot gascon gasoil gastro gatait gateau gatees gatent gatera gateux gauche gaufre gauler gaules gaulis gavage gavait gavant gavees gavent gazait gazeux gazier gazons geante geants gegene geisha gelait gelees gelent gelera gemmes genais genait genant gendre genees genent genera genere genese genets geneur genial genies genois genome genoux genres gentes gentil geoles gerait gerant gerber gerbes gerent germer germes gesier gesine gestes geyser ghetto giaour gibets gibier giclee gicler gicles giflee gifler gifles gigolo gigote gigots gilets gilles girafe gisais gisait gisant gisent gitait gitane gitans givree givres glabre glacee glacer glaces glacis glacon glaire glaise glaive glande glands glandu glaner glanes glapir glapit glissa glisse global globes gloire gloria gloses glotte gluant gnomes gobant gobent godets goemon gogues goitre golden golfes gombos gomina gomine gommee gommer gommes gonfla gonfle gonzes gorets gorgee gorger gorges gosier gospel gosses gouape gouine goujat goujon goulag goulee goules goulet goulot goulue goulus gourbi gourde gourds gouree gourer goures gourme gourou gousse goutai goutee gouter goutes goutez goutte grabat graces gracie grades gradin graine grains gramme grande grandi grands grange granit grappa grappe grasse gratin gratis gratos gratta gratte gravee graver graves gravez gravir gravis gravit gredin greffe greles grelot grenat grenue gresil greves griefs griffa griffe grigou grigri grille grimes grimpa grimpe grinca grince gringo griots grippe grisbi grisee griser grises grisou grives groggy grogna grogne grolle gronda gronde grooms grosse grossi grotte groume groupe guenon guepes guerie guerir gueris guerit guerre guetre guetta guette gueula gueule gueuse guidee guider guides guidez guidon guigne guilde guimpe guinde gyneco habile habita habite habits hachee hacher haches hachez hachis hacker hagard haines hairai hairas halage halant haleta halete halles haltes hamacs hameau hammam hampes hanche hangar hantee hanter hantes hantez happee happer happes hardes hardie hardis hareng hargne harper harpes harpie harpon hasard hatais hatait hatant hatent hatifs hative hatons haussa hausse hautes havane heaume hebdos hebete hebreu hegire helant helice helium hennin hennit heraut herbes herbue herita herite hermes hernie herons herpes herses hesita hesite hetero hetman hetres heures heurta heurte heurts hiatus hiboux hideur hideux hilare hindou hippie hissee hisser hisses hissez hivers hochai hocher hoches hochet hockey homard hombre hommes hongre honore hontes hoquet hordes hormis hostie hostos hotels houhou houles houppe hourra housse hublot huerta huilee huiler huiles huipil huitre humain humait humant humble humeur humide humour huppee huppes hurlai hurler hurles hurlez hurrah hutter huttes hyenes hymnes icelle icones ideale ideaux idiome idiote idiots idoine idoles idylle igloos ignare ignora ignore iguane illico ilotes imagee images imbibe imitee imiter imites imitez immole impact impair impala impers impies impoli import imposa impose impots impuni impure impurs inapte incita incite inclue inclus inclut indice indics indien indigo indues induit inedit inegal inepte inerte infame infant infect infime infini influe influx infuse ingenu ingere ingrat inhale inhume initia initie injure inonda inonde inouie inouis insere instit intact intima intime intrus intube invita invite irions irisee irises ironie irreel irrita irrite isolee isoler isoles isolez issues isthme ivoire ivraie jacter jaffas jaguar jailli jalons jaloux jamais jambes jambon jantes japper jardin jargon jarres jarret jasent jasmin jattes jaugea jauger jaunes jaunie jaunir jaunis jaunit jersey jetais jetait jetant jetees jetons jettes jeudis jeuner jeunes jeunot jingle jobard jockey joigne jointe joints jolies jonche jongle jonque joseph jouais jouait jouant jouees jouent jouera jouets joueur jouiez jouira joujou jouons joutes jovial joyaux joyeux jubila jubile juchee jucher juches jugeai jugeat jugees jugent jugera jugiez juives jujube julien julots jumeau jument jumper jungle junior junker junkie jupons jurais jurait jurant jurent jurons jusant jusque justes juteux kabuki kabyle kaolin karate kasher kastro kebour khagne killer kimono kirsch kitsch klaxon kodiak kopeck kummel labeur labour lacage lacees lacere lacets lachai lachee lacher laches lachez lactee lacune ladies ladite lagune laides laines laique laissa laisse laiton laitue lambda lamede lamine lampee lampes lancai lancat lancee lancer lances lancez landau landes langer langes langue langui lapait lapant lapide lapine lapins lapsus laquee laques larbin larcin larder lardon lardus larges largue larmes larron larsen larvee larves larynx lascar lascif lasers lassee lasser lasses latent latine latino latins lattes laudes lavabo lavage lavais lavait lavant lavees lavent lavera laveur lavoir lavons layons lazzis leader lebels lechee lecher leches lechez lecons legale legaux legere legers legion leguee leguer legume lentes lequel lerche lesine lesion lestee lester lestes lettre leurre levage levain levais levait levant levees levent levera levers levier leviez levite levons levres levure lezard lianes liasse libera libere libido libres lichen licite lieder lierre liesse lieues lievre lignee lignes ligote ligues lilial limace limait limbes limier limite limoge limons lingam linges lingot lionne lippue lirais lirait lisais lisait lisant lisent lisere liseur lisiez lisons lissee lisser lisses lissez lister listes liston litige litres litron livide living livrai livrat livree livrer livres livret livrez locale locaux loches logent logera loggia logiez loisir lombes longea longer longez longue looser loques loquet lorgna lorgne loriot losers lotion louage louais louait louant louche louees louent louera loueur loulou louons loupee louper loupes lourde lourds loutre louves louvet lovait loyale loyaux loyers lubies lucide ludion luette lueurs lundis lunule lurent lustre lutins lutrin lutter luttes luttez luxure lyceen lycees lymphe lynche maboul macere macher machez machin machos macons macule madame madere madone madras maffia magnat magner magnes magnez magnum magots maigre maigri maille mainte maints maires mairie maison maitre majeur majors malade malaga malais malard malgre malice maline malins malles mamans manage manche mandat mander manege mangas mangea mangee manger manges mangez mangue manier manies manifs manioc manoir manqua manque mantes mantra manuel maquee maquer maquis marais maraud marbre marcha marche mardis marees margay marges margot marida mariee marier maries mariez marina marine marins marlin marlou marmot marner marnes marqua marque marrer marres marrez marrie marron martel martre martyr masque massee masser masses massif massue master mastic mastoc masure matais matait matant matchs matent matine matins matite matois matons matous matras matter mature maudis maudit maures mauser mauves maxima maxime mazout mecano mecene meches median medias medina medire medita medite medium medius medocs meduse mefait mefiee mefier mefies mefiez megalo megere megots mehari melais melait melant melees melent melera meleze melons membre memere menaca menace menage menais menait menant mendie menees menent menera meneur menhir menons mental mentes mentez menthe mentir mentis mentit menton mentor menues menuet mepris meprit mercis merder merdes merite merlan merles merlot messer messes messie mesura mesure metaux metier metres metros mettes mettez mettra mettre meuble meules meures meutes mexico miaula miaule miches micmac micros mienne miette mievre mignon migrer mijote mikado milady milice milieu milite milles millet milord mimait mimant miment mimosa minait minces mincir minets mineur minier minima minime minium minois minous minuit minute mioche mirage mirait mirent miroir misait misent misere missel mister mitard miteux mitres mitron mixage mixeur mixtes mobile moches modele modere modula module moelle moeurs mohair moines moiree moires moisie moisir moisis moisit moites moitie mollah molles mollet mollie mollir mollit moment momies mondes mongol montai montat montee monter montes montez montra montre moquat moquee moquer moques moquez morale moraux mordez mordis mordit mordra mordre mordue mordus morfle morgue mornes morose mortel mortes morues motard motels moteur motifs motion motive mottes mouais moucha mouche moudre moufle moufte mouise moujik moulee mouler moules moulin mourez mourir mouron mourra mourus mourut mousse moussu mouton moyens moyeux muchas muette muffin mufles muguet mulets mulots munies murait murale murees murene murets muscat muscle museau musees musico musque mutant mutile mutine mutins mutuel mycose mylord myopes myopie myrrhe myrtes mythes nabots nacree nacres nagent nageur naines naisse naitra naitre naives nantie nantis napalm nappes naquit nargue narine narrer narval nasale nasses natale natifs nation native nattes nature nausee navale navals navets navire navree navres nazies nectar nefles negoce negres negros neiger neiges nervis nettes neuneu neural neutre neuves neveux niable niaise nichee nicher niches nichon nickel nicois nieces nierai nigaud nimbee nippee nippes nippon niquer niveau nivele nivose nobles noceur nocifs nocive noeuds noient noirci noires noises nomade nombre nomine nommai nommee nommer nommes nommez nonnes normal normes noroit notais notait notant notees notera notice notiez notion notres nouait nouant nouees nouent noueux nougat nounou nourri nouvel novice noyade noyais noyait noyant noyaux noyees noyers nuages nuance nubile nudite nulles numero nuques nurses nymphe nympho obeira obeses objets oblige oblong obscur obsede obtenu obtins obtint obtuse occase occire occupa occupe oceane oceans octave octroi odeurs odieux odorat oedeme oedipe oeuvre offert office offres offrez offrir offris offrit ogival ogives oignon oiseau oiseux oisifs oisive olives ombres oncles ondees ondine ondula ondule onglee ongles onglet opalin opaque operas operee operer operes operez opinel opiner opposa oppose option oracle orages orange orante orbite ordres ordure organe orgeat orgies orgues orient origan ormeau ornait ornant ornees ornent orques orteil orties oscars oserai oseras oserez osiers osions osmose osseux otages otarie otites ouatee ouates oublia oublie oublis ouiche ouille ourdit ourdou ourlee ourler ourles ourlet oursin ourson outils outree outres ouvert ouvres ouvrez ouvrir ouvris ouvrit ovaire ovales ovoide ovules pacage pachas pacses pacson pactes paella pagaie pagaye pageot pagode paiens paient paiera paille paires paitre palace palais paleur palier palies palmes palper panade panama panard panier pannes panser pantes pantin panzer papale papaye papier paques paquet parade parais parait parano parant pardon parees pareil parent parfum parias parier paries pariez parite parlai parlat parlee parler parles parlez parois parole partes partez parthe partie partir partis partit parure parvis pascal pasque passai passat passee passer passes passez passif pastel pastis patata patate patati pataud patent patere pateux pathos patine patins patios patois patres patrie patron pattes pature paumee paumer paumes pauses pauvre pavage pavane pavees pavois pavots payais payait payant payees payent payera payiez payons paysan pecari pecher peches pechez pecore pecule pedale pedant peigna peigne peinee peiner peines peinez peinte peints pekins pelade pelage pelait pelees pelles pelote pelure pelvis penale penard penaud pencha penche pendez pendit pendra pendre pendue pendus pensai pensat pensee penser penses pensez pensif pensum pentes people pepees pepere pepins pepite percee percer perces percez perche percue percus percut perdes perdez perdis perdit perdra perdre perdue perdus perils perime perira perlee perler perles permet permis permit pernod perore perron persan perses persil pertes pesage pesais pesait pesant pesent pesera pester petait petale petant petard petent petera peteux petiot petite petits petons petrie petrin petrir petris petrit petros petrus peupla peuple phares phases phenix phobie phoque photos phrase physio piaffe pianos piaule piazza picaro pichet picole picore picote picsou picton pieces piegee pieger pieges pierre pieton pietre pieuse piffer pigent pigeon pignon pilait pileux pilier pillee piller pilles pillez pilons pilori pilote pilule piment pinard pincee pincer pinces pincez pinede pingre pinson pintes pioche piolet pionce pipeau piquai piquee piquer piques piquet piquez piqure pirate pissat pisser pisses pissez pissou pister pistes pistil piston pistou piteux pitons pivert pivota pivote pixels pizzas placai placee placer places placez plages plaida plaide plaies plaine plains plaint plaira plaire plaise planer planes planta plante plants plaqua plaque plasma platee plates platre please pleine pleins pleura pleure pleurs pleuve plevre plexus pliage pliais pliait pliant pliees plient plissa plisse pliure plombe plombs plonge ploucs ployee ployer pluche pluies plumer plumes plumet plutot poches podium poeles poelon poemes poesie poetes pognes pognon pogrom poigne poilue poilus poings pointa pointe points pointu poires poison poisse poivre polack polars police polies pollen pollue polope polype pommes pomper pompes pompez pompon ponant poncho poncif pondre pondus poneys pontes ponton popote populo porche poreux pornos porque portai portat portee porter portes portez portos posada posais posait posant posees posent posera poseur posiez posons postal postee poster postes postez potage potard poteau potees potele potier potins potion pouces poucet poudre pouffa pouffe poules poulet poulie poulpe poumon poupee poupin poupon pourim pourra pourri pourvu poussa pousse poutou poutre pouvez preaux preche precis predis predit prefet prelat prends prenez prenne prenom pressa presse preste presto pretai pretat pretee preter pretes pretez pretre preuve prevot prevue prevus priais priait priant prient priere prieur primat primes prince prions prisee priser prises prisme prison privee priver prives privez proces proche profil profit proies projet projos prolos promet promis promit prompt promue pronom propos propre prosit prouva prouve prunes prurit psaume pseudo psyche psycho puante puants pubien publia public publie puceau pucier pudeur pueblo pueril puffin puisee puiser puisse pulque pulsar punira purent purete purger purges putain putois putsch putter puzzle pyjama pylone pythie python quaker quarts quartz quatre quelle querir queter quetes queues quiche quidam quiete quille quinte quinze quiqui quitta quitte quorum quotas rabais rabats rabbin rabiot rables rabote rabots rachat racial racine racket raclee racler radars radeau radine radins radios radium radote radoub rafale raffut rafiot rafler rafles rageur raglan ragots ragout raider raides raidie raidir raidis raidit railla raille raines raisin raison ralait ralant ralent raleur rallia rallie rallye ramage ramait ramant rambin ramdam rameau ramena ramene rameur ramier ramone ramper rampes rampez ramure rances rancho rancon rangea rangee ranger ranges rangez ranima ranime raouts rapace rapait rapees rapeux raphia rapide rapine rapins rappel rapper raquer rarete rasade rasage rasais rasait rasant rasees rasent rasera raseur rasoir rassis rassit ratage ratais ratait rateau ratees ratent ratera ratier ratine ration ratons rature rauque ravage ravala ravale ravier ravies ravine ravins ravisa ravise raviva ravive ravoir rayait rayant rayees rayons rayure razzia reagir reagis reagit rebati rebond rebord rebute rebuts recale recele recent reches recifs recita recite recits reclus recoin recois recoit record recoud recree recres recria recrie recrue rectal rectum recues recuit recula recule reculs recure recuse redige redire redoux reduis reduit reelle refais refait refera refere refile reflet reflua reflue reflux refont refuge refusa refuse regain regale regard regate regent reggae regime region reglai reglee regler regles reglez reglos regner regnes regnez regret reines reitre rejeta rejete rejoue rejoui relais relaps relata relate relaxe relaye relent releva releve reliee relief relier relies relire reluit remake remede remets remise remord remous rempli remuee remuer remues remuez renais renait renale renard renaud renaux rendes rendez rendis rendit rendra rendre rendue rendus renfle reniee renier rennes renoue renove renter rentes rentra rentre renvoi repais repand repara repare repars repart reparu repens repent repera repere repeta repete repits replat replet replia replie replis repond repons report reposa repose repris reprit repute requin requis reseau reseda reside residu resine resolu resous resout ressac restai restat restau restee rester restes restez restos resuma resume retame retape retard retenu retifs retine retins retint retira retire retive retors retour reubeu reunie reunir reunis reunit reussi revais revait revant reveil revela revele revend revent revenu revere revers revetu reveur reviez revins revint revise revive revoie revoir revois revoit revolu revons revues rhesus rhumes riante riants ricain ricana ricane riches rictus ridait rideau ridees rieurs rieuse rififi rigide rigola rigole rigolo riions rikiki rimait riment rimmel rincer rinces ripoux ripper rirais rirait rirent rirons riront risees risqua risque ritale ritals rituel rivage rivait rivale rivaux rivees rivets robert robins roblot robots rochas rocher roches rocker rocket rococo rodage rodais rodait rodant rodent rodeur rogner rognes rognon roides roller romain romane romans rompez rompit rompre rompue rompus ronces rondes rondin ronfla ronfle rongee ronger ronges ronron roques roquet rosace rosbif roseau rosees roseur rosier rosser rosses rotait rotary roties rotule roture rouage rouble rouges rouget rougie rougir rougis rougit roulai roulee rouler roules roulez roulis roumis rounds roupie rousse roussi rouste routes routin rouvre royale royaux ruades rubans ruches ruelle ruinee ruiner ruines ruinez rumeur rumina rumine rupins rurale ruraux rushes russes rustre rutile rythme sabbat sables sabord sabote sabots sabrer sabres saches sachet sachez sacree sacres safari safran sagace saigne saines sainte saints saisie saisir saisis saisit saison salace salade salami salaud salees salete salies salive salles salmis saloir salons saloon salope saluai saluee saluer salues saluez saluts salves samedi sangle sanies santal saoule saouls sapait sapeur saphir sapins saquer sarrau satana satane satins satire sature satyre saucer sauces saules saumon saunas saurai sauras saurer saurez sautai sautee sauter sautes sautez sauvee sauver sauves sauvez savais savait savane savant savate savent saveur saviez savoir savons sbires scalpe scalps scanda scande scanne sceaux scelle scenar scenes schbeb schema schupo schuss sciait sciees scieur scinde sciure scolie scones scores scotch scoute scouts scribe script scrubs scruta scrute seance sebile sechee secher seches sechez second secoua secoue secret sectes seduis seduit seiche seigle seisme sejour select seller selles sellez semait semant sembla semble semees sement semeur semons senile senior sensas sensee senses sentes sentez sentie sentir sentis sentit separa separe serail serais serait serbes serein serial series seriez serine serins sermon serons seront serrai serree serrer serres serrez sertie sertis serves servez servie servir servis servit sesame setter seuils seules severe sevice sevree sexuel seyait seyant shaker shakos shaman sherif sherry shogun shoote shorts sidere siecle sieger sieges sienne sierra sieste sieurs siffla siffle sigles signai signal signee signer signes signet signez signor sillon simili simoun simple simula simule singea singer singes single siphon sirdar sirene sirops sirote sitcom situee situer situes skates sketch skieur skunks slalom slaves slogan smiley smocks sniffe sniper sobres soccer social socles sodium soeurs soient soigna soigne soiree soldat soldee solder soldes soleil solide sombra sombre sommee sommer sommes sommet sonate sonder sondes songea songer songes songez sonnai sonnat sonnee sonner sonnes sonnet sonnez sonore sophie sorbet sortes sortez sortie sortir sortis sortit sosies sottes souche soucia soucie soucis soudee souder soudes soufis soufre soulee souler soules soumet soumis soumit souper soupes soupir souple source sourde sourds sourie souris sourit soutes soutif soviet soyeux soyons spahis spasme speech sperme sphere sphinx spider spinal spires spleen spores sports spring sprint square squash stable stades stages stagne stalag stalle stands statue statut stayer steaks steles steppe stereo steres stocke stocks stoker stones stoppa stoppe stores strass stress strict striee stries string studio stukas stupre styles stylet stylos suaire suante suants suaves subies subira subite subito subits subtil sucais sucait sucant succes sucent suceur sucote sucree sucrer sucres sueurs suffis suffit suinte suisse suites suives suivez suivie suivis suivit suivra suivre sujets sultan summum supers suppot sureau surent surete surfer surgie surgir surgis surgit surmoi surnom suroit sursis survie survis survit survol suture svelte sylvie sympas syndic synthe syrien syrtes tabacs tablee tabler tables tabors tabous tachai tachee tacher taches tachez tacite taenia tagada taiaut tailla taille tairai taisez talbin talent talion talons tamise tampon tancer tanche tandem tangos tangua tangue tanker tannee tanner tantes tantot tapage tapais tapait tapant tapent tapera tapies tapine tapins tapota tapote taquin tardai tarder tardes tardez tardif taries tarifs tarots tartes tartir tartre tassee tasser tasses tatais tatait tatane tatant tatoue taudis taules taupes taupin techno teckel teigne teinte teints telles temoin tempes temple tenace tenais tenait tenant tender tendez tendis tendit tendon tendra tendre tendue tendus teneur teniez tennis tenons tenors tentai tentat tentee tenter tentes tentez tenues tergal termes ternes ternie ternir ternis ternit terree terrer terres tertio tertre tesson testee tester testes testez tetait tetant tetard tetees tetine tetons tetues texans textes themes theses thomas thorax thunes tibias ticket tiedes tiedie tiedir tienne tierce tigree tigres timbre timide timing timore tinter tintin tiquer tiques tirade tirage tirais tirait tirant tirees tirent tirera tireur tiriez tiroir tirons tisane tisons tissee tisser tisses tissus titane titrer titres tituba titube toasts tocade tocard tocsin toiles toiser toises toison tolere tomate tombai tombat tombee tomber tombes tombez tondre tondue tondus tonner tonnes tonton topaze toquee toquer toques torcha torche tordit tordre tordue tordus toreer torero torses tortue torves toscan totale totems toubab toubib toucha touche touffe touffu toupet toupie tourbe tourna tourne tourte toussa tousse toutes toutim toutou toxico toxine tracas tracee tracer traces tracts trader trafic trahie trahir trahis trahit traina traine trains traire traita traite traits trajet tramer trames transe transi trappe trapue trapus traque trauma travee trefle treize trempa trempe trench trente trepas tresor tresse treuil triade triage triais triait tribal tribun tribus tribut triche tricot trille trimer tripes triple tripot trique trisse triste triton trogne troika trolls trombe trompa trompe troncs troner trones troqua troque trotte trouee trouer troues trouez troupe trouva trouve truand truffe truite truque trusts tubard tudieu tuerai tueras tuerez tuerie tueurs tueuse tuiles tulipe tumeur tunnel turban turbin turbot turent turque tussor tuteur tutoie tutoya tutoye tutute tuyaux tympan typhon typhus tyrans uhlans ulcere ultime ultras unieme unifie unions unique unisse unites urbain uremie uretre urgent uriner urines usagee usager usages usines usuels usurpe uterin uterus utiles utopie vacant vaccin vacher vaches vaguer vagues vaille vaincu vaines valais valait valant valent valets valeur valide valise vallee vallon valoir valons valser valses valves vanite vannee vanner vannes vantee vanter vantes vapeur vaquer varech variee varier varies vaseux vasque vassal vastes vaudou vaudra vautre vecues vegete veilla veille veines velcro veloce velues venais venait venale venant vendez vendis vendit vendra vendre vendue vendus venere veneur vengea vengee venger venges vengez veniel veniez venons ventes ventre ventru venues vepres verbal verbes verdie verdit vereux verger verges vergue verite verlan vernie vernir vernis vernit verole verrai verras verrat verres verrez verrou verrue versai versee verser verses verset versez vertes vertex vertus vessie vestes veston vetait vetent vetues veture veules veuves vexait vexant viable viaduc viagra viande vibrer vibure vidais vidait vidant videes vident videos videur vielle vienne vierge vigies vigile vignes vilain villas villes vineux vinyle violee violer violes violet violez violon vioque vipere virage virait virale virant virees virent virera virile virils virons visage visais visait visant visees visent viseur vision visita visite visons vissee visser visses visuel vitale vitaux vitree vitres vivace vivais vivait vivant vivats vivent viveur vivier viviez vivons vivrai vivras vivres vivrez vizirs vocale voguer voient voilee voiler voiles voirie voisin volage volais volait volant volcan volees volent volera volets voleur voliez volley volons voltes volume volute vorace vortex votait votent votera votive votons votres vouais vouait voudra vouees voulez voulue voulus voulut vouons voutee vouter voutes voyage voyais voyait voyant voyeur voyiez voyons voyous vraies vrilla vrille vulves wagons waters webcam whisky xavier yachts yakuza yankee yaourt yeuses youpin yourte youyou yuppie zapper zebree zebres zelote zenith zephyr zieute zigoto zigzag zinzin zlotys zombie zombis zonard zonzon zoomer zouave zyeute zyklon"},"pouce":{"4":"abbe abri abus acre acte agee ages agir aide aigu aile aine airs aise amas amer ames amie amis ange aout apre arme arts atre aube auto aveu avis azur baie bain bals banc bars base beau bebe bete bide bien bise bled bles bleu bloc bois bols bond bons bord bouc boue bout boxe bras bref brin brun buee buis buts cafe cage camp cape case cave cerf char chat chef cher chic choc chou ciel cils cire cite clan clef cles clin clou club coco code coin cols cote coup cour crac cran cris crue cube cuir cure daim dame date defi deja dela demi dent dieu dire dois dons dore dose doux drap dupe dure durs eaux echo egal elan emoi epee etat etre etui exil face fade faim fers fete feux fier film fils fine fins fixe flot flou flux foie foin fois fond foot fort four fuir gaie gant gare gens gite golf gout gras grec gris gros guet haie hair hall halo hate haut hier hote idee iles ilot insu iris ivre jais jazz jean jets jeux joie joli jour juge juin jupe jury kaki kepi kilo lacs laid lait lame lard lent lien lier lieu lion lire lits loge loin lois long lord lors loup lune luxe main male mare mari mars maux meme menu mere mers midi miel mine mode mois mome mont mort moto mots moue mous muet murs nage naif nain neon nier noce noel noir noix noms nord note nues nuit obus oeil oeuf onde oser oter ours page pain paix pale pans papa pape parc part pate pave pays peau pepe pere peur pied pieu pile pins pipe pire plan plat plis plus poil pois poli pont pope porc port pots poux pret prix prof pull pure purs quai quoi race rade rage raie rale rame rang rare rats reel reve rhum rire rite rive robe rock rois role rond rose roue roux rude rues ruse sacs sage sain sale sang saut scie seau secs sein seul seve soie soif soin soir sons star stop suie sure surs tant tard taxi tete tetu tics tige toit tole tons tort tour tous tout toux trac tres trio trop trot trou truc tsar tube tuer type unir user vain vase veau velo vent vert vice vide vies vifs vins vite voeu voie voir voix vols vrac yeux zele zero zinc zone","5":"abime abord abris acces achat acide acier actes affut agent aider aigle aigre aigue aigus ailes aimer ainee ainsi album alibi aller allie alors amant amere amies amour ample anges angle annee appel appui arabe arbre arche arete armee armes arret asile assez aussi autel autos autre avare aveux avide avion avril bache bague bahut bains balai balle banal bancs bande barbe barbu baron barre bases basse batir baton bazar beaux bebes beige belge belle beret berge betes beton biais bible biche bidon biens biere bijou bilan bille blanc bleme bleue bleus blocs blond blues boeuf boire boite bombe bonds bonne bonte bords borne botte boule bourg bouts boyau brave brefs breve bride brins bruit brume brune bruns brute buche bulle buste buter butin butte cabas cadre cafes cages calme camps canal canne canon canot capot carre carte cases cause caves ceder cerfs cesse chair chale champ chant chaos chars chats chaud chaux chefs chene chere cheri chers chien chocs choir choix chose choux chute cible cimes citer civil clair clefs clerc close clous clown coeur cohue coins colis comte conge conte copie coque corde corne corps cotes coton coude coupe coups cours court crabe craie crane creer creme crepe crete creux crier crime crise crocs croix cruel cubes cuire cuite culot culte cures dalle dames danse dates debat debit debut decor degre delai delit demie demon dense dents depit depot desir dette deuil dieux digne digue diner divan divin doigt doree dores douce doute doyen drame draps droit drole dunes duree durer dures duvet ecart echec echos eclat ecole ecran ecume effet egale egard egare egout elans eleve elite eloge email encre enfer enfin engin ennui envie envoi epais epars epave epees epoux errer essai etage etang etape etats etres etude eveil evier exact exces fable faces facon faire faits farce fatal faune faute fauve femme fente fesse feter fetes fichu fiere fiers filer filet fille films final fines finir fixer flanc fleur flics flots flute foire folie folle fonds fonte force foret forge forme forte forts fosse fouet foule foyer frais franc frein frele frere frigo frime froid front fruit fugue fuite fumee fumer furie fusil futur gaffe gaite galop gamin gamme gants garce gares gazon geant gelee gemir gener genie genou genre gerbe geste gifle gilet girls givre glace globe golfe gomme gorge gosse gouts grade grain grand grave grecs grele greve grise guere guide guise habit hache haies haine hardi harem hater haute hauts herbe heros heure hippo hiver homme honte hosto hotel hotes houle huile humus hymne ideal idees idiot idole image index inoui issue ivres jadis jambe jaune jenny jeter jeudi jeune joies jolie jolis joncs jouer joues jouet jouir jours juger juges jupes jurer juste khans kilos lacet laide laine lames lampe lande lapin large larme lasse latin laver layon lecon leger lente lents lever levre libre liens lieux ligne lilas linge lions lisse liste litre livre local loger logis longs louer louis loups lourd loyer lueur lundi lutte lycee magie mains maire major males malin malle maman manie mardi maree marge marin maris marre masse match mater matin mauve meche megot meler melon memes mener menue menus meres messe metal metre metro meute micro mieux mince mines moche moine moins moite molle momes monde monts moral morne morts motif moyen muets mufle musee mythe nacre nager naive nanas nappe natal neant neige nerfs nette neufs neuve neveu niche niece noble noces noeud noire noirs noter notes nouer noyau noyer nuage nuees nuits nuque nylon oasis obeir objet ocean odeur oeufs ombre oncle ondes ongle opera opium orage ordre orgue osier ouais oubli ouest outil outre ovale pacha pacte pages pains paire pales panne parcs parer paris paroi parts pates patte paume pause paves payer peaux peche peine pelle pente peres peril perle perte peser peste peter petit phare phase phono photo piano piece pieds piege piete pieux piges piles pince pipes pires piste pitie piton place plage plaie plans plate plats plein plier plomb pluie plume pneus poche poele poeme poete pogne poids poils poing point poire polka pomme pompe ponts porte ports poser poste potes pouce poule pouls prete prets prier prime prive profs proie proue puces puits punir puree quais quant quart quasi quete queue races radio raide rails rames rampe rangs rares raser rater ravin rayon reche recit recul refus regle regne reine reins renes repas repit repli repos rever reves revue riche rides rires rites rives robes roche roder roles roman ronde ronds rosee roses roues rouge route royal ruban rudes ruine ruses russe sable sabot sabre sacre sages saine saint sales salir salle salon salut samba sante saoul sapin satin sauce savon scene seaux seche seins selle semer serie seuil seule seuls short siege sieur signe silex singe sirop sitot socle soeur soins soirs solde somme sorte souci soupe sourd sport squaw stade style stylo suave subir subit sucre sueur suite sujet super sympa tabac table tache taire talon talus tante taper tapis tarte tasse tater taule taxis teint tempe temps tenir tenue terme terne terre tetes texte theme these thune tiede tiers tiges tirer tissu titre toile toits toque torse total tours toute trace train trait trame treve tribu tronc trone trous trucs tubes tueur tuyau tweed types union unite urine usage usine usure utile vache vague vaine valet valse vases vaste veine venir vente vents verbe verre verte verts vertu veste veuve vices vider vides vieil viens vieux vigne villa ville virer virus vitre vives vivre vizir vodka voeux voies voile voire volee voler volet voute voyou vraie vrais wagon zanzi zones","6":"abimer abimes abords absent absolu acajou accent accord achats acteur action active actuel adieux adulte aerien agence agenda agents agiter agneau agonie alarme albums alcool alerte algues allees allies allure amante amants amener amical amiral amitie amours amuser ancien angles animal anneau annees aplomb appels arabes arbres ardent ardeur argent argile armees armure arrets aspect assaut astres atroce aubain audace aurore autant auteur autour auvent avaler avance avenir avenue averse avides avocat avoine avouer bagage bagues balais balcon balles ballet ballon banale bander bandes banque barman barque barres basses bassin batard bateau batons battre beaute belles berger berges besoin betail betise beurre biches bidons bijoux billes billet bitume blague blancs bleues blonde blonds blouse boches boeufs boites bombes bondir bonnes bonnet bornes bottes bouche boucle boudin boueux bouffe bouger bougie bougre boules boulot bourse bouton boxeur boyaux braise braves brebis breche breves bribes brique brisee briser bronze brosse bruits brulee bruler brumes brunes brutal bucher buches budget buffet bulles bureau cabane cabine cacher cachot cadeau cadran cadres cafard cagibi cahier caisse calcul calmer calmes camion canape canard canaux cancer cannes canons capote carnet carree carres cartes carton casino casque casser causer causes caveau cendre centre cercle certes cesser chaine chaire chairs chaise chalet champs chance chants charme chasse chaude chauds chauve chemin chenes cheque cheres cherie cherif cheval chevet cheveu chevre chiens chimie choeur choses chutes cierge cigare ciment cinema cirque citron civile civils claire clairs clarte classe cliche client climat cloche closes cochon coeurs coffre cognac cogner colere coller combat comble comite commun compte confus consul contes convoi copain copies copine cordes cordon cornes cornet corvee coteau coudes coudre coulee couler couper coupes couple courbe courir course courte courts cousin couter crabes crasse crayon creche credit crever crimes crises croire crosse croupe croute cruels cuisse cuivre cypres dalles danger danser debats debout debris debuts declic declin decors decret dedain dedale dedans deesse defaut defile degats degout degres dehors delire deluge demain demons depart depute derive desert desirs desole dessin dessus destin detail detour dettes devise devoir diable dignes diners dingue direct disque divers divine docile doigts donner dorees dormir douane double douces douche doudou douter doutes dragon drames drogue droite droits droles durete echecs echine eclair eclats ecoles ecorce ecrire ecurie effets effort effroi egards eglise elevee elever eleves empire emplir emploi encens enclos encore enfant enfuir engins enigme ennemi ennuis enorme entier entree entrer envies epaule epaves epices epines eponge epoque epouse equipe erreur escale espace espece espoir esprit estime etable etages etaler etangs etapes etoffe etoile etroit etudes evader eveque eviter exacte examen exiger expres exquis extase facade facile facons fagots faible faille fameux famine farine fatale fausse fautes fauves faveur favori femmes fendre fentes fermer fermes feroce fesses feutre fiance fiches fidele fierte fievre figure filets filles finale flacon flamme flancs flaque fleche fleurs fleuve flotte folies folles foncer fondre forcer forces forets format former formes fortes fosses foudre fougue foulee foules fourmi fourre foutue foyers fracas francs frange freins fremir freres frises froide froids fronts fruits fumees fumier fureur furtif fusils fusion future futurs gacher gagner gaiete galere galets galons gamine gamins garage garcon garder gardes gateau gauche geante genant gendre genial genoux gentil gerant gerbes gestes gibier gifles glacee glaces glaise gloire gorgee gosses goulot gouter goutte graces grades graine grains grande grands grange granit grasse graves gravir grille grises grosse grotte groupe guerir guerre gueule guider guides guidon habile habits hagard halles hameau hanche hangar hardes hasard hautes herbes hetres heures hideux hilare hisser hommes hotels humain humble humeur humide humour hurler ideale idiote illico images imiter inerte infame infime infini inouie intact intime ironie irreel isoler ivoire jaloux jamais jambes jambon jardin jaunes jetons jeunes jockey jolies jouets joueur joyeux jument jungle jurons justes labeur lacets lacher lagune lampes lancer langue lapins larges larmes lasser lattes lavabo lavoir lecher lecons legere legers legion lentes lettre levres lezard liasse libres lierre lieues lignes limite lisses listes litres livide livrer livres locale loisir longue loques louche loulou lourde lourds lucide lueurs lustre lutter machin madame maigre mairie maison maitre malade malice manche mandat manege manger manier manies manoir maquis marais marbre marees marier marine marins marque marrer marron masque masses massif matins maudit mauves meches mefier megots membre menace menage menthe mentir menton mepris mesure metier metres mettre meuble miches mignon milieu minces minuit minute mirage miroir misere mobile modele moelle moeurs moines moites moitie molles mollet moment mondes montee monter moquer morale mordre morgue mornes morose mortel mortes moteur motifs mottes mouche moules moulin mourir mousse mouton moyens muette museau musees naitre nappes narine natale nation nattes nature nausee navire neiges neutre neuves niveau nobles noeuds noires nombre nommer normal notion nouvel nuages nuance nudite numero objets obscur odeurs odieux oeuvre office offrir oignon oiseau ombres oncles ongles opaque operer oppose orange ordres ordure organe orties osseux outils ouvrir paille paires palace palais paleur palier palmes panier papier paquet parade pareil parfum parler parois parole partie partir parvis pascal passer patois patrie patron pattes paumes pauvre paysan pecher peches pedale peigne peines pelage pendre pensee penser pensif pentes percer perdre perles perron pertes pesant petard petite petits peuple phares photos phrase piaule pieces pieges pierre pigeon pignon pilier pilote pinard pinces piquer piqure pistes placer places plages plaies plaine plaire plaque plates platre pleine pleins pleurs pluies plumes plutot poches poemes poesie poetes pognes pognon poigne poings pointe points pointu poison poivre police pommes pompes porche portee porter portes postes potage poteau pouces poudre poules poulet poupee pourri poutre precis prefet prenom presse preter pretes pretre preuve priere prieur prince prison privee priver proces proche profil profit projet propos propre public pudeur purete putain puzzle pyjama quarts queues rabbin racine rafale raides raison ramper rangee ranger rapide rappel rasoir ration rauque rayons reagir rebord recent recits recoin redire reelle reflet refuge regard regime region regler regles regner regret relais relief relire remede remise remous remuer renard rendre reseau resine rester retard retour reunir reveil revers reveur revoir revues riches rictus rideau rigide risque rituel rivage rocher roches romain romans rompre ronces rondes rouges rougir rouler rousse routes royale rubans ruelle ruines rumeur russes rythme sables sabots sacree sacres sainte saints saisir saison salade salete salive salles salons saluer samedi sapins saules sauter sauver savant saveur savoir scenes sciure scotch seance secher seches second secret sejour sentir serail serrer servir seules severe sexuel siecle sieges sieste signal signer signes sillon simple singes sirene situer social soeurs soiree soldat soleil solide sombre sommet songer songes sonner sonore sortes sortie sortir souche soucis souper soupir souple source sourde sourds souris soyeux sphere sports square statue steppe strict studio subite subtil succes suisse suivre sujets surete surgir surnom sursis survie syrtes tables tacher taches taille talent talons tampon tantes tantot tapage tarder tasses teinte temoin tempes temple tenace tendre tendue tennis tenter tentes termes ternes terres textes thomas ticket tiedes timbre timide tirage tireur tiroir tissus titres toiles toison tomate tomber tonnes tonton torche tordre totale toubib touffe toutes tracer traces tracts trafic trahir trains traits trajet trappe tresor tricot tripes triple triste trombe troncs trouee troupe tuiles tunnel turban tuyaux ultime unique unites urgent usages usines utiles vaches vagues vaines valets valeur valise vallee vallon valoir vanite vanter vapeur vastes veille veines vendre venger ventes ventre venues verger verite vernis verres verrou verser vertes vertus vestes veston viande vibrer vierge vignes vilain villas villes violet violon virage visage vision visite vitree vitres vivant vivres voiles voisin volant volets voleur volume voutes voyage voyous vraies wagons whisky"},"depart":{"4":"aide aile aise bain base bois bond boue bout cafe cage cave cire cite coin cote cour cure foie foin fois hate lien lieu main mars mere mois mort moue ours page pain pate pepe pere pile pipe port race rage role roue soie soin soir tort tour voie","5":"balle boite bonte carre cours crete crime depit doute duree faute force foule greve laine livre masse matin meche paire peche pente perte piece piste place poete pomme porte poste poule reine route sable salle selle sueur veste","6":"bouche chaise chasse course danger douche grange mouche palier panier poudre retard troupe valeur"},"aff":{"larvee":"larvée","elia":"élia","epousa":"épousa","usagee":"usagée","enflee":"enflée","recree":"recréé","tanne":"tanné","depens":"dépens","mats":"mâts","fidele":"fidèle","bemol":"bémol","louee":"louée","decrit":"décrit","meche":"mèche","coutat":"coûtât","nausee":"nausée","echue":"échue","hatez":"hâtez","laius":"laïus","flaner":"flâner","muri":"mûri","relaye":"relayé","emis":"émis","amphes":"amphés","cherit":"chérit","lechez":"léchez","duree":"durée","recent":"récent","ronges":"rongés","ideale":"idéale","reussi":"réussi","athee":"athée","epuree":"épurée","ilot":"îlot","repons":"répons","leve":"lève","creme":"crème","devide":"dévide","gantee":"gantée","couter":"coûter","veture":"vêture","cedons":"cédons","evier":"évier","beton":"béton","oter":"ôter","defere":"déféré","egayee":"égayée","seche":"sèche","hatai":"hâtai","medina":"médina","arques":"arqués","aliena":"aliéna","operes":"opérés","priee":"priée","striee":"striée","otai":"ôtai","cesure":"césure","arrime":"arrimé","ecarte":"écarte","meme":"même","bareme":"barème","evasif":"évasif","zephyr":"zéphyr","happe":"happé","placai":"plaçai","otent":"ôtent","percut":"perçut","epaule":"épaule","precis":"précis","etals":"étals","feroce":"féroce","sieges":"sièges","obei":"obéi","becane":"bécane","elimes":"élimés","areole":"aréole","chevre":"chèvre","ancree":"ancrée","accole":"accolé","coupee":"coupée","detale":"détale","appret":"apprêt","rognes":"rognés","mangee":"mangée","phenix":"phénix","tirat":"tirât","sphere":"sphère","agacee":"agacée","recre":"récré","bleme":"blême","plisse":"plissé","dedain":"dédain","boreal":"boréal","censes":"censés","cedais":"cédais","arret":"arrêt","croque":"croqué","cloute":"clouté","denue":"dénué","bottee":"bottée","epieu":"épieu","chaine":"chaîne","jetes":"jetés","bebe":"bébé","insere":"inséré","arquee":"arquée","pensee":"pensée","rodent":"rôdent","dinent":"dînent","ecluse":"écluse","dictes":"dictés","affut":"affût","kine":"kiné","avivee":"avivée","suroit":"suroît","macher":"mâcher","clerge":"clergé","proces":"procès","rode":"rôde","fleche":"flèche","fumee":"fumée","reduis":"réduis","inhale":"inhalé","bleute":"bleuté","brises":"brisés","regate":"régate","nomme":"nommé","cles":"clés","levee":"levée","cheche":"chèche","fiance":"fiancé","careme":"carême","briefe":"briefé","emmure":"emmuré","fermee":"fermée","agaces":"agacés","athees":"athées","gagnee":"gagnée","rodant":"rôdant","fourre":"fourré","vetues":"vêtues","appate":"appâté","canape":"canapé","reche":"rêche","crepe":"crêpe","etira":"étira","epelle":"épelle","hotes":"hôtes","sucais":"suçais","eteins":"éteins","avera":"avéra","lesion":"lésion","dement":"dément","etrons":"étrons","paumee":"paumée","oblige":"obligé","epuise":"épuisé","uses":"usés","etaler":"étaler","decade":"décade","bache":"bâche","venal":"vénal","flores":"florès","grace":"grâce","osees":"osées","creees":"créées","aloes":"aloès","reveur":"rêveur","eveil":"éveil","elever":"élever","hissee":"hissée","gommee":"gommée","medium":"médium","pame":"pâmé","ebahis":"ébahis","fessee":"fessée","fagote":"fagoté","epoux":"époux","amene":"amène","stoppe":"stoppé","atre":"âtre","tetee":"tétée","ecoute":"écoute","fumees":"fumées","leser":"léser","rarete":"rareté","derida":"dérida","poetes":"poètes","batis":"bâtis","coit":"coït","tiedes":"tièdes","tisses":"tissés","abbe":"abbé","frele":"frêle","ainee":"aînée","hotels":"hôtels","creons":"créons","delai":"délai","crepis":"crépis","scenes":"scènes","semes":"semés","zebres":"zèbres","arcon":"arçon","epates":"épatés","etuis":"étuis","manes":"mânes","gachee":"gâchée","bontes":"bontés","carene":"carène","credit":"crédit","cine":"ciné","fievre":"fièvre","deluge":"déluge","visse":"vissé","venale":"vénale","platee":"platée","etrier":"étrier","genies":"génies","fetu":"fétu","genant":"gênant","gelent":"gèlent","douee":"douée","concue":"conçue","frola":"frôla","eclose":"éclose","felon":"félon","crepue":"crépue","revez":"rêvez","alles":"allés","amarre":"amarré","facha":"fâcha","goutai":"goûtai","tetu":"têtu","garcon":"garçon","aimee":"aimée","fetard":"fêtard","fane":"fané","decris":"décris","frappe":"frappé","grades":"gradés","etalon":"étalon","perlee":"perlée","plie":"plié","enlaca":"enlaça","butes":"butés","recus":"reçus","sacree":"sacrée","beguin":"béguin","repera":"repéra","benoit":"benoît","trempe":"trempé","parite":"parité","coits":"coïts","etire":"étire","semee":"semée","vouees":"vouées","onglee":"onglée","degre":"degré","pekin":"pékin","clande":"clandé","renes":"rênes","hatent":"hâtent","bacle":"bâclé","confie":"confié","vautre":"vautré","queter":"quêter","exiles":"exilés","dument":"dûment","jouees":"jouées","epaves":"épaves","tamise":"tamisé","avarie":"avarié","decore":"décoré","rayes":"rayés","foret":"forêt","masai":"masaï","seve":"sève","epoque":"époque","debris":"débris","gatees":"gâtées","gaves":"gavés","huppes":"huppés","hairas":"haïras","dejoue":"déjoué","vegete":"végète","neons":"néons","paitre":"paître","creuse":"creusé","cedres":"cèdres","etole":"étole","canoe":"canoë","penard":"pénard","elevez":"élevez","effile":"effilé","embues":"embués","pekins":"pékins","vecus":"vécus","axee":"axée","demele":"démêle","campes":"campés","murene":"murène","noyes":"noyés","dinai":"dînai","couves":"couvés","menaca":"menaça","noroit":"noroît","core":"coré","ourlee":"ourlée","cypres":"cyprès","amenee":"amenée","avalee":"avalée","nique":"niqué","ether":"éther","aidees":"aidées","lapide":"lapidé","ferus":"férus","regent":"régent","regna":"régna","defini":"défini","brisee":"brisée","pollue":"pollué","vetue":"vêtue","defaut":"défaut","juches":"juchés","calmee":"calmée","nieces":"nièces","rebute":"rebuté","pylone":"pylône","devolu":"dévolu","debite":"débite","bonde":"bondé","piqure":"piqûre","plante":"planté","aidat":"aidât","plies":"pliés","lievre":"lièvre","denie":"dénie","levees":"levées","happee":"happée","situe":"situé","lese":"lésé","coince":"coincé","dorees":"dorées","echoit":"échoit","emacie":"émacié","eveche":"évêché","debat":"débat","repara":"répara","baches":"bâches","memo":"mémo","droles":"drôles","icones":"icônes","tuat":"tuât","fuhrer":"führer","piquee":"piquée","drole":"drôle","dotee":"dotée","hebete":"hébété","metier":"métier","ecules":"éculés","repute":"réputé","violee":"violée","chomer":"chômer","errone":"erroné","debits":"débits","fremi":"frémi","decent":"décent","piete":"piété","regit":"régit","crenom":"crénom","pedale":"pédale","mecano":"mécano","vetez":"vêtez","cotoye":"côtoyé","etaye":"étayé","hisses":"hissés","memere":"mémère","gitait":"gîtait","bete":"bête","ecoule":"écoule","debats":"débats","infame":"infâme","entres":"entrés","ephebe":"éphèbe","fecond":"fécond","varies":"variés","votee":"votée","themes":"thèmes","tache":"tâche","ecoper":"écoper","remuee":"remuée","evase":"évase","cognee":"cognée","doue":"doué","rosee":"rosée","aine":"aîné","fiee":"fiée","aromes":"arômes","penis":"pénis","effaca":"effaça","degats":"dégâts","gateux":"gâteux","evoqua":"évoqua","cherte":"cherté","epave":"épave","frises":"frisés","paye":"payé","verite":"vérité","ecoula":"écoula","chrome":"chromé","cegep":"cégep","degueu":"dégueu","separe":"sépare","zelee":"zélée","peinee":"peinée","desire":"désire","deloge":"délogé","jures":"jurés","recit":"récit","etends":"étends","aceree":"acérée","ebats":"ébats","acuite":"acuité","frere":"frère","amasse":"amassé","nommee":"nommée","campee":"campée","ecart":"écart","sciees":"sciées","vouter":"voûter","cherir":"chérir","ferie":"férié","emeuve":"émeuve","eloge":"éloge","perir":"périr","taree":"tarée","debuts":"débuts","oedeme":"oedème","vetu":"vêtu","regie":"régie","berces":"bercés","tries":"triés","bombee":"bombée","enonca":"énonça","glaca":"glaça","ciree":"cirée","opera":"opéra","ferir":"férir","defiez":"défiez","zeros":"zéros","plombe":"plombé","strie":"strié","reagir":"réagir","enfume":"enfumé","fames":"famés","etalee":"étalée","milite":"milité","rallie":"rallié","revela":"révéla","emerge":"émerge","herita":"hérita","muree":"murée","publie":"publié","bome":"bôme","pieta":"pietà","rateau":"râteau","captee":"captée","pavees":"pavées","campe":"campé","feces":"fèces","portat":"portât","tiree":"tirée","feru":"féru","expie":"expié","gites":"gîtes","desir":"désir","sesame":"sésame","devora":"dévora","halee":"hâlée","choure":"chouré","depris":"dépris","aieux":"aïeux","obsede":"obsédé","operee":"opérée","delies":"déliés","decele":"décelé","deplia":"déplia","steles":"stèles","acre":"âcre","metal":"métal","detour":"détour","edam":"édam","etaux":"étaux","soiree":"soirée","emir":"émir","elues":"élues","diners":"dîners","leves":"levés","rotie":"rôtie","gesier":"gésier","accede":"accède","feries":"fériés","dilues":"dilués","testes":"testés","resuma":"résuma","gener":"gêner","rable":"râble","ecuyer":"écuyer","petera":"pétera","metro":"métro","crepes":"crêpes","hetero":"hétéro","bebes":"bébés","eviter":"éviter","gache":"gâché","breves":"brèves","braque":"braqué","pitie":"pitié","mene":"mène","potee":"potée","dechu":"déchu","ratees":"ratées","truque":"truqué","cesars":"césars","navree":"navrée","boite":"boîte","flutee":"flûtée","oublie":"oublié","gazes":"gazés","espere":"espère","fetait":"fêtait","epee":"épée","basane":"basané","noues":"noués","tetues":"têtues","brides":"bridés","ainees":"aînées","boheme":"bohème","replie":"replié","cedait":"cédait","pacses":"pacsés","vexee":"vexée","prelat":"prélat","raper":"râper","cites":"cités","regler":"régler","veniel":"véniel","couts":"coûts","noye":"noyé","unite":"unité","parait":"paraît","pedant":"pédant","avines":"avinés","lampee":"lampée","usurpe":"usurpé","usee":"usée","accule":"acculé","poesie":"poésie","leguer":"léguer","gorgee":"gorgée","becte":"becté","zenith":"zénith","tetine":"tétine","delire":"délire","lanca":"lança","chetif":"chétif","rate":"raté","copiee":"copiée","steres":"stères","pegre":"pègre","ondee":"ondée","pare":"paré","epines":"épines","tigree":"tigrée","egaye":"égayé","exigee":"exigée","creve":"crève","rotir":"rôtir","tachee":"tachée","vimes":"vîmes","inedit":"inédit","quitte":"quitté","edites":"édités","sangle":"sanglé","drape":"drapé","posee":"posée","here":"hère","elire":"élire","eleva":"éleva","maquee":"maquée","felure":"fêlure","rases":"rasés","metaux":"métaux","fusee":"fusée","diese":"dièse","frolai":"frôlai","ecrous":"écrous","devia":"dévia","isoles":"isolés","lancai":"lançai","grinca":"grinça","reves":"rêves","laques":"laqués","reduit":"réduit","etait":"était","giclee":"giclée","cite":"cité","boise":"boisé","creche":"crèche","melais":"mêlais","jeuner":"jeûner","decors":"décors","plait":"plaît","arete":"arête","sensee":"sensée","parlat":"parlât","otait":"ôtait","troues":"troués","blamez":"blâmez","colere":"colère","pesee":"pesée","gatait":"gâtait","aidee":"aidée","ruinee":"ruinée","pete":"pété","bloque":"bloqué","initie":"initié","petrie":"pétrie","ecrire":"écrire","recifs":"récifs","genera":"gênera","ulcere":"ulcère","egayer":"égayer","evacue":"évacué","pepere":"pépère","etend":"étend","gerer":"gérer","vissee":"vissée","futes":"futés","eros":"éros","betons":"bétons","gouts":"goûts","pagaie":"pagaïe","median":"médian","recoit":"reçoit","allat":"allât","berce":"bercé","evade":"évadé","revant":"rêvant","video":"vidéo","givree":"givrée","retine":"rétine","viree":"virée","reunir":"réunir","edente":"édenté","motive":"motivé","versee":"versée","egards":"égards","dechet":"déchet","sature":"saturé","emaner":"émaner","epilee":"épilée","cisele":"ciselé","vetir":"vêtir","damne":"damné","agree":"agréé","rapeux":"râpeux","troner":"trôner","boites":"boîtes","mepris":"mépris","perce":"percé","satane":"satané","sevree":"sevrée","epicee":"épicée","melent":"mêlent","secha":"sécha","jugee":"jugée","dallee":"dallée","emit":"émit","armees":"armées","eplore":"éploré","arpete":"arpète","merite":"mérite","percee":"percée","rabote":"raboté","obeir":"obéir","chome":"chômé","renait":"renaît","variee":"variée","damnee":"damnée","crepon":"crépon","isole":"isolé","pepe":"pépé","machez":"mâchez","cassee":"cassée","inonde":"inondé","osat":"osât","egaux":"égaux","rinca":"rinça","etiage":"étiage","etayes":"étayés","pliee":"pliée","detail":"détail","etai":"étai","macon":"maçon","peze":"pèze","exces":"excès","moise":"moïse","crane":"crâne","modere":"modéré","flashe":"flashé","recits":"récits","perit":"périt","revise":"révise","dimes":"dîmes","gemis":"gémis","triche":"triché","delice":"délice","elude":"éludé","sucree":"sucrée","rapait":"râpait","entrat":"entrât","yeye":"yéyé","etiree":"étirée","pieger":"piéger","caique":"caïque","rables":"râblés","gene":"gêne","eduque":"éduqué","menee":"menée","prevus":"prévus","cote":"côté","agace":"agacé","egoine":"égoïne","sautee":"sautée","parlee":"parlée","seves":"sèves","recu":"reçu","acres":"âcres","pretre":"prêtre","becher":"bêcher","allees":"allées","clot":"clôt","peter":"péter","dime":"dîme","memos":"mémos","egarer":"égarer","fetide":"fétide","tetant":"tétant","bouees":"bouées","haira":"haïra","teve":"tévé","emaux":"émaux","decus":"déçus","regner":"régner","lachez":"lâchez","cables":"câbles","petee":"pétée","froler":"frôler","reagit":"réagit","egaree":"égarée","forca":"força","prive":"privé","manege":"manège","reches":"rêches","roules":"roulés","aisees":"aisées","ornees":"ornées","amenes":"amenés","traque":"traqué","saluee":"saluée","emut":"émut","hater":"hâter","mecene":"mécène","serree":"serrée","pumes":"pûmes","demode":"démodé","degage":"dégage","clamse":"clamsé","tutoye":"tutoyé","concus":"conçus","degel":"dégel","etiole":"étiole","belier":"bélier","aceres":"acérés","recita":"récita","baille":"bâille","idee":"idée","bondes":"bondés","basee":"basée","erafle":"éraflé","odeon":"odéon","fierte":"fierté","etable":"étable","exilee":"exilée","ocean":"océan","citee":"citée","ascete":"ascète","ajoure":"ajouré","engage":"engagé","nait":"naît","amoche":"amoché","vecues":"vécues","deliee":"déliée","comite":"comité","chouia":"chouïa","anerie":"ânerie","livree":"livrée","goulee":"goulée","sherif":"shérif","ebene":"ébène","gerait":"gérait","etiez":"étiez","plutot":"plutôt","males":"mâles","gaches":"gâches","rayees":"rayées","cernee":"cernée","defunt":"défunt","concu":"conçu","ecrite":"écrite","enonce":"énoncé","erable":"érable","leguee":"léguée","rebus":"rébus","regime":"régime","sapee":"sapée","eponge":"éponge","convie":"convié","defend":"défend","adule":"adulé","enorme":"énorme","bouee":"bouée","genais":"gênais","enerva":"énerva","delier":"délier","emus":"émus","nivose":"nivôse","suca":"suça","peage":"péage","puisee":"puisée","gesine":"gésine","arenes":"arènes","equipe":"équipe","change":"changé","busque":"busqué","gele":"gèle","alitee":"alitée","medias":"médias","aigue":"aiguë","doigte":"doigté","trompe":"trompé","ecarts":"écarts","benet":"benêt","gouter":"goûter","glacee":"glacée","aimees":"aimées","elans":"élans","dompte":"dompté","barde":"bardé","reglez":"réglez","ecarta":"écarta","enlise":"enlisé","eviers":"éviers","sucote":"suçote","bandee":"bandée","trones":"trônes","pecan":"pécan","tombes":"tombés","genez":"gênez","pate":"pâte","goutee":"goûtée","revere":"révéré","levat":"levât","cedai":"cédai","otes":"ôtes","casee":"casée","sitot":"sitôt","prone":"prône","bevues":"bévues","dotes":"dotés","deposa":"déposa","zelote":"zélote","regale":"régale","exerca":"exerça","tisse":"tissé","fame":"famé","decois":"déçois","devie":"dévié","crepus":"crépus","fusees":"fusées","heron":"héron","logee":"logée","tuee":"tuée","cessat":"cessât","juche":"juché","hantes":"hantés","sepia":"sépia","brise":"brisé","affute":"affûté","trouee":"trouée","eparse":"éparse","barree":"barrée","senat":"sénat","devoue":"dévoué","poelon":"poêlon","etales":"étalés","reitre":"reître","halete":"halète","regul":"régul","loupe":"loupé","medocs":"médocs","tires":"tirés","eboue":"éboué","irreel":"irréel","muee":"muée","quiete":"quiète","salete":"saleté","bordee":"bordée","ecreme":"écrémé","caids":"caïds","effare":"effaré","tetard":"têtard","reglos":"réglos","agrege":"agrégé","hales":"hâlés","meches":"mèches","bondee":"bondée","hata":"hâta","blame":"blâme","ecrin":"écrin","frerot":"frérot","preter":"prêter","fachee":"fâchée","adoree":"adorée","petrus":"pétrus","cerne":"cerné","risees":"risées","decape":"décapé","blase":"blasé","cannee":"cannée","revet":"revêt","pole":"pôle","priere":"prière","etoupe":"étoupe","seme":"semé","petrin":"pétrin","regal":"régal","traca":"traça","pinede":"pinède","brulee":"brûlée","enleve":"enlève","defila":"défila","ambree":"ambrée","synthe":"synthé","pature":"pâture","jetee":"jetée","epele":"épelé","cloue":"cloué","ralait":"râlait","poses":"posés","gardee":"gardée","aperos":"apéros","aerez":"aérez","benie":"bénie","fosse":"fossé","tirees":"tirées","huppee":"huppée","facies":"faciès","poeme":"poème","impot":"impôt","craner":"crâner","cahote":"cahoté","irrite":"irrité","retif":"rétif","lacha":"lâcha","freles":"frêles","karate":"karaté","ecria":"écria","eclair":"éclair","guidee":"guidée","palis":"pâlis","blemir":"blêmir","palie":"pâlie","emane":"émane","beaute":"beauté","aretes":"arêtes","baclee":"bâclée","mievre":"mièvre","fleau":"fléau","moquee":"moquée","anier":"ânier","ebroua":"ébroua","emois":"émois","loves":"lovés","mefait":"méfait","echoua":"échoua","epata":"épata","coute":"coûte","coreen":"coréen","repond":"répond","etangs":"étangs","gatent":"gâtent","deche":"dèche","curee":"curée","moles":"môles","buee":"buée","epars":"épars","embete":"embête","emeut":"émeut","benira":"bénira","celeri":"céleri","moitie":"moitié","filmee":"filmée","egide":"égide","soul":"soûl","aieule":"aïeule","unites":"unités","corvee":"corvée","evades":"évadés","regi":"régi","passat":"passât","lesee":"lésée","ouies":"ouïes","desuet":"désuet","dinait":"dînait","meres":"mères","ecrie":"écrie","anon":"ânon","menent":"mènent","desirs":"désirs","melees":"mêlées","hatons":"hâtons","metros":"métros","decede":"décédé","tachai":"tâchai","revons":"rêvons","begaye":"bégaye","crepu":"crépu","baleze":"balèze","seduit":"séduit","notee":"notée","epine":"épine","recale":"recalé","pret":"prêt","empate":"empâté","eluder":"éluder","epier":"épier","troika":"troïka","aere":"aéré","evente":"évente","fronca":"fronça","epand":"épand","etirer":"étirer","tatoue":"tatoué","anemie":"anémie","pechez":"pêchez","gonfle":"gonflé","caiman":"caïman","etapes":"étapes","fruite":"fruité","toreer":"toréer","repit":"répit","epiait":"épiait","devot":"dévot","helium":"hélium","dinera":"dînera","surete":"sûreté","filme":"filmé","refile":"refilé","pliees":"pliées","defie":"défie","ecriee":"écriée","fixee":"fixée","elime":"élimé","negoce":"négoce","ralant":"râlant","loupee":"loupée","macere":"macéré","datee":"datée","cordee":"cordée","melat":"mêlât","serail":"sérail","devier":"dévier","rasee":"rasée","veloce":"véloce","echec":"échec","pali":"pâli","purete":"pureté","espaca":"espaça","bernes":"bernés","louees":"louées","situes":"situés","lignee":"lignée","crashe":"crashé","dedies":"dédiés","gouta":"goûta","delure":"déluré","douees":"douées","fetons":"fêtons","alinea":"alinéa","camee":"camée","mefie":"méfie","aeree":"aérée","cafe":"café","fachez":"fâchez","ampute":"amputé","brulot":"brûlot","patres":"pâtres","ecrasa":"écrasa","naitra":"naîtra","etais":"étais","defi":"défi","dedie":"dédié","vouee":"vouée","cherie":"chérie","decret":"décret","bordes":"bordés","thes":"thés","ailee":"ailée","geoles":"geôles","defit":"défit","feles":"fêlés","prevu":"prévu","cavite":"cavité","tues":"tués","sumes":"sûmes","gnole":"gnôle","hatifs":"hâtifs","fripe":"fripé","gere":"gère","meteo":"météo","becot":"bécot","bles":"blés","eumes":"eûmes","evite":"évite","retive":"rétive","codee":"codée","erigee":"érigée","isolee":"isolée","sucait":"suçait","devala":"dévala","rosse":"rossé","brade":"bradé","etayer":"étayer","etant":"étant","venere":"vénère","enviee":"enviée","preaux":"préaux","maitre":"maître","pres":"près","teste":"testé","medire":"médire","imbibe":"imbibé","geneur":"gêneur","ameute":"ameuté","grege":"grège","codees":"codées","creera":"créera","fremis":"frémis","evide":"évidé","hatif":"hâtif","sechez":"séchez","regis":"régis","lance":"lancé","lyceen":"lycéen","crea":"créa","reveil":"réveil","levent":"lèvent","helant":"hélant","gerez":"gérez","ranges":"rangés","affuts":"affûts","etende":"étende","posees":"posées","nicois":"niçois","pousse":"poussé","irise":"irisé","ascese":"ascèse","abrite":"abrité","entree":"entrée","cloues":"cloués","tiedir":"tiédir","aimat":"aimât","allie":"allié","enerve":"énerve","laique":"laïque","haves":"hâves","enraye":"enrayé","figes":"figés","babord":"bâbord","pueril":"puéril","depot":"dépôt","voutee":"voûtée","appuye":"appuyé","ecris":"écris","vexes":"vexés","oppose":"opposé","agreer":"agréer","xenon":"xénon","renoue":"renoué","laics":"laïcs","oceane":"océane","maries":"mariés","ferres":"ferrés","carde":"cardé","nimbee":"nimbée","embuee":"embuée","creole":"créole","hair":"haïr","tole":"tôle","murees":"murées","marees":"marées","tuees":"tuées","gachis":"gâchis","regnez":"régnez","gres":"grès","decu":"déçu","vetent":"vêtent","greve":"grève","scene":"scène","inouis":"inouïs","ameres":"amères","basees":"basées","geante":"géante","irises":"irisés","glebe":"glèbe","reseau":"réseau","heres":"hères","apreme":"aprème","marie":"marié","penal":"pénal","camera":"caméra","giflee":"giflée","puise":"puisé","aines":"aînés","residu":"résidu","excede":"excédé","etonna":"étonna","pepee":"pépée","debute":"débuté","ouis":"ouïs","rejoui":"réjoui","bipede":"bipède","etats":"états","eres":"ères","eclat":"éclat","evolue":"évolué","piegee":"piégée","etudes":"études","hegire":"hégire","murie":"mûrie","pique":"piqué","platre":"plâtre","stele":"stèle","apre":"âpre","domes":"dômes","etions":"étions","freres":"frères","elevai":"élevai","veces":"vécés","perces":"percés","kepis":"képis","helice":"hélice","bate":"bâté","cresyl":"crésyl","revent":"rêvent","metre":"mètre","ravage":"ravagé","levite":"lévite","navre":"navré","lesine":"lésine","affale":"affalé","flute":"flûte","agites":"agités","inne":"inné","depoli":"dépoli","blases":"blasés","expose":"exposé","clouee":"clouée","petris":"pétris","palit":"pâlit","figee":"figée","carres":"carrés","vetait":"vêtait","vantee":"vantée","deroba":"déroba","emeche":"éméché","enieme":"énième","ornee":"ornée","entame":"entamé","beche":"bêche","beni":"béni","xeres":"xérès","male":"mâle","debit":"débit","tacher":"tâcher","helas":"hélas","pamer":"pâmer","patre":"pâtre","ecriai":"écriai","taiga":"taïga","emeri":"émeri","buche":"bûche","collee":"collée","malgre":"malgré","fetent":"fêtent","benef":"bénef","dotees":"dotées","epouse":"épouse","avisee":"avisée","lamede":"lamedé","evitat":"évitât","moulee":"moulée","ronge":"rongé","pretes":"prêtes","evitez":"évitez","tatait":"tâtait","frique":"friqué","tapee":"tapée","englue":"englué","appose":"apposé","defile":"défilé","sechee":"séchée","pepite":"pépite","bardee":"bardée","echecs":"échecs","uretre":"urètre","epate":"épaté","egares":"égarés","conde":"condé","treve":"trêve","aieul":"aïeul","crible":"criblé","tares":"tarés","tacha":"tâcha","renale":"rénale","poemes":"poèmes","elance":"élance","alene":"alène","pretat":"prêtât","etau":"étau","neon":"néon","series":"séries","deja":"déjà","payees":"payées","relie":"relié","paiens":"païens","enfile":"enfilé","mezig":"mézig","amitie":"amitié","garee":"garée","gomine":"gominé","retifs":"rétifs","femur":"fémur","cotoie":"côtoie","amere":"amère","cedant":"cédant","ferule":"férule","legume":"légume","piece":"pièce","faches":"fâchés","mole":"môle","hantee":"hantée","sidere":"sidéré","patee":"pâtée","cachat":"cachât","ecrins":"écrins","dela":"delà","hote":"hôte","depart":"départ","echo":"écho","etala":"étala","voilee":"voilée","fondes":"fondés","rodait":"rôdait","idees":"idées","fauche":"fauché","cranes":"crânes","rodeur":"rôdeur","futs":"fûts","bruler":"brûler","otez":"ôtez","zele":"zèle","ondees":"ondées","chatie":"châtié","cense":"censé","rusee":"rusée","pieton":"piéton","huitre":"huître","email":"émail","demens":"démens","epis":"épis","depose":"dépose","crumes":"crûmes","facons":"façons","velo":"vélo","roder":"rôder","gouree":"gourée","terree":"terrée","castre":"castré","remede":"remède","votres":"vôtres","tique":"tiqué","repare":"réparé","sacre":"sacré","datees":"datées","rapees":"râpées","edifie":"édifié","essuye":"essuyé","radie":"radié","derive":"dérive","releve":"relève","detenu":"détenu","hates":"hâtes","gaiete":"gaieté","tachez":"tâchez","givres":"givrés","melo":"mélo","editer":"éditer","ligote":"ligoté","teton":"téton","menees":"menées","evitai":"évitai","amusat":"amusât","reagi":"réagi","ebahi":"ébahi","perime":"périmé","fanee":"fanée","ranime":"ranimé","tombat":"tombât","reva":"rêva","emmene":"emmène","aigues":"aiguës","tetus":"têtus","fremit":"frémit","mefies":"méfiés","cliche":"cliché","traina":"traîna","pelee":"pelée","deco":"déco","geants":"géants","gelee":"gelée","epees":"épées","notees":"notées","etoile":"étoile","etuves":"étuves","evita":"évita","pieces":"pièces","tolere":"tolère","voues":"voués","momes":"mômes","averer":"avérer","tetons":"tétons","lacher":"lâcher","prefet":"préfet","evadee":"évadée","chales":"châles","foulee":"foulée","derate":"dératé","empese":"empesé","placa":"plaça","legere":"légère","gueris":"guéris","forcat":"forçat","preta":"prêta","montat":"montât","jugees":"jugées","decru":"décru","bonte":"bonté","lecon":"leçon","musee":"musée","revele":"révélé","elixir":"élixir","erige":"érigé","vipere":"vipère","naif":"naïf","etires":"étirés","percu":"perçu","beait":"béait","reel":"réel","epiais":"épiais","petent":"pètent","elie":"élie","repits":"répits","cotes":"côtés","matite":"matité","cinema":"cinéma","aboye":"aboyé","ecolo":"écolo","preau":"préau","dictee":"dictée","reac":"réac","palot":"pâlot","tentat":"tentât","creez":"créez","dragee":"dragée","stereo":"stéréo","mela":"mêla","violes":"violés","these":"thèse","gammee":"gammée","benir":"bénir","arreta":"arrêta","hale":"hâle","dardee":"dardée","fites":"fîtes","raleur":"râleur","hetres":"hêtres","inhume":"inhumé","vetus":"vêtus","etique":"étique","bevue":"bévue","fondee":"fondée","evince":"évincé","censee":"censée","croute":"croûte","deni":"déni","vecu":"vécu","inouie":"inouïe","pretai":"prêtai","numero":"numéro","omega":"oméga","fiere":"fière","recria":"récria","espera":"espéra","ecrans":"écrans","fute":"futé","epure":"épure","beate":"béate","repere":"repéré","peches":"péchés","ecope":"écopé","serres":"serrés","recite":"récite","mariee":"mariée","beants":"béants","dechue":"déchue","nefles":"nèfles","buches":"bûches","regnes":"règnes","pose":"posé","regne":"règne","voila":"voilà","percus":"perçus","ralent":"râlent","epie":"épié","berca":"berça","peses":"pesés","scande":"scandé","vitree":"vitrée","eclata":"éclata","haik":"haïk","sevit":"sévit","dumes":"dûmes","gate":"gâté","teles":"télés","nuees":"nuées","palies":"pâlies","vire":"viré","lepre":"lèpre","beante":"béante","colore":"coloré","levera":"lèvera","imagee":"imagée","averee":"avérée","prepa":"prépa","pavee":"pavée","ourles":"ourlés","cirees":"cirées","navres":"navrés","devore":"dévoré","causee":"causée","creant":"créant","evites":"évites","oree":"orée","fees":"fées","ecroue":"écroué","annees":"années","elan":"élan","fige":"figé","decida":"décida","alloue":"alloué","facade":"façade","fieffe":"fieffé","liee":"liée","nacree":"nacrée","valide":"validé","reside":"réside","plevre":"plèvre","seant":"séant","soudes":"soudés","epuisa":"épuisa","graces":"grâces","greves":"grèves","opte":"opté","vepres":"vêpres","alite":"alité","declic":"déclic","annee":"année","gavees":"gavées","pecule":"pécule","elise":"élise","eleves":"élèves","roulee":"roulée","galere":"galère","steno":"sténo","dejete":"déjeté","fetera":"fêtera","abimer":"abîmer","huilee":"huilée","zade":"zadé","genome":"génome","cheris":"chéris","ravine":"raviné","vereux":"véreux","rebati":"rebâti","flutes":"flûtes","skie":"skié","decode":"décodé","soule":"soûle","delie":"délie","negus":"négus","toles":"tôles","egouts":"égouts","negro":"négro","sement":"sèment","elus":"élus","aumone":"aumône","legion":"légion","emet":"émet","gardat":"gardât","rhesus":"rhésus","rasees":"rasées","venges":"vengés","adosse":"adossé","abimez":"abîmez","gresil":"grésil","eden":"éden","rapes":"râpés","peche":"pêche","cafte":"cafté","theme":"thème","egaler":"égaler","crepi":"crépi","derobe":"dérobe","fermes":"fermés","fete":"fête","abima":"abîma","emets":"émets","vets":"vêts","huppe":"huppé","defait":"défait","baisee":"baisée","fele":"fêlé","acne":"acné","pere":"père","rapee":"râpée","arome":"arôme","seisme":"séisme","baguee":"baguée","nouee":"nouée","diner":"dîner","forgee":"forgée","mega":"méga","cure":"curé","fripee":"fripée","etoles":"étoles","durat":"durât","suee":"suée","desert":"désert","sauve":"sauvé","tierce":"tiercé","obeis":"obéis","rodeo":"rodéo","ecrits":"écrits","tenor":"ténor","choyee":"choyée","abeti":"abêti","siege":"siège","infuse":"infusé","siecle":"siècle","emeute":"émeute","legers":"légers","peril":"péril","megalo":"mégalo","adjuge":"adjugé","adhere":"adhère","tatant":"tâtant","appat":"appât","madere":"madère","hate":"hâte","deperi":"dépéri","ecru":"écru","etes":"êtes","biere":"bière","rouee":"rouée","pille":"pillé","deduis":"déduis","severe":"sévère","demon":"démon","feodal":"féodal","pepees":"pépées","renal":"rénal","heraut":"héraut","poele":"poêle","tenors":"ténors","raille":"raillé","avine":"aviné","cambre":"cambré","feta":"fêta","cherif":"chérif","beret":"béret","apotre":"apôtre","contee":"contée","depute":"député","hesite":"hésite","depece":"dépecé","ecran":"écran","delais":"délais","murit":"mûrit","facher":"fâcher","ecrive":"écrive","annule":"annulé","aout":"août","cedez":"cédez","petant":"pétant","regles":"règles","succes":"succès","appele":"appelé","seches":"sèches","sonnee":"sonnée","encode":"encodé","pesera":"pèsera","eteint":"éteint","elysee":"élysée","anesse":"ânesse","blamer":"blâmer","creer":"créer","postee":"postée","recuse":"récusé","prisee":"prisée","couta":"coûta","delit":"délit","roties":"rôties","ehonte":"éhonté","gater":"gâter","volees":"volées","bipe":"bipé","criat":"criât","elis":"élis","recues":"reçues","tatai":"tâtai","alliee":"alliée","etui":"étui","gree":"gréé","sense":"sensé","hative":"hâtive","leste":"lesté","etroit":"étroit","debuta":"débuta","nivele":"nivelé","noel":"noël","eperon":"éperon","deplu":"déplu","espece":"espèce","notres":"nôtres","patir":"pâtir","gatez":"gâtez","alese":"alèse","rangee":"rangée","viole":"violé","devoye":"dévoyé","petes":"pètes","geles":"gelés","abimes":"abîmes","etirai":"étirai","gatee":"gâtée","ourle":"ourlé","chale":"châle","apero":"apéro","decrut":"décrut","mures":"mûres","potees":"potées","ingere":"ingéré","laquee":"laquée","clarte":"clarté","eloges":"éloges","vallee":"vallée","denues":"dénués","chere":"chère","pincee":"pincée","divise":"divisé","tater":"tâter","deces":"décès","sommee":"sommée","trone":"trône","famees":"famées","recois":"reçois","aisee":"aisée","blasee":"blasée","calee":"calée","seduis":"séduis","raye":"rayé","epiant":"épiant","zebree":"zébrée","etoffe":"étoffe","fletri":"flétri","guerit":"guérit","enigme":"énigme","guere":"guère","salee":"salée","tannee":"tannée","pesent":"pèsent","ages":"âges","lycees":"lycées","verse":"versé","veler":"vêler","allege":"allégé","defis":"défis","otant":"ôtant","limoge":"limogé","tantot":"tantôt","honore":"honoré","ideaux":"idéaux","frenes":"frênes","ruee":"ruée","allee":"allée","chene":"chêne","butee":"butée","tate":"tâte","mutile":"mutilé","agaca":"agaça","petri":"pétri","delaye":"délayé","retame":"rétamé","abbes":"abbés","happes":"happés","lavees":"lavées","dedia":"dédia","eclate":"éclate","mele":"mêle","drapee":"drapée","geole":"geôle","gena":"gêna","semees":"semées","condes":"condés","epris":"épris","tetees":"tétées","tetes":"têtes","etages":"étages","batons":"bâtons","eclore":"éclore","meprit":"méprit","avorte":"avorté","tarpe":"tarpé","demuni":"démuni","suppot":"suppôt","leche":"lèche","emoi":"émoi","debut":"début","betise":"bêtise","recure":"récuré","bebete":"bébête","agees":"âgées","ipeca":"ipéca","pares":"parés","parees":"parées","epopee":"épopée","rodee":"rodée","rayee":"rayée","obeira":"obéira","peteux":"péteux","pretee":"prêtée","redige":"rédigé","serum":"sérum","repand":"répand","prevue":"prévue","anes":"ânes","baton":"bâton","crevee":"crevée","irisee":"irisée","pise":"pisé","feves":"fèves","amines":"aminés","sucon":"suçon","regla":"régla","tassee":"tassée","essaye":"essayé","gainee":"gainée","teter":"téter","perils":"périls","pamee":"pâmée","galene":"galène","dinez":"dînez","cones":"cônes","rongee":"rongée","select":"sélect","paques":"pâques","perca":"perça","operer":"opérer","aerait":"aérait","eprise":"éprise","abimee":"abîmée","pecher":"pêcher","broye":"broyé","oceans":"océans","gegene":"gégène","decora":"décora","revait":"rêvait","visees":"visées","etal":"étal","hebreu":"hébreu","visses":"vissés","envoye":"envoyé","deca":"deçà","menage":"ménage","rene":"rené","detala":"détala","surs":"sûrs","etain":"étain","loue":"loué","debita":"débita","jetees":"jetées","apercu":"aperçu","batit":"bâtit","gagne":"gagné","erudit":"érudit","mefier":"méfier","echoue":"échoué","delia":"délia","brulez":"brûlez","gyneco":"gynéco","emule":"émule","gite":"gîte","legat":"légat","demene":"démène","decoit":"déçoit","genent":"gênent","rase":"rasé","evalue":"évalué","emoulu":"émoulu","levres":"lèvres","affame":"affamé","puree":"purée","egarez":"égarez","dediee":"dédiée","hachee":"hachée","preche":"prêche","velin":"vélin","reglai":"réglai","caid":"caïd","seance":"séance","eperdu":"éperdu","lacees":"lacées","tetue":"têtue","pinca":"pinça","jonche":"jonché","kepi":"képi","nouees":"nouées","bremes":"brèmes","benies":"bénies","pensat":"pensât","arene":"arène","eclats":"éclats","abuse":"abusé","tiedie":"tiédie","cable":"câble","chatre":"châtré","ingenu":"ingénu","pige":"pigé","cepes":"cèpes","perira":"périra","etudia":"étudia","pillee":"pillée","aerees":"aérées","noue":"noué","epitre":"épître","depots":"dépôts","dinais":"dînais","mache":"mâché","jugeat":"jugeât","tresse":"tressé","neant":"néant","recut":"reçut","geree":"gérée","chenes":"chênes","guinde":"guindé","berets":"bérets","lissee":"lissée","regle":"règle","gagnat":"gagnât","greles":"grêles","orne":"orné","amusee":"amusée","refere":"réfère","payat":"payât","payes":"payés","gemit":"gémit","mutes":"mutés","vanite":"vanité","rales":"râles","enrole":"enrôlé","reviez":"rêviez","blemit":"blêmit","crame":"cramé","ecueil":"écueil","relies":"reliés","epice":"épice","ragout":"ragoût","etuve":"étuve","paves":"pavés","peri":"péri","trouve":"trouvé","soude":"soudé","appats":"appâts","pede":"pédé","farde":"fardé","fieres":"fières","edit":"édit","decime":"décimé","agee":"âgée","frise":"frisé","epiler":"épiler","frolee":"frôlée","flopee":"flopée","felee":"fêlée","animes":"animés","iles":"îles","beat":"béat","pelees":"pelées","hero":"héro","murir":"mûrir","raler":"râler","moiree":"moirée","decut":"déçut","degat":"dégât","benis":"bénis","couve":"couvé","rodais":"rôdais","soules":"soûlés","reagis":"réagis","brode":"brodé","merou":"mérou","hatant":"hâtant","liees":"liées","comete":"comète","privee":"privée","cabree":"cabrée","otera":"ôtera","flechi":"fléchi","demons":"démons","sonnes":"sonnés","hermes":"hermès","pave":"pavé","herite":"hérité","prets":"prêts","gansee":"gansée","lassee":"lassée","goure":"gouré","negre":"nègre","acceda":"accéda","apeure":"apeuré","laches":"lâches","fetus":"fétus","filee":"filée","elites":"élites","macons":"maçons","attele":"attelé","brodee":"brodée","detele":"dételé","delits":"délits","memes":"mêmes","pecari":"pécari","gerant":"gérant","obeit":"obéit","gave":"gavé","potele":"potelé","mere":"mère","sacres":"sacrés","houla":"houlà","videos":"vidéos","bolero":"boléro","conge":"congé","echine":"échine","calin":"câlin","metis":"métis","colle":"collé","dechus":"déchus","legal":"légal","goute":"goûte","broyee":"broyée","genee":"gênée","paleur":"pâleur","artere":"artère","voue":"voué","tatez":"tâtez","reseda":"réséda","zebre":"zèbre","futees":"futées","uterin":"utérin","flatte":"flatté","pene":"pêne","modele":"modèle","decue":"déçue","colles":"collés","embue":"embué","desira":"désira","rejete":"rejeté","zero":"zéro","reunis":"réunis","glanes":"glanés","tissee":"tissée","etat":"état","cornee":"cornée","piege":"piège","formee":"formée","lachai":"lâchai","fimes":"fîmes","situee":"située","burine":"buriné","decor":"décor","eglise":"église","endure":"enduré","ecrira":"écrira","dina":"dîna","ecrue":"écrue","tatais":"tâtais","pateux":"pâteux","ecrier":"écrier","evoque":"évoque","frole":"frôle","posat":"posât","betail":"bétail","corsee":"corsée","heros":"héros","lances":"lancés","alize":"alizé","melez":"mêlez","pretez":"prêtez","lecha":"lécha","fixes":"fixés","risee":"risée","obese":"obèse","aparte":"aparté","elevee":"élevée","coinca":"coinça","coiffe":"coiffé","etale":"étale","unifie":"unifié","etre":"être","imitee":"imitée","scelle":"scellé","reaux":"réaux","ecurie":"écurie","opere":"opéré","prives":"privés","eprit":"éprit","mimes":"mîmes","bourre":"bourré","empale":"empalé","degres":"degrés","pale":"pâle","ferree":"ferrée","cede":"cédé","desape":"désape","etude":"étude","giter":"gîter","tete":"tête","dines":"dînes","serie":"série","hatais":"hâtais","faxe":"faxé","sevi":"sévi","diete":"diète","tracee":"tracée","tolle":"tollé","hotel":"hôtel","ecorce":"écorce","pales":"pâles","caline":"câline","guerir":"guérir","ebahie":"ébahie","lezard":"lézard","rotis":"rôtis","recue":"reçue","achete":"acheté","batie":"bâtie","avanca":"avança","etage":"étage","ceder":"céder","denree":"denrée","vengee":"vengée","ecoles":"écoles","medita":"médita","sucant":"suçant","creent":"créent","arrets":"arrêts","querir":"quérir","deesse":"déesse","melee":"mêlée","sante":"santé","lache":"lâche","naives":"naïves","devoua":"dévoua","resine":"résine","lies":"liés","epiee":"épiée","genees":"gênées","bornee":"bornée","icone":"icône","hante":"hanté","etonne":"étonne","nommes":"nommés","etape":"étape","placee":"placée","gerent":"gèrent","henne":"henné","hyenes":"hyènes","fonca":"fonça","tentee":"tentée","bailla":"bâilla","troue":"troué","etabli":"établi","juchee":"juchée","innee":"innée","maia":"maïa","buees":"buées","renfle":"renflé","reniee":"reniée","facon":"façon","senile":"sénile","begaya":"bégaya","cigue":"ciguë","misere":"misère","bati":"bâti","sevir":"sévir","acere":"acéré","detend":"détend","schema":"schéma","volee":"volée","zeles":"zélés","gelees":"gelées","sabote":"saboté","cafes":"cafés","dore":"doré","vires":"virés","debine":"débine","doutat":"doutât","eboule":"éboule","sake":"saké","tiede":"tiède","benite":"bénite","fixees":"fixées","reglee":"réglée","resous":"résous","dores":"dorés","khol":"khôl","libere":"libéré","meleze":"mélèze","pilee":"pilée","impots":"impôts","largue":"largué","cires":"cirés","plonge":"plongé","sevice":"sévice","fardee":"fardée","depend":"dépend","ornes":"ornés","lisere":"liséré","petard":"pétard","breve":"brève","dome":"dôme","aleas":"aléas","mure":"mûre","diluee":"diluée","inegal":"inégal","dine":"dîne","cremes":"crèmes","minee":"minée","ploye":"ployé","epurer":"épurer","vecue":"vécue","depare":"dépare","goutez":"goûtez","pepin":"pépin","lamine":"laminé","revolu":"révolu","desole":"désolé","egard":"égard","gante":"ganté","melera":"mêlera","derapa":"dérapa","lactee":"lactée","dedale":"dédale","restee":"restée","exauce":"exaucé","fremir":"frémir","noels":"noëls","abces":"abcès","recele":"recèle","skai":"skaï","egale":"égale","signee":"signée","gemir":"gémir","voute":"voûte","inoui":"inouï","beta":"bêta","levre":"lèvre","ecrase":"écrase","forcee":"forcée","montee":"montée","elanca":"élança","gavee":"gavée","crispe":"crispé","mefiee":"méfiée","legaux":"légaux","tente":"tenté","souler":"soûler","avisat":"avisât","lecher":"lécher","digere":"digère","melai":"mêlai","hesita":"hésita","peres":"pères","grisee":"grisée","genial":"génial","eluda":"éluda","felin":"félin","moquat":"moquât","fonde":"fondé","gobe":"gobé","resout":"résout","rodes":"rodés","operez":"opérez","etron":"étron","abetir":"abêtir","paien":"païen","prevot":"prévôt","bardes":"bardés","cheri":"chéri","allies":"alliés","epique":"épique","ceans":"céans","nuee":"nuée","obeses":"obèses","ecus":"écus","nacres":"nacrés","cree":"créé","peles":"pelés","ecot":"écot","rancon":"rançon","leger":"léger","ecumer":"écumer","couvee":"couvée","agitee":"agitée","velos":"vélos","dupee":"dupée","epient":"épient","denoue":"dénoue","eploie":"éploie","begue":"bègue","voutes":"voûtes","dedit":"dédit","visee":"visée","mefiez":"méfiez","huees":"huées","emues":"émues","hetre":"hêtre","cedent":"cèdent","egerie":"égérie","predit":"prédit","aborde":"abordé","heurte":"heurté","eczema":"eczéma","leches":"lèches","eructe":"éructe","lacere":"lacéré","duegne":"duègne","evalua":"évalua","genie":"génie","pilles":"pillés","separa":"sépara","grele":"grêle","altere":"altéré","denoua":"dénoua","creves":"crevés","degote":"dégoté","niece":"nièce","enjoue":"enjoué","decide":"décidé","arrete":"arrête","devetu":"dévêtu","lachee":"lâchée","cabres":"cabrés","delave":"délavé","pietre":"piètre","enrage":"enragé","cout":"coût","patit":"pâtit","ecouta":"écouta","hele":"hèle","nichee":"nichée","ecrit":"écrit","petait":"pétait","choye":"choyé","recif":"récif","recres":"récrés","feter":"fêter","forcai":"forçai","exile":"exilé","patere":"patère","aerien":"aérien","gravee":"gravée","brodes":"brodés","resolu":"résolu","mute":"muté","eolien":"éolien","evitee":"évitée","khagne":"khâgne","cames":"camés","denuee":"dénuée","livrat":"livrât","carree":"carrée","devote":"dévote","gatera":"gâtera","sures":"sûres","pele":"pelé","soldee":"soldée","agres":"agrès","brulis":"brûlis","empote":"empoté","vecut":"vécut","travee":"travée","foncai":"fonçai","lechee":"léchée","foncee":"foncée","garees":"garées","reelu":"réélu","egout":"égout","vicie":"vicié","tres":"très","cachee":"cachée","crete":"crête","traine":"traîne","bumes":"bûmes","fanees":"fanées","encule":"enculé","bafre":"bâfré","prete":"prête","jesus":"jésus","tombee":"tombée","emigre":"émigré","genets":"genêts","goutes":"goûtes","etang":"étang","sevre":"sevré","kore":"koré","quetes":"quêtes","avale":"avalé","gueri":"guéri","ecole":"école","herons":"hérons","resume":"résumé","menera":"mènera","cedre":"cèdre","brime":"brimé","ceda":"céda","bafrer":"bâfrer","renove":"rénové","jete":"jeté","eleve":"élève","laic":"laïc","ouit":"ouït","defais":"défais","couche":"couché","perore":"pérore","reuni":"réuni","libera":"libéra","epais":"épais","ridee":"ridée","melant":"mêlant","nomine":"nominé","epures":"épures","reelle":"réelle","racee":"racée","hairai":"haïrai","fetez":"fêtez","gacher":"gâcher","arque":"arqué","coules":"coulés","pedes":"pédés","herpes":"herpès","bacler":"bâcler","guepe":"guêpe","alcove":"alcôve","lycee":"lycée","hatait":"hâtait","calins":"câlins","cheque":"chèque","recrie":"récrie","enroue":"enroué","doutee":"doutée","enfles":"enflés","chipe":"chipé","plebe":"plèbe","souls":"soûls","egrene":"égrène","megots":"mégots","derape":"dérape","ficele":"ficelé","pates":"pâtes","carre":"carré","blemi":"blêmi","ouatee":"ouatée","gemi":"gémi","megere":"mégère","otais":"ôtais","devale":"dévale","arpege":"arpège","avere":"avère","fraye":"frayé","matine":"mâtiné","choppe":"choppé","betes":"bêtes","melait":"mêlait","cotele":"côtelé","renaux":"rénaux","soulee":"soûlée","donnee":"donnée","acrete":"âcreté","doree":"dorée","petrit":"pétrit","juree":"jurée","voles":"volés","rever":"rêver","hela":"héla","entete":"entête","aerer":"aérer","ebroue":"ébroue","verole":"vérole","montes":"montés","morfle":"morflé","revee":"rêvée","lancee":"lancée","pati":"pâti","casse":"cassé","ebloui":"ébloui","repeta":"répéta","lestes":"lestés","blames":"blâmes","menes":"menés","sieger":"siéger","deriva":"dériva","aprete":"âpreté","armee":"armée","glacon":"glaçon","cuvee":"cuvée","enrobe":"enrobé","sauves":"sauvés","sonnat":"sonnât","bucher":"bûcher","exigue":"exiguë","megot":"mégot","dinons":"dînons","penale":"pénale","sciee":"sciée","temoin":"témoin","musees":"musées","fecale":"fécale","bieres":"bières","cedera":"cédera","criee":"criée","drapes":"drapés","toquee":"toquée","sejour":"séjour","demoli":"démoli","naive":"naïve","beant":"béant","gachez":"gâchez","cone":"cône","patis":"pâtis","fetes":"fêtes","taiaut":"taïaut","uremie":"urémie","feria":"féria","rala":"râla","videe":"vidée","reunit":"réunit","vannee":"vannée","cingle":"cinglé","fripes":"fripés","ideal":"idéal","genese":"genèse","coulee":"coulée","trepe":"trèpe","role":"rôle","breme":"brème","meler":"mêler","brula":"brûla","sure":"sûre","belant":"bêlant","nenes":"nénés","batir":"bâtir","elue":"élue","meles":"mêlés","videes":"vidées","epaula":"épaula","bercee":"bercée","meduse":"méduse","ejecte":"éjecté","declin":"déclin","etudie":"étudié","naifs":"naïfs","gelera":"gèlera","egare":"égaré","depit":"dépit","coutes":"coûtes","poupee":"poupée","fosses":"fossés","debile":"débile","epices":"épices","darde":"dardé","alle":"allé","eclos":"éclos","evader":"évader","guetre":"guêtre","naitre":"naître","virees":"virées","cille":"cillé","froles":"frôlés","regir":"régir","denude":"dénudé","pese":"pèse","chiee":"chiée","begaie":"bégaie","troque":"troqué","poete":"poète","tablee":"tablée","creait":"créait","adules":"adulés","medius":"médius","feline":"féline","blesse":"blessé","ouir":"ouïr","noyees":"noyées","gaite":"gaîté","ilots":"îlots","secher":"sécher","kebour":"kébour","operas":"opéras","genois":"génois","trefle":"trèfle","ecrou":"écrou","portee":"portée","lacage":"laçage","charge":"chargé","aliene":"aliéné","eveque":"évêque","donnat":"donnât","apnee":"apnée","guerie":"guérie","adopte":"adopté","flane":"flâné","ames":"âmes","etayee":"étayée","doues":"doués","allo":"allô","boisee":"boisée","blinde":"blindé","jouat":"jouât","rape":"râpé","ovoide":"ovoïde","abonne":"abonné","yeti":"yéti","mehari":"méhari","animee":"animée","rivee":"rivée","metres":"mètres","rature":"raturé","guepes":"guêpes","fache":"fâché","adulee":"adulée","sebile":"sébile","crees":"créés","pieges":"pièges","aupres":"auprès","sauvee":"sauvée","durete":"dureté","gout":"goût","reels":"réels","abime":"abîme","pecore":"pécore","timore":"timoré","damnes":"damnés","ecosse":"écosse","epater":"épater","gateau":"gâteau","macule":"maculé","ratee":"ratée","raclee":"raclée","heler":"héler","poles":"pôles","emises":"émises","emue":"émue","breche":"brèche","predis":"prédis","dedier":"dédier","elargi":"élargi","feve":"fève","etres":"êtres","lavee":"lavée","jouee":"jouée","benets":"benêts","tresor":"trésor","nees":"nées","reve":"rêve","bipee":"bipée","cecite":"cécité","forets":"forêts","psyche":"psyché","theses":"thèses","echos":"échos","emotif":"émotif","medite":"médite","fardes":"fardés","passee":"passée","decale":"décalé","ferre":"ferré","concut":"conçut","egales":"égales","hyene":"hyène","frene":"frêne","musque":"musqué","reliee":"reliée","balaye":"balayé","retape":"retapé","revetu":"revêtu","uterus":"utérus","equite":"équité","surge":"surgé","salees":"salées","lancat":"lançât","otee":"ôtée","gates":"gâtes","nene":"néné","massee":"massée","deblai":"déblai","figees":"figées","eriger":"ériger","edite":"édité","dote":"doté","tare":"taré","cheres":"chères","telex":"télex","revai":"rêvai","paree":"parée","broyes":"broyés","mout":"moût","roles":"rôles","vole":"volé","cretes":"crêtes","tenia":"ténia","lovee":"lovée","baties":"bâties","epile":"épile","maree":"marée","noyee":"noyée","ecolos":"écolos","petale":"pétale","unieme":"unième","devots":"dévots","ecorne":"écorné","hola":"holà","soudee":"soudée","reunie":"réunie","fichee":"fichée","deduit":"déduit","accote":"accoté","deplut":"déplut","beance":"béance","batard":"bâtard","ouie":"ouïe","frisee":"frisée","chopee":"chopée","beats":"béats","tele":"télé","depite":"dépité","ridees":"ridées","rosees":"rosées","trepas":"trépas","sirene":"sirène","rale":"râle","defier":"défier","etripe":"étripe","poeles":"poêles","benit":"bénit","dinant":"dînant","payee":"payée","genet":"genêt","nippee":"nippée","pepins":"pépins","rivees":"rivées","outree":"outrée","adapte":"adapté","goemon":"goémon","cretin":"crétin","fleaux":"fléaux","creee":"créée","liat":"liât","palir":"pâlir","usees":"usées","lynche":"lynché","assene":"assène","repete":"répète","brule":"brûle","legue":"légué","petrir":"pétrir","negros":"négros","lecons":"leçons","testee":"testée","expres":"exprès","emmele":"emmêle","ployee":"ployée","ennuye":"ennuyé","deplie":"déplié","futee":"futée","brulat":"brûlât","quete":"quête","region":"région","ouates":"ouatés","avinee":"avinée","apres":"après","egal":"égal","blemes":"blêmes","degout":"dégoût","percue":"perçue","execre":"exècre","retro":"rétro","epeler":"épeler","elite":"élite","amorca":"amorça","rinces":"rincés","chiees":"chiées","secu":"sécu","tetait":"tétait","reglo":"réglo","lestee":"lestée","betel":"bétel","negres":"nègres","exhume":"exhumé","prenom":"prénom","epatee":"épatée","benin":"bénin","avises":"avisés","senses":"sensés","brules":"brûlés","feerie":"féerie","genes":"gènes","ramene":"ramène","etrave":"étrave","genere":"génère","bafoue":"bafoué","genait":"gênait","scenar":"scénar","liege":"liège","capres":"câpres","acheve":"achevé","entite":"entité","legale":"légale","ecume":"écume","roti":"rôti","macha":"mâcha","piques":"piqués","fixite":"fixité","borde":"bordé","nudite":"nudité","suees":"suées","cures":"curés","mutee":"mutée","mome":"môme","defont":"défont","abrege":"abrège","avouee":"avouée","acces":"accès","conges":"congés","vexe":"vexé","restat":"restât","benard":"bénard","revais":"rêvais","paque":"pâque","echu":"échu","apogee":"apogée","egorge":"égorge","geant":"géant","etendu":"étendu","thai":"thaï"}};</script>
+<script>
+/* Lecture d'une lettre majuscule tracée au doigt ou à la souris.
+   Méthode $P (Vatavu, Anthony, Wobbrock, ICMI 2012, licence BSD) :
+   le tracé devient un nuage de points, comparé à des modèles de lettres,
+   sans tenir compte de l'ordre ni du sens des traits.
+   Écrit ici à partir de la publication, pour ne dépendre d'aucun fichier extérieur. */
+var Lecteur = (function () {
+  var NP = 32;
+
+  function P(x, y, id) { return { x: x, y: y, id: id }; }
+
+  function longueur(pts) {
+    var d = 0;
+    for (var i = 1; i < pts.length; i++)
+      if (pts[i].id === pts[i - 1].id) d += dist(pts[i - 1], pts[i]);
+    return d;
+  }
+  function dist(a, b) { var dx = b.x - a.x, dy = b.y - a.y; return Math.sqrt(dx * dx + dy * dy); }
+  function dist2(a, b) { var dx = b.x - a.x, dy = b.y - a.y; return dx * dx + dy * dy; }
+
+  function reechantillonner(pts, n) {
+    var I = longueur(pts) / (n - 1), D = 0, out = [P(pts[0].x, pts[0].y, pts[0].id)];
+    pts = pts.slice();
+    for (var i = 1; i < pts.length; i++) {
+      if (pts[i].id === pts[i - 1].id) {
+        var d = dist(pts[i - 1], pts[i]);
+        if (D + d >= I && d > 0) {
+          var t = (I - D) / d;
+          var q = P(pts[i - 1].x + t * (pts[i].x - pts[i - 1].x),
+                    pts[i - 1].y + t * (pts[i].y - pts[i - 1].y), pts[i].id);
+          out.push(q); pts.splice(i, 0, q); D = 0;
+        } else D += d;
+      }
+    }
+    while (out.length < n) { var l = pts[pts.length - 1]; out.push(P(l.x, l.y, l.id)); }
+    return out.slice(0, n);
+  }
+  function mettreAEchelle(pts) {
+    var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    pts.forEach(function (p) {
+      minX = Math.min(minX, p.x); minY = Math.min(minY, p.y);
+      maxX = Math.max(maxX, p.x); maxY = Math.max(maxY, p.y);
+    });
+    var s = Math.max(maxX - minX, maxY - minY) || 1;
+    return pts.map(function (p) { return P((p.x - minX) / s, (p.y - minY) / s, p.id); });
+  }
+  function centrer(pts) {
+    var cx = 0, cy = 0;
+    pts.forEach(function (p) { cx += p.x; cy += p.y; });
+    cx /= pts.length; cy /= pts.length;
+    return pts.map(function (p) { return P(p.x - cx, p.y - cy, p.id); });
+  }
+  function normaliser(pts) { return centrer(mettreAEchelle(reechantillonner(pts, NP))); }
+
+  function distanceNuage(a, b, debut) {
+    var n = a.length, pris = new Array(n), somme = 0, i = debut;
+    do {
+      var idx = -1, min = Infinity;
+      for (var j = 0; j < n; j++) if (!pris[j]) {
+        var d = dist2(a[i], b[j]);
+        if (d < min) { min = d; idx = j; }
+      }
+      pris[idx] = true;
+      var poids = 1 - ((i - debut + n) % n) / n;
+      somme += poids * Math.sqrt(min);
+      i = (i + 1) % n;
+    } while (i !== debut);
+    return somme;
+  }
+  function comparer(a, b) {
+    var n = a.length, pas = Math.floor(Math.pow(n, 0.5)), min = Infinity;
+    for (var i = 0; i < n; i += pas)
+      min = Math.min(min, distanceNuage(a, b, i), distanceNuage(b, a, i));
+    return min;
+  }
+
+  /* ── Les modèles : chaque lettre, dans une boîte de 0 à 100 (y vers le bas). ── */
+  function seg(x1, y1, x2, y2) {
+    var n = Math.max(2, Math.round(Math.hypot(x2 - x1, y2 - y1) / 3)), out = [];
+    for (var i = 0; i <= n; i++) out.push([x1 + (x2 - x1) * i / n, y1 + (y2 - y1) * i / n]);
+    return out;
+  }
+  function ligne(pts) { // ligne brisée
+    var out = [];
+    for (var i = 1; i < pts.length; i++) {
+      var s = seg(pts[i - 1][0], pts[i - 1][1], pts[i][0], pts[i][1]);
+      out = out.concat(i > 1 ? s.slice(1) : s);
+    }
+    return out;
+  }
+  function arc(cx, cy, rx, ry, a0, a1) { // angles en degrés, 0 = droite, 90 = bas
+    var n = Math.max(6, Math.round(Math.abs(a1 - a0) / 6)), out = [];
+    for (var i = 0; i <= n; i++) {
+      var a = (a0 + (a1 - a0) * i / n) * Math.PI / 180;
+      out.push([cx + rx * Math.cos(a), cy + ry * Math.sin(a)]);
+    }
+    return out;
+  }
+  function suite() { // enchaîne des morceaux en un seul trait
+    var out = [];
+    for (var i = 0; i < arguments.length; i++) out = out.concat(arguments[i]);
+    return out;
+  }
+  var M = {
+    A: [[ligne([[0, 100], [40, 0], [80, 100]]), seg(18, 58, 62, 58)],
+        [ligne([[0, 100], [35, 0], [45, 0], [80, 100]]), seg(15, 62, 65, 62)]],
+    B: [[seg(0, 0, 0, 100), suite(seg(0, 0, 40, 0), arc(40, 25, 28, 25, -90, 90), seg(40, 50, 0, 50)),
+         suite(seg(0, 50, 45, 50), arc(45, 75, 32, 25, -90, 90), seg(45, 100, 0, 100))],
+        [suite(seg(0, 100, 0, 0), seg(0, 0, 40, 0), arc(40, 25, 28, 25, -90, 90), seg(40, 50, 15, 50),
+               seg(15, 50, 45, 50), arc(45, 75, 32, 25, -90, 90), seg(45, 100, 0, 100))]],
+    C: [[arc(50, 50, 48, 50, -40, -320)], [arc(50, 50, 45, 50, -60, -300)]],
+    D: [[seg(0, 0, 0, 100), suite(seg(0, 0, 25, 0), arc(25, 50, 55, 50, -90, 90), seg(25, 100, 0, 100))],
+        [seg(0, 0, 0, 100), arc(0, 50, 75, 50, -90, 90)]],
+    E: [[ligne([[75, 0], [0, 0], [0, 100], [75, 100]]), seg(0, 50, 60, 50)],
+        [seg(0, 0, 0, 100), seg(0, 0, 75, 0), seg(0, 50, 60, 50), seg(0, 100, 75, 100)]],
+    F: [[ligne([[75, 0], [0, 0], [0, 100]]), seg(0, 48, 60, 48)]],
+    G: [[arc(50, 50, 48, 50, -40, -360), seg(98, 50, 60, 50)],
+        [arc(50, 50, 48, 50, -40, -340), seg(95, 55, 60, 55), seg(95, 55, 95, 95)],
+        [suite(arc(50, 50, 48, 50, -40, -360), seg(98, 50, 60, 50))]],
+    H: [[seg(0, 0, 0, 100), seg(75, 0, 75, 100), seg(0, 50, 75, 50)]],
+    I: [[seg(40, 0, 40, 100)], [seg(40, 0, 40, 100), seg(15, 0, 65, 0), seg(15, 100, 65, 100)]],
+    J: [[suite(seg(70, 0, 70, 70), arc(40, 70, 30, 30, 0, 180))],
+        [seg(35, 0, 100, 0), suite(seg(70, 0, 70, 70), arc(40, 70, 30, 30, 0, 180))]],
+    K: [[seg(0, 0, 0, 100), ligne([[70, 0], [0, 55], [75, 100]])],
+        [seg(0, 0, 0, 100), seg(70, 0, 0, 52), seg(22, 38, 75, 100)]],
+    L: [[ligne([[0, 0], [0, 100], [70, 100]])]],
+    M: [[ligne([[0, 100], [0, 0], [45, 65], [90, 0], [90, 100]])],
+        [ligne([[0, 100], [12, 0], [45, 70], [78, 0], [90, 100]])],
+        [ligne([[0, 100], [0, 0], [45, 100], [90, 0], [90, 100]])]],
+    N: [[ligne([[0, 100], [0, 0], [80, 100], [80, 0]])]],
+    O: [[arc(45, 50, 45, 50, -90, 270)], [arc(40, 50, 40, 50, 0, 360)]],
+    P: [[suite(seg(0, 100, 0, 0), seg(0, 0, 40, 0), arc(40, 27, 30, 27, -90, 90), seg(40, 54, 0, 54))],
+        [seg(0, 0, 0, 100), suite(seg(0, 0, 40, 0), arc(40, 27, 30, 27, -90, 90), seg(40, 54, 0, 54))]],
+    Q: [[arc(45, 50, 45, 50, -90, 270), seg(58, 72, 98, 108)],
+        [arc(45, 50, 45, 50, -90, 270), seg(55, 82, 95, 100)]],
+    R: [[suite(seg(0, 100, 0, 0), seg(0, 0, 40, 0), arc(40, 27, 30, 27, -90, 90), seg(40, 54, 0, 54)), seg(30, 54, 75, 100)],
+        [suite(seg(0, 100, 0, 0), seg(0, 0, 40, 0), arc(40, 27, 30, 27, -90, 90), seg(40, 54, 10, 54), seg(10, 54, 75, 100))]],
+    S: [[suite(arc(42, 26, 38, 26, -25, -270), arc(42, 74, 40, 26, -90, 155))],
+        [suite(arc(45, 25, 35, 25, -10, -270), arc(45, 75, 38, 25, -90, 170))]],
+    T: [[seg(0, 0, 90, 0), seg(45, 0, 45, 100)]],
+    U: [[suite(seg(0, 0, 0, 62), arc(40, 62, 40, 38, 180, 0), seg(80, 62, 80, 0))],
+        [suite(seg(0, 0, 0, 62), arc(40, 62, 40, 38, 180, 0), seg(80, 62, 80, 0)), seg(80, 0, 80, 100)]],
+    V: [[ligne([[0, 0], [42, 100], [84, 0]])]],
+    W: [[ligne([[0, 0], [22, 100], [50, 25], [78, 100], [100, 0]])],
+        [ligne([[0, 0], [22, 100], [50, 0], [78, 100], [100, 0]])]],
+    X: [[seg(0, 0, 85, 100), seg(85, 0, 0, 100)]],
+    Y: [[seg(0, 0, 42, 50), ligne([[84, 0], [42, 50], [42, 100]])],
+        [seg(0, 0, 42, 55), seg(85, 0, 20, 100)]],
+    Z: [[ligne([[0, 0], [85, 0], [0, 100], [85, 100]])],
+        [ligne([[0, 0], [85, 0], [0, 100], [85, 100]]), seg(20, 50, 65, 50)]]
+  };
+  var modeles = [];
+  Object.keys(M).forEach(function (lettre) {
+    M[lettre].forEach(function (variante) {
+      var pts = [];
+      variante.forEach(function (trait, id) { trait.forEach(function (q) { pts.push(P(q[0], q[1], id)); }); });
+      modeles.push({ lettre: lettre, pts: normaliser(pts) });
+    });
+  });
+
+  /* Renvoie les lettres de la plus probable à la moins probable, avec leur distance. */
+  function lire(traits) {
+    var pts = [];
+    traits.forEach(function (t, id) { t.forEach(function (q) { pts.push(P(q[0], q[1], id)); }); });
+    if (pts.length < 2) return [];
+    var cand = normaliser(pts), meilleur = {};
+    modeles.forEach(function (m) {
+      var d = comparer(cand, m.pts);
+      if (!(m.lettre in meilleur) || d < meilleur[m.lettre]) meilleur[m.lettre] = d;
+    });
+    return Object.keys(meilleur).map(function (l) { return { lettre: l, d: meilleur[l] }; })
+      .sort(function (a, b) { return a.d - b.d; });
+  }
+  return { lire: lire, modeles: M };
+})();
+if (typeof module !== 'undefined') module.exports = Lecteur;
+</script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var ACC = new Set(), POUCE = new Set(), DEPART = {};
+  [4, 5, 6].forEach(function (n) {
+    MOTS.acc[n].split(' ').forEach(function (m) { ACC.add(m); });
+    MOTS.pouce[n].split(' ').forEach(function (m) { POUCE.add(m); });
+    DEPART[n] = MOTS.depart[n].split(' ');
+  });
+  var ALPHA = 'abcdefghijklmnopqrstuvwxyz';
+  var tactile = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+
+  var st = { n: 4, joueurs: [], tour: 0, chaine: [], sel: -1, pouce: 0, dernierDepart: '', debut: 0, note: true };
+
+  function sansAccent(c) {
+    return c.toLowerCase().replace('œ', 'oe').normalize('NFD').replace(/[̀-ͯ]/g, '');
+  }
+  function affiche(m) { return MOTS.aff[m] || m; }
+  function courant() { return st.chaine[st.chaine.length - 1].mot; }
+  function remplacer(m, i, c) { return m.slice(0, i) + c + m.slice(i + 1); }
+  function dejaVu(m) { return st.chaine.some(function (e) { return e.mot === m; }); }
+  function quiJoue() { return st.joueurs.length ? st.joueurs[st.tour % st.joueurs.length] : ''; }
+  function melanger(t) {
+    for (var i = t.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var x = t[i]; t[i] = t[j]; t[j] = x; }
+    return t;
+  }
+  function voisins(m, reserve) {
+    var out = [];
+    for (var i = 0; i < m.length; i++)
+      for (var k = 0; k < 26; k++) {
+        var c = ALPHA[k];
+        if (c === m[i]) continue;
+        var v = remplacer(m, i, c);
+        if (reserve.has(v) && !dejaVu(v)) out.push({ i: i, mot: v });
+      }
+    return out;
+  }
+
+  /* ── Écrans ── */
+  function montrer(id) {
+    $('menu').hidden = id !== 'menu';
+    $('game').hidden = id !== 'game';
+    window.scrollTo(0, 0);
+  }
+  function lireJoueurs() {
+    var noms = [];
+    document.querySelectorAll('.prenom').forEach(function (inp) {
+      var v = inp.value.trim();
+      if (v) noms.push(v.slice(0, 20));
+    });
+    return noms.length >= 2 ? noms : [];
+  }
+  /* Le carnet de parcours et le compteur du site : une partie compte dès qu'un mot a été trouvé. */
+  function noterPartie() {
+    if (st.note || st.chaine.length < 2) return;
+    st.note = true;
+    try {
+      if (window.JDC && JDC.enregistrer)
+        JDC.enregistrer('motenmot', st.n - 3, true, {
+          duree: Math.round((Date.now() - st.debut) / 1000),
+          variante: st.joueurs.length ? 'plusieurs' : 'seul'
+        });
+    } catch (e) {}
+  }
+  function commencer(n) {
+    noterPartie();
+    st.n = n;
+    st.joueurs = lireJoueurs();
+    var liste = DEPART[n].filter(function (m) { return m !== st.dernierDepart; });
+    var depart = liste[Math.floor(Math.random() * liste.length)];
+    st.dernierDepart = depart;
+    st.chaine = [{ mot: depart, qui: '' }];
+    st.tour = 0; st.sel = -1; st.pouce = 0; st.debut = Date.now(); st.note = false;
+    $('doneBox').hidden = true;
+    $('jeuZone').hidden = false;
+    fermerTout();
+    rendre();
+    montrer('game');
+  }
+  function retourMenu() { noterPartie(); fermerTout(); montrer('menu'); }
+
+  /* ── Affichage du mot et de la liste ── */
+  function rendre(popIndex) {
+    var m = courant(), box = $('mot');
+    box.style.setProperty('--n', m.length);
+    box.innerHTML = '';
+    for (var i = 0; i < m.length; i++) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'case' + (i === st.sel ? ' choisie' : '') + (i === popIndex ? ' pop' : '');
+      b.textContent = m[i].toUpperCase();
+      b.setAttribute('aria-label', 'Changer la lettre ' + m[i].toUpperCase());
+      b.setAttribute('aria-pressed', i === st.sel ? 'true' : 'false');
+      b.dataset.i = i;
+      b.addEventListener('click', function () { choisirCase(+this.dataset.i); });
+      box.appendChild(b);
+    }
+    var qui = quiJoue();
+    $('tour').hidden = !qui;
+    $('tour').textContent = qui ? 'À ' + qui + ' de jouer' : '';
+    $('consigne').textContent = st.sel < 0 ? 'Choisissez la lettre à changer.' : 'Quelle lettre à la place ?';
+    $('annuler').hidden = st.chaine.length < 2;
+    rendreChaine($('chaine'), true);
+  }
+  function rendreChaine(box, derniere) {
+    box.innerHTML = '';
+    st.chaine.forEach(function (e, k) {
+      if (k) {
+        var f = document.createElement('span');
+        f.className = 'fleche'; f.setAttribute('aria-hidden', 'true'); f.textContent = '→';
+        box.appendChild(f);
+      }
+      var s = document.createElement('span');
+      s.className = 'maillon' + (derniere && k === st.chaine.length - 1 && k ? ' neuf' : '');
+      s.textContent = affiche(e.mot);
+      if (e.qui) {
+        var q = document.createElement('small');
+        q.textContent = e.qui;
+        s.appendChild(q);
+      }
+      box.appendChild(s);
+    });
+  }
+
+  function fermerTout() {
+    $('ardoise').hidden = true;
+    $('verdict').hidden = true;
+    $('pouceTxt').textContent = '';
+    $('pouceMots').innerHTML = '';
+    $('pouceMots').hidden = true;
+    $('pouce').textContent = 'Un coup de pouce';
+    st.pouce = 0;
+    effacer();
+  }
+
+  function choisirCase(i) {
+    if (st.sel === i && !$('ardoise').hidden) return;
+    st.sel = i;
+    $('verdict').hidden = true;
+    rendre();
+    ouvrirArdoise();
+  }
+
+  /* ── L'ardoise : la lettre dessinée ── */
+  var pad, ctx, traits = [], trait = null;
+  function ouvrirArdoise() {
+    $('ardoiseTxt').textContent = tactile
+      ? 'Dessinez la nouvelle lettre avec le doigt, en majuscule.'
+      : 'Tapez la nouvelle lettre au clavier, ou dessinez-la ici en majuscule.';
+    $('ardoise').hidden = false;
+    effacer();
+    taillerArdoise();
+    var r = $('ardoise').getBoundingClientRect();
+    if (r.bottom > window.innerHeight) $('ardoise').scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }
+  function taillerArdoise() {
+    var w = pad.clientWidth, dpr = window.devicePixelRatio || 1;
+    if (!w) return;
+    pad.width = Math.round(w * dpr); pad.height = Math.round(w * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    dessiner();
+  }
+  function effacer() {
+    traits = []; trait = null;
+    if (ctx) dessiner();
+    $('lireBtn').disabled = true;
+  }
+  function couleurTrait() { return getComputedStyle(document.documentElement).getPropertyValue('--sepia').trim() || '#5c3d1e'; }
+  function dessiner() {
+    var w = pad.clientWidth;
+    ctx.clearRect(0, 0, w, w);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.lineWidth = Math.max(8, w / 28);
+    ctx.strokeStyle = couleurTrait();
+    traits.forEach(function (t) {
+      ctx.beginPath();
+      ctx.moveTo(t[0][0], t[0][1]);
+      if (t.length === 1) ctx.lineTo(t[0][0] + 0.1, t[0][1]);
+      for (var i = 1; i < t.length; i++) ctx.lineTo(t[i][0], t[i][1]);
+      ctx.stroke();
+    });
+  }
+  function position(e) {
+    var r = pad.getBoundingClientRect();
+    return [e.clientX - r.left, e.clientY - r.top];
+  }
+  function brancherArdoise() {
+    pad = $('pad'); ctx = pad.getContext('2d');
+    pad.addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      try { pad.setPointerCapture(e.pointerId); } catch (x) {}
+      trait = [position(e)];
+      traits.push(trait);
+      dessiner();
+    });
+    pad.addEventListener('pointermove', function (e) {
+      if (!trait) return;
+      e.preventDefault();
+      var p = position(e), d = trait[trait.length - 1];
+      if (Math.abs(p[0] - d[0]) + Math.abs(p[1] - d[1]) < 2) return;
+      trait.push(p);
+      dessiner();
+    });
+    function fin() {
+      if (!trait) return;
+      trait = null;
+      $('lireBtn').disabled = traits.length === 0;
+    }
+    pad.addEventListener('pointerup', fin);
+    pad.addEventListener('pointercancel', fin);
+    pad.addEventListener('lostpointercapture', fin);
+    window.addEventListener('resize', function () { if (!$('ardoise').hidden) taillerArdoise(); });
+  }
+
+  /* Lire le dessin : parmi les lettres proches de la plus probable, on garde celle qui fait un mot. */
+  function lireDessin() {
+    if (!traits.length || st.sel < 0) return;
+    var m = courant(), i = st.sel;
+    var cands = Lecteur.lire(traits).filter(function (x) { return x.lettre.toLowerCase() !== m[i]; });
+    if (!cands.length) { $('ardoiseTxt').textContent = 'Je n’ai pas réussi à lire. Vous pouvez redessiner la lettre plus grand.'; return; }
+    var best = cands[0], choix = best.lettre.toLowerCase();
+    for (var k = 0; k < Math.min(4, cands.length); k++) {
+      if (cands[k].d > best.d * 1.3) break;
+      var l = cands[k].lettre.toLowerCase(), v = remplacer(m, i, l);
+      if (ACC.has(v) && !dejaVu(v)) { choix = l; break; }
+    }
+    var autres = [];
+    for (k = 0; k < Math.min(6, cands.length) && autres.length < 2; k++) {
+      var a = cands[k].lettre.toLowerCase(), va = remplacer(m, i, a);
+      if (a !== choix && ACC.has(va) && !dejaVu(va)) autres.push(a);
+    }
+    proposer(choix, 'dessin', autres);
+  }
+
+  /* ── Une lettre est proposée ── */
+  function proposer(l, source, autres) {
+    if (st.sel < 0) { toast('Choisissez d’abord la lettre à changer.'); return; }
+    var m = courant(), i = st.sel;
+    if (l === m[i]) {
+      $('ardoiseTxt').textContent = 'C’est déjà la lettre qui est là. Essayez-en une autre.';
+      return;
+    }
+    var nm = remplacer(m, i, l), connu = ACC.has(nm), deja = dejaVu(nm);
+    if (source !== 'dessin' && connu && !deja) { accepter(nm, i); return; }
+
+    $('vLu').hidden = source !== 'dessin';
+    $('vLu').innerHTML = 'J’ai lu&nbsp;: <b class="lu">' + l.toUpperCase() + '</b>';
+    var vm = $('vMot');
+    vm.style.setProperty('--n', nm.length);
+    vm.innerHTML = '';
+    for (var k = 0; k < nm.length; k++) {
+      var c = document.createElement('span');
+      c.className = 'case petite' + (k === i ? ' neuve' : '');
+      c.textContent = nm[k].toUpperCase();
+      vm.appendChild(c);
+    }
+    var btns = $('vBtns');
+    btns.innerHTML = '';
+    if (connu && !deja) {
+      $('vTxt').textContent = 'Ça donne « ' + affiche(nm) + ' ».';
+      bouton(btns, 'Oui, c’est ça', 'btn-g2', function () { accepter(nm, i); });
+      bouton(btns, 'Non, je redessine', 'btn-o2', function () { $('verdict').hidden = true; ouvrirArdoise(); });
+    } else {
+      $('vTxt').textContent = deja
+        ? '« ' + affiche(nm) + ' » est déjà dans la liste.'
+        : 'Ça donne « ' + nm + ' ». Je ne connais pas ce mot.';
+      bouton(btns, 'Essayer une autre lettre', 'btn-g2', function () { $('verdict').hidden = true; ouvrirArdoise(); });
+      bouton(btns, 'Le garder quand même', 'btn-o2', function () { accepter(nm, i); });
+    }
+    var va = $('vAutres');
+    va.innerHTML = '';
+    if (source === 'dessin' && autres && autres.length) {
+      var t = document.createElement('span');
+      t.textContent = 'Ou bien vous avez écrit : ';
+      va.appendChild(t);
+      autres.forEach(function (a) {
+        bouton(va, a.toUpperCase(), 'case-choix', function () { proposer(a, 'choix'); });
+      });
+      va.hidden = false;
+    } else va.hidden = true;
+    $('ardoise').hidden = true;
+    $('verdict').hidden = false;
+    var r = $('verdict').getBoundingClientRect();
+    if (r.bottom > window.innerHeight) $('verdict').scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }
+  function bouton(parent, texte, classe, fn) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = classe; b.textContent = texte;
+    b.addEventListener('click', fn);
+    parent.appendChild(b);
+    return b;
+  }
+
+  function accepter(nm, i) {
+    st.chaine.push({ mot: nm, qui: quiJoue() });
+    st.tour++;
+    st.sel = -1;
+    fermerTout();
+    rendre(i);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function revenir() {
+    if (st.chaine.length < 2) return;
+    st.chaine.pop();
+    st.tour = Math.max(0, st.tour - 1);
+    st.sel = -1;
+    fermerTout();
+    rendre();
+  }
+
+  /* ── Le coup de pouce : d'abord les lettres qui peuvent changer, puis des mots ── */
+  function coupDePouce() {
+    var m = courant();
+    var v = voisins(m, POUCE);
+    if (!v.length) v = voisins(m, ACC);
+    var txt = $('pouceTxt'), box = $('pouceMots');
+    box.innerHTML = '';
+    if (!v.length) {
+      txt.textContent = 'Ce mot-là ne se laisse pas changer facilement.';
+      box.hidden = false;
+      if (st.chaine.length > 1) bouton(box, '↶ Revenir au mot d’avant', 'btn-o2', revenir);
+      bouton(box, 'Prendre un autre mot', 'btn-o2', function () { commencer(st.n); });
+      return;
+    }
+    if (st.pouce === 0) {
+      var pos = {};
+      v.forEach(function (x) { pos[x.i] = true; });
+      document.querySelectorAll('#mot .case').forEach(function (c) {
+        if (pos[c.dataset.i]) c.classList.add('peut');
+      });
+      txt.textContent = 'Ces lettres-là peuvent changer.';
+      $('pouce').textContent = 'Encore un coup de pouce';
+      st.pouce = 1;
+      return;
+    }
+    // deuxième coup de pouce : quelques mots à choisir, si possible à des places différentes
+    melanger(v);
+    var pris = [], places = {};
+    v.forEach(function (x) { if (pris.length < 3 && !places[x.i]) { pris.push(x); places[x.i] = true; } });
+    v.forEach(function (x) { if (pris.length < 3 && pris.indexOf(x) < 0) pris.push(x); });
+    txt.textContent = 'Par exemple :';
+    pris.forEach(function (x) {
+      bouton(box, affiche(x.mot), 'mot-choix', function () { accepter(x.mot, x.i); });
+    });
+    box.hidden = false;
+  }
+
+  /* ── La fin ── */
+  function arreter() {
+    if (st.chaine.length < 2) { retourMenu(); return; }
+    noterPartie();
+    fermerTout();
+    st.sel = -1;
+    $('jeuZone').hidden = true;
+    rendreChaine($('chaineFin'), false);
+    $('doneBox').hidden = false;
+    window.scrollTo(0, 0);
+    confettis();
+  }
+  function confettis() {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var couleurs = ['#c8922a', '#2d6a4f', '#efc28a', '#5c3d1e', '#8fb9a0'];
+    for (var i = 0; i < 70; i++) {
+      var c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = couleurs[i % couleurs.length];
+      c.style.animationDuration = (2.2 + Math.random() * 1.8) + 's';
+      c.style.animationDelay = (Math.random() * 0.6) + 's';
+      document.body.appendChild(c);
+      setTimeout(function (el) { el.remove(); }, 4800, c);
+    }
+  }
+
+  var tTimer;
+  function toast(t) {
+    var el = $('toast');
+    el.textContent = t; el.classList.add('show');
+    clearTimeout(tTimer);
+    tTimer = setTimeout(function () { el.classList.remove('show'); }, 2600);
+  }
+
+  /* ── « Imprimer cette partie » : l'échelle à remplir, puis des pistes ── */
+  function cheminPossible(depart, longueur) {
+    var vus = st.chaine.map(function (e) { return e.mot; }), m = depart, out = [depart];
+    for (var k = 0; k < longueur; k++) {
+      var v = [];
+      for (var i = 0; i < m.length; i++)
+        for (var j = 0; j < 26; j++) {
+          var w = remplacer(m, i, ALPHA[j]);
+          if (w !== m && POUCE.has(w) && vus.indexOf(w) < 0 && out.indexOf(w) < 0) v.push(w);
+        }
+      if (!v.length) break;
+      m = v[Math.floor(Math.random() * v.length)];
+      out.push(m);
+    }
+    return out;
+  }
+  function imprimerPartie() {
+    if (!document.getElementById('feuille') || !st.chaine.length) return;
+    var m = courant(), adresse = 'jeu_mot_en_mot';
+    var f = feuilleNeuve();
+    var p1 = feuilleOuvre('De mot en mot', 'Changez une seule lettre à chaque ligne pour faire un nouveau mot.', adresse);
+    if (st.chaine.length > 1) {
+      var mots = st.chaine.map(function (e) { return affiche(e.mot); });
+      if (mots.length > 8) mots = ['…'].concat(mots.slice(-7));
+      p1.appendChild(feuilleEl('p', 'f-dejas', 'Déjà trouvés : ' + mots.join(' → ')));
+    }
+    var ech = feuilleEl('div', 'f-echelle');
+    for (var r = 0; r < 10; r++) {
+      var rang = feuilleEl('div', 'f-rang' + (r === 0 ? ' f-depart' : ''));
+      for (var i = 0; i < m.length; i++) rang.appendChild(feuilleEl('span', 'f-cv', r === 0 ? m[i].toUpperCase() : ''));
+      ech.appendChild(rang);
+    }
+    p1.appendChild(ech);
+    feuilleFerme(p1); f.appendChild(p1);
+
+    var p2 = feuilleOuvre('De mot en mot : des pistes', null, adresse);
+    var v = voisins(m, POUCE).map(function (x) { return affiche(x.mot); });
+    if (v.length) {
+      p2.appendChild(feuilleEl('p', 'f-sous', 'En changeant une lettre de « ' + affiche(m) + ' » :'));
+      p2.appendChild(feuilleBoites(v.slice(0, 16), 4));
+      var ch = cheminPossible(m, 8);
+      if (ch.length > 2) {
+        p2.appendChild(feuilleEl('p', 'f-sous', 'Un chemin possible :'));
+        p2.appendChild(feuilleEl('p', 'f-chemin', ch.map(affiche).join(' → ')));
+      }
+    } else {
+      p2.appendChild(feuilleEl('p', 'f-sous', '« ' + affiche(m) + ' » ne se laisse pas changer facilement : prenez un autre mot de départ.'));
+    }
+    feuilleFerme(p2); f.appendChild(p2);
+    feuilleImprime('motenmot');
+  }
+  window.imprimerPartie = imprimerPartie;
+
+  /* ── Le clavier ── */
+  document.addEventListener('keydown', function (e) {
+    if ($('game').hidden || !$('doneBox').hidden) return;
+    if (e.target && /input|textarea/i.test(e.target.tagName)) return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    var m = courant();
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      var i = st.sel < 0 ? (e.key === 'ArrowRight' ? 0 : m.length - 1)
+        : (st.sel + (e.key === 'ArrowRight' ? 1 : m.length - 1)) % m.length;
+      choisirCase(i);
+      return;
+    }
+    if (e.key === 'Escape') { st.sel = -1; fermerTout(); rendre(); return; }
+    if (e.key === 'Enter' && !$('verdict').hidden) {
+      var b = $('vBtns').querySelector('button');
+      if (b && document.activeElement && document.activeElement.tagName !== 'BUTTON') { e.preventDefault(); b.click(); }
+      return;
+    }
+    if (e.key && e.key.length === 1) {
+      var l = sansAccent(e.key);
+      if (/^[a-z]$/.test(l)) { e.preventDefault(); proposer(l, 'clavier'); }
+    }
+  });
+
+  /* ── Branchements ── */
+  document.querySelectorAll('.h-card[data-n]').forEach(function (b) {
+    b.addEventListener('click', function () { commencer(+b.dataset.n); });
+  });
+  $('backBtn').addEventListener('click', retourMenu);
+  $('stopBtn').addEventListener('click', arreter);
+  $('effacer').addEventListener('click', effacer);
+  $('lireBtn').addEventListener('click', lireDessin);
+  $('pouce').addEventListener('click', coupDePouce);
+  $('annuler').addEventListener('click', revenir);
+  $('encore').addEventListener('click', function () { commencer(st.n); });
+  $('finMenu').addEventListener('click', retourMenu);
+  ['impBtn', 'impBtn2'].forEach(function (id) { if ($(id)) $(id).addEventListener('click', imprimerPartie); });
+  brancherArdoise();
+  window.__jeu = { st: st, proposer: proposer, lireDessin: lireDessin, ACC: ACC };
+})();
+</script>
+</body>
+</html>

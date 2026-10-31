@@ -326,7 +326,7 @@ h2{font-family:var(--disp);font-size:1.55em;font-weight:600;color:var(--c1);line
 <nav class="mm" aria-label="Menu principal">
   <a class="mm-marque" href="index.html"><img src="logo-fleur.png" alt="" width="96" height="96"><span>Les Jardins de Célestine</span></a>
   <details class="mm-tout"><summary class="mm-bouton"><span class="mm-trois" aria-hidden="true"></span><span class="mm-ouvrir">Menu</span><span class="mm-fermer">Fermer</span></summary>
-  <ul class="mm-liste"><li><a href="index.html">Accueil</a></li><li class="mm-sous mm-ici"><details><summary>Le projet<span class="mm-v" aria-hidden="true"></span></summary><ul><li><a href="projet.html">Présentation</a></li><li><a href="pourquoi.html">Pourquoi ce projet</a></li><li><a href="lieu.html">Le lieu recherché</a></li><li><a href="comparer.html">Comparer les solutions</a></li><li><a href="fondatrice.html">La fondatrice</a></li><li><a href="enquete.html" aria-current="page">Participer à l'enquête</a></li><li><a href="https://lesamisdecelestine.fr" target="_blank" rel="noopener">L'association, son site<span class="mm-ext" aria-hidden="true">↗</span></a></li></ul></details></li><li class="mm-sous"><details><summary>Les jeux<span class="mm-v" aria-hidden="true"></span></summary><ul><li><a href="jeux.html">Tous les jeux</a></li><li><a href="jeux.html#memoire">Travailler la mémoire</a></li><li><a href="jeux.html#langage">Les mots et le langage</a></li><li><a href="jeux.html#nombres">Les nombres et le calcul</a></li><li><a href="jeux.html#logique">La logique et la déduction</a></li><li><a href="jeux.html#attention">L'attention et l'observation</a></li><li><a href="jeux.html#reperes">Se repérer dans le temps et dans l'espace</a></li><li><a href="jeux.html#souvenirs">Se souvenir et se raconter</a></li></ul></details></li><li><a href="gazette.html">La Gazette</a></li><li><a href="presse.html">Presse</a></li><li><a href="contact.html">Contact</a></li></ul></details>
+  <ul class="mm-liste"><li><a href="index.html">Accueil</a></li><li class="mm-sous mm-ici"><details><summary>Le projet<span class="mm-v" aria-hidden="true"></span></summary><ul><li><a href="projet.html">Présentation</a></li><li><a href="pourquoi.html">Pourquoi ce projet</a></li><li><a href="lieu.html">Le lieu recherché</a></li><li><a href="comparer.html">Comparer les solutions</a></li><li><a href="fondatrice.html">La porteuse de projet</a></li><li><a href="enquete.html" aria-current="page">Participer à l'enquête</a></li><li><a href="https://lesamisdecelestine.fr" target="_blank" rel="noopener">L'association, son site<span class="mm-ext" aria-hidden="true">↗</span></a></li></ul></details></li><li class="mm-sous"><details><summary>Les jeux<span class="mm-v" aria-hidden="true"></span></summary><ul><li><a href="jeux.html">Tous les jeux</a></li><li><a href="jeux.html#memoire">Travailler la mémoire</a></li><li><a href="jeux.html#langage">Les mots et le langage</a></li><li><a href="jeux.html#nombres">Les nombres et le calcul</a></li><li><a href="jeux.html#logique">La logique et la déduction</a></li><li><a href="jeux.html#attention">L'attention et l'observation</a></li><li><a href="jeux.html#reperes">Se repérer dans le temps et dans l'espace</a></li><li><a href="jeux.html#souvenirs">Se souvenir et se raconter</a></li></ul></details></li><li><a href="gazette.html">La Gazette</a></li><li><a href="presse.html">Presse</a></li><li><a href="contact.html">Contact</a></li></ul></details>
 </nav>
 <!-- HERO -->
 <div class="hero">
@@ -361,6 +361,41 @@ h2{font-family:var(--disp);font-size:1.55em;font-weight:600;color:var(--c1);line
     <!-- STEP 1 - PROFIL -->
     <div id="as1">
       <div class="qblock">
+        <span class="qlbl">Où habitez-vous ?</span>
+        <span class="qhint">Choisissez votre territoire : les communes citées vous aident à le retrouver.</span>
+        <select class="fld" style="font:inherit;width:100%" id="a-zone" aria-label="Votre territoire">
+          <option value="">Choisir…</option>
+          <option value="metropole">Métropole de Montpellier (Montpellier, Castelnau-le-Lez, Lattes, Juvignac…)</option>
+          <option value="pays-de-l-or">Pays de l'Or (Mauguio, La Grande-Motte, Palavas-les-Flots…)</option>
+          <option value="pic-saint-loup">Grand Pic Saint-Loup (Saint-Gély-du-Fesc, Saint-Clément-de-Rivière, Saint-Mathieu-de-Tréviers…)</option>
+          <option value="lunel">Lunel Agglo (Lunel, Marsillargues, Lunel-Viel…)</option>
+          <option value="sete">Sète Agglopôle Méditerranée (Sète, Frontignan, Mèze, Marseillan…)</option>
+          <option value="vallee-herault">Vallée de l'Hérault (Gignac, Saint-André-de-Sangonis, Montarnaud, Aniane…)</option>
+          <option value="clermontais">Clermontais (Clermont-l'Hérault, Paulhan, Canet…)</option>
+          <option value="lodevois">Lodévois et Larzac (Lodève, Le Bosc, Soubès…)</option>
+          <option value="cevennes">Cévennes Gangeoises et Suménoises (Ganges, Saint-Bauzille-de-Putois…)</option>
+          <option value="herault-mediterranee">Hérault Méditerranée (Agde, Pézenas, Vias, Florensac…)</option>
+          <option value="beziers">Béziers Méditerranée (Béziers, Sérignan, Servian, Valras-Plage…)</option>
+          <option value="domitienne">La Domitienne (Cazouls-lès-Béziers, Maraussan, Nissan-lez-Enserune…)</option>
+          <option value="avant-monts">Les Avant-Monts (Magalas, Thézan-lès-Béziers, Roujan…)</option>
+          <option value="sud-herault">Sud-Hérault (Capestang, Puisserguier, Saint-Chinian…)</option>
+          <option value="grand-orb">Grand Orb (Bédarieux, Lamalou-les-Bains, Le Bousquet-d'Orb…)</option>
+          <option value="minervois-caroux">Minervois au Caroux (Saint-Pons-de-Thomières, Olonzac…)</option>
+          <option value="haut-languedoc">Haut-Languedoc (La Salvetat-sur-Agout, Fraisse-sur-Agout…)</option>
+          <option value="hors-herault">Je n'habite pas dans l'Hérault</option>
+          <option value="nsp">Je ne sais pas</option>
+        </select>
+      </div>
+      <div class="qblock">
+        <span class="qlbl">Votre code postal (facultatif)</span>
+        <span class="qhint">Il sert à cartographier les réponses.</span>
+        <input class="fld" type="text" id="a-cp-input" inputmode="numeric" maxlength="5" autocomplete="postal-code" placeholder="Ex : 34170" aria-label="Votre code postal">
+      </div>
+      <div class="qblock">
+        <span class="qlbl">Code postal de la personne que vous accompagnez, s'il est différent</span>
+        <input class="fld" type="text" id="a-cp-proche-input" inputmode="numeric" maxlength="5" placeholder="Ex : 34270" aria-label="Code postal de la personne accompagnée">
+      </div>
+      <div class="qblock">
         <span class="qlbl">Votre lien avec la personne que vous accompagnez</span>
         <div class="opts">
           <label class="opt"><input type="radio" name="a-lien" value="conjoint"> Conjoint(e) / partenaire</label>
@@ -386,10 +421,6 @@ h2{font-family:var(--disp);font-size:1.55em;font-weight:600;color:var(--c1);line
           <label class="opt"><input type="radio" name="a-princ" value="partage"> Non, je partage avec d'autres</label>
           <label class="opt"><input type="radio" name="a-princ" value="autre"> Autre</label>
         </div>
-      </div>
-      <div class="qblock">
-        <span class="qlbl">Votre département de résidence</span>
-        <input class="fld" type="text" id="a-dept-input" placeholder="Ex : 28, 34, 75…" aria-label="Département de résidence">
       </div>
       <button class="btnext" onclick="aStep(2)">Suivant →</button>
     </div>
@@ -570,7 +601,7 @@ h2{font-family:var(--disp);font-size:1.55em;font-weight:600;color:var(--c1);line
     <div class="ok-ring"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
     <h2>Merci pour votre participation</h2>
     <p class="sub" style="margin-top:.5rem">Vos réponses contribuent directement à la conception du projet.</p>
-    <button class="btnext" style="margin-top:1.5rem;max-width:280px;margin-left:auto;margin-right:auto;display:block" onclick="goPage('projet')">Retour au projet</button>
+    <button class="btnext" style="margin-top:1.5rem;max-width:280px;margin-left:auto;margin-right:auto;display:block" onclick="location.href='projet.html#collectif'">Rejoindre le collectif</button>
   </div>
 </div>
 
@@ -581,6 +612,37 @@ h2{font-family:var(--disp);font-size:1.55em;font-weight:600;color:var(--c1);line
   <form action="https://formspree.io/f/xyklpzzw" method="POST" onsubmit="submitS(event)">
     <input type="hidden" name="_subject" value="Nouveau répondant - Parcours Senior">
       <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+    <div class="qblock">
+      <span class="qlbl">Où habitez-vous ?</span>
+      <span class="qhint">Choisissez votre territoire : les communes citées vous aident à le retrouver.</span>
+      <select class="fld" style="font:inherit;width:100%" name="territoire" aria-label="Votre territoire">
+        <option value="">Choisir…</option>
+        <option value="metropole">Métropole de Montpellier (Montpellier, Castelnau-le-Lez, Lattes, Juvignac…)</option>
+        <option value="pays-de-l-or">Pays de l'Or (Mauguio, La Grande-Motte, Palavas-les-Flots…)</option>
+        <option value="pic-saint-loup">Grand Pic Saint-Loup (Saint-Gély-du-Fesc, Saint-Clément-de-Rivière, Saint-Mathieu-de-Tréviers…)</option>
+        <option value="lunel">Lunel Agglo (Lunel, Marsillargues, Lunel-Viel…)</option>
+        <option value="sete">Sète Agglopôle Méditerranée (Sète, Frontignan, Mèze, Marseillan…)</option>
+        <option value="vallee-herault">Vallée de l'Hérault (Gignac, Saint-André-de-Sangonis, Montarnaud, Aniane…)</option>
+        <option value="clermontais">Clermontais (Clermont-l'Hérault, Paulhan, Canet…)</option>
+        <option value="lodevois">Lodévois et Larzac (Lodève, Le Bosc, Soubès…)</option>
+        <option value="cevennes">Cévennes Gangeoises et Suménoises (Ganges, Saint-Bauzille-de-Putois…)</option>
+        <option value="herault-mediterranee">Hérault Méditerranée (Agde, Pézenas, Vias, Florensac…)</option>
+        <option value="beziers">Béziers Méditerranée (Béziers, Sérignan, Servian, Valras-Plage…)</option>
+        <option value="domitienne">La Domitienne (Cazouls-lès-Béziers, Maraussan, Nissan-lez-Enserune…)</option>
+        <option value="avant-monts">Les Avant-Monts (Magalas, Thézan-lès-Béziers, Roujan…)</option>
+        <option value="sud-herault">Sud-Hérault (Capestang, Puisserguier, Saint-Chinian…)</option>
+        <option value="grand-orb">Grand Orb (Bédarieux, Lamalou-les-Bains, Le Bousquet-d'Orb…)</option>
+        <option value="minervois-caroux">Minervois au Caroux (Saint-Pons-de-Thomières, Olonzac…)</option>
+        <option value="haut-languedoc">Haut-Languedoc (La Salvetat-sur-Agout, Fraisse-sur-Agout…)</option>
+        <option value="hors-herault">Je n'habite pas dans l'Hérault</option>
+        <option value="nsp">Je ne sais pas</option>
+      </select>
+    </div>
+    <div class="qblock">
+      <span class="qlbl">Votre code postal (facultatif)</span>
+      <span class="qhint">Il sert à cartographier les réponses.</span>
+      <input class="fld" type="text" name="code_postal" inputmode="numeric" maxlength="5" autocomplete="postal-code" placeholder="Ex : 34170" aria-label="Votre code postal">
+    </div>
     <div class="qblock">
       <span class="qlbl">Votre tranche d'âge</span>
       <div class="opts">
@@ -662,10 +724,7 @@ h2{font-family:var(--disp);font-size:1.55em;font-weight:600;color:var(--c1);line
         <label class="opt"><input type="radio" name="s-int" value="nsp"> Je ne sais pas encore</label>
       </div>
     </div>
-    <div class="qblock">
-      <span class="qlbl">Votre département de résidence</span>
-      <input class="fld" type="text" name="departement" placeholder="Ex : 28, 34, 75…">
-    </div>
+    <input type="hidden" name="departement">
     <div class="qblock">
       <span class="qlbl">Souhaitez-vous être informé(e) de l'avancement du projet ?</span>
       <div class="opts">
@@ -683,6 +742,7 @@ h2{font-family:var(--disp);font-size:1.55em;font-weight:600;color:var(--c1);line
     <div class="ok-ring"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
     <h2>Merci pour votre participation</h2>
     <p class="sub" style="margin-top:.5rem">Vos réponses contribuent directement à la conception du projet.</p>
+    <button class="btnext" style="margin-top:1.5rem;max-width:280px;margin-left:auto;margin-right:auto;display:block" onclick="location.href='projet.html#collectif'">Rejoindre le collectif</button>
   </div>
 </div>
 
@@ -849,12 +909,42 @@ function toggleCoord(v,prefix){
   document.getElementById(prefix+'-coord').style.display=v==='oui'?'block':'none';
 }
 
+// ═══ CODE POSTAL ET ENVOI DE TOUTES LES RÉPONSES ═══
+function zoneDept(cp,z){var d=cpDept(cp);if(d)return d;return (z&&z!=='hors-herault'&&z!=='nsp')?'34':'';}
+function cpClean(v){return String(v||'').replace(/\D/g,'').slice(0,5);}
+function cpDept(v){var c=cpClean(v);if(c.length<2)return '';var d=c.slice(0,2);if(d==='97'||d==='98')return c.slice(0,3);if(d==='20')return 'Corse';return d;}
+function jdcQuestion(el){var b=el.closest('.qblock');var q=b?b.querySelector('.qlbl'):null;return q?q.textContent.trim():(el.name||el.id);}
+function jdcAppendAll(fd,root){
+  if(!root)return;
+  var deja={'a-lien':1,'a-dur':1,'a-lieu':1,'a-pec':1,'a-diag':1,'a-dep':1,'a-rac':1,'a-frein':1,'a-int':1,'a-epuis':1};
+  var rep={},ordre=[];
+  function add(k,v){if(!(k in rep)){rep[k]=[];ordre.push(k);}rep[k].push(v);}
+  root.querySelectorAll('input[type=radio]:checked').forEach(function(el){
+    if(deja[el.name])return;
+    var l=el.closest('label');
+    add(jdcQuestion(el),l?l.textContent.trim():el.value);
+  });
+  root.querySelectorAll('input[type=checkbox]:checked').forEach(function(el){
+    var l=el.closest('label');add(jdcQuestion(el),l?l.textContent.trim():el.value);
+  });
+  root.querySelectorAll('select.prio-sel').forEach(function(s){
+    if(s.value)add('Importance : '+(s.getAttribute('aria-label')||s.name),s.value);
+  });
+  ordre.forEach(function(k){fd.append(k,rep[k].join(' ; '));});
+}
+function jdcReadablePrio(fd,form){
+  form.querySelectorAll('select.prio-sel').forEach(function(s){
+    fd.delete(s.name);
+    if(s.value)fd.append('Importance : '+(s.getAttribute('aria-label')||s.name),s.value);
+  });
+}
+
 function submitA(e){
   e.preventDefault();
   function val(name){var el=document.querySelector('input[name="'+name+'"]:checked');return el?el.value:'';}
   document.getElementById('h-lien').value=val('a-lien');
   document.getElementById('h-dur').value=val('a-dur');
-  document.getElementById('h-dept').value=document.getElementById('a-dept-input').value;
+  document.getElementById('h-dept').value=zoneDept(document.getElementById('a-cp-input').value,document.getElementById('a-zone').value);
   document.getElementById('h-lieu').value=val('a-lieu');
   document.getElementById('h-pec').value=val('a-pec');
   document.getElementById('h-diag').value=val('a-diag');
@@ -866,7 +956,13 @@ function submitA(e){
   document.getElementById('h-nom').value=document.getElementById('a-nom').value;
   document.getElementById('h-mail').value=document.getElementById('a-email').value;
   var form=document.getElementById('form-aidant');
-  fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}})
+  var fd=new FormData(form);
+  var zs=document.getElementById('a-zone');
+  fd.append('territoire',zs.value?zs.options[zs.selectedIndex].text.split(' (')[0]:'');
+  fd.append('code_postal',cpClean(document.getElementById('a-cp-input').value));
+  fd.append('code_postal_proche',cpClean(document.getElementById('a-cp-proche-input').value));
+  jdcAppendAll(fd,document.getElementById('a-steps'));
+  fetch(form.action,{method:'POST',body:fd,headers:{'Accept':'application/json'}})
     .then(function(){
       document.getElementById('a-steps').style.display='none';
       document.getElementById('a-ok').style.display='block';
@@ -882,7 +978,13 @@ function submitA(e){
 function submitS(e){
   e.preventDefault();
   var form=e.target;
-  fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}})
+  var fd=new FormData(form);
+  fd.set('code_postal',cpClean(fd.get('code_postal')));
+  var zs=form.querySelector('select[name=territoire]');
+  fd.set('departement',zoneDept(fd.get('code_postal'),zs?zs.value:''));
+  fd.set('territoire',zs&&zs.value?zs.options[zs.selectedIndex].text.split(' (')[0]:'');
+  jdcReadablePrio(fd,form);
+  fetch(form.action,{method:'POST',body:fd,headers:{'Accept':'application/json'}})
     .then(function(){
       form.style.display='none';
       document.getElementById('s-ok').style.display='block';

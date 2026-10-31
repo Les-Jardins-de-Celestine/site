@@ -399,117 +399,48 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
 <script>
 (function () {
   "use strict";
-  var Q = [
-{n:"simple",q:"La moitié de 32 ?",b:"16",m:["17","21"]},
-{n:"simple",q:"Le double de 10 ?",b:"20",m:["30","10"]},
-{n:"simple",q:"Le double de 20 ?",b:"40",m:["50","60"]},
-{n:"simple",q:"Le double de 4 ?",b:"8",m:["6","10"]},
-{n:"simple",q:"La moitié de 36 ?",b:"18",m:["28","72"]},
-{n:"simple",q:"Le double de 34 ?",b:"68",m:["66","70"]},
-{n:"simple",q:"Le double de 28 ?",b:"56",m:["54","84"]},
-{n:"simple",q:"Le double de 18 ?",b:"36",m:["28","26"]},
-{n:"simple",q:"Le double de 30 ?",b:"60",m:["50","40"]},
-{n:"simple",q:"Le double de 22 ?",b:"44",m:["54","32"]},
-{n:"simple",q:"La moitié de 6 ?",b:"3",m:["13","2"]},
-{n:"simple",q:"La moitié de 14 ?",b:"7",m:["2","6"]},
-{n:"simple",q:"La moitié de 12 ?",b:"6",m:["11","1"]},
-{n:"simple",q:"Le double de 2 ?",b:"4",m:["12","6"]},
-{n:"simple",q:"La moitié de 26 ?",b:"13",m:["18","8"]},
-{n:"simple",q:"Le double de 8 ?",b:"16",m:["14","24"]},
-{n:"simple",q:"La moitié de 24 ?",b:"12",m:["7","22"]},
-{n:"simple",q:"La moitié de 38 ?",b:"19",m:["24","20"]},
-{n:"simple",q:"La moitié de 16 ?",b:"8",m:["7","3"]},
-{n:"moyen",q:"La moitié de 180 ?",b:"90",m:["100","360"]},
-{n:"moyen",q:"Le double de 88 ?",b:"176",m:["166","178"]},
-{n:"moyen",q:"Le double de 140 ?",b:"280",m:["150","420"]},
-{n:"moyen",q:"La moitié de 66 ?",b:"33",m:["38","132"]},
-{n:"moyen",q:"La moitié de 102 ?",b:"51",m:["56","204"]},
-{n:"moyen",q:"La moitié de 124 ?",b:"62",m:["72","61"]},
-{n:"moyen",q:"La moitié de 158 ?",b:"79",m:["89","316"]},
-{n:"moyen",q:"Le double de 60 ?",b:"120",m:["130","122"]},
-{n:"moyen",q:"Le double de 114 ?",b:"228",m:["238","124"]},
-{n:"moyen",q:"La moitié de 78 ?",b:"39",m:["156","44"]},
-{n:"moyen",q:"Le double de 80 ?",b:"160",m:["162","170"]},
-{n:"moyen",q:"Le double de 168 ?",b:"336",m:["346","326"]},
-{n:"moyen",q:"La moitié de 72 ?",b:"36",m:["37","41"]},
-{n:"moyen",q:"Le double de 20 ?",b:"40",m:["42","50"]},
-{n:"moyen",q:"Le double de 132 ?",b:"264",m:["274","262"]},
-{n:"moyen",q:"La moitié de 134 ?",b:"67",m:["77","66"]},
-{n:"moyen",q:"La moitié de 144 ?",b:"72",m:["82","288"]},
-{n:"moyen",q:"Le double de 40 ?",b:"80",m:["90","78"]},
-{n:"moyen",q:"La moitié de 68 ?",b:"34",m:["35","29"]},
-{n:"moyen",q:"Le double de 116 ?",b:"232",m:["222","242"]},
-{n:"moyen",q:"La moitié de 174 ?",b:"87",m:["92","97"]},
-{n:"moyen",q:"Le double de 56 ?",b:"112",m:["110","66"]},
-{n:"moyen",q:"La moitié de 100 ?",b:"50",m:["49","45"]},
-{n:"moyen",q:"La moitié de 196 ?",b:"98",m:["93","99"]},
-{n:"moyen",q:"La moitié de 164 ?",b:"82",m:["81","92"]},
-{n:"moyen",q:"La moitié de 62 ?",b:"31",m:["36","41"]},
-{n:"moyen",q:"Le double de 128 ?",b:"256",m:["384","254"]},
-{n:"moyen",q:"Le double de 44 ?",b:"88",m:["98","78"]},
-{n:"moyen",q:"Le double de 166 ?",b:"332",m:["176","498"]},
-{n:"moyen",q:"La moitié de 178 ?",b:"89",m:["94","356"]},
-{n:"moyen",q:"La moitié de 96 ?",b:"48",m:["53","47"]},
-{n:"moyen",q:"La moitié de 142 ?",b:"71",m:["70","81"]},
-{n:"moyen",q:"Le double de 136 ?",b:"272",m:["282","274"]},
-{n:"moyen",q:"Le double de 50 ?",b:"100",m:["102","60"]},
-{n:"moyen",q:"La moitié de 110 ?",b:"55",m:["54","65"]},
-{n:"moyen",q:"Le double de 130 ?",b:"260",m:["140","270"]},
-{n:"moyen",q:"La moitié de 38 ?",b:"19",m:["18","20"]},
-{n:"moyen",q:"Le double de 184 ?",b:"368",m:["552","366"]},
-{n:"moyen",q:"La moitié de 118 ?",b:"59",m:["60","236"]},
-{n:"moyen",q:"La moitié de 86 ?",b:"43",m:["38","44"]},
-{n:"moyen",q:"La moitié de 32 ?",b:"16",m:["15","26"]},
-{n:"moyen",q:"La moitié de 194 ?",b:"97",m:["96","92"]},
-{n:"moyen",q:"La moitié de 148 ?",b:"74",m:["84","75"]},
-{n:"moyen",q:"Le double de 24 ?",b:"48",m:["72","46"]},
-{n:"moyen",q:"La moitié de 84 ?",b:"42",m:["43","37"]},
-{n:"difficile",q:"Le double de 346 ?",b:"692",m:["690","356"]},
-{n:"difficile",q:"Le double de 88 ?",b:"176",m:["166","186"]},
-{n:"difficile",q:"Le double de 420 ?",b:"840",m:["830","430"]},
-{n:"difficile",q:"La moitié de 646 ?",b:"323",m:["1 292","328"]},
-{n:"difficile",q:"Le double de 494 ?",b:"988",m:["1 482","978"]},
-{n:"difficile",q:"Le double de 110 ?",b:"220",m:["330","222"]},
-{n:"difficile",q:"La moitié de 292 ?",b:"146",m:["141","145"]},
-{n:"difficile",q:"La moitié de 792 ?",b:"396",m:["401","391"]},
-{n:"difficile",q:"Le double de 248 ?",b:"496",m:["506","498"]},
-{n:"difficile",q:"Le double de 946 ?",b:"1 892",m:["2 838","1 894"]},
-{n:"difficile",q:"La moitié de 748 ?",b:"374",m:["369","375"]},
-{n:"difficile",q:"Le double de 56 ?",b:"112",m:["110","168"]},
-{n:"difficile",q:"Le double de 202 ?",b:"404",m:["406","414"]},
-{n:"difficile",q:"Le double de 252 ?",b:"504",m:["514","756"]},
-{n:"difficile",q:"La moitié de 370 ?",b:"185",m:["740","180"]},
-{n:"difficile",q:"Le double de 396 ?",b:"792",m:["794","790"]},
-{n:"difficile",q:"Le double de 802 ?",b:"1 604",m:["1 614","1 594"]},
-{n:"difficile",q:"La moitié de 326 ?",b:"163",m:["162","158"]},
-{n:"difficile",q:"Le double de 554 ?",b:"1 108",m:["564","1 118"]},
-{n:"difficile",q:"Le double de 182 ?",b:"364",m:["362","546"]},
-{n:"difficile",q:"La moitié de 688 ?",b:"344",m:["1 376","343"]},
-{n:"difficile",q:"Le double de 798 ?",b:"1 596",m:["2 394","808"]},
-{n:"difficile",q:"La moitié de 354 ?",b:"177",m:["176","172"]},
-{n:"difficile",q:"La moitié de 294 ?",b:"147",m:["146","142"]},
-{n:"difficile",q:"La moitié de 920 ?",b:"460",m:["461","470"]},
-{n:"difficile",q:"Le double de 862 ?",b:"1 724",m:["1 726","1 714"]},
-{n:"difficile",q:"La moitié de 498 ?",b:"249",m:["248","244"]},
-{n:"difficile",q:"Le double de 754 ?",b:"1 508",m:["764","1 506"]},
-{n:"difficile",q:"Le double de 288 ?",b:"576",m:["574","578"]},
-{n:"difficile",q:"Le double de 478 ?",b:"956",m:["958","966"]},
-{n:"difficile",q:"La moitié de 132 ?",b:"66",m:["61","76"]},
-{n:"difficile",q:"Le double de 936 ?",b:"1 872",m:["1 862","1 870"]},
-{n:"difficile",q:"Le double de 436 ?",b:"872",m:["862","882"]},
-{n:"difficile",q:"Le double de 270 ?",b:"540",m:["280","550"]},
-{n:"difficile",q:"Le double de 750 ?",b:"1 500",m:["1 502","2 250"]},
-{n:"difficile",q:"La moitié de 698 ?",b:"349",m:["348","344"]},
-{n:"difficile",q:"Le double de 932 ?",b:"1 864",m:["2 796","1 862"]},
-{n:"difficile",q:"La moitié de 228 ?",b:"114",m:["113","119"]},
-{n:"difficile",q:"Le double de 330 ?",b:"660",m:["662","650"]},
-{n:"difficile",q:"La moitié de 168 ?",b:"84",m:["89","94"]},
-{n:"difficile",q:"La moitié de 828 ?",b:"414",m:["419","415"]},
-{n:"difficile",q:"Le double de 620 ?",b:"1 240",m:["1 242","1 860"]},
-{n:"difficile",q:"Le double de 466 ?",b:"932",m:["934","930"]},
-{n:"difficile",q:"La moitié de 70 ?",b:"35",m:["34","40"]},
-{n:"difficile",q:"La moitié de 68 ?",b:"34",m:["33","44"]}
-  ];
+  /* LES QUESTIONS SONT TIRÉES À CHAQUE PARTIE (30 octobre 2026).
+     Avant, une liste fixe : la même à chaque partie, dans un autre ordre.
+       Simple        : nombres jusqu'à quarante
+       Intermédiaire : de quarante et un à deux cents
+       Difficile     : de cinquante au millier
+     Une question sur deux est un double, l'autre une moitié, et la moitié
+     est toujours celle d'un nombre pair. Les deux propositions fausses
+     sont des erreurs ordinaires : une dizaine, une unité ou deux de
+     travers, le triple, ou le double au lieu de la moitié.               */
+  var BORNES = { simple: [2, 40], moyen: [41, 200], difficile: [50, 999] };
+  var PAR_PARTIE = { simple: 19, moyen: 45, difficile: 45 };
+  function hasard(n) { return Math.floor(Math.random() * n); }
+  function nombre(x) {                   // 1 292 avec l'espace fine, comme avant
+    return String(x).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  }
+  function deux(r, possibles) {
+    possibles = possibles.filter(function (x, k) { return x > 0 && x !== r && possibles.indexOf(x) === k; });
+    for (var i = possibles.length - 1; i > 0; i--) { var j = hasard(i + 1); var t = possibles[i]; possibles[i] = possibles[j]; possibles[j] = t; }
+    return [nombre(possibles[0]), nombre(possibles[1])];
+  }
+  function question(niv, deja) {
+    var b = BORNES[niv], q, n, essai = 0;
+    do {
+      var moitie = Math.random() < 0.5;
+      n = b[0] + hasard(b[1] - b[0] + 1);
+      if (moitie && n % 2) n += (n + 1 <= b[1]) ? 1 : -1;
+      q = (moitie ? 'La moitié de ' : 'Le double de ') + nombre(n) + ' ?';
+      essai++;
+    } while (deja[q] && essai < 50);
+    deja[q] = true;
+    if (moitie) {
+      var r = n / 2;
+      return { n: niv, q: q, b: nombre(r), m: deux(r, [r + 5, r - 5, r + 10, r - 10, r + 1, r - 1, n * 2]) };
+    }
+    var d = n * 2;
+    return { n: niv, q: q, b: nombre(d), m: deux(d, [d + 10, d - 10, d + 2, d - 2, n * 3, n + 10]) };
+  }
+  function fabriquer(niv) {
+    var deja = {}, out = [];
+    for (var k = 0; k < PAR_PARTIE[niv]; k++) out.push(question(niv, deja));
+    return out;
+  }
 
   var ecrans = {
     accueil: document.getElementById('accueil'),
@@ -520,7 +451,7 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
   function finir() {
     annuler();
     if (typeof JDC !== 'undefined') {
-      JDC.enregistrer('double', Math.min(3, niveau || 1), true, { variante: 'niveau' + niveau });
+      JDC.enregistrer('double', { simple: 1, moyen: 2, difficile: 3 }[niveau] || 1, true, { variante: 'niveau' + niveau });
     }
     montrer('fin');
     confetti();
@@ -543,15 +474,9 @@ main{max-width:760px;margin:0 auto;padding:22px 16px 8px}
   function u(t) { return String(t).split('§').join(unite); }
   var paquet = [], pose = 0;
 
-  // Brassé une fois puis distribué. Un tirage indépendant à chaque clic
-  // ramènerait la même question deux fois de suite, et ça se lit comme une
-  // panne de la machine ou de soi.
+  // Tiré une fois pour la partie, sans deux fois la même question.
   function brasser() {
-    paquet = Q.filter(function (x) { return x.n === niveau; });
-    for (var i = paquet.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var t = paquet[i]; paquet[i] = paquet[j]; paquet[j] = t;
-    }
+    paquet = fabriquer(niveau);
     pose = 0;
   }
 
