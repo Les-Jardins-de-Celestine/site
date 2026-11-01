@@ -340,6 +340,7 @@ h2{font-family:var(--disp);font-size:1.55em;font-weight:600;color:var(--c1);line
 <nav class="nav" aria-label="Questionnaire">
   <button class="nb on" id="nb-aidant" onclick="goPage('aidant')">J'accompagne</button>
   <button class="nb" id="nb-senior" onclick="goPage('senior')">Pour moi</button>
+  <button class="nb" id="nb-soutien" onclick="goPage('soutien')">Je soutiens</button>
 </nav>
 
 <!-- ===================== PAGE AIDANT ===================== -->
@@ -746,6 +747,175 @@ h2{font-family:var(--disp);font-size:1.55em;font-weight:600;color:var(--c1);line
   </div>
 </div>
 
+<!-- ===================== PAGE SOUTIEN (1er novembre 2026) ===================== -->
+<div class="pg" id="pg-soutien">
+  <h2>Vous soutenez le projet</h2>
+  <p class="sub">Pas besoin d'être aidant ni concerné : votre regard compte aussi. Quelques minutes suffisent.</p>
+  <form action="https://formspree.io/f/xyklpzzw" method="POST" onsubmit="submitT(event)">
+    <input type="hidden" name="_subject" value="Nouveau répondant - Parcours Soutien">
+      <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+    <div class="qblock">
+      <span class="qlbl">Où habitez-vous ?</span>
+      <span class="qhint">Choisissez votre territoire : les communes citées vous aident à le retrouver.</span>
+      <select class="fld" style="font:inherit;width:100%" name="territoire" aria-label="Votre territoire">
+        <option value="">Choisir…</option>
+        <option value="metropole">Métropole de Montpellier (Montpellier, Castelnau-le-Lez, Lattes, Juvignac…)</option>
+        <option value="pays-de-l-or">Pays de l'Or (Mauguio, La Grande-Motte, Palavas-les-Flots…)</option>
+        <option value="pic-saint-loup">Grand Pic Saint-Loup (Saint-Gély-du-Fesc, Saint-Clément-de-Rivière, Saint-Mathieu-de-Tréviers…)</option>
+        <option value="lunel">Lunel Agglo (Lunel, Marsillargues, Lunel-Viel…)</option>
+        <option value="sete">Sète Agglopôle Méditerranée (Sète, Frontignan, Mèze, Marseillan…)</option>
+        <option value="vallee-herault">Vallée de l'Hérault (Gignac, Saint-André-de-Sangonis, Montarnaud, Aniane…)</option>
+        <option value="clermontais">Clermontais (Clermont-l'Hérault, Paulhan, Canet…)</option>
+        <option value="lodevois">Lodévois et Larzac (Lodève, Le Bosc, Soubès…)</option>
+        <option value="cevennes">Cévennes Gangeoises et Suménoises (Ganges, Saint-Bauzille-de-Putois…)</option>
+        <option value="herault-mediterranee">Hérault Méditerranée (Agde, Pézenas, Vias, Florensac…)</option>
+        <option value="beziers">Béziers Méditerranée (Béziers, Sérignan, Servian, Valras-Plage…)</option>
+        <option value="domitienne">La Domitienne (Cazouls-lès-Béziers, Maraussan, Nissan-lez-Enserune…)</option>
+        <option value="avant-monts">Les Avant-Monts (Magalas, Thézan-lès-Béziers, Roujan…)</option>
+        <option value="sud-herault">Sud-Hérault (Capestang, Puisserguier, Saint-Chinian…)</option>
+        <option value="grand-orb">Grand Orb (Bédarieux, Lamalou-les-Bains, Le Bousquet-d'Orb…)</option>
+        <option value="minervois-caroux">Minervois au Caroux (Saint-Pons-de-Thomières, Olonzac…)</option>
+        <option value="haut-languedoc">Haut-Languedoc (La Salvetat-sur-Agout, Fraisse-sur-Agout…)</option>
+        <option value="hors-herault">Je n'habite pas dans l'Hérault</option>
+        <option value="nsp">Je ne sais pas</option>
+      </select>
+    </div>
+    <div class="qblock">
+      <span class="qlbl">Votre code postal (facultatif)</span>
+      <span class="qhint">Il sert à cartographier les réponses.</span>
+      <input class="fld" type="text" name="code_postal" inputmode="numeric" maxlength="5" autocomplete="postal-code" placeholder="Ex : 34170" aria-label="Votre code postal">
+    </div>
+    <div class="qblock">
+      <span class="qlbl">Qu'est-ce qui vous relie à ce sujet ?</span>
+      <span class="qhint">Plusieurs réponses possibles.</span>
+      <div class="opts">
+        <label class="opt"><input type="checkbox" name="t-lien" value="proche"> Un proche est ou a été concerné par une maladie de la mémoire ou une perte d'autonomie</label>
+        <label class="opt"><input type="checkbox" name="t-lien" value="metier"> Je travaille dans le soin, l'aide à domicile ou le social</label>
+        <label class="opt"><input type="checkbox" name="t-lien" value="vieillir"> Je m'intéresse aux façons de vieillir autrement</label>
+        <label class="opt"><input type="checkbox" name="t-lien" value="parle"> Le projet me parle, tout simplement</label>
+      </div>
+    </div>
+    <div class="qblock">
+      <span class="qlbl">Parmi ces lieux de vie pour les personnes âgées, lesquels connaissez-vous, même de nom ?</span>
+      <span class="qhint">Plusieurs réponses possibles.</span>
+      <div class="opts">
+        <label class="opt"><input type="checkbox" name="t-lieux" value="maison-retraite"> Maison de retraite</label>
+        <label class="opt"><input type="checkbox" name="t-lieux" value="ehpad"> EHPAD</label>
+        <label class="opt"><input type="checkbox" name="t-lieux" value="residence-services"> Résidence services seniors</label>
+        <label class="opt"><input type="checkbox" name="t-lieux" value="residence-autonomie"> Résidence autonomie</label>
+        <label class="opt"><input type="checkbox" name="t-lieux" value="marpa"> MARPA</label>
+        <label class="opt"><input type="checkbox" name="t-lieux" value="accueil-familial"> Accueil familial</label>
+        <label class="opt"><input type="checkbox" name="t-lieux" value="beguinage"> Béguinage</label>
+        <label class="opt"><input type="checkbox" name="t-lieux" value="colocation"> Colocation seniors</label>
+        <label class="opt"><input type="checkbox" name="t-lieux" value="intergenerationnel"> Cohabitation intergénérationnelle</label>
+        <label class="opt"><input type="checkbox" name="t-lieux" value="inclusif"> Habitat inclusif</label>
+        <label class="opt"><input type="checkbox" name="t-lieux" value="partage-alzheimer"> Habitat partagé Alzheimer</label>
+        <label class="opt"><input type="checkbox" name="t-lieux" value="aucun"> Aucun de ces lieux</label>
+      </div>
+    </div>
+    <div class="qblock">
+      <span class="qlbl">Ce projet vous paraît…</span>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="t-avis" value="indispensable"> Indispensable : ce genre de lieu manque</label>
+        <label class="opt"><input type="radio" name="t-avis" value="interessant"> Intéressant, à suivre</label>
+        <label class="opt"><input type="radio" name="t-avis" value="doutes"> J'ai des doutes</label>
+        <label class="opt"><input type="radio" name="t-avis" value="nsp"> Je ne sais pas encore</label>
+      </div>
+    </div>
+    <div class="qblock">
+      <span class="qlbl">Ce qui vous plaît le plus</span>
+      <span class="qhint">Plusieurs réponses possibles.</span>
+      <div class="opts">
+        <label class="opt"><input type="checkbox" name="t-plait" value="taille"> Un lieu à taille humaine</label>
+        <label class="opt"><input type="checkbox" name="t-plait" value="partage"> La vie partagée au quotidien</label>
+        <label class="opt"><input type="checkbox" name="t-plait" value="jardin"> Le jardin et la nature</label>
+        <label class="opt"><input type="checkbox" name="t-plait" value="familles"> La place laissée aux familles</label>
+        <label class="opt"><input type="checkbox" name="t-plait" value="collectif"> Un projet porté par un collectif</label>
+      </div>
+    </div>
+    <div class="qblock">
+      <span class="qlbl">Selon vous, la réponse apportée au grand âge et à la perte d'autonomie est-elle suffisante sur votre territoire ?</span>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="t-reponse" value="suffisante"> Oui, elle est suffisante</label>
+        <label class="opt"><input type="radio" name="t-reponse" value="pas-tout-a-fait"> Pas tout à fait</label>
+        <label class="opt"><input type="radio" name="t-reponse" value="insuffisante"> Non, elle est insuffisante</label>
+        <label class="opt"><input type="radio" name="t-reponse" value="nsp"> Je ne sais pas</label>
+      </div>
+    </div>
+    <div class="qblock">
+      <span class="qlbl">Selon vous, ce genre de lieu manque-t-il sur votre territoire ?</span>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="t-manque" value="oui"> Oui, il en manque</label>
+        <label class="opt"><input type="radio" name="t-manque" value="pas-assez"> Il en existe, mais pas assez</label>
+        <label class="opt"><input type="radio" name="t-manque" value="non"> Non, il y en a assez</label>
+        <label class="opt"><input type="radio" name="t-manque" value="nsp"> Je ne sais pas</label>
+      </div>
+    </div>
+    <div class="qblock">
+      <span class="qlbl">En dehors de la question d'argent, qu'est-ce qui pourrait vous retenir d'aller vivre un jour dans un habitat partagé ?</span>
+      <span class="qhint">Plusieurs réponses possibles.</span>
+      <div class="opts">
+        <label class="opt"><input type="checkbox" name="t-frein" value="maison"> Quitter ma maison</label>
+        <label class="opt"><input type="checkbox" name="t-frein" value="partager"> Partager mon quotidien avec d'autres</label>
+        <label class="opt"><input type="checkbox" name="t-frein" value="independance"> La peur de perdre mon indépendance</label>
+        <label class="opt"><input type="checkbox" name="t-frein" value="eloignement"> M'éloigner de ma famille ou de mes amis</label>
+        <label class="opt"><input type="checkbox" name="t-frein" value="image"> L'image de la maison de retraite</label>
+        <label class="opt"><input type="checkbox" name="t-frein" value="rien"> Rien, ça ne me retiendrait pas</label>
+        <label class="opt"><input type="checkbox" name="t-frein" value="autre"> Autre</label>
+      </div>
+      <input class="fld" type="text" name="t-frein-autre" placeholder="Autre : précisez si vous le souhaitez" aria-label="Autre frein, à préciser" style="margin-top:8px">
+    </div>
+    <div class="qblock">
+      <span class="qlbl">Et pour vous, plus tard : vivre dans un habitat partagé entre seniors, autonomes ou en perte d'autonomie, cela vous plairait-il ?</span>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="t-plustard" value="oui"> Oui, ça me plairait</label>
+        <label class="opt"><input type="radio" name="t-plustard" value="peut-etre"> Peut-être</label>
+        <label class="opt"><input type="radio" name="t-plustard" value="non"> Non, je préfère rester chez moi</label>
+        <label class="opt"><input type="radio" name="t-plustard" value="jamais-pense"> Je n'y ai jamais pensé</label>
+      </div>
+    </div>
+    <div class="qblock">
+      <span class="qlbl">Aimeriez-vous vous impliquer ?</span>
+      <span class="qhint">Plusieurs réponses possibles.</span>
+      <div class="opts">
+        <label class="opt"><input type="checkbox" name="t-implic" value="collectif"> Rejoindre le collectif</label>
+        <label class="opt"><input type="checkbox" name="t-implic" value="societaire"> Devenir sociétaire</label>
+        <label class="opt"><input type="checkbox" name="t-implic" value="temps"> Donner un peu de temps</label>
+        <label class="opt"><input type="checkbox" name="t-implic" value="competence"> Apporter une compétence</label>
+        <label class="opt"><input type="checkbox" name="t-implic" value="parler"> En parler autour de moi</label>
+        <label class="opt"><input type="checkbox" name="t-implic" value="pas-maintenant"> Pas pour l'instant</label>
+      </div>
+    </div>
+    <div class="qblock">
+      <span class="qlbl">Une compétence à apporter ? (facultatif)</span>
+      <input class="fld" type="text" name="t-competence" placeholder="Ex : jardinage, bricolage, comptabilité, communication" aria-label="Une compétence à apporter ? (facultatif)">
+    </div>
+    <div class="qblock">
+      <span class="qlbl">Votre espace</span>
+      <span class="qhint">Si vous voulez ajouter quelque chose.</span>
+      <textarea class="fld" name="t-espace" rows="5" style="font:inherit;width:100%;resize:vertical" aria-label="Votre espace"></textarea>
+    </div>
+    <div class="qblock">
+      <span class="qlbl">Souhaitez-vous être tenu(e) au courant de l'avancement du projet ?</span>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="t-info" value="oui" onchange="toggleCoord('oui','t')"> Oui</label>
+        <label class="opt"><input type="radio" name="t-info" value="non" onchange="toggleCoord('non','t')"> Non</label>
+      </div>
+    </div>
+    <div id="t-coord" style="display:none;margin-bottom:.85rem">
+      <input class="fld" type="text" name="nom" placeholder="Nom / Prénom" style="margin-bottom:8px" aria-label="Nom et prénom">
+      <input class="fld" type="email" name="email" placeholder="Email" aria-label="Adresse email">
+    </div>
+    <button type="submit" class="btnext">Envoyer mes réponses</button>
+  </form>
+  <div id="t-ok" style="display:none" class="ok">
+    <div class="ok-ring"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <h2>Merci pour votre soutien</h2>
+    <p class="sub" style="margin-top:.5rem">Vos réponses aident à faire avancer le projet.</p>
+    <button class="btnext" style="margin-top:1.5rem;max-width:280px;margin-left:auto;margin-right:auto;display:block" onclick="location.href='projet.html#collectif'">Rejoindre le collectif</button>
+  </div>
+</div>
+
 <!-- ===================== PAGE CONTACT ===================== -->
 
 
@@ -837,6 +1007,7 @@ function goPage(id){
   if(id==='senior')buildPrioGrid('prio-grid-s',null);
 }
 if(location.search.indexOf('p=senior')>-1){goPage('senior');}
+if(location.search.indexOf('p=soutien')>-1){goPage('soutien');}
 
 function setParcours(){
   var v=document.querySelector('input[name="a-lieu"]:checked');
@@ -995,6 +1166,27 @@ function submitS(e){
       document.getElementById('s-ok').style.display='block';
       window.scrollTo(0,0);
     });
+}
+
+// ═══ PARCOURS SOUTIEN (1er novembre 2026) ═══
+function submitT(e){
+  e.preventDefault();
+  var form=e.target;
+  var fd=new FormData();
+  fd.append('_subject',form.querySelector('[name=_subject]').value);
+  fd.append('_gotcha',form.querySelector('[name=_gotcha]').value);
+  var zs=form.querySelector('select[name=territoire]');
+  var cp=cpClean(form.querySelector('[name=code_postal]').value);
+  fd.append('territoire',zs.value?zs.options[zs.selectedIndex].text.split(' (')[0]:'');
+  fd.append('code_postal',cp);
+  fd.append('departement',zoneDept(cp,zs.value));
+  jdcAppendAll(fd,form);
+  [['t-frein-autre','Autre frein, précisé'],['t-competence','Compétence à apporter'],['t-espace','Votre espace'],['nom','nom'],['email','email']].forEach(function(c){
+    var el=form.querySelector('[name="'+c[0]+'"]');var v=el?el.value.trim():'';
+    if(v)fd.append(c[1],v);
+  });
+  function fin(){form.style.display='none';document.getElementById('t-ok').style.display='block';window.scrollTo(0,0);}
+  fetch(form.action,{method:'POST',body:fd,headers:{'Accept':'application/json'}}).then(fin).catch(fin);
 }
 
 // ═══ COMPTEUR VISITEURS + STATS JEUX ═══
