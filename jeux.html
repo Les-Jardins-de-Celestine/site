@@ -22,6 +22,9 @@
 
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ef">
+<meta name="apple-mobile-web-app-title" content="Jeux Célestine">
 <meta property="og:image" content="https://jardinsdecelestine.com/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://jardinsdecelestine.com/og-image.png">
@@ -103,6 +106,16 @@ footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--t3);border-to
 .cherche-i::placeholder{color:var(--t3);opacity:1}
 .filtres[hidden],.filtre-tout[hidden],.filtres-etat[hidden],.jeu[hidden],.rubrique[hidden]{display:none!important}
 @media print{.filtres{display:none}}
+
+/* « Retrouver les jeux d'un geste » (6 novembre 2026) : une aide repliée, discrète. */
+.ecran-accueil{margin:1.6rem 0 .4rem;border:1px solid var(--bdl);border-radius:12px;background:var(--bg1)}
+.ecran-accueil summary{cursor:pointer;list-style:none;padding:12px 16px;font-weight:700;color:var(--c1);font-size:15px}
+.ecran-accueil summary::-webkit-details-marker{display:none}
+.ecran-accueil summary::after{content:"\25BE";margin-left:.5rem;font-size:12px;color:var(--c2)}
+.ecran-accueil[open] summary::after{content:"\25B4"}
+.ecran-accueil .corps{padding:0 16px 14px;color:var(--t2);font-size:14.5px;line-height:1.65}
+.ecran-accueil .corps p{margin:.3rem 0}
+.ecran-accueil .corps strong{color:var(--c1)}
 </style>
 <script src="jdc-parcours.js"></script>
 <script type="application/ld+json">
@@ -566,6 +579,16 @@ footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--t3);border-to
     </div>
   </details>
 </main>
+
+
+<details class="ecran-accueil">
+  <summary>Retrouver les jeux d’un geste</summary>
+  <div class="corps">
+    <p>Ajoutez cette page à l’écran d’accueil de votre téléphone ou de votre tablette : une icône des Jardins de Célestine vous ramènera directement aux jeux.</p>
+    <p><strong>iPhone et iPad</strong> : dans Safari, appuyez sur le bouton Partager, puis sur «&nbsp;Sur l’écran d’accueil&nbsp;».</p>
+    <p><strong>Android</strong> : dans Chrome, appuyez sur les trois petits points en haut à droite, puis sur «&nbsp;Ajouter à l’écran d’accueil&nbsp;».</p>
+  </div>
+</details>
 
 <footer>© 2025-2026 · Les jeux des Jardins de Célestine  <p style="margin-top:8px;font-size:.86rem;opacity:.75"><a href="carnet.html">Carnet de parcours</a><span aria-hidden="true"> · </span><a href="mentions-legales.html">Mentions légales</a><span aria-hidden="true"> · </span><a href="signaler.html">Signaler un problème</a></p>
 </footer>

@@ -251,7 +251,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 
 <div id="menu">
   <h2>Choisissez votre niveau</h2>
-  <p class="hint">Des mots ont disparu du texte. Touchez un mot dans la liste pour le remettre à sa place. Votre mémoire connaît ces textes mieux que vous ne le pensez.</p>
+  <p class="hint">Des mots ont disparu du texte. Choisissez un mot dans la liste pour le remettre à sa place. Votre mémoire connaît ces textes mieux que vous ne le pensez.</p>
   <div class="niveaux">
     <button class="niv" onclick="choisirNiveau(1)">
       <span class="niv-t">Découverte</span>
@@ -958,14 +958,14 @@ afficherSuggestion();
 <h2>Comment y jouer</h2>
 <ul>
 <li><strong>Seul</strong> : à son rythme.</li>
-<li><strong>À deux, avec un proche ou un aidant</strong> : commencez la phrase à voix haute et laissez l'autre la finir. C'est souvent immédiat, et c'est un beau moment.</li>
+<li><strong>À deux, avec un proche ou un aidant</strong> : commencez la phrase et laissez l'autre la finir. C'est souvent immédiat, et c'est un beau moment.</li>
 <li><strong>En petit groupe</strong> : toute la salle finit la phrase ensemble, sans se concerter.</li>
 </ul>
 <p>C'est le jeu à essayer en premier quand plus rien ne semble marcher. Il demande très peu et rend beaucoup.</p>
 <h2>Ce que ce jeu n'est pas</h2>
-<p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne signale une erreur et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
+<p>Il n'y a ni compte à créer, ni adresse à donner, ni application à installer, ni publicité, ni chronomètre. Rien ne se compte et rien ne se ferme : on peut recommencer autant de fois qu'on veut. Ce jeu est une activité de loisir. Ce n'est ni un dispositif médical, ni un test, ni une évaluation, et il ne remplace aucun accompagnement.</p>
 <h2>Qui le propose</h2>
-<p>Les Jardins de Célestine, un projet d’habitat partagé pour personnes atteintes de maladies neurodégénératives, mettent leurs jeux de stimulation cognitive à disposition gratuitement. Le site ne vend rien. <a href="projet.html">Découvrir le projet</a> · <a href="jeux.html">Voir tous les jeux</a>.</p>
+<p>Les Jardins de Célestine, un projet d’habitat partagé pour personnes atteintes de maladies neurodégénératives, mettent leurs jeux à disposition gratuitement. Le site ne vend rien. <a href="projet.html">Découvrir le projet</a> · <a href="jeux.html">Voir tous les jeux</a>.</p>
 </div>
 </details>
 
@@ -998,10 +998,27 @@ function feuilleOuvre(titre, consigne, adresse){
   p._adresse = adresse;
   return p;
 }
+/* Le pied de la feuille (6 novembre 2026) : l'adresse du jeu, la newsletter, et un petit QR code
+   discret à côté de l'adresse du site, qui mène à l'accueil des jeux, sans aucun suivi. */
+var FEUILLE_QR = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29 29" width="100%" height="100%" shape-rendering="crispEdges" role="img" aria-label="QR code vers jardinsdecelestine.com/jeux"><path fill="#222" d="M0 0h7v1h-7zM8 0h2v1h-2zM11 0h4v1h-4zM16 0h1v1h-1zM22 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM9 1h1v1h-1zM11 1h1v1h-1zM13 1h3v1h-3zM19 1h1v1h-1zM22 1h1v1h-1zM28 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM11 2h1v1h-1zM14 2h1v1h-1zM17 2h1v1h-1zM19 2h1v1h-1zM22 2h1v1h-1zM24 2h3v1h-3zM28 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h3v1h-3zM12 3h1v1h-1zM16 3h1v1h-1zM18 3h1v1h-1zM20 3h1v1h-1zM22 3h1v1h-1zM24 3h3v1h-3zM28 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM8 4h1v1h-1zM10 4h3v1h-3zM17 4h2v1h-2zM22 4h1v1h-1zM24 4h3v1h-3zM28 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM11 5h1v1h-1zM18 5h2v1h-2zM22 5h1v1h-1zM28 5h1v1h-1zM0 6h7v1h-7zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h7v1h-7zM8 7h1v1h-1zM12 7h2v1h-2zM15 7h4v1h-4zM20 7h1v1h-1zM0 8h1v1h-1zM4 8h1v1h-1zM6 8h3v1h-3zM11 8h1v1h-1zM13 8h1v1h-1zM15 8h3v1h-3zM19 8h7v1h-7zM28 8h1v1h-1zM0 9h1v1h-1zM3 9h1v1h-1zM5 9h1v1h-1zM8 9h1v1h-1zM11 9h1v1h-1zM13 9h6v1h-6zM22 9h7v1h-7zM0 10h1v1h-1zM3 10h10v1h-10zM15 10h1v1h-1zM18 10h1v1h-1zM21 10h1v1h-1zM23 10h1v1h-1zM28 10h1v1h-1zM0 11h1v1h-1zM3 11h3v1h-3zM8 11h2v1h-2zM12 11h1v1h-1zM14 11h2v1h-2zM17 11h1v1h-1zM20 11h1v1h-1zM22 11h1v1h-1zM25 11h1v1h-1zM27 11h2v1h-2zM1 12h3v1h-3zM5 12h3v1h-3zM11 12h4v1h-4zM16 12h2v1h-2zM20 12h2v1h-2zM27 12h1v1h-1zM0 13h3v1h-3zM5 13h1v1h-1zM7 13h1v1h-1zM9 13h1v1h-1zM11 13h1v1h-1zM15 13h2v1h-2zM18 13h1v1h-1zM22 13h7v1h-7zM1 14h1v1h-1zM3 14h1v1h-1zM6 14h1v1h-1zM9 14h2v1h-2zM13 14h3v1h-3zM17 14h2v1h-2zM20 14h1v1h-1zM23 14h4v1h-4zM28 14h1v1h-1zM0 15h1v1h-1zM3 15h3v1h-3zM7 15h2v1h-2zM10 15h4v1h-4zM15 15h1v1h-1zM17 15h2v1h-2zM20 15h2v1h-2zM23 15h1v1h-1zM27 15h2v1h-2zM1 16h1v1h-1zM6 16h2v1h-2zM9 16h1v1h-1zM11 16h3v1h-3zM17 16h5v1h-5zM23 16h1v1h-1zM27 16h1v1h-1zM0 17h3v1h-3zM8 17h1v1h-1zM10 17h9v1h-9zM21 17h5v1h-5zM27 17h2v1h-2zM3 18h1v1h-1zM5 18h5v1h-5zM15 18h2v1h-2zM18 18h1v1h-1zM20 18h3v1h-3zM26 18h1v1h-1zM28 18h1v1h-1zM2 19h2v1h-2zM5 19h1v1h-1zM7 19h1v1h-1zM9 19h3v1h-3zM14 19h1v1h-1zM16 19h2v1h-2zM19 19h1v1h-1zM23 19h1v1h-1zM27 19h2v1h-2zM0 20h2v1h-2zM3 20h2v1h-2zM6 20h3v1h-3zM10 20h1v1h-1zM12 20h4v1h-4zM17 20h1v1h-1zM19 20h7v1h-7zM28 20h1v1h-1zM8 21h3v1h-3zM12 21h1v1h-1zM15 21h2v1h-2zM18 21h3v1h-3zM24 21h1v1h-1zM28 21h1v1h-1zM0 22h7v1h-7zM8 22h3v1h-3zM12 22h4v1h-4zM19 22h2v1h-2zM22 22h1v1h-1zM24 22h3v1h-3zM28 22h1v1h-1zM0 23h1v1h-1zM6 23h1v1h-1zM9 23h1v1h-1zM11 23h3v1h-3zM17 23h4v1h-4zM24 23h1v1h-1zM0 24h1v1h-1zM2 24h3v1h-3zM6 24h1v1h-1zM8 24h3v1h-3zM13 24h1v1h-1zM15 24h1v1h-1zM17 24h1v1h-1zM19 24h7v1h-7zM0 25h1v1h-1zM2 25h3v1h-3zM6 25h1v1h-1zM10 25h2v1h-2zM13 25h3v1h-3zM17 25h2v1h-2zM20 25h2v1h-2zM28 25h1v1h-1zM0 26h1v1h-1zM2 26h3v1h-3zM6 26h1v1h-1zM10 26h2v1h-2zM13 26h3v1h-3zM18 26h2v1h-2zM21 26h1v1h-1zM25 26h4v1h-4zM0 27h1v1h-1zM6 27h1v1h-1zM10 27h3v1h-3zM14 27h2v1h-2zM17 27h2v1h-2zM20 27h1v1h-1zM22 27h4v1h-4zM27 27h2v1h-2zM0 28h7v1h-7zM8 28h1v1h-1zM11 28h5v1h-5zM17 28h1v1h-1zM20 28h1v1h-1zM25 28h1v1h-1zM27 28h1v1h-1z"/></svg>';
 function feuilleFerme(p){
   var pied = feuilleEl('div', 'f-pied');
-  pied.appendChild(feuilleEl('p', 'f-site', 'jardinsdecelestine.com · jardinsdecelestine@gmail.com'));
-  pied.appendChild(feuilleEl('p', 'f-jeu', 'Ce jeu est gratuit en ligne : jardinsdecelestine.com/' + p._adresse));
+  /* une ligne de plus, mais un pied pas plus haut qu'avant : lettres un peu plus petites,
+     marges resserrées (aucune feuille ne doit gagner une page) */
+  pied.style.display = 'flex'; pied.style.alignItems = 'center'; pied.style.gap = '4mm';
+  pied.style.marginTop = '2mm'; pied.style.paddingTop = '1.5mm'; pied.style.lineHeight = '1.2';
+  var txt = feuilleEl('div', 'f-pied-txt');
+  txt.style.flex = '1 1 auto'; txt.style.minWidth = '0';
+  var l1 = feuilleEl('p', 'f-site', 'jardinsdecelestine.com · jardinsdecelestine@gmail.com');
+  var l2 = feuilleEl('p', 'f-jeu', 'Ce jeu est gratuit en ligne : jardinsdecelestine.com/' + p._adresse);
+  var l3 = feuilleEl('p', 'f-jeu', 'Un cahier de jeux dans votre boîte e-mail, avec la newsletter : inscription sur jardinsdecelestine.com');
+  l1.style.fontSize = '11pt'; l2.style.fontSize = '9.5pt'; l3.style.fontSize = '9.5pt';
+  txt.appendChild(l1); txt.appendChild(l2); txt.appendChild(l3);
+  pied.appendChild(txt);
+  var qr = feuilleEl('div', 'f-qr');
+  qr.style.flex = '0 0 12mm'; qr.style.width = '12mm'; qr.style.height = '12mm';
+  qr.innerHTML = FEUILLE_QR;
+  pied.appendChild(qr);
   p.appendChild(pied);
 }
 function feuilleImprime(jeu){

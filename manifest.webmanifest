@@ -1,0 +1,31 @@
+{
+  "name": "Les jeux des Jardins de Célestine",
+  "short_name": "Jeux Célestine",
+  "description": "Des jeux gratuits, sans inscription, à faire seul ou à plusieurs.",
+  "start_url": "/jeux",
+  "scope": "/",
+  "display": "browser",
+  "lang": "fr",
+  "background_color": "#fbf6ef",
+  "theme_color": "#fbf6ef",
+  "icons": [
+    {
+      "src": "/icone-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icone-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icone-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

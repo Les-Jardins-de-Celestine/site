@@ -201,6 +201,55 @@
     mesure('rubrique_' + rub, { jeu: jeu });
   }
 
+
+  /* ── Sous le « Bravo » : l'inscription (6 novembre 2026) ──
+     Choix de Flo pour fidéliser : à la fin d'une partie, une ligne discrète
+     « Un cahier de jeux dans votre boîte e-mail, avec la newsletter : je m'inscris ».
+     Elle se pose une seule fois dans l'écran de fin, celui qui porte « Bravo ! »
+     (ou, à défaut, le 🎉), après chaque partie enregistrée. Rien ne part ailleurs :
+     c'est un simple lien vers la page d'inscription Brevo.                      */
+  var INSCRIPTION = 'https://9d562907.sibforms.com/serve/MUIFALF6LDApAjadO8H1x5vaE92oga08T5dfNnP2tyNodvByGLZnk6cUBH-e9a2j2nYi3yJ-UvvuclAaEY-ef3JPdwdqh44RZCcIgju5s1cmVAV2dJl-k37YLwKcuc0Dj0eSsy-VwHqSL7FLplJ_NFmlqFaA-t4oc9nvVLFA0sAV9yQzTXH8kRcD3XxmD1_Y0TRPDdr4ZWbntaMjWw==';
+  function visible(el) {
+    if (!(el.offsetWidth || el.offsetHeight || el.getClientRects().length)) return false;
+    var s = getComputedStyle(el);
+    return s.visibility !== 'hidden' && s.opacity !== '0';
+  }
+  function ecranDeFin() {
+    var tous = document.body ? document.body.getElementsByTagName('*') : [];
+    var bravo = null, fete = null;
+    for (var i = 0; i < tous.length; i++) {
+      var el = tous[i];
+      if (el.children.length || el.closest('#feuille')) continue;
+      var t = (el.textContent || '').replace(/ /g, ' ').replace(/\s+/g, ' ').trim();
+      if (!bravo && /^(🎉 ?)?Bravo ?!$/.test(t) && visible(el)) bravo = el;
+      else if (!fete && t === '🎉' && visible(el)) fete = el;
+    }
+    var el = bravo || fete;
+    return el ? el.parentNode : null;
+  }
+  function poserInscription() {
+    var boite = ecranDeFin();
+    if (!boite || boite.querySelector('.jdc-recre')) return !!boite;
+    var p = document.createElement('p');
+    p.className = 'jdc-recre';
+    p.style.cssText = 'display:block;margin:16px auto 2px;max-width:30em;font-size:.92rem;line-height:1.45;' +
+      'text-align:center;opacity:.85;white-space:normal;font-weight:400;font-style:normal;' +
+      'letter-spacing:normal;text-transform:none';
+    p.appendChild(document.createTextNode('Un cahier de jeux dans votre boîte e-mail, avec la newsletter : '));
+    var a = document.createElement('a');
+    a.href = INSCRIPTION; a.target = '_blank'; a.rel = 'noopener noreferrer';
+    a.textContent = 'je m’inscris';
+    a.style.cssText = 'color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px';
+    p.appendChild(a);
+    boite.appendChild(p);
+    return true;
+  }
+  function apresPartie() {
+    [150, 700, 1800, 3500].forEach(function (ms) {
+      setTimeout(function () { try { poserInscription(); } catch (e) {} }, ms);
+    });
+  }
+
   /* ── Enregistrer une partie terminée ──
      jeu     : identifiant du catalogue (ex. 'cherchetrouve')
      niveau  : 1, 2, 3…
@@ -221,6 +270,7 @@
     ecrire(d);
     mesurerPartie(jeu, niveau || 1,
                   options.variante || options.theme || options.mode);
+    apresPartie();
   }
 
   /* ── Mémoriser un contenu déjà vu (fable, scène, histoire…) ──
@@ -350,6 +400,7 @@
     suggestions: suggestions,
     lire: lire,
     reset: reset,
-    exporter: exporter
+    exporter: exporter,
+    poserInscription: poserInscription
   };
 })(window);
