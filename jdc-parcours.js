@@ -204,11 +204,176 @@
 
   /* ── Sous le « Bravo » : l'inscription (6 novembre 2026) ──
      Choix de Flo pour fidéliser : à la fin d'une partie, une ligne discrète
-     « Un cahier de jeux dans votre boîte e-mail, avec la newsletter : je m'inscris ».
+     « Un cahier de jeux gratuit pour réfléchir en vous amusant, dans votre boîte e-mail : je m'inscris ».
      Elle se pose une seule fois dans l'écran de fin, celui qui porte « Bravo ! »
      (ou, à défaut, le 🎉), après chaque partie enregistrée. Rien ne part ailleurs :
-     c'est un simple lien vers la page d'inscription Brevo.                      */
-  var INSCRIPTION = 'https://9d562907.sibforms.com/serve/MUIFALF6LDApAjadO8H1x5vaE92oga08T5dfNnP2tyNodvByGLZnk6cUBH-e9a2j2nYi3yJ-UvvuclAaEY-ef3JPdwdqh44RZCcIgju5s1cmVAV2dJl-k37YLwKcuc0Dj0eSsy-VwHqSL7FLplJ_NFmlqFaA-t4oc9nvVLFA0sAV9yQzTXH8kRcD3XxmD1_Y0TRPDdr4ZWbntaMjWw==';
+     c'est un simple lien vers la page d'inscription Brevo.
+     19 novembre 2026 : le lien mène au formulaire de La Récré (liste Brevo
+     « La Récré », à part de la Gazette), choix de Flo.                          */
+  var RECRE = 'https://9d562907.sibforms.com/serve/MUIFAJxaVp9SV-hY2WqXg7XzF3mnb_jInpoyGCCeokhhPm9hPZRK3S4wCp9Ma8UQ7ybpAxBKCzk53p4lbHrGZkU_GuxA81OML6H4AF0TqjN1xicDdYc2NICaX23fXaHGjzFLf24i_PpULtyaVmowMQ8LhpjnudFv2oZfUsLVqbgXp-LzkRj6lvUf8gjXkkXAzwMsrMohtGoqpAJwpA==';
+  var INSCRIPTION = RECRE;
+
+  /* ── Le bandeau de La Récré (19 novembre 2026) ──
+     Demande de Flo : une ligne au-dessus de tous les jeux, avec une croix,
+     texte de Flo (19 novembre) : « Bientôt : La Récré des Jardins, un cahier
+     de jeux gratuit pour réfléchir en vous amusant, dans votre boîte e-mail. »
+     pour recueillir des inscriptions avant la première Récré de janvier 2027.
+     · Il se pose en haut de la page. Si, sur cet écran, il pousserait le bouton
+       de départ hors de la vue, il se range juste sous les boutons de départ
+       (règle de Flo : le bouton principal visible sans défiler sur téléphone).
+     · Il s'efface pendant la partie et revient avec l'écran de départ.
+     · La croix le range pour une semaine sur cet appareil, puis il revient
+       (demande de Flo du 19 novembre : « il réapparaît une fois par semaine,
+       même si on l'efface »). La clé garde l'heure de la fermeture.
+       Pour le faire revenir tout de suite avec un autre texte : changer la clé. */
+  var CLE_BANDEAU = 'jdc-recre-bandeau-2027';
+  var RE_DEPART = /^\s*(▶\s*)?(Commencer|Jouer|C[’']est parti|Démarrer|Lancer|On commence|On y va)/i;
+  var PAGES_LIBRES = { jeux: 1, carnet: 1 };   /* pas d'écran de départ : toujours en haut */
+  function nomPage() {
+    var p = String(global.location.pathname || '').split('/').pop().replace(/\.html$/, '');
+    return p || 'accueil';
+  }
+  var UNE_SEMAINE = 7 * 24 * 3600 * 1000;
+  function bandeauRange() {
+    try {
+      var t = parseInt(localStorage.getItem(CLE_BANDEAU), 10), maintenant = Date.now();
+      return !isNaN(t) && t <= maintenant && maintenant - t < UNE_SEMAINE;
+    } catch (e) { return false; }
+  }
+  function rangerBandeau() {
+    try { localStorage.setItem(CLE_BANDEAU, String(Date.now())); } catch (e) {}
+  }
+  /* Le bouton qui lance le jeu : « Commencer »… ou, à défaut, le premier bouton
+     de la page (les niveaux ou les thèmes qui lancent la partie d'un geste). */
+  function boutonDeDepart(strict) {
+    var tous = document.querySelectorAll('button,[role="button"],input[type="button"]');
+    var premier = null;
+    for (var i = 0; i < tous.length; i++) {
+      var el = tous[i];
+      if (el.closest('#jdc-bandeau-recre,header,nav,.jdc-retour,#feuille') || !visible(el)) continue;
+      if (RE_DEPART.test(el.innerText || el.value || '')) return el;
+      if (!premier) premier = el;
+    }
+    return strict ? null : premier;
+  }
+  function basDe(el) {
+    return el.getBoundingClientRect().bottom + (global.pageYOffset || 0);
+  }
+  function decalage(d) {
+    var cs = getComputedStyle(d);
+    return d.getBoundingClientRect().height + (parseFloat(cs.marginTop) || 0) + (parseFloat(cs.marginBottom) || 0);
+  }
+  function mettreDessous(d, cible) {
+    var ecran = cible.closest('section.ecran,.ecran,#accueil,#startScreen,#intro,main') || document.body;
+    var bloc = cible;
+    while (bloc.parentNode && bloc.parentNode !== ecran && bloc.parentNode !== document.body) bloc = bloc.parentNode;
+    d.style.marginTop = d.style.marginLeft = d.style.marginRight = '';
+    d.className = 'dessous';
+    bloc.parentNode.insertBefore(d, bloc.nextSibling);
+  }
+  /* En haut, il ne doit pas faire sortir le bouton de départ de l'écran. */
+  function verifierPlace(d) {
+    if (d.className === 'dessous' || PAGES_LIBRES[nomPage()]) return;
+    var c = d._cible;
+    if (!c || !document.contains(c) || !visible(c)) return;
+    var bas = basDe(c), h = global.innerHeight;
+    if (bas > h && bas - decalage(d) <= h) mettreDessous(d, c);
+  }
+  /* Pendant la partie, l'écran de départ disparaît : le bandeau aussi. */
+  function suivreEcran(d) {
+    if (PAGES_LIBRES[nomPage()] || !d._cible) return;
+    function voir() {
+      if (!d.parentNode) return;
+      var c = d._cible;
+      if (!c || !document.contains(c)) c = d._cible = boutonDeDepart(true);
+      d.style.display = (c && visible(c)) ? '' : 'none';
+    }
+    document.addEventListener('click', function (e) {
+      if (d.contains(e.target)) return;
+      [150, 700].forEach(function (ms) { setTimeout(function () { try { voir(); } catch (er) {} }, ms); });
+    }, true);
+  }
+  function poserBandeauRecre() {
+    var b = document.body;
+    if (!b || document.getElementById('jdc-bandeau-recre')) return false;
+    if (nomPage() === 'apercu-reperes' || bandeauRange()) return false;
+    try { if (global.self !== global.top) return false; } catch (e) { return false; }
+
+    if (!document.getElementById('jdc-bandeau-style')) {
+      var st = document.createElement('style');
+      st.id = 'jdc-bandeau-style';
+      st.textContent =
+        '#jdc-bandeau-recre{box-sizing:border-box;display:flex;align-items:center;gap:4px;' +
+        'align-self:stretch;flex:none;width:auto;max-width:none;margin:0 0 8px;padding:6px 2px 6px 14px;' +
+        'background:#2d6a4f;color:#fff;font-family:inherit;font-size:.94rem;line-height:1.4;' +
+        'text-align:left;position:relative;z-index:5;user-select:text;-webkit-user-select:text}' +
+        '#jdc-bandeau-recre.dessous{margin:18px 0 6px;border-radius:12px}' +
+        '#jdc-bandeau-recre p{flex:1 1 auto;min-width:0;margin:0;padding:0;color:inherit;font:inherit;' +
+        'font-weight:400;font-style:normal;text-align:left;letter-spacing:normal;text-transform:none;opacity:1}' +
+        '#jdc-bandeau-recre strong{font-weight:700;color:inherit}' +
+        '#jdc-bandeau-recre a{display:inline-block;margin:3px 0 1px;padding:4px 14px;border-radius:999px;' +
+        'background:#f7f3ea;color:#2d6a4f;font-weight:700;text-decoration:none;white-space:nowrap;line-height:1.4}' +
+        '#jdc-bandeau-recre a:focus-visible,#jdc-bandeau-recre button:focus-visible{outline:3px solid #c8922a;outline-offset:2px}' +
+        '#jdc-bandeau-recre button{flex:none;width:44px;height:44px;min-height:0;margin:0;padding:0;border:0;' +
+        'border-radius:50%;background:transparent;color:#fff;font:inherit;font-size:1.25rem;line-height:1;' +
+        'box-shadow:none;cursor:pointer}' +
+        '@media (min-width:760px){#jdc-bandeau-recre:not(.dessous) p{text-align:center}}' +
+        '@media print{#jdc-bandeau-recre{display:none!important}}';
+      (document.head || b).appendChild(st);
+    }
+
+    var d = document.createElement('div');
+    d.id = 'jdc-bandeau-recre';
+    d.setAttribute('role', 'region');
+    d.setAttribute('aria-label', 'La Récré des Jardins');
+    var p = document.createElement('p');
+    p.appendChild(document.createTextNode('Bientôt\u00A0: '));
+    var s = document.createElement('strong');
+    s.textContent = 'La Récré des Jardins';
+    p.appendChild(s);
+    p.appendChild(document.createTextNode(', un cahier de jeux gratuit pour réfléchir en vous amusant, dans votre boîte e-mail. '));
+    var a = document.createElement('a');
+    a.href = RECRE; a.target = '_blank'; a.rel = 'noopener noreferrer';
+    a.textContent = 'Je m’inscris';
+    a.addEventListener('click', function () {
+      mesure('recre_bandeau_clic', { page: nomPage() });
+    });
+    p.appendChild(a);
+    var x = document.createElement('button');
+    x.type = 'button';
+    x.setAttribute('aria-label', 'Fermer ce bandeau');
+    x.textContent = '✕';
+    x.addEventListener('click', function () {
+      rangerBandeau();
+      mesure('recre_bandeau_ferme', { page: nomPage() });
+      if (d.parentNode) d.parentNode.removeChild(d);
+    });
+    d.appendChild(p);
+    d.appendChild(x);
+
+    d._cible = PAGES_LIBRES[nomPage()] ? null : boutonDeDepart(false);
+    var bas0 = d._cible ? basDe(d._cible) : 0;
+
+    /* collé aux bords même quand la page a une marge intérieure */
+    try {
+      var cs = getComputedStyle(b);
+      d.style.marginTop = '-' + (parseFloat(cs.paddingTop) || 0) + 'px';
+      d.style.marginLeft = '-' + (parseFloat(cs.paddingLeft) || 0) + 'px';
+      d.style.marginRight = '-' + (parseFloat(cs.paddingRight) || 0) + 'px';
+    } catch (e) {}
+    b.insertBefore(d, b.firstChild);
+
+    if (d._cible && bas0 <= global.innerHeight && basDe(d._cible) > global.innerHeight) mettreDessous(d, d._cible);
+    /* les polices arrivent parfois après : on revérifie une fois */
+    var revoir = function () { try { verifierPlace(d); } catch (e) {} };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(revoir);
+    global.addEventListener('load', revoir);
+    suivreEcran(d);
+    return true;
+  }
+  function lancerBandeau() { try { poserBandeauRecre(); } catch (e) {} }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', lancerBandeau);
+  else lancerBandeau();
   function visible(el) {
     if (!(el.offsetWidth || el.offsetHeight || el.getClientRects().length)) return false;
     var s = getComputedStyle(el);
@@ -235,7 +400,7 @@
     p.style.cssText = 'display:block;margin:16px auto 2px;max-width:30em;font-size:.92rem;line-height:1.45;' +
       'text-align:center;opacity:.85;white-space:normal;font-weight:400;font-style:normal;' +
       'letter-spacing:normal;text-transform:none';
-    p.appendChild(document.createTextNode('Un cahier de jeux dans votre boîte e-mail, avec la newsletter : '));
+    p.appendChild(document.createTextNode('Un cahier de jeux gratuit pour réfléchir en vous amusant, dans votre boîte e-mail\u00A0: '));
     var a = document.createElement('a');
     a.href = INSCRIPTION; a.target = '_blank'; a.rel = 'noopener noreferrer';
     a.textContent = 'je m’inscris';
@@ -401,6 +566,7 @@
     lire: lire,
     reset: reset,
     exporter: exporter,
-    poserInscription: poserInscription
+    poserInscription: poserInscription,
+    poserBandeauRecre: poserBandeauRecre
   };
 })(window);
