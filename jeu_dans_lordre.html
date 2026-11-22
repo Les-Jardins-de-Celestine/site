@@ -15,7 +15,7 @@
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Dans l'Ordre · jeu en ligne gratuit · Les Jardins de Célestine</title>
-<meta name="description" content="Remettre les images d'une histoire dans le bon ordre. Jeu de chronologie et de logique en ligne gratuit, sans inscription, sans mise en échec.">
+<meta name="description" content="Remettre les étapes d'une petite histoire dans le bon ordre. Jeu de chronologie et de logique en ligne gratuit, sans inscription, sans mise en échec.">
 <link rel="canonical" href="https://jardinsdecelestine.com/jeu_dans_lordre">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="jdc-parcours.js"></script>
@@ -53,6 +53,17 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 .h-card .hs{font-size:.82rem;color:var(--sepia);opacity:.65;margin-top:2px;}
 .badge-new{display:inline-block;background:var(--green);color:#fff;font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;}
 .badge-vu{display:inline-block;background:rgba(92,61,30,.12);color:var(--sepia);font-size:0.72rem;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;}
+.propose{text-align:center;font-size:.95rem;color:var(--sepia);margin:0 0 14px;line-height:1.5;}
+.propose strong{font-family:'Atkinson Hyperlegible',sans-serif;}
+#autreBtn{background:none;border:1.5px solid rgba(200,146,42,.45);border-radius:999px;padding:3px 11px;margin-left:4px;font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:700;color:var(--sepia);cursor:pointer;}
+@media (hover:hover){ #autreBtn:hover{background:rgba(200,146,42,.1);} }
+.niveaux{display:flex;flex-direction:column;gap:10px;}
+.niv{background:#fff;border:2px solid rgba(200,146,42,.45);border-radius:12px;padding:13px 16px;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .18s;text-align:center;}
+.niv:hover{border-color:var(--gold);background:rgba(200,146,42,.08);transform:translateY(-2px);}
+.niv-mid{border-color:var(--gold);background:rgba(200,146,42,.06);}
+.niv-t{display:block;font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.05rem;font-weight:700;color:var(--sepia);}
+.niv-d{display:block;font-size:.82rem;color:var(--sepia);opacity:.7;margin-top:2px;}
+#titreHist{font-family:'Atkinson Hyperlegible',sans-serif;font-size:1.05rem;font-weight:700;color:var(--sepia);text-align:center;margin:2px 0 4px;}
 #suggestion{margin-top:14px;font-size:.86rem;color:var(--sepia);opacity:.8;font-style:italic;text-align:center;}
 
 /* ── JEU ── */
@@ -156,7 +167,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
  "@context": "https://schema.org",
  "@type": "Game",
  "name": "Dans l'Ordre",
- "description": "Remettre les images d'une histoire dans le bon ordre. Jeu de chronologie et de logique en ligne gratuit, sans inscription, sans mise en échec.",
+ "description": "Remettre les étapes d'une petite histoire dans le bon ordre. Jeu de chronologie et de logique en ligne gratuit, sans inscription, sans mise en échec.",
  "url": "https://jardinsdecelestine.com/jeu_dans_lordre",
  "inLanguage": "fr",
  "isAccessibleForFree": true,
@@ -257,9 +268,15 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 </header>
 
 <div id="menu">
-  <h2>Choisissez votre histoire</h2>
-  <p class="hint">Les étapes sont mélangées. Choisissez-les dans le bon ordre pour reconstituer l'histoire, du début à la fin.</p>
-  <div id="histList"></div>
+  <h2>Une histoire à remettre dans l'ordre</h2>
+  <p class="hint">Les étapes sont mélangées. Choisissez-les une à une, du début à la fin de l'histoire.</p>
+  <p class="propose">Histoire proposée : <strong id="proTitre">·</strong>
+    <button id="autreBtn" type="button" onclick="autreHistoire()">Une autre</button></p>
+  <div class="niveaux">
+    <button class="niv" onclick="commencer(4)"><span class="niv-t">Une histoire courte</span><span class="niv-d">4 étapes</span></button>
+    <button class="niv niv-mid" onclick="commencer(5)"><span class="niv-t">Une histoire</span><span class="niv-d">5 étapes</span></button>
+    <button class="niv" onclick="commencer(6)"><span class="niv-t">Une longue histoire</span><span class="niv-d">6 étapes</span></button>
+  </div>
   <div id="suggestion"></div>
 </div>
 
@@ -270,6 +287,7 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
     <span class="prog"><span id="progNow">0</span> / <span id="progTot">0</span> étapes</span>
   </div>
 
+  <p id="titreHist"></p>
   <div class="zone-titre">L'histoire reconstituée</div>
   <div id="histoire"><p class="vide">Choisissez la première étape de l'histoire ci-dessous.</p></div>
 
@@ -295,49 +313,492 @@ header p{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:va
 //   HISTOIRES — logique implacable :
 //   chaque étape dépend de la précédente
 // ═══════════════════════════════
+// Chaque histoire a 6 étapes. Niveau à 5 étapes : on retire l'étape d5 ; à 4 étapes : les deux étapes d4.
+// Dans chaque version, chaque étape ne peut venir qu'après celle qui la précède (contrôlé à la fabrication).
 const HISTOIRES = [
-  {
-    id:'tarte',
-    titre:'La tarte aux pommes',
-    sous:'5 étapes · du fournil au goûter',
+  { id:"tarte", titre:"La tarte aux pommes", d5:4, d4:[1, 4],
     etapes:[
       "Ce matin, Jeanne décide de faire une tarte aux pommes pour le goûter.",
       "Elle prépare la pâte, puis l'étale soigneusement dans le moule.",
       "Elle épluche les pommes et dispose les tranches en rosace sur la pâte.",
       "Elle enfourne la tarte et surveille la cuisson jusqu'à ce qu'elle soit bien dorée.",
+      "Elle sort la tarte du four et la laisse tiédir sur le rebord de la fenêtre.",
       "À quatre heures, toute la famille se régale de la tarte encore tiède."
-    ]
-  },
-  {
-    id:'rosier',
-    titre:'Le rosier de Marcel',
-    sous:'5 étapes · du pépiniériste aux premières roses',
+    ] },
+  { id:"rosier", titre:"Le rosier de Marcel", d5:1, d4:[1, 4],
     etapes:[
       "Au printemps, Marcel achète un beau rosier chez le pépiniériste.",
+      "Il attache le rosier sur le porte-bagages de sa bicyclette pour le rapporter chez lui.",
       "De retour au jardin, il creuse un trou à l'endroit le plus ensoleillé.",
       "Il place le rosier dans le trou et le recouvre de terre en tassant bien.",
       "Il l'arrose généreusement pour aider les racines à prendre.",
       "Quelques semaines plus tard, les premières roses s'épanouissent."
-    ]
-  },
-  {
-    id:'lettre',
-    titre:'La lettre de Louise',
-    sous:'5 étapes · d\'une amie à l\'autre',
+    ] },
+  { id:"lettre", titre:"La lettre de Louise", d5:4, d4:[1, 4],
     etapes:[
       "Louise s'installe à son bureau pour écrire à son amie d'enfance.",
       "Elle remplit trois pages de nouvelles et de souvenirs partagés.",
       "Elle glisse la lettre dans une enveloppe et colle un timbre.",
       "En allant au marché, elle dépose l'enveloppe dans la boîte jaune.",
+      "Deux jours plus tard, le facteur apporte la lettre à son amie, qui la lit aussitôt.",
       "Une semaine plus tard, elle trouve la réponse de son amie dans sa boîte aux lettres."
-    ]
-  }
+    ] },
+  { id:"confiture", titre:"La confiture de fraises", d5:1, d4:[1, 4],
+    etapes:[
+      "Un matin de juin, Germaine cueille un plein panier de fraises au potager.",
+      "À la cuisine, elle lave les fraises et leur retire la queue une à une.",
+      "Elle verse les fraises dans la bassine en cuivre et les couvre de sucre.",
+      "Elle fait cuire le tout en remuant, jusqu'à ce que la confiture épaississe.",
+      "Elle remplit les pots de confiture bien chaude et visse aussitôt les couvercles.",
+      "Le lendemain matin, elle étale la confiture sur ses tartines du petit-déjeuner."
+    ] },
+  { id:"anniversaire", titre:"Le gâteau d'anniversaire", d5:4, d4:[1, 4],
+    etapes:[
+      "Pour les sept ans de son petit-fils Paul, Simone prépare un gâteau au chocolat.",
+      "Elle verse la pâte dans le moule et l'enfourne pour quarante minutes.",
+      "Une fois le gâteau cuit et refroidi, elle le démoule sur le plat de fête.",
+      "Elle plante sept bougies sur le gâteau et les allume avec une allumette.",
+      "Dans la pièce éteinte, les bougies brillent pendant que la famille chante « Joyeux anniversaire ».",
+      "Paul souffle les sept bougies d'un seul coup, sous les applaudissements."
+    ] },
+  { id:"pain", titre:"Le pain de campagne", d5:2, d4:[1, 2],
+    etapes:[
+      "Dans le pétrin, Jules mélange la farine, l'eau, le sel et le levain.",
+      "Il pétrit longuement la pâte, jusqu'à ce qu'elle soit bien souple.",
+      "Il laisse la pâte lever sous un torchon, près du poêle.",
+      "Il façonne de grosses boules de pâte et trace une croix sur le dessus.",
+      "Il enfourne les miches dans le four à bois bien chaud.",
+      "Une heure plus tard, il sort des pains dorés à la croûte craquante."
+    ] },
+  { id:"galette", titre:"La galette des rois", d5:2, d4:[2, 4],
+    etapes:[
+      "Pour l'Épiphanie, Lucienne prépare une crème d'amandes.",
+      "Elle étale la crème sur un disque de pâte feuilletée et y cache une fève.",
+      "Elle couvre d'un second disque de pâte et dore la galette au jaune d'œuf.",
+      "Elle fait cuire la galette jusqu'à ce qu'elle soit bien gonflée et dorée.",
+      "Le plus jeune se glisse sous la table et désigne à qui donner chaque part.",
+      "Le grand-père trouve la fève dans sa part et reçoit la couronne."
+    ] },
+  { id:"yaourt", titre:"Le gâteau au yaourt", d5:4, d4:[1, 4],
+    etapes:[
+      "Avec sa petite-fille, Thérèse vide un pot de yaourt dans un saladier.",
+      "Elles se servent du pot vide pour mesurer le sucre, la farine et l'huile.",
+      "Elles ajoutent les œufs et mélangent jusqu'à obtenir une pâte lisse.",
+      "Elles versent la pâte dans un moule beurré et l'enfournent.",
+      "Trente minutes plus tard, une bonne odeur de gâteau remplit la cuisine.",
+      "Au goûter, elles coupent le gâteau encore tiède en parts."
+    ] },
+  { id:"potaufeu", titre:"Le pot-au-feu", d5:1, d4:[1, 4],
+    etapes:[
+      "Dès le matin, Marguerite met le bœuf à cuire dans une grande marmite d'eau.",
+      "Pendant que la viande frémit, elle épluche carottes, navets et poireaux.",
+      "Elle ajoute les légumes dans la marmite et laisse mijoter trois heures.",
+      "À midi, elle sert d'abord le bouillon bien chaud dans les assiettes creuses.",
+      "Ensuite, elle apporte la viande et les légumes sur un grand plat.",
+      "Le soir, avec le reste du bouillon, elle prépare une soupe au vermicelle."
+    ] },
+  { id:"beurre", titre:"Le beurre de la ferme", d5:1, d4:[1, 4],
+    etapes:[
+      "Le matin, Berthe trait la vache et rapporte le seau de lait à la ferme.",
+      "Elle laisse reposer le lait dans une jatte jusqu'à ce que la crème remonte.",
+      "Avec une louche, elle écrème le lait et verse la crème dans la baratte.",
+      "Elle tourne la manivelle de la baratte jusqu'à ce que le beurre se forme.",
+      "Elle lave le beurre à l'eau fraîche et le presse dans un moule en bois.",
+      "Au goûter, les enfants mangent des tartines de ce beurre tout frais."
+    ] },
+  { id:"lavoir", titre:"Le linge au lavoir", d5:2, d4:[2, 4],
+    etapes:[
+      "Lundi matin, Paulette charge sa brouette de linge sale et part au lavoir.",
+      "Au lavoir, elle savonne les draps et les frotte à la brosse sur la pierre.",
+      "Elle rince le linge dans l'eau claire, puis le tord pour l'essorer.",
+      "De retour à la maison, elle étend les draps humides sur le fil du jardin.",
+      "En fin d'après-midi, elle décroche le linge sec, qui sent bon le grand air.",
+      "Le soir, elle repasse les draps secs et les range, bien pliés, dans l'armoire."
+    ] },
+  { id:"commode", titre:"La vieille commode", d5:1, d4:[1, 4],
+    etapes:[
+      "Au grenier, Gérard retrouve la vieille commode de sa grand-mère, couverte de poussière.",
+      "Avec son fils, il la descend jusqu'à l'atelier.",
+      "Il décape l'ancien vernis avec de la laine d'acier.",
+      "Il passe plusieurs couches de cire et frotte avec un chiffon doux.",
+      "Une fois la cire sèche, il visse de nouvelles poignées en laiton sur les tiroirs.",
+      "Gérard installe la commode, comme neuve, dans l'entrée."
+    ] },
+  { id:"etagere", titre:"L'étagère", d5:1, d4:[1, 4],
+    etapes:[
+      "Pour ranger ses livres, Daniel décide de fabriquer une étagère.",
+      "Il mesure le mur du salon et note les dimensions sur un carnet.",
+      "À l'atelier, il scie trois planches à la bonne longueur.",
+      "Il ponce les planches, puis les vernit.",
+      "Une fois le vernis sec, il fixe les planches au mur avec des équerres.",
+      "Il range enfin ses livres sur la nouvelle étagère."
+    ] },
+  { id:"volets", titre:"Les volets repeints", d5:1, d4:[1, 4],
+    etapes:[
+      "Au printemps, Jacques décroche les volets de la façade.",
+      "Il les pose à plat sur deux tréteaux, dans la cour.",
+      "Il ponce le bois pour enlever la vieille peinture écaillée.",
+      "Il passe deux couches de peinture vert pâle au pinceau.",
+      "Il laisse sécher les volets au soleil toute la journée.",
+      "Le soir, il raccroche les volets tout neufs sur la façade."
+    ] },
+  { id:"tuile", titre:"La tuile envolée", d5:4, d4:[1, 4],
+    etapes:[
+      "Pendant la tempête, une tuile s'envole du toit de la maison d'Armand.",
+      "Au matin, une tache d'eau apparaît au plafond de la chambre.",
+      "Armand appelle le couvreur, qui promet de venir le jour même.",
+      "Le couvreur monte sur le toit avec son échelle et une tuile neuve.",
+      "Il remplace la tuile envolée et vérifie toutes les autres.",
+      "Quelques jours plus tard, Armand repeint le plafond taché de la chambre."
+    ] },
+  { id:"panne", titre:"La panne de courant", d5:1, d4:[1, 3],
+    etapes:[
+      "Un soir d'orage, les lumières de la maison de Gisèle s'éteignent d'un coup.",
+      "Dans le noir, elle cherche à tâtons la boîte d'allumettes.",
+      "Elle allume deux bougies et les pose sur la table de la cuisine.",
+      "À la lueur des bougies, la famille finit son dîner en riant.",
+      "Vers dix heures, les lumières se rallument toutes en même temps.",
+      "Gisèle souffle les bougies et range les allumettes dans le tiroir."
+    ] },
+  { id:"bois", titre:"Le bois pour l'hiver", d5:1, d4:[1, 3],
+    etapes:[
+      "En novembre, le marchand livre un tas de bûches devant la maison d'Eugène.",
+      "Eugène fend les plus grosses bûches à la hache.",
+      "Eugène empile le bois sous l'appentis, à l'abri de la pluie.",
+      "Par un matin de gel, il rapporte une brassée de bûches dans la maison.",
+      "Il allume le poêle et y ajoute deux bûches.",
+      "Bientôt, une douce chaleur se répand dans toute la cuisine."
+    ] },
+  { id:"demenagement", titre:"Le déménagement", d5:3, d4:[1, 3],
+    etapes:[
+      "René et Suzanne emballent la vaisselle et les livres dans des cartons.",
+      "Sur chaque carton, ils écrivent le nom de la pièce où il ira.",
+      "Le jour du départ, les déménageurs chargent les cartons et les meubles dans le camion.",
+      "Le camion roule jusqu'à la nouvelle maison, de l'autre côté de la ville.",
+      "Les déménageurs déchargent tout et posent chaque carton dans la bonne pièce.",
+      "Le soir, René et Suzanne déballent la vaisselle pour leur premier dîner dans la nouvelle maison."
+    ] },
+  { id:"tomates", titre:"Les tomates du potager", d5:1, d4:[1, 4],
+    etapes:[
+      "En mars, Raymond sème des graines de tomates dans des godets, près de la fenêtre.",
+      "Quelques semaines plus tard, de petites pousses vertes sortent de la terre.",
+      "En mai, il repique les jeunes plants au potager.",
+      "Le jour même, il plante un tuteur à côté de chaque plant et y attache la tige.",
+      "Tout l'été, il arrose les tomates, qui grimpent le long de leur tuteur.",
+      "En août, il cueille les premières tomates bien mûres pour la salade."
+    ] },
+  { id:"pommesdeterre", titre:"Les pommes de terre", d5:2, d4:[1, 2],
+    etapes:[
+      "En avril, Ernest plante des pommes de terre germées dans le potager.",
+      "Quand les tiges sortent de terre, il les butte avec la binette.",
+      "En juin, les plants se couvrent de petites fleurs blanches.",
+      "Fin juillet, les feuilles jaunissent : c'est le moment de récolter.",
+      "Avec la fourche, Ernest sort les pommes de terre de la terre.",
+      "Le soir même, il fait des frites avec les plus grosses."
+    ] },
+  { id:"tulipes", titre:"Les tulipes", d5:1, d4:[1, 4],
+    etapes:[
+      "En octobre, Marie-Louise plante des bulbes de tulipes au bord de l'allée.",
+      "Tout l'hiver, les bulbes restent cachés sous la terre gelée.",
+      "En mars, les premières feuilles vertes percent le sol.",
+      "En avril, les tulipes jaunes s'ouvrent au soleil.",
+      "Marie-Louise en coupe un bouquet pour la table du salon.",
+      "Quand les fleurs fanent, elle coupe les tiges mais laisse les feuilles sécher sur place."
+    ] },
+  { id:"geranium", titre:"La bouture de géranium", d5:2, d4:[2, 4],
+    etapes:[
+      "Fin août, Lucette coupe une jeune tige sur son plus beau géranium.",
+      "Elle retire les feuilles du bas et plante la tige dans un petit pot de terreau.",
+      "Tout l'hiver, elle garde le pot au chaud, près de la fenêtre de la cuisine.",
+      "Au printemps, de nouvelles feuilles apparaissent : la bouture a pris racine.",
+      "En mai, elle installe le géranium dans une jardinière, sur son balcon.",
+      "En juillet, le balcon de Lucette est couvert de fleurs roses."
+    ] },
+  { id:"cidre", titre:"Le cidre", d5:4, d4:[1, 4],
+    etapes:[
+      "En octobre, Albert ramasse les pommes tombées dans le verger.",
+      "Il les lave à grande eau dans un baquet.",
+      "Il passe les pommes au pressoir et serre jusqu'à ce que le jus coule.",
+      "Il remplit un tonneau avec le jus et le descend à la cave.",
+      "Tout l'hiver, le jus fermente doucement dans le tonneau.",
+      "Au printemps, il met le cidre en bouteilles et en offre une à chaque voisin."
+    ] },
+  { id:"noix", titre:"Les noix", d5:4, d4:[1, 4],
+    etapes:[
+      "En octobre, Yvonne gaule le noyer du jardin avec une longue perche.",
+      "Elle ramasse les noix tombées dans l'herbe et en remplit un panier.",
+      "Elle étale les noix sur des claies, au grenier, pour les faire sécher.",
+      "Quelques semaines plus tard, elle casse les noix sèches avec un casse-noix.",
+      "Elle trie les cerneaux et les met de côté dans un bol.",
+      "Elle décore son gâteau au chocolat avec les plus beaux cerneaux."
+    ] },
+  { id:"chataignes", titre:"Les châtaignes grillées", d5:3, d4:[1, 3],
+    etapes:[
+      "Un dimanche d'automne, Victor ramasse des châtaignes en forêt avec ses petits-enfants.",
+      "À la maison, il fend la peau de chaque châtaigne avec un petit couteau.",
+      "Il les verse dans la poêle percée, posée sur les braises de la cheminée.",
+      "Il les secoue de temps en temps pour qu'elles grillent de tous les côtés.",
+      "Il enveloppe les châtaignes brûlantes dans un torchon pour les laisser reposer.",
+      "Chacun épluche ses châtaignes en soufflant sur ses doigts."
+    ] },
+  { id:"champignons", titre:"Les cèpes", d5:2, d4:[2, 4],
+    etapes:[
+      "Après une nuit de pluie, Fernand part en forêt avec son panier.",
+      "Sous les châtaigniers, il trouve des cèpes et les cueille délicatement.",
+      "Le panier plein, il reprend le chemin du village.",
+      "Il montre sa cueillette au pharmacien, qui vérifie qu'aucun champignon n'est dangereux.",
+      "À la maison, il nettoie les cèpes avec un petit pinceau.",
+      "Le soir, il fait revenir les cèpes à la poêle avec de l'ail et du persil."
+    ] },
+  { id:"miel", titre:"Le miel", d5:1, d4:[1, 4],
+    etapes:[
+      "En juillet, Léon enfile sa vareuse et son voile pour visiter ses ruches.",
+      "Il enfume doucement la ruche pour calmer les abeilles.",
+      "Il soulève les cadres lourds de miel et les range dans une caisse.",
+      "Dans la cuisine, il fait tourner les cadres dans l'extracteur.",
+      "Le miel coule par le robinet et remplit un grand seau.",
+      "Il verse le miel dans des pots et colle une étiquette sur chacun."
+    ] },
+  { id:"chevre", titre:"La chèvre", d5:1, d4:[1, 4],
+    etapes:[
+      "À la foire du bourg, Auguste achète une belle chèvre laitière.",
+      "Il la ramène à pied jusqu'à la ferme, au bout d'une corde.",
+      "À la ferme, il la fait entrer dans l'enclos préparé derrière la grange.",
+      "Chaque matin et chaque soir, il la trait dans un seau.",
+      "Avec le lait, sa femme fabrique de petits fromages qu'elle met à sécher.",
+      "Au marché du samedi, Auguste vend les fromages faits avec ce lait."
+    ] },
+  { id:"poussins", titre:"Les poussins", d5:2, d4:[2, 4],
+    etapes:[
+      "Au printemps, Mathilde place douze œufs sous sa poule couveuse.",
+      "Pendant trois semaines, la poule reste sur ses œufs pour les garder au chaud.",
+      "Un matin, Mathilde entend de petits coups de bec contre les coquilles.",
+      "Un à un, les poussins sortent de leur coquille.",
+      "Quelques heures plus tard, les poussins, bien secs, suivent leur mère dans la cour.",
+      "En été, les poussins sont devenus de jeunes poules qui picorent avec les autres."
+    ] },
+  { id:"hirondelles", titre:"Les hirondelles", d5:2, d4:[2, 4],
+    etapes:[
+      "Au printemps, un couple d'hirondelles revient sous le toit de la grange d'Émile.",
+      "Les deux oiseaux construisent leur nid avec de la boue et de la paille.",
+      "Bientôt, la femelle couve ses œufs au fond du nid.",
+      "Les petits éclosent et réclament à manger, le bec grand ouvert.",
+      "Quelques semaines plus tard, les jeunes hirondelles font leurs premiers vols autour de la grange.",
+      "À la fin de l'été, parents et petits s'envolent ensemble vers les pays chauds."
+    ] },
+  { id:"chat", titre:"Le chat disparu", d5:1, d4:[1, 4],
+    etapes:[
+      "Un soir, Marthe s'inquiète : son chat Pompon n'est pas rentré pour dîner.",
+      "Elle fait le tour du quartier en l'appelant, sans le trouver.",
+      "Le lendemain, elle colle une affiche avec sa photo chez la boulangère.",
+      "En voyant l'affiche, un voisin reconnaît Pompon et téléphone à Marthe.",
+      "Le voisin explique qu'il a entendu miauler au fond de son garage, fermé depuis deux jours.",
+      "Marthe court chercher Pompon et le ramène à la maison dans ses bras."
+    ] },
+  { id:"chien", titre:"Le chien du refuge", d5:3, d4:[1, 3],
+    etapes:[
+      "Au refuge, Bernard s'arrête devant un vieux chien aux yeux doux.",
+      "Il remplit les papiers et repart avec lui au bout d'une laisse neuve.",
+      "En arrivant à la maison, il lui montre le panier installé près du poêle.",
+      "Le chien flaire chaque pièce, puis se couche dans son panier.",
+      "Le lendemain, ils font leur première promenade le long du canal.",
+      "Au bout d'une semaine, le chien attend Bernard derrière la porte en remuant la queue."
+    ] },
+  { id:"peche", titre:"La partie de pêche", d5:1, d4:[1, 3],
+    etapes:[
+      "Gaston prépare sa canne à pêche et une boîte de vers de terre.",
+      "À l'aube, il s'installe au bord de l'étang avec son pliant.",
+      "Il accroche un ver à l'hameçon et lance sa ligne dans l'étang.",
+      "Au bout d'une heure, le bouchon s'enfonce d'un coup : ça mord !",
+      "Il ferre d'un coup sec et sort de l'eau une belle perche.",
+      "Le soir, il fait cuire la perche à la poêle avec un peu de beurre."
+    ] },
+  { id:"sapin", titre:"Le sapin de Noël", d5:3, d4:[1, 3],
+    etapes:[
+      "Début décembre, Henri rapporte un beau sapin acheté au marché de Noël.",
+      "Il installe le sapin dans un seau de terre, au coin du salon.",
+      "Les enfants accrochent les boules et la guirlande lumineuse au sapin.",
+      "Pour finir, Henri monte sur un tabouret et pose l'étoile tout en haut.",
+      "Le soir du 24, chacun dépose ses paquets au pied du sapin décoré.",
+      "Le matin de Noël, toute la famille ouvre les cadeaux en pyjama."
+    ] },
+  { id:"paques", titre:"Les œufs de Pâques", d5:2, d4:[2, 4],
+    etapes:[
+      "Le matin de Pâques, pendant que les enfants dorment, Pierre cache des œufs en chocolat dans le jardin.",
+      "Au réveil, les enfants prennent chacun un petit panier.",
+      "Ils fouillent les massifs, les pots de fleurs et le dessous du banc.",
+      "Le plus petit trouve un gros œuf caché dans l'arrosoir.",
+      "Quand tous les œufs sont trouvés, ils les comptent sur la table de la terrasse.",
+      "Après le déjeuner, chacun a le droit de croquer un œuf en chocolat."
+    ] },
+  { id:"neige", titre:"Le bonhomme de neige", d5:1, d4:[1, 4],
+    etapes:[
+      "Pendant la nuit, il neige sans arrêt sur le village.",
+      "Au réveil, Robert découvre par la fenêtre le jardin tout blanc.",
+      "Il enfile ses bottes et sort dans la neige avec ses petits-enfants.",
+      "Ensemble, ils roulent deux grosses boules et les posent l'une sur l'autre.",
+      "Ils donnent au bonhomme de neige une carotte pour nez et une vieille écharpe.",
+      "Trois jours plus tard, le soleil revient et le bonhomme de neige fond peu à peu."
+    ] },
+  { id:"bal", titre:"Le bal du 14 juillet", d5:3, d4:[3, 4],
+    etapes:[
+      "Le 14 juillet au soir, Roger met son plus beau costume.",
+      "Il passe prendre Hélène chez ses parents, à l'autre bout du village.",
+      "Ensemble, ils arrivent sur la place juste à temps pour le feu d'artifice.",
+      "Après le bouquet final, l'orchestre attaque la première valse du bal.",
+      "Roger invite Hélène à danser, et ils ne quittent plus la piste.",
+      "Au petit matin, Roger raccompagne Hélène jusqu'à sa porte."
+    ] },
+  { id:"feteMeres", titre:"La fête des mères", d5:3, d4:[2, 3],
+    etapes:[
+      "La veille de la fête des mères, Nicole et son frère cassent leur tirelire.",
+      "Avec leurs pièces, ils achètent un flacon d'eau de Cologne chez le droguiste.",
+      "Pour que leur mère ne le voie pas, ils cachent le flacon en haut de l'armoire.",
+      "Le dimanche matin, ils le sortent de sa cachette et l'enveloppent dans un papier doré.",
+      "Ils apportent le cadeau à leur mère, au lit, avec son petit-déjeuner.",
+      "Leur mère découvre le flacon, se parfume aussitôt et les embrasse tous les deux."
+    ] },
+  { id:"voeux", titre:"Les cartes de vœux", d5:3, d4:[1, 3],
+    etapes:[
+      "Fin décembre, Jacqueline achète une boîte de cartes de vœux à la papeterie.",
+      "Assise à la table du salon, elle écrit un petit mot dans chaque carte.",
+      "Elle glisse les cartes dans les enveloppes et y écrit les adresses.",
+      "Elle colle un timbre sur chaque enveloppe.",
+      "Le 31 décembre, elle dépose toutes les enveloppes au bureau de poste.",
+      "En janvier, sa boîte aux lettres déborde de cartes en réponse."
+    ] },
+  { id:"cerfvolant", titre:"Le cerf-volant", d5:1, d4:[1, 4],
+    etapes:[
+      "Avec son petit-fils, Maurice fabrique un cerf-volant en papier et en baguettes.",
+      "Ils y attachent une longue queue de rubans et une bobine de ficelle.",
+      "Un jour de grand vent, ils montent tous les deux en haut de la colline.",
+      "Le petit court face au vent pendant que Maurice lâche le cerf-volant.",
+      "Le cerf-volant monte très haut dans le ciel, au bout de sa ficelle.",
+      "Le soir, ils rembobinent la ficelle et redescendent, le cerf-volant sous le bras."
+    ] },
+  { id:"piquenique", titre:"Le pique-nique", d5:1, d4:[1, 3],
+    etapes:[
+      "Josette prépare des sandwichs et des œufs durs pour le pique-nique.",
+      "Elle range le tout dans le panier en osier, avec une bouteille de limonade.",
+      "En voiture, la famille part vers la rivière.",
+      "Au bord de l'eau, Josette étend la nappe à carreaux sur l'herbe.",
+      "Tout le monde s'assoit et partage le repas à l'ombre des saules.",
+      "Après le déjeuner, les enfants font la sieste pendant que les grands jouent aux cartes."
+    ] },
+  { id:"mer", titre:"Les vacances à la mer", d5:3, d4:[1, 3],
+    etapes:[
+      "Pour les vacances, Marcelle remplit la valise de maillots et de serviettes pour toute la famille.",
+      "Le soir, ils prennent tous le train de nuit vers la mer.",
+      "Au matin, ils découvrent la plage et courent jusqu'aux vagues.",
+      "Toute la journée, les enfants ramassent des coquillages et bâtissent un château de sable.",
+      "Le soir, au café du port, Marcelle écrit une carte postale à sa voisine.",
+      "Trois jours plus tard, la voisine reçoit la carte et la pose sur son buffet."
+    ] },
+  { id:"pull", titre:"Le pull tricoté", d5:1, d4:[1, 4],
+    etapes:[
+      "À la mercerie, Yvette choisit six pelotes de laine bleue pour son mari.",
+      "Le soir, au coin du feu, elle monte les premières mailles sur ses aiguilles.",
+      "Pendant des semaines, elle tricote le dos, le devant et les deux manches.",
+      "Elle coud les morceaux ensemble pour assembler le pull.",
+      "Elle l'emballe dans du papier de soie et noue un joli ruban.",
+      "Le jour de son anniversaire, son mari découvre le pull et l'enfile aussitôt."
+    ] },
+  { id:"robe", titre:"La robe neuve", d5:4, d4:[3, 4],
+    etapes:[
+      "Pour la fête du village, Odette achète trois mètres de tissu fleuri.",
+      "Sur la table de la cuisine, elle épingle le patron sur le tissu et découpe les pièces.",
+      "À la machine à coudre, elle assemble les pièces de la robe.",
+      "Elle essaie la robe devant la glace et marque l'ourlet avec des épingles.",
+      "Elle coud l'ourlet à la main, à petits points.",
+      "Le jour de la fête, Odette porte sa robe neuve sur la place du village."
+    ] },
+  { id:"coiffeur", titre:"Chez le coiffeur", d5:3, d4:[1, 3],
+    etapes:[
+      "La veille d'un grand repas de famille, Henriette entre au salon de coiffure.",
+      "Au bac, une shampouineuse lui lave les cheveux à l'eau tiède.",
+      "Les cheveux encore mouillés, la coiffeuse coupe les pointes, puis pose les bigoudis.",
+      "Henriette s'installe sous le casque séchoir avec un magazine.",
+      "Une fois les cheveux secs, la coiffeuse retire les bigoudis et coiffe les boucles.",
+      "Elle tend un miroir à Henriette, qui admire sa nouvelle coiffure."
+    ] },
+  { id:"velo", titre:"Le pneu crevé", d5:1, d4:[1, 3],
+    etapes:[
+      "En rentrant du village, Lucien entend un sifflement : son pneu avant est crevé.",
+      "Il finit le chemin à pied, en poussant son vélo.",
+      "Dans le garage, il démonte la roue et sort la chambre à air du pneu.",
+      "Il plonge la chambre à air dans une bassine d'eau pour trouver le trou.",
+      "Il repère le petit trou et colle une rustine bien à plat.",
+      "Il remonte la roue, regonfle le pneu et repart faire un tour."
+    ] },
+  { id:"permis", titre:"Le permis de conduire", d5:4, d4:[1, 4],
+    etapes:[
+      "À dix-huit ans, Michel s'inscrit à l'auto-école du village.",
+      "Pendant des semaines, il apprend le code de la route le soir.",
+      "Une fois le code réussi, il prend des leçons de conduite avec le moniteur.",
+      "Le jour de l'examen, il conduit sans faute devant l'inspecteur.",
+      "Quelques jours plus tard, il va chercher son permis rose à la préfecture.",
+      "Le permis en poche, il emmène sa mère faire un tour en voiture."
+    ] },
+  { id:"rentree", titre:"La rentrée des classes", d5:1, d4:[1, 4],
+    etapes:[
+      "Fin août, Madeleine achète un cartable et des cahiers neufs pour sa petite-fille Lucie.",
+      "Ensemble, elles couvrent les cahiers avec du papier bleu.",
+      "Le matin de la rentrée, Lucie range ses cahiers dans son cartable.",
+      "Madeleine l'accompagne à pied jusqu'au portail de l'école.",
+      "Dans la cour, Lucie retrouve ses camarades, puis la cloche sonne.",
+      "À quatre heures et demie, Madeleine l'attend à la sortie avec un goûter."
+    ] },
+  { id:"colis", titre:"Le colis", d5:1, d4:[1, 4],
+    etapes:[
+      "Denise choisit une nappe brodée dans le catalogue de vente par correspondance.",
+      "Elle remplit le bon de commande et l'envoie avec un chèque.",
+      "Dix jours plus tard, le facteur laisse un avis de passage dans sa boîte aux lettres.",
+      "Avec l'avis, elle va chercher son colis au bureau de poste.",
+      "À la maison, elle ouvre le carton et déplie la nappe.",
+      "Le dimanche suivant, elle étrenne la nappe pour le déjeuner de famille."
+    ] },
+  { id:"train", titre:"Le voyage en train", d5:3, d4:[1, 3],
+    etapes:[
+      "Pour aller voir sa sœur à Lyon, Alice achète un billet de train au guichet de la gare.",
+      "Le jour du départ, elle composte son billet avant d'aller sur le quai.",
+      "Elle monte dans le wagon et trouve sa place près de la fenêtre.",
+      "Pendant le voyage, le contrôleur passe vérifier son billet.",
+      "Le train entre en gare de Lyon dans un long grincement de freins.",
+      "Sur le quai, sa sœur l'attend et la serre dans ses bras."
+    ] },
+  { id:"cinema", titre:"Au cinéma", d5:2, d4:[2, 4],
+    etapes:[
+      "Samedi soir, Monique et Jean font la queue devant le cinéma du quartier.",
+      "Au guichet, Jean achète deux places au balcon.",
+      "L'ouvreuse les conduit à leurs fauteuils avec sa lampe de poche.",
+      "La lumière s'éteint et le grand film commence.",
+      "Pendant deux heures, ils suivent l'aventure sans quitter l'écran des yeux.",
+      "Le mot « Fin » apparaît, la salle se rallume et ils rentrent à pied en parlant du film."
+    ] },
+  { id:"photo", titre:"La photo de famille", d5:2, d4:[2, 4],
+    etapes:[
+      "Pour les cinquante ans de mariage de ses parents, Claude réunit toute la famille.",
+      "Il installe son appareil photo sur un trépied, face au jardin.",
+      "Il fait asseoir les petits sur un banc, face à l'appareil, et les grands derrière eux.",
+      "Il règle le retardateur et court se placer à côté de ses parents.",
+      "Le déclic retentit : la photo est prise, et tout le monde sourit.",
+      "Quelques jours plus tard, il colle la photo développée dans l'album de famille."
+    ] },
+  { id:"mariage", titre:"Le mariage", d5:1, d4:[1, 4],
+    etapes:[
+      "Un dimanche, André demande la main de Jeannette à ses parents.",
+      "Les deux familles se réunissent pour un grand repas de fiançailles.",
+      "Le jour du mariage, André attend Jeannette devant la mairie.",
+      "Le maire prononce les mots d'usage, et les deux mariés disent « oui ».",
+      "À la sortie, les invités lancent du riz sur les nouveaux mariés.",
+      "Le soir, André et Jeannette ouvrent le bal en dansant la première valse."
+    ] }
 ];
 
 // ═══════════════════════════════
 //   ÉTAT
 // ═══════════════════════════════
-let cur = null, attendu = 0, erreurs = 0;
+let cur = null, attendu = 0, erreurs = 0, longueur = 5, propose = null;
 let startTime = null, playing = false;
 
 let _tc = 0, _tct = null;
@@ -356,25 +817,25 @@ function toast(msg){
 // ═══════════════════════════════
 //   MENU
 // ═══════════════════════════════
+function etapesDe(h, n){
+  return h.etapes.filter(function(e, i){ return n === 6 || (n === 5 && i !== h.d5) || (n === 4 && h.d4.indexOf(i) === -1); });
+}
+function tirer(sauf){
+  var ids = HISTOIRES.map(function(h){ return h.id; }).filter(function(id){ return id !== sauf; });
+  // mélangées d'abord : parmi les histoires jamais faites, n'importe laquelle peut sortir
+  for(var i = ids.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = ids[i]; ids[i] = ids[j]; ids[j] = t; }
+  var id = null;
+  try { if(typeof JDC !== 'undefined' && JDC.contenuSuivant) id = JDC.contenuSuivant('danslordre', ids); } catch(e) {}
+  if(!id) id = ids[Math.floor(Math.random() * ids.length)];
+  return HISTOIRES.find(function(h){ return h.id === id; });
+}
 function buildMenu(){
-  let ordre = HISTOIRES.map(h => h.id);
-  let vus = [];
-  if(typeof JDC !== 'undefined'){
-    const d = JDC.lire();
-    vus = (d.vus && d.vus.danslordre) ? d.vus.danslordre : [];
-    ordre.sort((a, b) => vus.indexOf(a) - vus.indexOf(b));
-  }
-  document.getElementById('histList').innerHTML = ordre.map(id => {
-    const i = HISTOIRES.findIndex(h => h.id === id);
-    const h = HISTOIRES[i];
-    const jamais = vus.indexOf(id) === -1;
-    return '<button class="h-card" onclick="startHist(' + i + ')">' +
-      '<span class="ht">' + h.titre +
-      (jamais ? '<span class="badge-new">nouvelle</span>' : '<span class="badge-vu">d\u00e9j\u00e0 faite</span>') +
-      '</span><br>' +
-      '<span class="hs">' + h.sous + '</span>' +
-      '</button>';
-  }).join('');
+  propose = tirer(cur ? cur.id : null);
+  document.getElementById('proTitre').textContent = propose.titre;
+}
+function autreHistoire(){
+  propose = tirer(propose ? propose.id : null);
+  document.getElementById('proTitre').textContent = propose.titre;
 }
 
 function afficherSuggestion(){
@@ -382,8 +843,10 @@ function afficherSuggestion(){
   if(!el || typeof JDC === 'undefined') return;
   const b = JDC.bilanJeu('danslordre');
   if(!b.parties){ el.textContent = ''; return; }
+  const c = JDC.niveauConseille('danslordre');
+  const lbl = c === 1 ? 'Une histoire courte' : c === 2 ? 'Une histoire' : 'Une longue histoire';
   el.textContent = b.parties + ' histoire' + (b.parties > 1 ? 's' : '') +
-    ' d\u00e9j\u00e0 reconstitu\u00e9e' + (b.parties > 1 ? 's' : '') + '.';
+    ' d\u00e9j\u00e0 reconstitu\u00e9e' + (b.parties > 1 ? 's' : '') + '. Niveau conseill\u00e9 : ' + lbl + '.';
 }
 
 buildMenu();
@@ -393,7 +856,7 @@ function backMenu(){
   if(playing && startTime){
     const sec = Math.floor((Date.now() - startTime) / 1000);
     if(typeof JDC !== 'undefined'){
-      JDC.enregistrer('danslordre', 1, false, {duree: sec, erreurs: erreurs, variante: cur.id});
+      JDC.enregistrer('danslordre', longueur - 3, false, {duree: sec, erreurs: erreurs, variante: cur.id});
     }
   }
   playing = false;
@@ -420,8 +883,15 @@ function melange(a){
   return r;
 }
 
-function startHist(i){
-  cur = HISTOIRES[i];
+function commencer(n, id){
+  longueur = n;
+  const h = (id && HISTOIRES.find(function(x){ return x.id === id; })) || propose || tirer(null);
+  startHist(h, n);
+}
+function startHist(h, n){
+  if(typeof h === 'number'){ h = HISTOIRES[h]; n = n || 5; longueur = n; }   // ancien appel par numéro (Récré, essais)
+  cur = { id: h.id, titre: h.titre, etapes: etapesDe(h, n) };
+  document.getElementById('titreHist').textContent = h.titre;
   attendu = 0; erreurs = 0; playing = true;
   startTime = Date.now();
   document.getElementById('menu').style.display = 'none';
@@ -463,7 +933,7 @@ function win(){
   playing = false;
   const sec = Math.floor((Date.now() - startTime) / 1000);
   if(typeof JDC !== 'undefined'){
-    JDC.enregistrer('danslordre', 1, true, {duree: sec, erreurs: erreurs, variante: cur.id});
+    JDC.enregistrer('danslordre', longueur - 3, true, {duree: sec, erreurs: erreurs, variante: cur.id});
     JDC.marquerVu('danslordre', cur.id);
   }
   document.getElementById('doneMsg').textContent =
@@ -485,7 +955,7 @@ window.addEventListener('beforeunload', function(){
   if(playing && startTime){
     const sec = Math.floor((Date.now() - startTime) / 1000);
     if(typeof JDC !== 'undefined'){
-      JDC.enregistrer('danslordre', 1, false, {duree: sec, erreurs: erreurs, variante: cur.id});
+      JDC.enregistrer('danslordre', longueur - 3, false, {duree: sec, erreurs: erreurs, variante: cur.id});
     }
   }
 });
@@ -514,13 +984,13 @@ function confetti(){
 <details class="jdc-apropos">
 <summary>À propos de ce jeu</summary>
 <div class="corps">
-<p><strong>Dans l'Ordre</strong> · Les images d'une petite histoire, mélangées, à remettre dans l'ordre où les choses se sont passées : on sème avant de récolter, on casse l'œuf avant de battre l'omelette.</p>
+<p><strong>Dans l'Ordre</strong> · Les étapes d'une petite histoire de tous les jours, mélangées, à remettre dans l'ordre où les choses se sont passées : on sème avant de récolter, on casse l'œuf avant de battre l'omelette.</p>
 <p data-famille="1">C'est un <strong>jeu de chronologie</strong> : il s'appuie sur l'ordre des gestes de la vie courante, jamais sur des dates à retenir.</p>
 <h2>Pour qui</h2>
 <p>Aux personnes vivant avec des troubles du repérage dans le temps, fréquents dans la maladie d'Alzheimer comme dans la démence vasculaire. Il s'appuie sur la logique du quotidien, pas sur des dates.</p>
 <h2>Comment y jouer</h2>
 <ul>
-<li><strong>Seul</strong> : en déplaçant les images une à une.</li>
+<li><strong>Seul</strong> : en choisissant les étapes une à une.</li>
 <li><strong>À deux, avec un proche ou un aidant</strong> : en racontant l'histoire pendant qu'on la remet en ordre.</li>
 <li><strong>En petit groupe</strong> : le groupe se met d'accord sur l'ordre avant de valider.</li>
 </ul>
